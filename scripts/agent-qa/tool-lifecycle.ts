@@ -6,7 +6,7 @@ import { startRuntime } from "./runtime";
 import { startLifecycleProvider } from "./tool-lifecycle-provider";
 import { createSession, messages, prompt, replyPermission, request, type Client } from "./client";
 import { isJsonObject, jsonObject, stringField, type JsonObject } from "./types";
-import { processGone } from "../ccswitch-harness/cleanup";
+import { processGone } from "../sidecar-harness/cleanup";
 import { prepareProcessTerminator } from "../prepare-opencode";
 
 async function until<T>(probe: () => Promise<T>, accept: (value: T) => boolean): Promise<T> {

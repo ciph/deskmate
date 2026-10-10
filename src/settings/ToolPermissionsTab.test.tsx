@@ -13,9 +13,10 @@ const { ToolPermissionsTab } = await import("./ToolPermissionsTab");
 
 beforeEach(() => { mock.module("@tauri-apps/api/core", () => ({ ...core, invoke })); invoke.mockReset(); invoke.mockResolvedValue([]); });
 afterEach(() => { cleanup(); restoreTauriModuleFixture(); });
-test("old settings show safe defaults and changing one permission preserves the others", () => {
+test("old settings show safe defaults and changing one permission preserves the others", async () => {
   const calls: unknown[] = [];
   const ui = render(<ToolPermissionsTab settings={legacySettingsFixture()} patch={(key,value)=>calls.push({key,value})} persist={async () => {}} t={dict("zh-CN")} />);
+  await ui.findByText("仅支持 Windows x64。");
   expect(ui.getByRole("combobox",{name:"执行命令"})).toHaveProperty("value","ask");
   fireEvent.change(ui.getByRole("combobox",{name:"查询记录"}), {target:{value:"deny"}});
   expect(calls).toEqual([{key:"toolPermissions",value:{...DEFAULT_TOOL_PERMISSIONS,worklogRead:"deny"}}]);
@@ -33,11 +34,11 @@ test("desktop tools require an explicit apply after the restart warning", async 
   fireEvent.click(ui.getByRole("button", {name:"Cancel"}));
   expect(saved).toHaveLength(0);
   expect(browser).toHaveProperty("checked", false);
-  fireEvent.click(windows);
+  fireEvent.click(browser);
   fireEvent.click(ui.getByRole("button", {name:"Apply change"}));
   await waitFor(() => expect(saved).toHaveLength(1));
-  expect(saved[0]?.browserMcpEnabled).toBeUndefined();
-  expect(saved[0]?.windowsMcpEnabled).toBe(true);
+  expect(saved[0]?.browserMcpEnabled).toBe(true);
+  expect(saved[0]?.windowsMcpEnabled).toBeUndefined();
   await waitFor(() => expect(ui.queryByText("This restarts the AI service and interrupts active tasks.")).toBeNull());
 });
 test("a failed desktop change reports its status without keeping a stale pending action", async () => {
@@ -52,8 +53,9 @@ test("a failed desktop change reports its status without keeping a stale pending
     logged.mockRestore();
   }
 });
-test("all supported modes remain selectable for a persisted policy", () => {
+test("all supported modes remain selectable for a persisted policy", async () => {
   const ui=render(<ToolPermissionsTab settings={legacySettingsFixture({toolPermissions:{...DEFAULT_TOOL_PERMISSIONS,shell:"deny"}})} patch={()=>{}} persist={async () => {}} t={dict("en-US")} />);
+  await ui.findByText("仅支持 Windows x64。");
   expect(ui.getByRole("combobox",{name:"Run commands"})).toHaveProperty("value","deny");
   expect(ui.getAllByRole("combobox")).toHaveLength(4);
   expect(ui.getAllByRole("option",{name:"Ask every time"})).toHaveLength(4);
@@ -68,8 +70,9 @@ test("remembered workspace rules can be revoked", async () => {
   await waitFor(()=>expect(invoke.mock.calls).toContainEqual(["agent_permission_approval_remove",{approval}]));
   await waitFor(()=>expect(ui.queryByText("Get-ChildItem *")).toBeNull());
 });
-test("explanations are available when requested and absent from the default list", () => {
+test("explanations are available when requested and absent from the default list", async () => {
   const ui=render(<ToolPermissionsTab settings={legacySettingsFixture()} patch={()=>{}} persist={async () => {}} t={dict("zh-CN")} />);
+  await ui.findByText("仅支持 Windows x64。");
   expect(ui.getByText(/命令权限单独生效/).closest("#set-permissions-help")?.hasAttribute("hidden")).toBe(true);
   fireEvent.click(ui.getByRole("button",{name:"说明"}));
   expect(ui.getByText(/命令权限单独生效/).closest("#set-permissions-help")?.hasAttribute("hidden")).toBe(false);

@@ -3,8 +3,8 @@ import { createReadStream } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
 import { spawn } from "node:child_process";
-import { expectJsonObject, HarnessError, isJsonObject } from "../ccswitch-harness/types";
-import { processGone } from "../ccswitch-harness/cleanup";
+import { expectJsonObject, HarnessError, isJsonObject } from "../sidecar-harness/types";
+import { processGone } from "../sidecar-harness/cleanup";
 
 export const requiredScenarios = ["record-restart", "daily-weekly", "manual-version", "schedule-catchup", "failure-retry", "cancel-late-result", "copy-export", "delete-links", "chat-tool-authorization", "natural-readback"] as const;
 const projectRoot = resolve(import.meta.dir,"../..");

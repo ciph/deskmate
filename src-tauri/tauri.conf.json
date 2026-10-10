@@ -7,6 +7,7 @@
     "beforeDevCommand": "bun run prepare:sidecar && bun run dev",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "bun run prepare:workbench && bun run prepare:sidecar && bun run build",
+    "beforeBundleCommand": "bun scripts/check-package-resources.ts",
     "frontendDist": "../dist"
   },
   "app": {
@@ -105,7 +106,6 @@
       "resources/THIRD_PARTY_NOTICES.md",
       "resources/opencode/**/*",
       "resources/ncmdump/**/*",
-      "resources/windows-mcp/**/*",
       "resources/opencode-tools/**/*",
       "resources/worklog-bridge.ts",
       "resources/personas/xiaozhu/**/*",

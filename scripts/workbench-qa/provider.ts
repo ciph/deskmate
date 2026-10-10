@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import type { Socket } from "node:net";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { TEST_MCP_APPROVED_TOOL_ID } from "../ccswitch-harness/mcp-permissions";
+import { TEST_MCP_APPROVED_TOOL_ID } from "../sidecar-harness/mcp-permissions";
 
 /**
  * Synthetic OpenAI-compatible provider for workbench QA (P1).

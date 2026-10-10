@@ -74,6 +74,8 @@ fn execute(
     run: &ClaimedRun,
     context: (&dyn RunnerEnvironment, &AtomicBool),
 ) -> WorklogResult<()> {
+    let _service = crate::component_activation::background_service_use()
+        .map_err(|_| WorklogError::new("SIDECAR_UNAVAILABLE", "AI service is restarting"))?;
     let (environment, stop) = context;
     let cutoff_date = crate::worklog::calendar::business_date(chrono::Local::now().naive_local());
     if run.sources.is_empty() {

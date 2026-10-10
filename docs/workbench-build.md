@@ -29,6 +29,14 @@ PowerShell 对应先设置 `$env:YUME_OPENCODE_SRC`。macOS 的 `DEVELOPER_DIR` 
 
 `public/workbench/` 是忽略的生成物，前端 build 将其作为静态输入。普通 `bun run build` 成功只证明自有前端通过；桌面 dev hook 不自动证明完整工作台刚重建。打包入口与 Source checks 的完整工作台 job 应从固定源码准备，不能把旧 bundle 当成验证证据。
 
+## 轻量 Windows 安装包（2026-10-09）
+
+- `prepare:workbench` 生成的构建配置关闭 sourcemap；`prepare:opencode` 不交付 taskkill PDB。`beforeBundleCommand` 检查 `dist/` 与 OpenCode 资源，发现 `.map` / `.pdb` 时阻止打包。
+- Windows MCP 不再由 `prepare:sidecar` 或 NSIS 自动包含。`components/windows-mcp.json` 是维护脚本与运行时共用的固定版本、URL、长度及双 SHA-256 清单；`prepare:windows-mcp` 保留为维护者手动校验入口。
+- 首次启用从固定 GitHub Release 下载 1.3.24，校验 ZIP 后仅解出指定根目录 exe，再校验 exe，通过后原子安装至应用数据目录 `components/windows-mcp/1.3.24/`。断网、校验失败、磁盘写入失败可重试；取消与失败清理本次临时目录；进程强制退出可能留下 `.download-*` 临时目录。已安装组件可离线复用，每次生成 MCP 配置仍校验文件。
+- 老版本的启用偏好保留，缺少组件时设置页提供补装。下载完成后启用或关闭组件均等待宿主任务、后台报告/记忆请求、已知原生会话空闲，并要求工作台关闭，然后重启服务；新任务与重启通过同一读写锁边界互斥。等待失败显示重试入口，不强行中断任务。
+- 初始安装包仍包含 OpenCode、完整工作台、宠物和基础功能。此次没有引入在线安装器或工作台资源远程加载。下载依赖 GitHub 可达；未下载组件的首次离线启用不可用。
+
 ## 当前限制与退出条件
 
 当前 prepare 脚本仍存在隐式 sibling clone、输入指纹验证不足、overlay 重复准备和自有入口文本 transform 等原审计问题。上述“固定输入”是必须核对的契约，不宣称现行脚本已自动验证所有指纹。W1/W2 仍按[审计整改方案](audit-remediation-construction-plan.md)实施；错误 ref/lock/version、相同输入重复准备、overlay 改动后重建以及失败不混用新旧输出均需验收。

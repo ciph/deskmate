@@ -10,46 +10,6 @@ export const LANGS: { value: Lang; label: string }[] = [
   { value: "ko-KR", label: "한국어" },
 ];
 
-type CcSwitchErrorMessages = {
-  readonly apiKey: string;
-  readonly endpoint: string;
-  readonly model: string;
-  readonly expired: string;
-  readonly unavailable: string;
-  readonly recovery: string;
-  readonly generic: string;
-};
-
-function localizedCcSwitchError(code: string, messages: CcSwitchErrorMessages): string {
-  switch (code) {
-    case "ccswitch_invalid_api_key":
-    case "ccswitch_saved_api_key_missing":
-      return messages.apiKey;
-    case "ccswitch_invalid_endpoint":
-      return messages.endpoint;
-    case "ccswitch_invalid_model":
-    case "ccswitch_invalid_model_catalog":
-    case "ccswitch_verified_model_catalog_missing":
-    case "ccswitch_verified_model_missing":
-      return messages.model;
-    case "ccswitch_selection_expired":
-    case "ccswitch_selection_missing":
-    case "ccswitch_ticket_expired":
-    case "ccswitch_ticket_missing":
-      return messages.expired;
-    case "ccswitch_incompatible_version":
-    case "ccswitch_missing_protocol":
-    case "ccswitch_model_validation_unavailable":
-    case "ccswitch_open_failed":
-    case "ccswitch_unsupported_platform":
-      return messages.unavailable;
-    case "ccswitch_recovery_stale_conflict":
-      return messages.recovery;
-    default:
-      return messages.generic;
-  }
-}
-
 const zh = {
   // settings window
   settingsTitle: "设置",
@@ -85,8 +45,7 @@ const zh = {
   apiKeyPlaceholder: "填写公司分配的 API Key",
   verify: "验证",
   verifying: "验证中…",
-  verifyOk: (n: number | null) =>
-    n === null ? "验证成功" : `验证成功,可用模型 ${n} 个`,
+  verifyOk: (n: number | null) => "已连接，可选择模型" + (n === null ? "" : ` (${n})`),
   verifyEmptyKey: "请先填写 API Key",
   verifyBadUrl: "Base URL 无效",
   verifyUnauthorized: "API Key 无效或无权限",
@@ -112,7 +71,7 @@ const zh = {
   permissionBrowserMcpDescription: "固定版本 Playwright MCP 在隔离 Edge 中操作网页，不使用账号或持久 Cookie；每步仍需确认。",
   permissionWindowsMcp: "Windows 界面操作",
   permissionWindowsMcpDescription: "Windows-MCP 可操作窗口、点击、输入和快捷键；不启用 PowerShell、注册表、进程及文件工具。",
-  permissionDesktopToolsRestart: "改动会重启 AI 服务并中断任务。Windows 工具内置；浏览器工具需 npx，首次可能下载固定版组件。",
+  permissionDesktopToolsRestart: "Windows 操作组件首次启用时下载，等待任务结束并关闭工作台后生效。浏览器开关会重启 AI 服务；浏览器工具需 npx，首次可能下载固定版组件。",
   permissionWorklog: "工作日志", permissionNetwork: "网络", permissionSystem: "系统",
   permissionLabels: { worklogRead: "查询记录", worklogWrite: "新增、修改与报告", web: "网页搜索与读取", shell: "执行命令" },
   permissionDescriptions: { worklogRead: "查询本地任务、日报和周报。", worklogWrite: "保存或修改记录、生成报告、安排报告任务；仍按你的请求执行。", web: "搜索网页并读取网页内容；查询词会发送给搜索服务。", shell: "运行系统命令，可能读写文件或访问网络。命令权限单独生效，不受网页搜索或工作日志权限影响。" },
@@ -124,14 +83,6 @@ const zh = {
   permissionRemoveApproval: "撤销",
   permissionApprovalRemoveFailed: "撤销规则失败，请重试。",
   permissionFailed: "工具权限处理失败，请重试；尚未确认的操作不会执行。",
-  ccSwitchStatusTitle: "CC Switch",
-  ccSwitchStatusChecking: "正在检查 CC Switch…",
-  ccSwitchStatusReady: (version: string) => `CC Switch ${version} 已可用`,
-  ccSwitchStatusUnavailable: "未检测到 CC Switch",
-  ccSwitchStatusUnsupported: () => "当前系统暂不支持",
-  ccSwitchStatusRecoverableError: "检查失败。可以重试",
-  ccSwitchStatusRefresh: "重新检查",
-  ccSwitchSetupOpen: "在聊天中配置",
   aiProviderSection: "AI 供应商",
   aiProviderAdd: "添加供应商",
   aiProviderBusy: "处理中…",
@@ -152,114 +103,10 @@ const zh = {
   aiProviderRemoveLast: "至少保留一个供应商",
   aiProviderActive: "当前使用",
   aiProviderDefault: (index: number) => `供应商 ${index}`,
-  aiProviderVerify: "验证",
-  aiProviderDeploy: "部署",
-  aiProviderDeployHint: "保存并部署这个供应商到本地 OpenCode。",
+  aiProviderVerify: "验证并连接",
+  providerSecretRedirect: "检测到疑似 API Key，消息未发送。请前往设置 → AI 填写凭据。",
   aiProviderNoModels: "这个供应商暂无可用模型",
   aiProviderUnmatchedModels: "有模型来自未配置的供应商，暂不可选",
-  localAiDeployHint: "只需填写上方 API 信息，YUME 会自动部署 CC Switch、OpenCode 并完成模型配置。",
-  localAiDeployAction: "一键部署",
-  localAiDeployWorking: "部署中…",
-  localAiDeployStage: (stage: string) => {
-    const stages: Record<string, string> = {
-      verifyingApi: "正在验证 API 与模型…",
-      installingOpenCode: "正在部署 OpenCode…",
-      installingCcSwitch: "正在部署 CC Switch…",
-      importingProvider: "正在导入已验证的模型配置…",
-      verifyingConfiguration: "正在确认配置已生效…",
-      syncingModelCatalog: "正在同步模型清单…",
-    };
-    return stages[stage] ?? "正在部署…";
-  },
-  localAiDeploySuccess: (ccSwitch: string, openCode: string) =>
-    `部署完成：CC Switch ${ccSwitch}，OpenCode ${openCode}`,
-  localAiDeployModelSyncHint: (modelCount: number, ccSwitchRunning: boolean) =>
-    ccSwitchRunning
-      ? `已配置 ${modelCount} 个模型。请重启 CC Switch，或在 OpenCode 中导入当前配置。`
-      : `已配置 ${modelCount} 个模型。CC Switch 下次启动时会自动同步。`,
-  localAiDeployModelSyncIncomplete:
-    "模型清单未能自动扩展，请在 CC Switch 中手动确认模型配置。",
-
-  localAiDeployError: (code: string): string => {
-    if (code === "local_ai_deploy_busy") return "已有部署任务正在进行。";
-    if (code.includes("opencode")) return "OpenCode 部署失败，请重试。";
-    if (code.includes("ccswitch_download") || code.includes("ccswitch_package")) {
-      return "CC Switch 下载或校验失败，请检查网络后重试。";
-    }
-    if (code.includes("ccswitch_install")) return "CC Switch 安装失败，请重试。";
-    if (code.includes("automation") || code.includes("import_ui") || code.includes("window_untrusted")) {
-      return "未能安全完成 CC Switch 导入，请关闭 CC Switch 后重试。";
-    }
-    if (code === "local_ai_configuration_provider_missing") return "CC Switch 未写入 YUME 的模型配置，请重试。";
-    if (code === "local_ai_configuration_model_missing") return "配置已写入但缺少所选模型，请重新选择模型后重试。";
-    if (code === "local_ai_configuration_auth_changed") {
-      return "检测到 OpenCode 登录信息在部署期间被改动，已中止。请关闭 OpenCode 后重试。";
-    }
-    if (code === "local_ai_configuration_malformed") return "OpenCode 配置文件无法解析，请检查后重试。";
-    if (code.includes("configuration")) return "配置未能确认生效，请重试。";
-    return "部署失败，请重试。";
-  },
-  ccSwitchSetupTitle: "安全配置 OpenCode",
-  ccSwitchSetupUnavailable: "未检测到可用的 CC Switch。请先安装或重新检查。",
-  ccSwitchSetupState: (state: string) => {
-    const states: Record<string, string> = {
-      draft: "填写配置",
-      unavailable: "不可用",
-      validating: "正在验证",
-      "model-selection": "选择模型",
-      "model-ready": "模型已确认",
-      confirming: "需要确认",
-      launching: "正在打开 CC Switch",
-      "waiting-external-confirmation": "等待 CC Switch 完成导入",
-      verified: "导入已确认",
-      invalid: "验证失败",
-      "user-cancelled": "已取消",
-      "external-timeout": "等待超时",
-      "changed-invalid": "外部配置变化异常",
-      "restore-confirmation": "确认恢复",
-      "discard-confirmation": "确认保留当前状态",
-      "stale-conflict": "恢复冲突",
-      failure: "配置失败",
-    };
-    return states[state] ?? "配置中";
-  },
-  ccSwitchSetupProviderName: "供应商名称",
-  ccSwitchSetupValidate: "验证并准备",
-  ccSwitchSetupUseSavedCredential: "使用已验证设置",
-  ccSwitchSetupSavedCredentialHint: "将使用设置中已验证并保存的 API Key，不会在这里显示或重新发送给聊天界面。",
-  ccSwitchSetupValidating: "正在验证 API Key，并准备一次性导入票据…",
-  ccSwitchSetupModelReady: (count: number) => `验证成功，准备导入 ${count} 个模型。`,
-  ccSwitchSetupSwitchImmediately: "导入后立即切换到这个模型",
-  ccSwitchSetupContinue: "继续",
-  ccSwitchSetupCancel: "取消",
-  ccSwitchSetupDisclosure:
-    "下一步会打开 CC Switch。官方协议会把 API Key 临时放进 CC Switch 的进程参数里，CC Switch 仍会要求你二次确认。",
-  ccSwitchSetupRecoveryDisclosure:
-    "YUME 已在导入前保存 OpenCode 本地快照；失败或超时时可以恢复。恢复只会处理 OpenCode 配置，不会删除 CC Switch 里的 provider 或数据库记录。",
-  ccSwitchSetupLaunch: "打开 CC Switch",
-  ccSwitchSetupLaunching: "正在唤起 CC Switch…",
-  ccSwitchSetupWaiting: "请在 CC Switch 里确认导入。YUME 会等待外部配置真正生效。",
-  ccSwitchSetupVerified: "配置已确认生效。现在可以用 OpenCode 了。",
-  ccSwitchSetupTimeout: "等待 CC Switch 确认超时。你可以恢复导入前的配置，或保留当前状态。",
-  ccSwitchSetupChangedInvalid: (reason: string) => `检测到外部配置变化，但目标模型未生效：${reason}`,
-  ccSwitchSetupGenericFailure: "配置没有完成。请恢复后重试。",
-  ccSwitchSetupRestore: "恢复导入前配置",
-  ccSwitchSetupDiscard: "保留当前状态",
-  ccSwitchSetupDiscardDisclosure: "保留当前状态会永久删除加密恢复快照。确认后将无法由 YUME 自动恢复。",
-  ccSwitchSetupRestoreDisclosure:
-    "恢复会覆盖当前 OpenCode 配置文件，但不会删除 CC Switch 里的 provider 或数据库记录；如需清理，请打开 CC Switch 手动删除。仅在你确认要回到导入前状态时继续。",
-  ccSwitchSetupStaleConflict: "恢复被阻止：当前文件已经被再次修改。请手动检查后再处理。",
-  ccSwitchSetupCancelled: "已取消本次安全配置。",
-  ccSwitchSetupError: (code: string) => localizedCcSwitchError(code, {
-    apiKey: "API Key 被拒绝。",
-    endpoint: "Base URL 无效或无法安全访问。",
-    model: "模型列表或所选模型无效。",
-    expired: "安全配置已过期，请重新验证。",
-    unavailable: "当前无法使用 CC Switch 或验证服务。",
-    recovery: "恢复被阻止，因为配置文件已再次更改。",
-    generic: "配置失败，请重试。",
-  }),
-  ccSwitchSecretRedirect: "检测到疑似 OpenCode/CC Switch API Key。为避免泄漏，已改用安全配置卡片。",
   aiUsageTitle: "AI 用量",
   aiUsageRefresh: "刷新",
   aiUsageLoading: "正在读取 AI 用量…",
@@ -581,7 +428,7 @@ const en: Dict = {
   apiKeyPlaceholder: "Enter your company API key",
   verify: "Verify",
   verifying: "Verifying…",
-  verifyOk: (n) => (n === null ? "Verified" : `Verified, ${n} models available`),
+  verifyOk: (n) => "Connected; choose a model" + (n === null ? "" : ` (${n})`),
   verifyEmptyKey: "Please enter an API key first",
   verifyBadUrl: "Invalid base URL",
   verifyUnauthorized: "Invalid or unauthorized API key",
@@ -607,7 +454,7 @@ const en: Dict = {
   permissionBrowserMcpDescription: "Uses pinned Playwright MCP in an isolated Edge profile without accounts or persistent cookies. Every action still requires approval.",
   permissionWindowsMcp: "Windows UI control",
   permissionWindowsMcpDescription: "Uses pinned Windows-MCP for windows, clicks, typing, and shortcuts. PowerShell, registry, process, and file tools stay disabled.",
-  permissionDesktopToolsRestart: "Changing these switches restarts the local AI service and interrupts active tasks. Windows control is bundled; browser control requires npx and may download its pinned dependency on first use.",
+  permissionDesktopToolsRestart: "Windows control downloads on first use and applies after tasks finish and the workbench closes. The browser switch restarts the AI service; browser control requires npx and may download its pinned dependency on first use.",
   permissionWorklog: "Work journal", permissionNetwork: "Network", permissionSystem: "System",
   permissionLabels: { worklogRead: "Query records", worklogWrite: "Write and reports", web: "Search and read webpages", shell: "Run commands" },
   permissionDescriptions: { worklogRead: "Read local tasks, daily and weekly reports.", worklogWrite: "Save or update records, generate and schedule reports, following your request.", web: "Search the web and read webpage content; search queries are sent to the search service.", shell: "Commands may read or write files and access the network, independently of other tool categories." },
@@ -619,15 +466,6 @@ const en: Dict = {
   permissionRemoveApproval: "Revoke",
   permissionApprovalRemoveFailed: "Could not revoke the rule. Try again.",
   permissionFailed: "Could not process tool permission. Please retry; unconfirmed actions will not run.",
-  ccSwitchStatusTitle: "CC Switch",
-  ccSwitchStatusChecking: "Checking CC Switch…",
-  ccSwitchStatusReady: (version) => `CC Switch ${version} is ready`,
-  ccSwitchStatusUnavailable: "CC Switch was not detected",
-  ccSwitchStatusUnsupported: () =>
-    "CC Switch setup is available on Windows only",
-  ccSwitchStatusRecoverableError: "Check failed. You can retry",
-  ccSwitchStatusRefresh: "Check again",
-  ccSwitchSetupOpen: "Configure in chat",
   aiProviderSection: "AI providers",
   aiProviderAdd: "Add provider",
   aiProviderBusy: "Working…",
@@ -648,122 +486,11 @@ const en: Dict = {
   aiProviderRemoveLast: "Keep at least one provider",
   aiProviderActive: "Active",
   aiProviderDefault: (index: number) => `Provider ${index}`,
-  aiProviderVerify: "Verify",
-  aiProviderDeploy: "Deploy",
-  aiProviderDeployHint: "Save and deploy this provider to local OpenCode.",
+  aiProviderVerify: "Verify and connect",
+  providerSecretRedirect: "Possible API key detected. Message not sent. Enter credentials in Settings → AI.",
   aiProviderNoModels: "No models are available for this provider",
   aiProviderUnmatchedModels:
     "Some models belong to providers that are not configured yet",
-  localAiDeployHint: "Enter the API details above; YUME installs CC Switch and OpenCode and applies the model configuration automatically.",
-  localAiDeployAction: "One-click deploy",
-  localAiDeployWorking: "Deploying…",
-  localAiDeployStage: (stage: string) => {
-    const stages: Record<string, string> = {
-      verifyingApi: "Verifying the API and models…",
-      installingOpenCode: "Installing OpenCode…",
-      installingCcSwitch: "Installing CC Switch…",
-      importingProvider: "Importing the verified model configuration…",
-      verifyingConfiguration: "Verifying the applied configuration…",
-      syncingModelCatalog: "Syncing the model list…",
-    };
-    return stages[stage] ?? "Deploying…";
-  },
-  localAiDeploySuccess: (ccSwitch: string, openCode: string) =>
-    `Deployment complete: CC Switch ${ccSwitch}, OpenCode ${openCode}`,
-  localAiDeployModelSyncHint: (modelCount: number, ccSwitchRunning: boolean) =>
-    ccSwitchRunning
-      ? `${modelCount} models were configured. Restart CC Switch, or click "Import from current config" in its OpenCode provider list, so its model list matches.`
-      : `${modelCount} models were configured. CC Switch will sync the model list the next time it starts.`,
-  localAiDeployModelSyncIncomplete:
-    "The model list could not be expanded automatically. Check the model configuration in CC Switch.",
-
-  localAiDeployError: (code: string): string => {
-    if (code === "local_ai_deploy_busy") return "A deployment is already running.";
-    if (code.includes("opencode")) return "OpenCode installation failed. Try again.";
-    if (code.includes("ccswitch_download") || code.includes("ccswitch_package")) {
-      return "CC Switch could not be downloaded or verified. Check the network and try again.";
-    }
-    if (code.includes("ccswitch_install")) return "CC Switch installation failed. Try again.";
-    if (code.includes("automation") || code.includes("import_ui") || code.includes("window_untrusted")) {
-      return "YUME could not safely complete the CC Switch import. Close CC Switch and try again.";
-    }
-    if (code === "local_ai_configuration_provider_missing") {
-      return "CC Switch did not write YUME's model configuration. Try again.";
-    }
-    if (code === "local_ai_configuration_model_missing") {
-      return "The configuration was written but is missing the selected model. Select a model and try again.";
-    }
-    if (code === "local_ai_configuration_auth_changed") {
-      return "OpenCode login information changed during deployment, so deployment was stopped. Close OpenCode and try again.";
-    }
-    if (code === "local_ai_configuration_malformed") {
-      return "The OpenCode configuration file could not be parsed. Check it and try again.";
-    }
-    if (code.includes("configuration")) return "The configuration could not be verified. Try again.";
-    return "Deployment failed. Try again.";
-  },
-  ccSwitchSetupTitle: "Secure OpenCode setup",
-  ccSwitchSetupUnavailable: "No usable CC Switch was detected. Install it or check again first.",
-  ccSwitchSetupState: (state) => {
-    const states: Record<string, string> = {
-      draft: "Enter setup details",
-      unavailable: "Unavailable",
-      validating: "Validating",
-      "model-selection": "Choose a model",
-      "model-ready": "Model ready",
-      confirming: "Confirmation required",
-      launching: "Opening CC Switch",
-      "waiting-external-confirmation": "Waiting for CC Switch import",
-      verified: "Import verified",
-      invalid: "Validation failed",
-      "user-cancelled": "Cancelled",
-      "external-timeout": "Timed out",
-      "changed-invalid": "Unexpected external change",
-      "restore-confirmation": "Confirm restore",
-      "discard-confirmation": "Confirm keeping current state",
-      "stale-conflict": "Restore conflict",
-      failure: "Setup failed",
-    };
-    return states[state] ?? "Setting up";
-  },
-  ccSwitchSetupProviderName: "Provider name",
-  ccSwitchSetupValidate: "Validate and prepare",
-  ccSwitchSetupUseSavedCredential: "Use verified settings",
-  ccSwitchSetupSavedCredentialHint:
-    "Uses the API key already verified and saved in Settings; it is not shown here or sent back into chat.",
-  ccSwitchSetupValidating: "Validating the API key and preparing a one-time import ticket…",
-  ccSwitchSetupModelReady: (count) => `Verified. ${count} model(s) are ready to import.`,
-  ccSwitchSetupSwitchImmediately: "Switch to this model after import",
-  ccSwitchSetupContinue: "Continue",
-  ccSwitchSetupCancel: "Cancel",
-  ccSwitchSetupDisclosure:
-    "Next, YUME opens CC Switch. The official protocol temporarily exposes the API key in the CC Switch process arguments, and CC Switch will still ask you to confirm.",
-  ccSwitchSetupRecoveryDisclosure:
-    "YUME saved a local pre-import OpenCode snapshot, so you can restore if the import fails or times out. Restore only changes OpenCode files; it will not remove the provider or database record inside CC Switch.",
-  ccSwitchSetupLaunch: "Open CC Switch",
-  ccSwitchSetupLaunching: "Opening CC Switch…",
-  ccSwitchSetupWaiting: "Confirm the import in CC Switch. YUME will wait until the external configuration really changes.",
-  ccSwitchSetupVerified: "Setup is verified. OpenCode is ready to use.",
-  ccSwitchSetupTimeout: "Timed out waiting for CC Switch. You can restore the previous configuration or keep the current state.",
-  ccSwitchSetupChangedInvalid: (reason) => `External configuration changed, but the target model is not active: ${reason}`,
-  ccSwitchSetupGenericFailure: "Setup did not finish. Restore and try again.",
-  ccSwitchSetupRestore: "Restore previous config",
-  ccSwitchSetupDiscard: "Keep current state",
-  ccSwitchSetupDiscardDisclosure: "Keeping the current state permanently deletes the encrypted recovery snapshot. YUME cannot restore it afterward.",
-  ccSwitchSetupRestoreDisclosure:
-    "Restore overwrites the current OpenCode configuration files, but it will not remove the provider or database record inside CC Switch. Open CC Switch to delete that provider manually if needed. Continue only if you want the pre-import state back.",
-  ccSwitchSetupStaleConflict: "Restore was blocked because the files changed again. Please inspect them manually.",
-  ccSwitchSetupCancelled: "Secure setup was cancelled.",
-  ccSwitchSetupError: (code) => localizedCcSwitchError(code, {
-    apiKey: "The API key was rejected.",
-    endpoint: "The Base URL is invalid or could not be reached safely.",
-    model: "The model catalog or selected model is invalid.",
-    expired: "The secure setup expired. Validate the provider again.",
-    unavailable: "CC Switch or the validation service is unavailable.",
-    recovery: "Restore was blocked because the configuration changed again.",
-    generic: "Setup failed. Please try again.",
-  }),
-  ccSwitchSecretRedirect: "This looks like an OpenCode/CC Switch API key. To avoid leaks, YUME opened the secure setup card instead.",
   aiUsageTitle: "AI usage",
   aiUsageRefresh: "Refresh",
   aiUsageLoading: "Loading AI usage…",
@@ -1086,8 +813,7 @@ const ja: Dict = {
   apiKeyPlaceholder: "会社支給の API キーを入力",
   verify: "検証",
   verifying: "検証中…",
-  verifyOk: (n) =>
-    n === null ? "検証に成功しました" : `検証成功、利用可能なモデル ${n} 件`,
+  verifyOk: (n) => "接続済み。モデルを選択してください" + (n === null ? "" : ` (${n})`),
   verifyEmptyKey: "先に API キーを入力してください",
   verifyBadUrl: "Base URL が無効です",
   verifyUnauthorized: "API キーが無効か権限がありません",
@@ -1113,7 +839,7 @@ const ja: Dict = {
   permissionBrowserMcpDescription: "固定版 Playwright MCP を、アカウントや永続 Cookie のない分離 Edge プロファイルで使用します。各操作は引き続き確認が必要です。",
   permissionWindowsMcp: "Windows UI 操作",
   permissionWindowsMcpDescription: "固定版 Windows-MCP でウィンドウ、クリック、入力、ショートカットを操作します。PowerShell、レジストリ、プロセス、ファイルの各ツールは有効にしません。",
-  permissionDesktopToolsRestart: "切り替えるとローカル AI サービスが再起動し、実行中のタスクは中断されます。Windows 操作は同梱済みです。ブラウザー操作には npx が必要で、初回に固定版依存関係を取得する場合があります。",
+  permissionDesktopToolsRestart: "Windows 操作は初回にダウンロードし、タスク終了とワークベンチを閉じた後に適用します。ブラウザー切り替えは AI サービスを再起動します。ブラウザー操作には npx が必要です。",
   permissionWorklog: "作業ログ", permissionNetwork: "ネットワーク", permissionSystem: "システム",
   permissionLabels: { worklogRead: "記録の照会", worklogWrite: "記録・レポート", web: "ウェブ検索と閲覧", shell: "コマンドの実行" },
   permissionDescriptions: { worklogRead: "ローカルのタスク、日報、週報を照会します。", worklogWrite: "依頼に従って記録を保存・更新し、レポートを生成・予約します。", web: "ウェブ検索とページ内容の読み取りを行います。検索語は検索サービスへ送信されます。", shell: "ファイルの読み書きや通信が可能です。他のツール区分の制限は適用されません。" },
@@ -1125,14 +851,6 @@ const ja: Dict = {
   permissionRemoveApproval: "取り消す",
   permissionApprovalRemoveFailed: "ルールを取り消せませんでした。もう一度お試しください。",
   permissionFailed: "ツール権限の処理に失敗しました。再試行してください。未確認の操作は実行されません。",
-  ccSwitchStatusTitle: "CC Switch",
-  ccSwitchStatusChecking: "CC Switch を確認中…",
-  ccSwitchStatusReady: (version) => `CC Switch ${version} は利用できます`,
-  ccSwitchStatusUnavailable: "CC Switch を検出できません",
-  ccSwitchStatusUnsupported: () => "CC Switch 設定は Windows のみ対応です",
-  ccSwitchStatusRecoverableError: "確認に失敗しました。再試行できます",
-  ccSwitchStatusRefresh: "再確認",
-  ccSwitchSetupOpen: "チャットで設定",
   aiProviderSection: "AI プロバイダー",
   aiProviderAdd: "プロバイダーを追加",
   aiProviderBusy: "処理中…",
@@ -1153,123 +871,11 @@ const ja: Dict = {
   aiProviderRemoveLast: "プロバイダーを 1 件以上残してください",
   aiProviderActive: "使用中",
   aiProviderDefault: (index: number) => `プロバイダー ${index}`,
-  aiProviderVerify: "検証",
-  aiProviderDeploy: "導入",
-  aiProviderDeployHint:
-    "保存してこのプロバイダーをローカル OpenCode に導入します。",
+  aiProviderVerify: "検証して接続",
+  providerSecretRedirect: "API キーの可能性があるため送信しませんでした。設定 → AI で入力してください。",
   aiProviderNoModels: "このプロバイダーには利用可能なモデルがありません",
   aiProviderUnmatchedModels:
     "未設定のプロバイダーに属するモデルがあるため、まだ選択できません",
-  localAiDeployHint: "上の API 情報を入力するだけで、YUME が CC Switch と OpenCode を導入し、モデル設定まで自動で完了します。",
-  localAiDeployAction: "ワンクリック導入",
-  localAiDeployWorking: "導入中…",
-  localAiDeployStage: (stage: string) => {
-    const stages: Record<string, string> = {
-      verifyingApi: "API とモデルを検証しています…",
-      installingOpenCode: "OpenCode を導入しています…",
-      installingCcSwitch: "CC Switch を導入しています…",
-      importingProvider: "検証済みモデル設定をインポートしています…",
-      verifyingConfiguration: "設定の反映を確認しています…",
-      syncingModelCatalog: "モデル一覧を同期しています…",
-    };
-    return stages[stage] ?? "導入しています…";
-  },
-  localAiDeploySuccess: (ccSwitch: string, openCode: string) =>
-    `導入完了：CC Switch ${ccSwitch}、OpenCode ${openCode}`,
-  localAiDeployModelSyncHint: (modelCount: number, ccSwitchRunning: boolean) =>
-    ccSwitchRunning
-      ? `${modelCount} 個のモデルを設定しました。CC Switch を再起動するか、OpenCode 一覧で「現在の設定からインポート」を実行してください。`
-      : `${modelCount} 個のモデルを設定済みです。CC Switch は次回起動時に同期します。`,
-  localAiDeployModelSyncIncomplete:
-    "モデル一覧を自動で拡張できませんでした。CC Switch でモデル設定を確認してください。",
-
-  localAiDeployError: (code: string): string => {
-    if (code === "local_ai_deploy_busy") return "別の導入処理が実行中です。";
-    if (code.includes("opencode")) return "OpenCode の導入に失敗しました。再試行してください。";
-    if (code.includes("ccswitch_download") || code.includes("ccswitch_package")) {
-      return "CC Switch のダウンロードまたは検証に失敗しました。ネットワークを確認してください。";
-    }
-    if (code.includes("ccswitch_install")) return "CC Switch の導入に失敗しました。再試行してください。";
-    if (code.includes("automation") || code.includes("import_ui") || code.includes("window_untrusted")) {
-      return "CC Switch のインポートを安全に完了できませんでした。CC Switch を閉じて再試行してください。";
-    }
-    if (code === "local_ai_configuration_provider_missing") {
-      return "CC Switch が YUME のモデル設定を書き込みませんでした。再試行してください。";
-    }
-    if (code === "local_ai_configuration_model_missing") {
-      return "設定は書き込まれましたが、選択したモデルがありません。モデルを選び直して再試行してください。";
-    }
-    if (code === "local_ai_configuration_auth_changed") {
-      return "導入中に OpenCode のログイン情報が変更されたため、中止しました。OpenCode を閉じて再試行してください。";
-    }
-    if (code === "local_ai_configuration_malformed") {
-      return "OpenCode の設定ファイルを解析できません。内容を確認して再試行してください。";
-    }
-    if (code.includes("configuration")) return "設定の反映を確認できませんでした。再試行してください。";
-    return "導入に失敗しました。再試行してください。";
-  },
-  ccSwitchSetupTitle: "OpenCode の安全設定",
-  ccSwitchSetupUnavailable: "利用可能な CC Switch を検出できません。先にインストールまたは再確認してください。",
-  ccSwitchSetupState: (state) => {
-    const states: Record<string, string> = {
-      draft: "設定を入力",
-      unavailable: "利用不可",
-      validating: "検証中",
-      "model-selection": "モデルを選択",
-      "model-ready": "モデル準備完了",
-      confirming: "確認が必要",
-      launching: "CC Switch を起動中",
-      "waiting-external-confirmation": "CC Switch のインポート待機中",
-      verified: "インポート確認済み",
-      invalid: "検証失敗",
-      "user-cancelled": "キャンセル済み",
-      "external-timeout": "タイムアウト",
-      "changed-invalid": "外部設定の変更が不正",
-      "restore-confirmation": "復元確認",
-      "discard-confirmation": "現在の状態を保持する確認",
-      "stale-conflict": "復元競合",
-      failure: "設定失敗",
-    };
-    return states[state] ?? "設定中";
-  },
-  ccSwitchSetupProviderName: "プロバイダー名",
-  ccSwitchSetupValidate: "検証して準備",
-  ccSwitchSetupUseSavedCredential: "検証済み設定を使用",
-  ccSwitchSetupSavedCredentialHint:
-    "設定で検証して保存済みの API キーを使用します。ここには表示せず、チャット画面にも返しません。",
-  ccSwitchSetupValidating: "API キーを検証し、一回限りのインポートチケットを準備しています…",
-  ccSwitchSetupModelReady: (count) => `検証成功。${count} 件のモデルをインポートできます。`,
-  ccSwitchSetupSwitchImmediately: "インポート後すぐこのモデルに切り替える",
-  ccSwitchSetupContinue: "続行",
-  ccSwitchSetupCancel: "キャンセル",
-  ccSwitchSetupDisclosure:
-    "次に CC Switch を開きます。公式プロトコルにより API キーは一時的に CC Switch のプロセス引数へ渡され、CC Switch 側でも再確認が必要です。",
-  ccSwitchSetupRecoveryDisclosure:
-    "YUME はインポート前の OpenCode ローカルスナップショットを保存しました。失敗またはタイムアウト時に復元できます。復元で変更されるのは OpenCode 設定だけで、CC Switch 内のプロバイダーやデータベース記録は削除されません。",
-  ccSwitchSetupLaunch: "CC Switch を開く",
-  ccSwitchSetupLaunching: "CC Switch を起動しています…",
-  ccSwitchSetupWaiting: "CC Switch でインポートを確認してください。YUME は外部設定が実際に反映されるまで待機します。",
-  ccSwitchSetupVerified: "設定の反映を確認しました。OpenCode を使用できます。",
-  ccSwitchSetupTimeout: "CC Switch の確認待ちがタイムアウトしました。以前の設定に復元するか、現在の状態を保持できます。",
-  ccSwitchSetupChangedInvalid: (reason) => `外部設定は変わりましたが、対象モデルが有効ではありません: ${reason}`,
-  ccSwitchSetupGenericFailure: "設定が完了しませんでした。復元して再試行してください。",
-  ccSwitchSetupRestore: "以前の設定に復元",
-  ccSwitchSetupDiscard: "現在の状態を保持",
-  ccSwitchSetupDiscardDisclosure: "現在の状態を保持すると、暗号化された復元スナップショットは完全に削除され、その後 YUME では復元できません。",
-  ccSwitchSetupRestoreDisclosure:
-    "復元すると現在の OpenCode 設定ファイルを上書きしますが、CC Switch 内のプロバイダーやデータベース記録は削除されません。必要なら CC Switch を開いて手動で削除してください。インポート前の状態に戻す場合のみ続行してください。",
-  ccSwitchSetupStaleConflict: "ファイルが再度変更されたため復元を停止しました。手動で確認してください。",
-  ccSwitchSetupCancelled: "安全設定をキャンセルしました。",
-  ccSwitchSetupError: (code) => localizedCcSwitchError(code, {
-    apiKey: "API Key が拒否されました。",
-    endpoint: "Base URL が無効か、安全に接続できません。",
-    model: "モデル一覧または選択したモデルが無効です。",
-    expired: "安全設定の有効期限が切れました。もう一度検証してください。",
-    unavailable: "CC Switch または検証サービスを利用できません。",
-    recovery: "設定ファイルが再度変更されたため、復元がブロックされました。",
-    generic: "設定に失敗しました。もう一度お試しください。",
-  }),
-  ccSwitchSecretRedirect: "OpenCode/CC Switch の API キーらしき内容を検出しました。漏洩防止のため安全設定カードを開きました。",
   aiUsageTitle: "AI 利用状況",
   aiUsageRefresh: "更新",
   aiUsageLoading: "AI 利用状況を読み込んでいます…",
@@ -1587,8 +1193,7 @@ const ko: Dict = {
   apiKeyPlaceholder: "회사에서 발급한 API 키 입력",
   verify: "검증",
   verifying: "검증 중…",
-  verifyOk: (n) =>
-    n === null ? "검증 성공" : `검증 성공, 사용 가능한 모델 ${n}개`,
+  verifyOk: (n) => "연결되었습니다. 모델을 선택하세요" + (n === null ? "" : ` (${n})`),
   verifyEmptyKey: "먼저 API 키를 입력하세요",
   verifyBadUrl: "Base URL이 잘못되었습니다",
   verifyUnauthorized: "API 키가 잘못되었거나 권한이 없습니다",
@@ -1614,7 +1219,7 @@ const ko: Dict = {
   permissionBrowserMcpDescription: "고정 버전 Playwright MCP를 계정과 영구 쿠키가 없는 격리된 Edge 프로필에서 사용합니다. 각 작업은 계속 승인이 필요합니다.",
   permissionWindowsMcp: "Windows UI 제어",
   permissionWindowsMcpDescription: "고정 버전 Windows-MCP로 창, 클릭, 입력, 단축키를 제어합니다. PowerShell, 레지스트리, 프로세스 및 파일 도구는 활성화하지 않습니다.",
-  permissionDesktopToolsRestart: "스위치를 변경하면 로컬 AI 서비스가 다시 시작되고 실행 중인 작업이 중단됩니다. Windows 제어는 앱에 포함되어 있으며 브라우저 제어는 npx가 필요하고 처음 사용할 때 고정 버전 종속성을 다운로드할 수 있습니다.",
+  permissionDesktopToolsRestart: "Windows 제어는 처음 사용할 때 다운로드하고 작업 종료 및 워크벤치 닫기 후 적용됩니다. 브라우저 스위치는 AI 서비스를 다시 시작하며 브라우저 제어에는 npx가 필요합니다.",
   permissionWorklog: "업무 일지", permissionNetwork: "네트워크", permissionSystem: "시스템",
   permissionLabels: { worklogRead: "기록 조회", worklogWrite: "기록 및 보고서", web: "웹 검색 및 읽기", shell: "명령 실행" },
   permissionDescriptions: { worklogRead: "로컬 작업, 일일 및 주간 보고서를 조회합니다.", worklogWrite: "요청에 따라 기록을 저장·수정하고 보고서를 생성·예약합니다.", web: "웹을 검색하고 웹페이지 내용을 읽습니다. 검색어는 검색 서비스로 전송됩니다.", shell: "파일 읽기·쓰기 및 네트워크 접근이 가능합니다. 다른 도구 분류의 제한은 적용되지 않습니다." },
@@ -1626,15 +1231,6 @@ const ko: Dict = {
   permissionRemoveApproval: "취소",
   permissionApprovalRemoveFailed: "규칙을 취소하지 못했습니다. 다시 시도하세요.",
   permissionFailed: "도구 권한을 처리하지 못했습니다. 다시 시도하세요. 미확인 작업은 실행되지 않습니다.",
-  ccSwitchStatusTitle: "CC Switch",
-  ccSwitchStatusChecking: "CC Switch 확인 중…",
-  ccSwitchStatusReady: (version) => `CC Switch ${version} 사용 가능`,
-  ccSwitchStatusUnavailable: "CC Switch를 찾지 못했습니다",
-  ccSwitchStatusUnsupported: () =>
-    "CC Switch 설정은 Windows에서만 지원됩니다",
-  ccSwitchStatusRecoverableError: "확인에 실패했습니다. 다시 시도할 수 있습니다",
-  ccSwitchStatusRefresh: "다시 확인",
-  ccSwitchSetupOpen: "채팅에서 설정",
   aiProviderSection: "AI 공급자",
   aiProviderAdd: "공급자 추가",
   aiProviderBusy: "처리 중…",
@@ -1655,122 +1251,11 @@ const ko: Dict = {
   aiProviderRemoveLast: "공급자를 하나 이상 남겨야 합니다",
   aiProviderActive: "사용 중",
   aiProviderDefault: (index: number) => `공급자 ${index}`,
-  aiProviderVerify: "검증",
-  aiProviderDeploy: "배포",
-  aiProviderDeployHint: "저장한 뒤 이 공급자를 로컬 OpenCode에 배포합니다.",
+  aiProviderVerify: "확인 및 연결",
+  providerSecretRedirect: "API 키로 보여 메시지를 보내지 않았습니다. 설정 → AI에서 입력하세요.",
   aiProviderNoModels: "이 공급자에는 사용 가능한 모델이 없습니다",
   aiProviderUnmatchedModels:
     "아직 설정되지 않은 공급자의 모델은 선택할 수 없습니다",
-  localAiDeployHint: "위 API 정보만 입력하면 YUME가 CC Switch와 OpenCode를 설치하고 모델 설정까지 자동으로 완료합니다.",
-  localAiDeployAction: "원클릭 배포",
-  localAiDeployWorking: "배포 중…",
-  localAiDeployStage: (stage: string) => {
-    const stages: Record<string, string> = {
-      verifyingApi: "API와 모델을 검증하는 중…",
-      installingOpenCode: "OpenCode를 설치하는 중…",
-      installingCcSwitch: "CC Switch를 설치하는 중…",
-      importingProvider: "검증된 모델 설정을 가져오는 중…",
-      verifyingConfiguration: "적용된 설정을 확인하는 중…",
-      syncingModelCatalog: "모델 목록을 동기화하는 중…",
-    };
-    return stages[stage] ?? "배포 중…";
-  },
-  localAiDeploySuccess: (ccSwitch: string, openCode: string) =>
-    `배포 완료: CC Switch ${ccSwitch}, OpenCode ${openCode}`,
-  localAiDeployModelSyncHint: (modelCount: number, ccSwitchRunning: boolean) =>
-    ccSwitchRunning
-      ? `모델 ${modelCount}개를 설정했습니다. CC Switch를 다시 시작하거나 OpenCode 목록에서 "현재 설정에서 가져오기"를 실행하세요.`
-      : `모델 ${modelCount}개 설정 완료. CC Switch는 다음 실행 시 동기화됩니다.`,
-  localAiDeployModelSyncIncomplete:
-    "모델 목록을 자동으로 확장하지 못했습니다. CC Switch에서 모델 설정을 확인하세요.",
-
-  localAiDeployError: (code: string): string => {
-    if (code === "local_ai_deploy_busy") return "다른 배포 작업이 진행 중입니다.";
-    if (code.includes("opencode")) return "OpenCode 설치에 실패했습니다. 다시 시도하세요.";
-    if (code.includes("ccswitch_download") || code.includes("ccswitch_package")) {
-      return "CC Switch 다운로드 또는 검증에 실패했습니다. 네트워크를 확인하세요.";
-    }
-    if (code.includes("ccswitch_install")) return "CC Switch 설치에 실패했습니다. 다시 시도하세요.";
-    if (code.includes("automation") || code.includes("import_ui") || code.includes("window_untrusted")) {
-      return "CC Switch 가져오기를 안전하게 완료하지 못했습니다. CC Switch를 닫고 다시 시도하세요.";
-    }
-    if (code === "local_ai_configuration_provider_missing") {
-      return "CC Switch가 YUME 모델 설정을 기록하지 않았습니다. 다시 시도하세요.";
-    }
-    if (code === "local_ai_configuration_model_missing") {
-      return "설정은 기록되었지만 선택한 모델이 없습니다. 모델을 다시 선택한 후 시도하세요.";
-    }
-    if (code === "local_ai_configuration_auth_changed") {
-      return "배포 중 OpenCode 로그인 정보가 변경되어 중단했습니다. OpenCode를 닫고 다시 시도하세요.";
-    }
-    if (code === "local_ai_configuration_malformed") {
-      return "OpenCode 설정 파일을 분석할 수 없습니다. 확인한 후 다시 시도하세요.";
-    }
-    if (code.includes("configuration")) return "설정 적용을 확인하지 못했습니다. 다시 시도하세요.";
-    return "배포에 실패했습니다. 다시 시도하세요.";
-  },
-  ccSwitchSetupTitle: "OpenCode 보안 설정",
-  ccSwitchSetupUnavailable: "사용 가능한 CC Switch를 찾지 못했습니다. 먼저 설치하거나 다시 확인하세요.",
-  ccSwitchSetupState: (state) => {
-    const states: Record<string, string> = {
-      draft: "설정 입력",
-      unavailable: "사용 불가",
-      validating: "검증 중",
-      "model-selection": "모델 선택",
-      "model-ready": "모델 준비됨",
-      confirming: "확인 필요",
-      launching: "CC Switch 여는 중",
-      "waiting-external-confirmation": "CC Switch 가져오기 대기 중",
-      verified: "가져오기 확인됨",
-      invalid: "검증 실패",
-      "user-cancelled": "취소됨",
-      "external-timeout": "시간 초과",
-      "changed-invalid": "외부 설정 변경 오류",
-      "restore-confirmation": "복원 확인",
-      "discard-confirmation": "현재 상태 유지 확인",
-      "stale-conflict": "복원 충돌",
-      failure: "설정 실패",
-    };
-    return states[state] ?? "설정 중";
-  },
-  ccSwitchSetupProviderName: "공급자 이름",
-  ccSwitchSetupValidate: "검증 및 준비",
-  ccSwitchSetupUseSavedCredential: "검증된 설정 사용",
-  ccSwitchSetupSavedCredentialHint:
-    "설정에서 검증되어 저장된 API Key를 사용하며, 여기에는 표시하거나 채팅 화면으로 다시 보내지 않습니다.",
-  ccSwitchSetupValidating: "API 키를 검증하고 일회용 가져오기 티켓을 준비하는 중…",
-  ccSwitchSetupModelReady: (count) => `검증 성공. ${count}개 모델을 가져올 준비가 됐습니다.`,
-  ccSwitchSetupSwitchImmediately: "가져온 뒤 이 모델로 바로 전환",
-  ccSwitchSetupContinue: "계속",
-  ccSwitchSetupCancel: "취소",
-  ccSwitchSetupDisclosure:
-    "다음 단계에서 CC Switch를 엽니다. 공식 프로토콜은 API 키를 CC Switch 프로세스 인수에 임시로 노출하며, CC Switch에서도 다시 확인해야 합니다.",
-  ccSwitchSetupRecoveryDisclosure:
-    "YUME가 가져오기 전 OpenCode 로컬 스냅샷을 저장했습니다. 실패하거나 시간이 초과되면 복원할 수 있습니다. 복원은 OpenCode 설정 파일만 바꾸며 CC Switch 안의 공급자나 데이터베이스 기록은 삭제하지 않습니다.",
-  ccSwitchSetupLaunch: "CC Switch 열기",
-  ccSwitchSetupLaunching: "CC Switch를 여는 중…",
-  ccSwitchSetupWaiting: "CC Switch에서 가져오기를 확인하세요. YUME는 외부 설정이 실제로 적용될 때까지 기다립니다.",
-  ccSwitchSetupVerified: "설정 적용이 확인되었습니다. 이제 OpenCode를 사용할 수 있습니다.",
-  ccSwitchSetupTimeout: "CC Switch 확인 대기 시간이 초과되었습니다. 이전 설정을 복원하거나 현재 상태를 유지할 수 있습니다.",
-  ccSwitchSetupChangedInvalid: (reason) => `외부 설정은 변경되었지만 대상 모델이 활성화되지 않았습니다: ${reason}`,
-  ccSwitchSetupGenericFailure: "설정이 완료되지 않았습니다. 복원 후 다시 시도하세요.",
-  ccSwitchSetupRestore: "이전 설정 복원",
-  ccSwitchSetupDiscard: "현재 상태 유지",
-  ccSwitchSetupDiscardDisclosure: "현재 상태를 유지하면 암호화된 복구 스냅샷이 영구 삭제되어 이후 YUME에서 복원할 수 없습니다.",
-  ccSwitchSetupRestoreDisclosure:
-    "복원하면 현재 OpenCode 설정 파일을 덮어쓰지만 CC Switch 안의 공급자나 데이터베이스 기록은 삭제하지 않습니다. 필요하면 CC Switch를 열어 해당 공급자를 직접 삭제하세요. 가져오기 전 상태로 돌아가려는 경우에만 계속하세요.",
-  ccSwitchSetupStaleConflict: "파일이 다시 변경되어 복원이 차단되었습니다. 수동으로 확인하세요.",
-  ccSwitchSetupCancelled: "보안 설정이 취소되었습니다.",
-  ccSwitchSetupError: (code) => localizedCcSwitchError(code, {
-    apiKey: "API Key가 거부되었습니다.",
-    endpoint: "Base URL이 잘못되었거나 안전하게 연결할 수 없습니다.",
-    model: "모델 목록 또는 선택한 모델이 올바르지 않습니다.",
-    expired: "보안 설정이 만료되었습니다. 공급자를 다시 검증하세요.",
-    unavailable: "CC Switch 또는 검증 서비스를 사용할 수 없습니다.",
-    recovery: "설정 파일이 다시 변경되어 복원이 차단되었습니다.",
-    generic: "설정에 실패했습니다. 다시 시도하세요.",
-  }),
-  ccSwitchSecretRedirect: "OpenCode/CC Switch API 키로 보이는 내용을 감지했습니다. 유출 방지를 위해 보안 설정 카드를 열었습니다.",
   aiUsageTitle: "AI 사용량",
   aiUsageRefresh: "새로 고침",
   aiUsageLoading: "AI 사용량을 불러오는 중…",

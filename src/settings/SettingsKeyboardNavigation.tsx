@@ -83,8 +83,7 @@ export function SettingsKeyboardNavigation() {
         const key = event.key.toLowerCase();
         const handled =
           (key === "b" && focusElement(".set-ai-base-url")) ||
-          (key === "v" && clickAndFocusElement(".set-verify")) ||
-          (key === "c" && clickAndFocusElement(".set-ccswitch-action"));
+          (key === "v" && clickAndFocusElement(".set-verify"));
         if (!handled) return;
         event.preventDefault();
         return;

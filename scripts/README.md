@@ -7,7 +7,9 @@
 | 入口 | 输入 / 用途 | 输出、平台及退出条件 |
 | --- | --- | --- |
 | `bun run typecheck` / `bun run test:frontend` / `bun run test:rust` / `bun run check` | 当前源码与受管测试入口 | 前端逐文件进程隔离；Rust 宿主相关测试需要实际平台。裸 `bun test` 不代替仓库 runner |
-| `bun run prepare:sidecar` | 固定 OpenCode、ncmdump 和 Windows MCP 版本 | 当前平台的忽略二进制；Windows MCP 在 Windows 准备，核对版本/哈希 |
+| `bun run prepare:sidecar` | 固定 OpenCode、ncmdump 版本 | 当前平台的忽略二进制；不包含 Windows MCP |
+| `bun run prepare:windows-mcp` | 维护者手动校验固定 Windows MCP | Windows x64 的忽略资源；ZIP/exe 双哈希。产品首次启用改由宿主下载，维护资源不打包 |
+| `bun scripts/check-package-resources.ts` | Tauri `beforeBundleCommand` 发布资源检查 | 拒绝 frontend/OpenCode 的 `.map`、`.pdb` 及 Windows MCP 随包配置 |
 | `bun run prepare:workbench` | [固定上游 UI 与本仓 overlay](../docs/workbench-build.md) | `public/workbench/`，含 terminal WASM；上游输入与 W1/W2 限制见构建契约 |
 | `bun run fetch:persona-assets` | pinned 私有角色归档；显式资产下载凭据 | 忽略的 GLB/PNG；固定文件数与哈希校验，过滤旧 `figure3d.json`/provenance，marker 命中也清理 |
 | `scripts/prepare-xiaozhu-sandaime.ps1` | Windows 模型生成器及现有二代模型 | 三代 GLB 与 `docs/assets/` 溯源；PowerShell、Python，需模型结构/动作测试 |
@@ -34,8 +36,7 @@ Tauri 的 `src-tauri/gen/schemas/` 来自 `tauri-build` 和实际 capability/plu
 | `bun scripts/agent-qa/p5-browser-e2e.ts` | 合成浏览器成功/失败/拒绝/取消矩阵 | 固定 Playwright MCP/浏览器；具体矩阵见 CLI，独立证据与清理 |
 | `bun scripts/agent-qa/p5-windows-e2e.ts [scenario] [exe]` | Notepad 成功、拒绝、窗口消失、保存失败、Stop | Windows；默认取 pinned `resources/windows-mcp/1.3.24`，无二进制或平台不符时在创建 fixture 前失败；实际进程所有权/cleanup边界见[待验清单](../docs/verification-backlog.md) |
 | `scripts/agent-qa/p5-real-browser.ts` / `p5-real-windows.ts` | 自选实际模型/真实工具验收 | 显式 `YUME_P5_LIVE_KEY`；有模型费用和 GUI 前提，本轮未执行，不属于合成测试 |
-| `bun run verify:mcp-permission` / `bun run verify:ccswitch-tool` / `bun scripts/verify-tool-permissions.ts` | MCP、CC Switch权限与wire回归 | `ccswitch-harness/` 提供共享传输、process与证据；显式合成端点/隔离配置 |
-| `bun run mock:ccswitch-api` / `scripts/fixtures/mock-openai-server.ts` | 本地provider/API故障fixture | 保留返回的loopback URL和进程句柄；启动者停止所持进程 |
+| `bun run verify:mcp-permission` / `bun scripts/verify-tool-permissions.ts` | MCP 与工具权限回归 | `sidecar-harness/` 提供共享传输、进程、隔离配置及清理；显式合成端点 |
 | `bun scripts/verify-worklog.ts` | 工作记录 bridge 与全流程证明核验 | fixture运输不能证明真实语义或 GUI；外部原生回执要求见 `worklog/full-flow.ts`，默认 `.omo/evidence/task-6-worklog-natural-recall-native.json` |
 | `scripts/worklog-qa/run.js`、provider/readback/seed/capture | 独立工作记录桌面身份及持久化验收 | [领域操作说明](worklog-qa/README.md)；共享显式 evidence目录，seed只写 receipt拥有且已停止的 QA数据库；capture只接受receipt拥有的窗口 |
 | `bun scripts/worklog-qa/verify-provider.js` / `verify-report.js` | 自有provider一次工具/401/503/SSE与报告schema | provider默认新时间戳目录；精确进程与端口关闭，报告fixture无需桌面 |
@@ -65,3 +66,5 @@ QA中的固定业务日期、Windows标准系统路径和PID精度日期是合�
 | `scripts/macos/` 与 `windows-process-kill.rs` | 签名entitlements/依赖许可、受管进程终止器源码；由上述准备/验证入口消费 |
 
 完整当前文档见[索引](../docs/README.md)，本轮处理与待验项见[清理进度](../docs/repository-cleanup-progress.md)。没有引入按名称/日期自动删除仓库文件的逻辑。
+
+外部部署退役后，共享回归设施迁至 `sidecar-harness/`；专属部署验证器和 mock API 已删除。历史加密快照通过显式构建的维护工具处理，见[模型连接与旧版恢复](../docs/ai-provider-support.md#旧版未完成导入的恢复)。

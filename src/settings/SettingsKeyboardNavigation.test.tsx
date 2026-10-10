@@ -123,17 +123,17 @@ describe("SettingsKeyboardNavigation", () => {
     });
   });
 
-  test("preserves CC Switch action focus when the Tauri settings window is reactivated", async () => {
+  test("preserves verification action focus when the Tauri settings window is reactivated", async () => {
     render(
       <SettingsTabsFixture>
-        <button type="button" className="set-ccswitch-action">
-          Configure CC Switch
+        <button type="button" className="set-verify">
+          Verify
         </button>
       </SettingsTabsFixture>,
     );
 
     const configureButton = screen.getByRole("button", {
-      name: "Configure CC Switch",
+      name: "Verify",
     });
     configureButton.focus();
 
@@ -142,7 +142,7 @@ describe("SettingsKeyboardNavigation", () => {
     await flushScheduledFocus();
 
     await waitFor(() => {
-      expect(activeElementLabel()).toBe("Configure CC Switch");
+      expect(activeElementLabel()).toBe("Verify");
     });
   });
 
@@ -254,38 +254,19 @@ describe("SettingsKeyboardNavigation", () => {
     });
   });
 
-  test("clicks and focuses CC Switch setup from Ctrl+Shift+C", async () => {
+  test("does not intercept the retired Ctrl+Shift+C deployment shortcut", () => {
     const clicked: string[] = [];
     render(
       <SettingsTabsFixture>
-        <button
-          type="button"
-          className="set-ccswitch-action"
-          onClick={() => clicked.push("ccswitch")}
-        >
-          Configure CC Switch
-        </button>
+        <button type="button" className="set-verify" onClick={() => clicked.push("verify")}>Verify</button>
       </SettingsTabsFixture>,
     );
-
     const event = new KeyboardEvent("keydown", {
-      key: "c",
-      ctrlKey: true,
-      shiftKey: true,
-      bubbles: true,
-      cancelable: true,
+      key: "c", ctrlKey: true, shiftKey: true, bubbles: true, cancelable: true,
     });
-    act(() => {
-      document.dispatchEvent(event);
-    });
-
-    expect(event.defaultPrevented).toBe(true);
-    await waitFor(() => {
-      expect(clicked).toEqual(["ccswitch"]);
-      expect(document.activeElement).toBe(
-        screen.getByRole("button", { name: "Configure CC Switch" }),
-      );
-    });
+    act(() => { document.dispatchEvent(event); });
+    expect(event.defaultPrevented).toBe(false);
+    expect(clicked).toEqual([]);
   });
 
   test("ignores global settings shortcuts while a modal dialog is open", () => {
@@ -294,10 +275,10 @@ describe("SettingsKeyboardNavigation", () => {
       <SettingsTabsFixture>
         <button
           type="button"
-          className="set-ccswitch-action"
-          onClick={() => clicked.push("ccswitch")}
+          className="set-verify"
+          onClick={() => clicked.push("verify")}
         >
-          Configure CC Switch
+          Verify
         </button>
         <dialog open aria-label="Confirm deletion">
           <button type="button">Cancel</button>
@@ -306,7 +287,7 @@ describe("SettingsKeyboardNavigation", () => {
     );
 
     const event = new KeyboardEvent("keydown", {
-      key: "c",
+      key: "v",
       ctrlKey: true,
       shiftKey: true,
       bubbles: true,

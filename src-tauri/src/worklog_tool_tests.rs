@@ -59,7 +59,7 @@ fn worklog_tool_sync_overwrites_only_owned_complete_fixture() {
     std::fs::write(runtime.join("worklog_query.ts"), "stale query").expect("stale query");
     std::fs::write(config.join("worklog-bridge.ts"), "stale bridge").expect("stale bridge");
     std::fs::write(
-        runtime.join("ccswitch_prepare_opencode_provider.ts"),
+        runtime.join("user_custom_tool.ts"),
         "sentinel",
     )
     .expect("unrelated fixture");
@@ -73,7 +73,7 @@ fn worklog_tool_sync_overwrites_only_owned_complete_fixture() {
         );
     }
     assert_eq!(
-        std::fs::read_to_string(runtime.join("ccswitch_prepare_opencode_provider.ts"))
+        std::fs::read_to_string(runtime.join("user_custom_tool.ts"))
             .expect("read sentinel"),
         "sentinel"
     );
@@ -113,7 +113,7 @@ fn worklog_tool_integrity_failure_removes_only_owned_tools() {
     std::fs::write(tools.join("worklog_record.ts"), "corrupted").expect("corrupt fixture");
     std::fs::write(runtime.join("worklog_record.ts"), "stale").expect("stale fixture");
     std::fs::write(
-        runtime.join("ccswitch_prepare_opencode_provider.ts"),
+        runtime.join("user_custom_tool.ts"),
         "sentinel",
     )
     .expect("unrelated fixture");
@@ -125,7 +125,7 @@ fn worklog_tool_integrity_failure_removes_only_owned_tools() {
     );
     assert!(!runtime.join("worklog_record.ts").exists());
     assert_eq!(
-        std::fs::read_to_string(runtime.join("ccswitch_prepare_opencode_provider.ts"))
+        std::fs::read_to_string(runtime.join("user_custom_tool.ts"))
             .expect("read sentinel"),
         "sentinel"
     );
@@ -143,7 +143,7 @@ fn worklog_tool_missing_resource_fails_closed() {
     std::fs::write(runtime.join("worklog_query.ts"), "stale query").expect("stale query");
     std::fs::write(config.join("worklog-bridge.ts"), "stale bridge").expect("stale bridge");
     std::fs::write(
-        runtime.join("ccswitch_prepare_opencode_provider.ts"),
+        runtime.join("user_custom_tool.ts"),
         "sentinel",
     )
     .expect("unrelated fixture");
@@ -158,7 +158,7 @@ fn worklog_tool_missing_resource_fails_closed() {
     assert!(!runtime.join("worklog_query.ts").exists());
     assert!(!config.join("worklog-bridge.ts").exists());
     assert_eq!(
-        std::fs::read_to_string(runtime.join("ccswitch_prepare_opencode_provider.ts"))
+        std::fs::read_to_string(runtime.join("user_custom_tool.ts"))
             .expect("read sentinel"),
         "sentinel"
     );

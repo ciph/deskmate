@@ -1,6 +1,5 @@
 import type { Dict } from "../lib/i18n";
 import type { AiProvider } from "../lib/settings";
-import type { LocalAiDeploymentStatus } from "./CcSwitchStatus";
 import { displayProviderLabel } from "./aiProviderModel";
 import type { ProviderVerifyResult } from "./useAiProviderActions";
 
@@ -14,12 +13,10 @@ type AiProviderCardProps = {
   readonly t: Dict;
   readonly verifying: boolean;
   readonly verifyResult: ProviderVerifyResult | null;
-  readonly deployment: LocalAiDeploymentStatus;
   readonly operationLocked: boolean;
   readonly onDelete: () => void;
   readonly onFieldChange: (field: ProviderField, value: string) => void;
   readonly onVerify?: (providerId: string) => void;
-  readonly onDeploy?: (providerId: string) => void;
 };
 
 export function AiProviderCard({
@@ -30,12 +27,10 @@ export function AiProviderCard({
   t,
   verifying,
   verifyResult,
-  deployment,
   operationLocked,
   onDelete,
   onFieldChange,
   onVerify,
-  onDeploy,
 }: AiProviderCardProps) {
   const label = displayProviderLabel(provider, index, t);
   return (
@@ -66,11 +61,9 @@ export function AiProviderCard({
         t={t}
         verifying={verifying}
         verifyResult={verifyResult}
-        deployment={deployment}
         operationLocked={operationLocked}
         onFieldChange={onFieldChange}
         onVerify={onVerify}
-        onDeploy={onDeploy}
       />
     </article>
   );
@@ -82,11 +75,9 @@ function ProviderBody({
   t,
   verifying,
   verifyResult,
-  deployment,
   operationLocked,
   onFieldChange,
   onVerify,
-  onDeploy,
 }: Omit<
   AiProviderCardProps,
   "index" | "active" | "removeDisabled" | "onDelete"
@@ -123,20 +114,10 @@ function ProviderBody({
         >
           {verifying ? t.verifying : t.aiProviderVerify}
         </button>
-        <button
-          className="set-btn"
-          type="button"
-          disabled={
-            !onDeploy || operationLocked || !provider.apiKey.trim()
-          }
-          title={t.aiProviderDeployHint}
-          onClick={() => onDeploy?.(provider.id)}
-        >
-          {deployment.kind === "working" ? t.localAiDeployWorking : t.aiProviderDeploy}
-        </button>
       </div>
       {verifyResult && (
         <p
+          role={verifyResult.ok ? "status" : "alert"}
           className={`set-note ${verifyResult.ok ? "set-note-ok" : "set-note-error"}`}
         >
           {verifyResult.message}

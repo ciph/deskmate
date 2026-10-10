@@ -1,6 +1,5 @@
 import { AiUsage } from "./AiUsage";
 import { AiProviderList } from "./AiProviderList";
-import { CcSwitchStatus } from "./CcSwitchStatus";
 import { displayProviderLabel } from "./aiProviderModel";
 import { groupModelsByManufacturer } from "./modelManufacturer";
 import {
@@ -18,11 +17,6 @@ type AiTabProps = TabProps & {
 
 export function AiTab({ settings, replace, persist, t }: AiTabProps) {
   const controller = useAiTabController({ settings, replace, persist, t });
-  const activeProvider =
-    settings.providers.find(
-      (provider) => provider.id === controller.activeProviderId,
-    ) ?? settings.providers[0];
-
   return (
     <>
       <AiProviderList
@@ -31,10 +25,8 @@ export function AiTab({ settings, replace, persist, t }: AiTabProps) {
         t={t}
         onChange={controller.clearVerificationState}
         onVerify={(providerId) => void controller.verifyProvider(providerId)}
-        onDeploy={(providerId) => void controller.deployProvider(providerId)}
         verifyingProviderId={controller.verifyingProviderId}
         verifyResultFor={controller.verifyResultFor}
-        deploymentFor={controller.deploymentFor}
         operationBusy={controller.operationBusy}
       />
 
@@ -71,15 +63,6 @@ export function AiTab({ settings, replace, persist, t }: AiTabProps) {
         <p className="set-note set-note-error">{t.aiUnreachable}</p>
       )}
 
-      <CcSwitchStatus
-        status={controller.ccSwitchStatus}
-        deployment={controller.deploymentFor(activeProvider?.id ?? "")}
-        canDeploy={Boolean(activeProvider?.apiKey.trim()) && !controller.operationBusy}
-        t={t}
-        onDeploy={() => {
-          if (activeProvider) void controller.deployProvider(activeProvider.id);
-        }}
-      />
       <div className="set-ai-usage-list">
         {settings.providers.map((provider, index) => (
           <AiUsage

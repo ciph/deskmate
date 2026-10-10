@@ -1,11 +1,12 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import manifest from "../components/windows-mcp.json";
 
-const version = "1.3.24";
+const version = manifest.version;
 const asset = `windows-mcp-server-${version}-win-x64.zip`;
-const archiveSha256 = "4432e34ac4f7483f1e65e4b118b6995368c6d9c323cc50986200279b95dd903f";
-const binarySha256 = "6415d0a068280fdf3fdbab75904add3ee974422d56f49f17060da14f8b2f8fcb";
+const archiveSha256 = manifest.archiveSha256;
+const binarySha256 = manifest.binarySha256;
 const projectRoot = resolve(import.meta.dir, "..");
 const targetDir = resolve(projectRoot, "src-tauri/resources/windows-mcp", version);
 const targetBinary = resolve(targetDir, "Sbroenne.WindowsMcp.exe");
@@ -33,7 +34,7 @@ async function main(): Promise<void> {
   await rm(workDir, { recursive: true, force: true });
   await mkdir(workDir, { recursive: true });
   try {
-    const response = await fetch(`https://github.com/sbroenne/mcp-windows/releases/download/v${version}/${asset}`, { redirect: "follow" });
+    const response = await fetch(manifest.url, { redirect: "follow" });
     if (!response.ok) throw new Error(`Windows MCP download failed: ${response.status}`);
     const archive = new Uint8Array(await response.arrayBuffer());
     const actualArchive = sha256(archive);

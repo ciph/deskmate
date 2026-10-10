@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { buildSidecarConfig } from "../ccswitch-harness/permissions";
+import { buildSidecarConfig } from "../sidecar-harness/permissions";
 
 export async function stageFixture(root: string, providerBaseUrl: string, includeTrusted = true, flowTools = false): Promise<{ readonly workspaceA: string; readonly workspaceB: string; readonly configDirectory: string }> {
   const workspaceA = join(root, "workspace-a");

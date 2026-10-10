@@ -5,6 +5,13 @@ YUME is a desktop pet application built with Tauri, React, TypeScript, and Bun.
 OpenCode is pinned as a project dependency and bundled into release builds.
 Users of the packaged app do not need to install OpenCode separately.
 
+Windows UI control is optional. Settings → Tools and permissions downloads the
+pinned Windows x64 component (51.7 MiB) on first enable, verifies the archive and
+executable, and retains it in app data for offline reuse. Downloads can be cancelled
+or retried. Changes wait for active tasks to finish and the workbench to close
+before restarting the AI service. Upgrades with an enabled preference but no cached
+component show a download/repair entry. Core chat and the workbench remain bundled.
+
 The [documentation index](docs/README.md) lists current contracts, active work,
 verification gates and historical records.
 
@@ -86,6 +93,12 @@ ignored by Git:
 
 Each download is verified against a pinned SHA-256, so a swapped or truncated
 artifact fails the build instead of shipping.
+
+YUME includes its own managed OpenCode engine. In Settings → AI, enter the
+provider details, choose **Verify and connect**, then select a model. No separate
+OpenCode or CC Switch installation is required. External deployment has been
+retired; upgrades leave existing external clients and their configuration intact.
+See [provider setup and legacy recovery](docs/ai-provider-support.md).
 
 Run current-source checks with `bun run check`, or individually with
 `bun run typecheck`, `bun run test:frontend`, `bun run test:rust`, and `bun run build`.

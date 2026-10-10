@@ -139,6 +139,7 @@ impl Client {
         mut child: impl FnMut(Option<&str>) -> Result<(), String>,
         mut cancelled: impl FnMut() -> bool,
     ) -> Result<Extraction, String> {
+        let _service = crate::component_activation::background_service_use()?;
         let r = &job.registration;
         let session=self.request("POST","/session",Some(json!({"parentID":r.session_id,"title":"YUME internal extraction","permission":[{"permission":"*","pattern":"*","action":"deny"}]})))?;
         let id = session["id"]

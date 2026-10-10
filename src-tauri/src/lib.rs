@@ -15,13 +15,16 @@ use tauri::{Emitter, Manager, RunEvent, State};
 
 mod agent;
 mod ai_usage;
-pub mod ccswitch;
+#[cfg(feature = "legacy-ai-recovery")]
+pub mod legacy_ai_recovery;
+mod retired_tools;
 mod chat_attachments;
 mod chat_links;
+mod component_activation;
+mod windows_component;
 mod file_picker;
 mod history;
 mod history_entry;
-mod local_ai_deploy;
 /// Local memory: storage, policy, retrieval, and the frontend command surface.
 mod memory;
 /// User-installable persona packs imported from local `.dmpack` archives.
@@ -236,18 +239,13 @@ mod tests {
     use super::{
         can_access_sidecar_credentials, configure_sidecar_command, configure_sidecar_environment,
         migrate_legacy_xiaozhu_intro, overwrite_builtin_xiaozhu_persona,
-        overwrite_yume_opencode_tool, resource_error_event, should_follow_chat_on_window_event,
-        should_hide_chat, should_restore_settings_focus, RESOURCE_ERROR_EVENT,
+        should_follow_chat_on_window_event,
+        should_hide_chat, should_restore_settings_focus,
     };
-    use crate::settings::{self, ApiModel, ModelCatalog, VerifiedSidecarProvider};
     use std::ffi::OsStr;
     use std::path::Path;
     use std::process::Command;
     use tauri::{PhysicalPosition, WindowEvent};
-
-    fn valid_yume_opencode_tool_source() -> &'static str {
-        include_str!("../resources/opencode-tools/ccswitch_prepare_opencode_provider.ts")
-    }
 
     #[test]
     fn settings_can_authenticate_model_requests_without_exposing_credentials_to_other_windows() {
@@ -420,125 +418,6 @@ mod tests {
         std::fs::remove_dir_all(root).expect("remove test directory");
     }
 
-    #[test]
-    fn refreshes_only_the_yume_owned_opencode_tool_when_runtime_copy_is_stale() {
-        let root =
-            std::env::temp_dir().join(format!("yume-opencode-tool-sync-{}", uuid::Uuid::new_v4()));
-        let shipped_tools = root.join("shipped-opencode-tools");
-        let data_dir = root.join("data");
-        let shipped_tool = shipped_tools.join("ccswitch_prepare_opencode_provider.ts");
-        let runtime_tools = data_dir.join("workspace").join(".opencode").join("tools");
-        let runtime_tool = runtime_tools.join("ccswitch_prepare_opencode_provider.ts");
-        let sentinel = runtime_tools.join("keep-me.ts");
-
-        std::fs::create_dir_all(&shipped_tools).expect("create shipped tools directory");
-        std::fs::create_dir_all(&runtime_tools).expect("create runtime tools directory");
-        std::fs::write(&shipped_tool, valid_yume_opencode_tool_source())
-            .expect("write shipped tool");
-        std::fs::write(&runtime_tool, "stale yume tool").expect("write stale runtime tool");
-        std::fs::write(&sentinel, "sentinel").expect("write unrelated runtime tool");
-
-        overwrite_yume_opencode_tool(&shipped_tools, &data_dir)
-            .expect("refresh YUME-owned OpenCode tool");
-
-        assert_eq!(
-            std::fs::read_to_string(&runtime_tool).expect("read refreshed runtime tool"),
-            valid_yume_opencode_tool_source()
-        );
-        assert_eq!(
-            std::fs::read_to_string(&sentinel).expect("read unrelated runtime tool"),
-            "sentinel"
-        );
-        std::fs::remove_dir_all(root).expect("remove test directory");
-    }
-
-    #[test]
-    fn corrupt_yume_owned_opencode_tool_resource_fails_closed_with_default_deny_permissions() {
-        let root = std::env::temp_dir().join(format!(
-            "yume-opencode-tool-corrupt-{}",
-            uuid::Uuid::new_v4()
-        ));
-        let shipped_tools = root.join("shipped-opencode-tools");
-        let data_dir = root.join("data");
-        let shipped_tool = shipped_tools.join("ccswitch_prepare_opencode_provider.ts");
-        std::fs::create_dir_all(&shipped_tools).expect("create shipped tools directory");
-        let corrupt_source = valid_yume_opencode_tool_source().replace(
-            "assertDraftArgsSecretFree",
-            "assertDraftArgsStillSecretFree",
-        );
-        std::fs::write(&shipped_tool, corrupt_source).expect("write corrupt shipped tool");
-
-        let error = overwrite_yume_opencode_tool(&shipped_tools, &data_dir)
-            .expect_err("corrupt shipped tool must fail resource synchronization");
-        assert_eq!(error.kind(), std::io::ErrorKind::InvalidData);
-        let (event, payload) = resource_error_event("无法刷新内置 OpenCode 工具: bad".into());
-        assert_eq!(event, RESOURCE_ERROR_EVENT);
-        assert_eq!(payload, "无法刷新内置 OpenCode 工具: bad");
-
-        let provider = VerifiedSidecarProvider {
-            sidecar_id: "yume".into(),
-            display_name: "YUME".into(),
-            catalog: ModelCatalog {
-                manual_model_ids: None,
-                base_url: "https://models.example.test".into(),
-                api_key_fingerprint:
-                    "4c806362b613f7496abf284146efd31da90e4b16169fe001841ca17290f427c4".into(),
-                models: vec![ApiModel {
-                    id: "model-a".into(),
-                    name: "Model A".into(),
-                }],
-            },
-            api_key: "test-api-key".into(),
-        };
-        let (config, _) = settings::build_verified_multi_provider_sidecar_environment(&[provider])
-            .expect("sidecar config should still be produced after resource sync failure");
-        let config: serde_json::Value =
-            serde_json::from_str(&config).expect("sidecar config should be JSON");
-        let permission = config
-            .get("permission")
-            .expect("config should include permissions");
-        assert_eq!(permission.get("*"), Some(&serde_json::json!("deny")));
-        assert_eq!(
-            permission.get("ccswitch_prepare_opencode_provider"),
-            Some(&serde_json::json!("allow"))
-        );
-        assert_eq!(permission.get("bash"), Some(&serde_json::json!("ask")));
-        assert_eq!(
-            config.pointer("/experimental/continue_loop_on_deny"),
-            Some(&serde_json::json!(true))
-        );
-        assert_eq!(permission.get("webfetch"), Some(&serde_json::json!("ask")));
-        assert_eq!(permission.get("edit"), Some(&serde_json::json!("ask")));
-        assert_eq!(permission.get("write"), Some(&serde_json::json!("ask")));
-        assert_eq!(permission.get("patch"), Some(&serde_json::json!("ask")));
-        assert_eq!(
-            permission.get("external_directory"),
-            Some(&serde_json::json!("deny"))
-        );
-        assert_eq!(permission.get("task"), Some(&serde_json::json!("ask")));
-        assert_eq!(permission.get("question"), Some(&serde_json::json!("ask")));
-        std::fs::remove_dir_all(root).expect("remove test directory");
-    }
-
-    #[test]
-    fn missing_yume_owned_opencode_tool_resource_is_an_error() {
-        let root = std::env::temp_dir().join(format!(
-            "yume-opencode-tool-missing-{}",
-            uuid::Uuid::new_v4()
-        ));
-        let shipped_tools = root.join("shipped-opencode-tools");
-        let data_dir = root.join("data");
-        std::fs::create_dir_all(&shipped_tools).expect("create empty shipped tools directory");
-
-        let error = overwrite_yume_opencode_tool(&shipped_tools, &data_dir)
-            .expect_err("missing shipped tool must fail resource synchronization");
-
-        assert_eq!(error.kind(), std::io::ErrorKind::NotFound);
-        let (event, payload) = resource_error_event("找不到内置 OpenCode 工具资源".into());
-        assert_eq!(event, RESOURCE_ERROR_EVENT);
-        assert_eq!(payload, "找不到内置 OpenCode 工具资源");
-        std::fs::remove_dir_all(root).expect("remove test directory");
-    }
 }
 
 fn should_follow_chat_on_window_event(event: &tauri::WindowEvent) -> bool {
@@ -910,8 +789,6 @@ fn sync_ship_resources(app: &tauri::AppHandle, data_dir: &Path) -> Result<(), St
     .into_iter()
     .find(|path| path.is_dir())
     .ok_or_else(|| "找不到内置 OpenCode 工具资源".to_string())?;
-    overwrite_yume_opencode_tool(&shipped_opencode_tools, data_dir)
-        .map_err(|error| format!("无法刷新内置 OpenCode 工具: {error}"))?;
     overwrite_worklog_tools(&shipped_opencode_tools, data_dir)
         .map_err(|error| format!("无法刷新工作记录工具: {error}"))?;
 
@@ -926,17 +803,6 @@ fn overwrite_builtin_xiaozhu_persona(
     let target_dir = data_dir.join("personas").join("xiaozhu");
     std::fs::create_dir_all(&target_dir)?;
     std::fs::copy(source, target_dir.join("persona.md"))?;
-    Ok(())
-}
-
-fn overwrite_yume_opencode_tool(shipped_tools_dir: &Path, data_dir: &Path) -> std::io::Result<()> {
-    const TOOL_FILE: &str = "ccswitch_prepare_opencode_provider.ts";
-
-    let source = std::fs::read_to_string(shipped_tools_dir.join(TOOL_FILE))?;
-    validate_yume_opencode_tool_source(&source)?;
-    let target_dir = data_dir.join("workspace").join(".opencode").join("tools");
-    std::fs::create_dir_all(&target_dir)?;
-    std::fs::write(target_dir.join(TOOL_FILE), source)?;
     Ok(())
 }
 
@@ -1023,58 +889,6 @@ fn overwrite_worklog_tools(shipped_tools_dir: &Path, data_dir: &Path) -> std::io
     Ok(())
 }
 
-fn validate_yume_opencode_tool_source(source: &str) -> std::io::Result<()> {
-    const EXPECTED_SHA256: &str =
-        "cec94fab3c431e78369a26a7800f33f362544b962d0346332d9d63611f01f01b";
-    const REQUIRED_MARKERS: &[&str] = &[
-        "export default",
-        "args: draftArgs",
-        "async execute(args: DraftArgs): Promise<string>",
-        "kind: \"opencode_provider_draft\"",
-        "buildProviderDraft",
-        "safeTextOrUndefined",
-        "assertDraftArgsSecretFree",
-    ];
-    const FORBIDDEN_MARKERS: &[&str] = &[
-        "from \"zod\"",
-        "@opencode-ai/plugin",
-        concat!("api", "Key:"),
-        concat!("api", "_key:"),
-        concat!("sec", "ret:"),
-        concat!("tok", "en:"),
-        concat!("cre", "dential:"),
-        concat!("pass", "word:"),
-    ];
-
-    if !REQUIRED_MARKERS
-        .iter()
-        .all(|marker| source.contains(marker))
-    {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::InvalidData,
-            "YUME OpenCode tool resource failed integrity validation",
-        ));
-    }
-    if FORBIDDEN_MARKERS
-        .iter()
-        .any(|marker| source.contains(marker))
-    {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::InvalidData,
-            "YUME OpenCode tool resource contains a forbidden credential marker",
-        ));
-    }
-    let normalized_source = source.replace("\r\n", "\n");
-    let hash = Sha256::digest(normalized_source.as_bytes());
-    if format!("{hash:x}") != EXPECTED_SHA256 {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::InvalidData,
-            "YUME OpenCode tool resource hash mismatch",
-        ));
-    }
-    Ok(())
-}
-
 fn copy_missing_dir_recursive(src: &Path, dst: &Path) -> std::io::Result<()> {
     std::fs::create_dir_all(dst)?;
     for entry in std::fs::read_dir(src)? {
@@ -1144,6 +958,8 @@ fn spawn_sidecar(app: &tauri::AppHandle, port: u16) -> std::io::Result<Child> {
     // SAFE-EXPECT: Tauri provides an app data directory after app setup.
     let data_dir = app.path().app_data_dir().expect("app data dir unavailable");
     std::fs::create_dir_all(&data_dir)?;
+    // Fail closed if a retired tool cannot be removed from the discovery path.
+    retired_tools::retire_external_deploy_tool(&data_dir)?;
     // A resource-copy failure means personas/skills will be missing, which
     // otherwise shows up as an unexplained empty persona list. Report it.
     if let Err(reason) = sync_ship_resources(app, &data_dir) {
@@ -1249,6 +1065,25 @@ pub(crate) fn restart_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
     if app.try_state::<agent::AgentRunState>().is_some() {
         agent::interrupt_owned_run(app, "sidecar_restarted");
     }
+    replace_sidecar(app)
+}
+
+// Caller holds the component task-admission boundary and has checked all work.
+pub(crate) fn restart_idle_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
+    let supervisor = app.state::<SidecarSupervisor>();
+    let _recovery = supervisor.recovery.lock().map_err(|_| "sidecar recovery lock poisoned")?;
+    replace_sidecar(app)?;
+    let deadline = std::time::Instant::now() + Duration::from_secs(15);
+    while std::time::Instant::now() < deadline {
+        if ureq::get(&format!("{}/global/health", sidecar_url(app)))
+            .set("Authorization", &sidecar_auth_header(app))
+            .timeout(Duration::from_millis(500)).call().is_ok() { return Ok(()); }
+        std::thread::sleep(Duration::from_millis(200));
+    }
+    Err("component_service_not_ready".into())
+}
+
+fn replace_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
     let sidecar = app.state::<Sidecar>();
     let mut previous = sidecar
         .child
@@ -1575,11 +1410,12 @@ pub fn run() {
             password: sidecar_password,
         })
         .manage(SidecarSupervisor::default())
+        .manage(windows_component::ComponentState::default())
+        .manage(component_activation::ActivationState::default())
         .manage(workbench::WorkbenchHandoff::default())
         .manage(workbench::WorkbenchOwnership::default())
         .manage(pomodoro::PomodoroState::default())
         .manage(AttachmentStore::default())
-        .manage(ccswitch::contract::CcSwitchSetupState::default())
         .manage(agent::AgentPermissionState::default())
         .manage(ChatShown(Mutex::new(false)))
         .manage(history_entry::HistoryOrganizerRequest::default())
@@ -1589,6 +1425,11 @@ pub fn run() {
         .manage(pet_recovery::RecoveryState::default())
         .manage(Arc::new(ChatMotion::default()))
         .invoke_handler(tauri::generate_handler![
+            windows_component::windows_component_status,
+            windows_component::windows_component_install,
+            windows_component::windows_component_cancel,
+            windows_component::windows_component_set_enabled,
+            windows_component::windows_component_retry_activation,
             chat_links::open_chat_link,
             agent::agent_permission_pending,
             agent::agent_permission_reply,
@@ -1686,19 +1527,6 @@ pub fn run() {
             open_ai_model_settings,
             hide_settings,
             app_version,
-            ccswitch::protocol::ccswitch_capability_status,
-            ccswitch::protocol::prepare_ccswitch_opencode_provider,
-            ccswitch::protocol::prepare_ccswitch_opencode_provider_from_settings,
-            ccswitch::protocol::select_ccswitch_opencode_model,
-            ccswitch::protocol::launch_ccswitch_opencode_import,
-            ccswitch::protocol::cancel_ccswitch_setup,
-            ccswitch::protocol::observe_ccswitch_opencode_files,
-            ccswitch::protocol::create_ccswitch_recovery_snapshot,
-            ccswitch::protocol::check_ccswitch_opencode_import,
-            ccswitch::protocol::complete_ccswitch_recovery,
-            ccswitch::protocol::restore_ccswitch_recovery,
-            ccswitch::protocol::discard_ccswitch_recovery,
-            local_ai_deploy::deploy_local_ai_stack,
             history::commands::history_catalog_list,
             history::commands::history_model_selection_get,
             history::commands::history_model_selection_set,

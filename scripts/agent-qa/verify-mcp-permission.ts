@@ -24,14 +24,14 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import type { Readable } from "node:stream";
 
-import { pathMissing, portClosed, processGone, removeTempRoot } from "../ccswitch-harness/cleanup";
+import { pathMissing, portClosed, processGone, removeTempRoot } from "../sidecar-harness/cleanup";
 import {
   TEST_MCP_APPROVED_TOOL_ID,
   TEST_MCP_SERVER_NAME,
   TEST_MCP_UNAPPROVED_TOOL_ID,
-} from "../ccswitch-harness/mcp-permissions";
-import { buildPermissionMap } from "../ccswitch-harness/permissions";
-import { childEnv, freePort, stopChild } from "../ccswitch-harness/process";
+} from "../sidecar-harness/mcp-permissions";
+import { buildPermissionMap } from "../sidecar-harness/permissions";
+import { childEnv, freePort, stopChild } from "../sidecar-harness/process";
 import { findSourceBinary } from "../prepare-opencode";
 
 type JsonObject = Record<string, unknown>;

@@ -327,7 +327,6 @@ pub struct SettingsState(pub Mutex<Settings>);
 const MODEL_CATALOG_DIR: &str = "model-catalogs";
 /// Legacy single-file catalog path; used only to migrate into per-provider files.
 const LEGACY_MODEL_CATALOG_FILE: &str = "model-catalog.json";
-const CCSWITCH_PREPARE_OPENCODE_PROVIDER_TOOL: &str = "ccswitch_prepare_opencode_provider";
 const NATIVE_WORKBENCH_APPROVAL_PERMISSIONS: &[&str] =
     &["edit", "write", "patch", "task", "question"];
 
@@ -1357,6 +1356,9 @@ pub fn set_settings(
     let old = { state.0.lock().unwrap().clone() };
     let desktop_mcp_changed = old.browser_mcp_enabled != settings.browser_mcp_enabled
         || old.windows_mcp_enabled != settings.windows_mcp_enabled;
+    if !old.windows_mcp_enabled && settings.windows_mcp_enabled && crate::windows_component::resolve(&app).is_none() {
+        return Err("component_missing".into());
+    }
     settings.agent_permission_approvals = old.agent_permission_approvals.clone();
     for provider in &mut settings.providers {
         provider.base_url = normalize_base_url(&provider.base_url);
@@ -1401,7 +1403,11 @@ pub fn set_settings(
     // Keep the native workbench's default model on the same effective value as
     // the YUME settings selection, so both UIs read one sidecar config field
     // instead of maintaining two divergent model values (§3.4).
-    sync_workbench_default_model(&app, &settings);
+    // Even an unchanged model PATCH can rewrite the engine's config and dispose
+    // sessions. Component-only changes must reach the idle restart boundary first.
+    if old.provider_id != settings.provider_id || old.model_id != settings.model_id {
+        sync_workbench_default_model(&app, &settings);
+    }
     let _ = crate::yume_context::write_context(&app);
     crate::pomodoro::apply_preferences(&app, settings.pomodoro)?;
     // Notify every window (pet scale, persona, model...) of the change.
@@ -1410,7 +1416,11 @@ pub fn set_settings(
         let _ = app.emit_to("workbench", "deskmate://theme-changed", &current.theme);
     }
     if desktop_mcp_changed {
-        crate::restart_sidecar(&app)?;
+        if old.browser_mcp_enabled != settings.browser_mcp_enabled {
+            crate::restart_sidecar(&app)?;
+        } else {
+            crate::component_activation::request(&app);
+        }
     }
     Ok(())
 }
@@ -1802,7 +1812,6 @@ fn finalize_sidecar_environment(
 }
 
 const PLAYWRIGHT_MCP_VERSION: &str = "0.0.82";
-const WINDOWS_MCP_VERSION: &str = "1.3.24";
 const PLAYWRIGHT_MCP_SERVER: &str = "yume_playwright";
 const WINDOWS_MCP_SERVER: &str = "yume_windows";
 const PLAYWRIGHT_MCP_TOOLS: &[&str] = &[
@@ -1913,28 +1922,11 @@ fn configure_desktop_mcp(
     }
 }
 
-fn bundled_windows_mcp(resource_dir: &Path) -> Option<PathBuf> {
-    [
-        resource_dir
-            .join("resources")
-            .join("windows-mcp")
-            .join(WINDOWS_MCP_VERSION)
-            .join("Sbroenne.WindowsMcp.exe"),
-        resource_dir
-            .join("windows-mcp")
-            .join(WINDOWS_MCP_VERSION)
-            .join("Sbroenne.WindowsMcp.exe"),
-    ]
-    .into_iter()
-    .find(|candidate| candidate.is_file())
-}
-
 fn with_desktop_mcp(app: &tauri::AppHandle, settings: &Settings, config: String) -> Option<String> {
     let mut config: serde_json::Value = serde_json::from_str(&config).ok()?;
     let object = config.as_object_mut()?;
     let output_directory = app.path().app_data_dir().ok()?.join("mcp-output");
-    let resource_dir = app.path().resource_dir().ok()?;
-    let windows_command = bundled_windows_mcp(&resource_dir);
+    let windows_command = crate::windows_component::resolve(app);
     configure_desktop_mcp(
         object,
         settings,
@@ -1971,10 +1963,6 @@ fn sync_workbench_default_model(app: &tauri::AppHandle, settings: &Settings) {
 pub(crate) fn sidecar_permission_policy() -> serde_json::Map<String, serde_json::Value> {
     let mut permission = serde_json::Map::new();
     permission.insert("*".to_string(), serde_json::json!("deny"));
-    permission.insert(
-        CCSWITCH_PREPARE_OPENCODE_PROVIDER_TOOL.to_string(),
-        serde_json::json!("allow"),
-    );
     permission.insert("external_directory".to_string(), serde_json::json!("deny"));
     for permission_id in NATIVE_WORKBENCH_APPROVAL_PERMISSIONS {
         permission.insert((*permission_id).to_string(), serde_json::json!("ask"));
@@ -2967,7 +2955,7 @@ mod tests {
         let permission = config["permission"].as_object().expect("permission map");
 
         assert_eq!(permission["*"], "deny");
-        assert_eq!(permission["ccswitch_prepare_opencode_provider"], "allow");
+        assert!(permission.get("ccswitch_prepare_opencode_provider").is_none());
         assert_eq!(permission["bash"], "ask");
         assert_eq!(permission["webfetch"], "ask");
         assert_eq!(permission["websearch"], "ask");
@@ -2980,7 +2968,7 @@ mod tests {
             .filter(|(_, value)| **value == "allow")
             .map(|(tool, _)| tool.as_str())
             .collect::<Vec<_>>();
-        assert_eq!(allowed, vec!["ccswitch_prepare_opencode_provider"]);
+        assert!(allowed.is_empty());
         for tool in crate::tool_permissions::CONTROLLED_TOOLS {
             assert_eq!(permission[*tool], "ask");
         }

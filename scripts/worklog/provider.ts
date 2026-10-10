@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { expectJsonObject, isJsonObject, HarnessError } from "../ccswitch-harness/types";
+import { expectJsonObject, isJsonObject, HarnessError } from "../sidecar-harness/types";
 
 export const probeTool = "worklog_contract_probe";
 

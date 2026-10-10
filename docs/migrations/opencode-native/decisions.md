@@ -178,6 +178,8 @@
 
 ## D5-2：Windows MCP 随包固定二进制，不以 Python 环境作为产品依赖
 
+> 2026-10-09 更新：下述随包交付方式由[轻量 Windows 安装包](../../workbench-build.md#轻量-windows-安装包2026-10-09)取代。固定版本、双校验、无 Python 依赖及工具权限保持；首次启用下载至应用数据目录，成功后离线复用。历史安装包验证不代表按需下载流程已经完成实机验收。
+
 - **决策**：Windows 候选以 `src-tauri/resources/windows-mcp/1.3.24/Sbroenne.WindowsMcp.exe` 随 NSIS 资源交付；`scripts/prepare-windows-mcp.ts` 固定官方 release ZIP SHA-256 `4432e34a…903f` 与 exe SHA-256 `6415d0a0…8fcb`，任一不匹配即构建失败。运行命令仅为 exe + `--tools <精确清单>`，删除旧候选的 `uvx`、遥测和截图后端环境变量。
 - **依据**：替代候选官方 Windows x64 单文件发布，无运行时 Python/Node 依赖；这减少用户机器差异并允许离线安装后的 Windows 控制。Playwright MCP 目前仍依赖本机 `npx`，P6 发布候选必须在缺失 `npx` 时明确阻断或改为随包运行时，不能静默遗漏。
 

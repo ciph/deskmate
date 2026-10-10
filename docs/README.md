@@ -9,12 +9,12 @@
 | [项目 README](../README.md) | 安装、功能、开发命令与用户可见行为 |
 | [仓库 AI 入口](../AGENTS.md) | 本仓维护和发布约定 |
 | [设计规范](../DESIGN.md) | 主题、组件与交互原则 |
-| [模型连接与用量](ai-provider-support.md) | 模型发现、实际调用验证和用量来源 |
+| [模型连接与用量](ai-provider-support.md) | 模型发现、实际调用验证、用量来源及外部部署退役/旧快照恢复 |
 | [记忆与工作日志](memory-and-worklog.md) | 自动处理、开关、数据归属、删除及恢复 |
 | [本地附件](local-resource-attachments.md) | 原生选择、图片/文件/媒体预览与资源权限 |
 | [附件原生回归](attachment-native-regression.md) | 拖拽、WebKit 播放与取消请求的实机 gate |
 | [统一历史契约](migrations/opencode-native/unified-history-contract.md) | 会话身份、模型偏好、空白记录、组织操作与共享入口 |
-| [工作台构建](workbench-build.md) | 当前固定输入、生成物、完整重建与已知限制 |
+| [工作台构建](workbench-build.md) | 当前固定输入、生成物、完整重建、轻量 Windows 包及按需组件 |
 | [维护与验收脚本](../scripts/README.md) | 构建/作者/QA/发布 CLI 的职责、输入输出、平台和退出条件 |
 | [原生能力矩阵](migrations/opencode-native/capabilities.md) | 固定引擎能力与带日期的运行证据；未验证项明确保留 |
 | [架构决策](migrations/opencode-native/decisions.md) | 有效决定、被替代的理由和重审条件 |

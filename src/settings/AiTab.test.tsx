@@ -22,8 +22,6 @@ const invoke = mock<(command: string, args?: unknown) => Promise<unknown>>(
     switch (command) {
       case "sidecar_base_url":
         return Promise.resolve("http://127.0.0.1:4242");
-      case "ccswitch_capability_status":
-        return Promise.resolve({ kind: "ready", version: "3.20.0" });
       case "fetch_ai_usage":
         return Promise.resolve({
           remainingCny: 27260000,
@@ -129,7 +127,7 @@ describe("AI settings tab extraction", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByLabelText(t.ccSwitchStatusTitle)).toBeDefined();
+      expect(screen.getByRole("option", { name: "GPT 5.4 Mini" })).toBeDefined();
     });
 
     const panel = document.querySelector(".set-panel");
@@ -153,7 +151,6 @@ describe("AI settings tab extraction", () => {
 
     const orderedLabels = [
       t.model,
-      t.ccSwitchStatusTitle,
       t.aiUsageTitle,
     ];
     const positions = orderedLabels.map((label) => textIndex(panel, label));
@@ -208,7 +205,7 @@ describe("AI settings tab extraction", () => {
     await user.click(
       within(screen.getByRole("article", { name: "OMO Kuro" })).getByRole(
         "button",
-        { name: t.verify },
+        { name: t.aiProviderVerify },
       ),
     );
 
@@ -334,7 +331,7 @@ describe("AI settings tab extraction", () => {
     expect(screen.queryByRole("option", { name: "GPT 5.4 Mini" })).toBeNull();
     expect(screen.getByRole("combobox")).toHaveProperty("value", "");
 
-    await user.click(within(screen.getByRole("article", { name: "Kuro" })).getByRole("button", { name: t.verify }));
+    await user.click(within(screen.getByRole("article", { name: "Kuro" })).getByRole("button", { name: t.aiProviderVerify }));
     await waitFor(() => expect(screen.getByRole("option", { name: "GPT 5.4 Mini" })).toBeDefined());
   });
 
@@ -351,7 +348,7 @@ describe("AI settings tab extraction", () => {
     );
 
     await waitFor(() => {
-      expect(listen).toHaveBeenCalled();
+      expect(fetchCall).toHaveBeenCalled();
     });
     expect(replace).not.toHaveBeenCalled();
   });

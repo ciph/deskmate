@@ -7,10 +7,11 @@ import {
   type ToolPermissions,
 } from "../lib/toolPermissions";
 import type { PersistSettings, TabProps } from "./settingsPrimitives";
+import { WindowsComponentControl } from "./WindowsComponentControl";
 
 const PERMISSION_KEYS = ["worklogRead", "worklogWrite", "web", "shell"] as const;
 const MODES = ["allow", "ask", "deny"] as const;
-type DesktopTool = "browserMcpEnabled" | "windowsMcpEnabled";
+type DesktopTool = "browserMcpEnabled";
 
 export function ToolPermissionsTab({ settings, patch, persist, t }: TabProps & { readonly persist: PersistSettings }) {
   const permissions = settings.toolPermissions ?? DEFAULT_TOOL_PERMISSIONS;
@@ -55,7 +56,7 @@ export function ToolPermissionsTab({ settings, patch, persist, t }: TabProps & {
     }
   }
 
-  const pendingLabel = pending?.key === "browserMcpEnabled" ? t.permissionBrowserMcp : t.permissionWindowsMcp;
+  const pendingLabel = t.permissionBrowserMcp;
 
   return <section className="set-permissions" aria-label={t.tabPermissions}>
     <div className="set-permissions-head">
@@ -85,10 +86,7 @@ export function ToolPermissionsTab({ settings, patch, persist, t }: TabProps & {
         <span>{t.permissionBrowserMcp}</span>
         <input id="set-permissions-browser" type="checkbox" checked={settings.browserMcpEnabled ?? false} disabled={applying} onChange={(event) => { setChangeFailed(false); setPending({ key: "browserMcpEnabled", enabled: event.target.checked }); }} />
       </label>
-      <label className="set-permissions-row set-permissions-switch" htmlFor="set-permissions-windows">
-        <span>{t.permissionWindowsMcp}</span>
-        <input id="set-permissions-windows" type="checkbox" checked={settings.windowsMcpEnabled ?? false} disabled={applying} onChange={(event) => { setChangeFailed(false); setPending({ key: "windowsMcpEnabled", enabled: event.target.checked }); }} />
-      </label>
+      <WindowsComponentControl enabled={settings.windowsMcpEnabled ?? false} language={settings.language} label={t.permissionWindowsMcp} />
     </div>
 
     {pending && <div className="set-permissions-confirm" role="group" aria-label={t.permissionDesktopChangeTitle(pendingLabel, pending.enabled)}>

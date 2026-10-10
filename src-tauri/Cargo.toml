@@ -1,5 +1,6 @@
 [package]
 name = "yume"
+default-run = "yume"
 version = "0.4.18"
 description = "Desktop AI pet powered by an embedded OpenCode sidecar"
 edition = "2021"
@@ -11,6 +12,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 [features]
 worklog-qa = []
 updater-qa = []
+legacy-ai-recovery = ["dep:chacha20poly1305"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
@@ -33,7 +35,7 @@ chrono = "0.4"
 url = "2"
 ureq = { version = "2", features = ["json"] }
 keyring = { version = "3", features = ["windows-native", "apple-native"] }
-chacha20poly1305 = { version = "0.11", features = ["getrandom", "zeroize"] }
+chacha20poly1305 = { version = "0.11", optional = true, features = ["getrandom", "zeroize"] }
 zip = { version = "8", default-features = false, features = ["deflate"] }
 sha2 = "0.10"
 png = "0.17.16"
@@ -50,7 +52,6 @@ tempfile = "3"
 tauri-plugin-single-instance = "2"
 
 [target.'cfg(windows)'.dependencies]
-uiautomation = { version = "0.25.0", default-features = false, features = ["control", "input"] }
 windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Storage_FileSystem", "Win32_System_Threading", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse"] }
 
 [profile.release]
@@ -61,3 +62,8 @@ strip = true
 # panic=abort prevents objc2::exception::catch from catching those exceptions and
 # turns a cancelled media request into termination of the whole application.
 panic = "unwind"
+
+[[bin]]
+name = "recover-external-ai"
+path = "src/bin/recover_external_ai.rs"
+required-features = ["legacy-ai-recovery"]

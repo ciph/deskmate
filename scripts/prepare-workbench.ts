@@ -55,6 +55,8 @@ import upstream from ${JSON.stringify(config.replaceAll("\\", "/"))};
 import { transformWorkbenchRouting } from ${JSON.stringify(resolve(projectRoot, "scripts/workbench-routing.ts").replaceAll("\\", "/"))};
 export default {
   ...upstream,
+  // Release assets are embedded in yume.exe; never embed source maps.
+  build: { ...upstream.build, sourcemap: false },
   plugins: [
     { name: "yume-scoped-session-routing", enforce: "pre", transform(code, id) {
       if (id.replaceAll("\\\\", "/").endsWith("/workbench/entry.tsx")) return transformWorkbenchRouting(code, ${JSON.stringify(resolve(projectRoot, "src/workbench/session-route.ts").replaceAll("\\", "/"))});

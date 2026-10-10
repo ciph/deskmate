@@ -505,6 +505,7 @@ pub async fn workbench_open_external(
 /// reveals the window and carries no data.
 #[tauri::command]
 pub fn workbench_show(app: tauri::AppHandle) -> Result<(), String> {
+    let _service = crate::component_activation::service_use()?;
     let win = app
         .get_webview_window(WORKBENCH_LABEL)
         .ok_or("workbench window missing")?;

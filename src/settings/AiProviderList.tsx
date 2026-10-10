@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { Dict } from "../lib/i18n";
 import type { Settings } from "../lib/settings";
-import type { LocalAiDeploymentStatus } from "./CcSwitchStatus";
 import {
   settingsWithAddedProvider,
   settingsWithDeletedProvider,
@@ -20,10 +19,8 @@ type AiProviderListProps = {
   readonly createProviderId?: () => string;
   readonly onChange?: (providerId?: string, field?: ProviderField) => void;
   readonly onVerify?: (providerId: string) => void;
-  readonly onDeploy?: (providerId: string) => void;
   readonly verifyingProviderId?: string | null;
   readonly verifyResultFor?: (providerId: string) => ProviderVerifyResult | null;
-  readonly deploymentFor?: (providerId: string) => LocalAiDeploymentStatus;
   readonly operationBusy?: boolean;
 };
 
@@ -34,10 +31,8 @@ export function AiProviderList({
   createProviderId = () => crypto.randomUUID(),
   onChange,
   onVerify,
-  onDeploy,
   verifyingProviderId,
   verifyResultFor,
-  deploymentFor,
   operationBusy = false,
 }: AiProviderListProps) {
   const [selectedId, setSelectedId] = useState(settings.activeProviderId);
@@ -153,8 +148,7 @@ export function AiProviderList({
               replace(next);
             }
           }}
-          busyFor={(providerId) => verifyingProviderId === providerId
-            || deploymentFor?.(providerId).kind === "working"}
+          busyFor={(providerId) => verifyingProviderId === providerId}
           t={t}
         />
         {settings.providers.map((provider, index) => {
@@ -187,10 +181,8 @@ export function AiProviderList({
                     updateProvider(provider.id, field, value)
                   }
                   onVerify={onVerify}
-                  onDeploy={onDeploy}
                   verifying={verifyingProviderId === provider.id}
                   verifyResult={verifyResultFor?.(provider.id) ?? null}
-                  deployment={deploymentFor?.(provider.id) ?? { kind: "idle" }}
                   operationLocked={operationBusy}
                 />
               )}

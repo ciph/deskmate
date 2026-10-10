@@ -30,6 +30,7 @@ impl AgentRunState {
         workspace: &Path,
         input: &str,
     ) -> Result<ScheduledAdmission, String> {
+        let _service = crate::component_activation::service_use()?;
         let workspace_path = workspace
             .canonicalize()
             .map_err(|_| "workspace_invalid_path")?;

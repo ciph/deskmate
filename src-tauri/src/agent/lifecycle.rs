@@ -77,6 +77,7 @@ impl AgentRunState {
     }
 
     pub(crate) fn begin(&self, run_id: &str, workspace: &Path, input: &str) -> Result<(), String> {
+        let _service = crate::component_activation::service_use()?;
         if !crate::worklog::bridge::safe_id(run_id) || input.trim().is_empty() {
             return Err("agent_start_invalid".into());
         }

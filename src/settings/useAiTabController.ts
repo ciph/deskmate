@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { useCallback, useEffect, useState } from "react";
 import {
   listModels,
   type ProviderModel,
@@ -12,10 +11,6 @@ import {
   settingsWithSelectedModel,
 } from "./aiProviderModel";
 import type { ProviderField } from "./AiProviderCard";
-import {
-  normalizeCcSwitchCapabilityStatus,
-  type CcSwitchCapabilityStatus,
-} from "./CcSwitchStatus";
 import type { PersistSettings, ReplaceSettings } from "./settingsPrimitives";
 import { useAiProviderActions } from "./useAiProviderActions";
 
@@ -37,31 +32,11 @@ export function useAiTabController({
     () => new Set(),
   );
   const [failed, setFailed] = useState(false);
-  const [ccSwitchStatus, setCcSwitchStatus] =
-    useState<CcSwitchCapabilityStatus>({ kind: "checking" });
-  const ccSwitchRequest = useRef(0);
-
   const activeProvider =
     settings.providers.find((provider) => provider.id === settings.activeProviderId) ??
     settings.providers[0] ??
     null;
   const activeProviderId = activeProvider?.id ?? settings.activeProviderId;
-
-  const refreshCcSwitchStatus = useCallback(async () => {
-    const requestId = ccSwitchRequest.current + 1;
-    ccSwitchRequest.current = requestId;
-    setCcSwitchStatus({ kind: "checking" });
-    try {
-      const status = await invoke<unknown>("ccswitch_capability_status");
-      if (ccSwitchRequest.current === requestId) {
-        setCcSwitchStatus(normalizeCcSwitchCapabilityStatus(status));
-      }
-    } catch {
-      if (ccSwitchRequest.current === requestId) {
-        setCcSwitchStatus({ kind: "unavailable", reason: "missing-handler" });
-      }
-    }
-  }, []);
 
   const refreshModels = useCallback(async () => {
     try {
@@ -92,18 +67,10 @@ export function useAiTabController({
     };
   }, [refreshModels]);
 
-  useEffect(() => {
-    void refreshCcSwitchStatus();
-    return () => {
-      ccSwitchRequest.current += 1;
-    };
-  }, [refreshCcSwitchStatus]);
-
   const actions = useAiProviderActions({
     settings,
     persist,
     refreshModels,
-    refreshCcSwitchStatus,
     onProviderVerified: (providerId) => setInvalidProviderIds((current) => {
       const next = new Set(current);
       next.delete(providerId);
@@ -131,7 +98,6 @@ export function useAiTabController({
 
   return {
     activeProviderId,
-    ccSwitchStatus,
     currentModelValue: selectedModelValue(settings, visibleModels),
     failed,
     groups: groupModelsByConfiguredProvider(settings.providers, visibleModels, activeProviderId, t),

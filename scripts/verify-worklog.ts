@@ -3,11 +3,11 @@ import { copyFile, mkdir, mkdtemp, readFile, writeFile, readdir, unlink } from "
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
-import { childEnv, freePort, stopChild } from "./ccswitch-harness/process";
-import { pathMissing, portClosed, processGone, removeTempRoot } from "./ccswitch-harness/cleanup";
-import { assertHealth, buildSidecarConfig } from "./ccswitch-harness/permissions";
-import { requestJson, requestRaw, waitForHealth } from "./ccswitch-harness/transport";
-import { expectJsonObject, expectString, HarnessError, isJsonObject } from "./ccswitch-harness/types";
+import { childEnv, freePort, stopChild } from "./sidecar-harness/process";
+import { pathMissing, portClosed, processGone, removeTempRoot } from "./sidecar-harness/cleanup";
+import { assertHealth, buildSidecarConfig } from "./sidecar-harness/permissions";
+import { requestJson, requestRaw, waitForHealth } from "./sidecar-harness/transport";
+import { expectJsonObject, expectString, HarnessError, isJsonObject } from "./sidecar-harness/types";
 import { findSourceBinary } from "./prepare-opencode";
 import { probeTool, startProvider } from "./worklog/provider";
 import { runFullFlow } from "./worklog/full-flow";

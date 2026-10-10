@@ -17,7 +17,6 @@ import {
   abortSession,
   confirmPromptSubmission,
   createSession,
-  getSessionMessages,
   promptAsync,
   subscribeEvents,
   waitForServer,
@@ -74,7 +73,6 @@ import { WorklogReceipt, worklogChatCopy } from "./WorklogReceipt";
 import { buildWorklogSystemInstruction, newUserMessageId, registerWorklogTurn, WORKLOG_TOOLS } from "./worklogActions";
 import { buildCurrentInformationInstruction } from "./currentInformation";
 import { webSearchSites } from "./webSearchSites";
-import { CcSwitchSetupCard } from "./CcSwitchSetupCard";
 import { WorkspaceTask } from "./WorkspaceTask";
 import { ModelPicker, WorkspacePicker } from "./ComposerPickers";
 import { composerCopy, folderErrorCopy, modelErrorCopy } from "./composerCopy";
@@ -85,14 +83,8 @@ import { HistoryOrganizer } from "./HistoryOrganizer";
 import { catalogLoad, saveLocalMessages, type UnifiedHistoryRow } from "../lib/unifiedHistory";
 import { validateSharedConversation, loadSharedConversation, conversationReadOnlyReason } from "./sharedConversation";
 import { useHistoryOrganizerRequest } from "./useHistoryOrganizerRequest";
-import {
-  CCSWITCH_PREPARE_OPENCODE_PROVIDER_TOOL,
-  createCcSwitchToolResultTracker,
-  recoverCcSwitchToolResultsFromMessages,
-  toOpenCodeToolPart,
-  type CcSwitchProviderDraft,
-  type CcSwitchToolResult,
-} from "./ccSwitchSetup";
+import { toOpenCodeToolPart } from "./toolPart";
+import { containsProviderApiKey } from "./providerKeyGuard";
 import { useChatAttachments, type LocalAttachmentArtifact } from "./useChatAttachments";
 import type { PreparedModelAttachments } from "./useChatAttachmentsUtils";
 import "./chat.css";
@@ -116,10 +108,6 @@ interface ArtifactChatMessage {
   artifactId: string;
 }
 
-interface CcSwitchSetupRequestPayload {
-  readonly source?: string;
-}
-
 type ChatMessage = TextChatMessage | ArtifactChatMessage;
 
 type WebSearchActivity = {
@@ -129,17 +117,6 @@ type WebSearchActivity = {
 };
 
 type ToolActivity = string | WebSearchActivity;
-
-export function containsCcSwitchApiKey(text: string): boolean {
-  if (!/(cc\s*switch|opencode)/iu.test(text)) return false;
-  return (
-    /\bsk-[a-z0-9_-]{8,}/iu.test(text) ||
-    /\bbearer\s+[a-z0-9._-]{8,}/iu.test(text) ||
-    /["']?(?:api[\s_-]?key|token|secret)["']?\s*[:=]\s*["']?[a-z0-9._-]{8,}/iu.test(
-      text,
-    )
-  );
-}
 
 interface PersonaData {
   persona: string;
@@ -338,10 +315,6 @@ export default function ChatApp() {
   }, [currentSessionId, currentDirectory]);
   const worklog = useWorklogChat(currentSessionId);
   const [memoryNotice, setMemoryNotice] = useState<string | null>(null);
-  const [ccSwitchDraft, setCcSwitchDraft] = useState<CcSwitchProviderDraft | null>(
-    null,
-  );
-  const [ccSwitchSetupOpen, setCcSwitchSetupOpen] = useState(false);
   const t = dict(lang);
   // Latest dict for use inside stable callbacks (SSE handler, task listener).
   const tRef = useRef(t);
@@ -425,8 +398,6 @@ export default function ChatApp() {
   const fixedReplySequenceRef = useRef(0);
   const replyPacingRef = useRef<ReplyPacing | null>(null);
   const replyPacingSequenceRef = useRef(0);
-  const ccSwitchDraftRef = useRef<CcSwitchProviderDraft | null>(null);
-  const ccSwitchToolTrackerRef = useRef(createCcSwitchToolResultTracker());
 
   const appendArtifactMessage = useCallback((artifact: LocalAttachmentArtifact) => {
     setMessages((prev) => [
@@ -637,47 +608,6 @@ export default function ChatApp() {
     };
   }, []);
 
-  useEffect(() => {
-    const subscription = listen<CcSwitchSetupRequestPayload | null>(
-      "deskmate://ccswitch-setup-request",
-      ({ payload }) => {
-        if (payload?.source !== "settings") {
-          const draft: CcSwitchProviderDraft = {
-            callID: "manual",
-            credentialMode: "manual",
-          };
-          ccSwitchDraftRef.current = draft;
-          setCcSwitchDraft(draft);
-          setCcSwitchSetupOpen(true);
-          setView("chat");
-          return;
-        }
-        void (async () => {
-          const settings =
-            settingsRef.current ?? (await getSettings().catch(() => null));
-          const activeProvider =
-            settings?.providers.find(
-              (provider) => provider.id === settings.activeProviderId,
-            ) ?? settings?.providers[0];
-          const draft: CcSwitchProviderDraft = {
-            callID: "settings",
-            credentialMode: "saved-settings",
-            providerName: "YUME OpenCode",
-            baseUrl: activeProvider?.baseUrl ?? settings?.baseUrl,
-            modelHint: settings?.modelId,
-          };
-          ccSwitchDraftRef.current = draft;
-          setCcSwitchDraft(draft);
-          setCcSwitchSetupOpen(true);
-          setView("chat");
-        })();
-      },
-    );
-    return () => {
-      void subscription.then((unlisten) => unlisten()).catch(() => undefined);
-    };
-  }, []);
-
   const resetSession = useCallback(async (preserveComposer = false): Promise<boolean> => {
     const generation = ++viewGenerationRef.current;
     const previousSession = sessionRef.current;
@@ -724,10 +654,6 @@ export default function ChatApp() {
     setCurrentSessionId(session.id);
     resetAttachmentSession(session.id);
     rolesRef.current.clear();
-    ccSwitchDraftRef.current = null;
-    ccSwitchToolTrackerRef.current = createCcSwitchToolResultTracker();
-    setCcSwitchDraft(null);
-    setCcSwitchSetupOpen(false);
     setMessages([]);
     if (!preserveComposer) setInput("");
     setView("chat");
@@ -755,66 +681,6 @@ export default function ChatApp() {
     personaLoadRef.current = request;
     return request;
   }, []);
-
-  const noticeForCcSwitchResult = useCallback(
-    (result: CcSwitchToolResult): string | null => {
-      const dict = tRef.current;
-      switch (result.kind) {
-        case "draft":
-          return `${dict.ccSwitchStatusTitle}: ${dict.ccSwitchSetupOpen}`;
-        case "notice":
-          return result.reason === "secret_field"
-            ? dict.memorySecretRejected
-            : `${dict.chatErrorPrefix}: ${dict.ccSwitchStatusTitle}`;
-        case "ordinary_tool":
-        case "ignored":
-          return null;
-      }
-    },
-    [],
-  );
-
-  const applyCcSwitchToolResult = useCallback(
-    (messageID: string, result: CcSwitchToolResult) => {
-      switch (result.kind) {
-        case "draft":
-          ccSwitchDraftRef.current = result.draft;
-          setCcSwitchDraft(result.draft);
-          setCcSwitchSetupOpen(true);
-          clearAssistantTool(messageID);
-          setMemoryNotice(noticeForCcSwitchResult(result));
-          return;
-        case "notice":
-          clearAssistantTool(messageID);
-          setMemoryNotice(noticeForCcSwitchResult(result));
-          return;
-        case "ordinary_tool":
-          broadcastMood("working");
-          queueAssistantTool(messageID, result.label);
-          return;
-        case "ignored":
-          return;
-      }
-    },
-    [noticeForCcSwitchResult],
-  );
-
-  const recoverCcSwitchToolResultsOnIdle = useCallback(
-    async (sessionID: string) => {
-      try {
-        const results = recoverCcSwitchToolResultsFromMessages(
-          await getSessionMessages(sessionID, sessionDirectory()),
-          ccSwitchToolTrackerRef.current,
-        );
-        results.forEach((result, index) => {
-          applyCcSwitchToolResult(`ccswitch-recovery-${index}`, result);
-        });
-      } catch {
-        setMemoryNotice(`${tRef.current.chatErrorPrefix}: ${tRef.current.ccSwitchStatusTitle}`);
-      }
-    },
-    [applyCcSwitchToolResult],
-  );
 
   // Boot: wait for sidecar, load persona, create session, subscribe SSE.
   useEffect(() => {
@@ -929,11 +795,6 @@ export default function ChatApp() {
           }
           const toolPart = toOpenCodeToolPart(part);
           if (!toolPart) {
-            if (part.tool === CCSWITCH_PREPARE_OPENCODE_PROVIDER_TOOL) {
-              clearAssistantTool(part.messageID);
-              setMemoryNotice(`${tRef.current.chatErrorPrefix}: ${tRef.current.ccSwitchStatusTitle}`);
-              return;
-            }
             broadcastMood("working");
             queueAssistantTool(part.messageID, part.state?.title || part.tool || "tool");
             return;
@@ -949,12 +810,8 @@ export default function ChatApp() {
             });
             return;
           }
-          applyCcSwitchToolResult(
-            toolPart.messageID,
-            ccSwitchToolTrackerRef.current.acceptToolPart(toolPart, {
-              role: rolesRef.current.get(toolPart.messageID),
-            }),
-          );
+          broadcastMood("working");
+          queueAssistantTool(toolPart.messageID, toolPart.state.title ?? toolPart.tool);
         }
         break;
       }
@@ -971,7 +828,6 @@ export default function ChatApp() {
         if (props.sessionID !== sessionRef.current) return;
         petActivity.idle(props.sessionID);
         if (typeof props.sessionID === "string") {
-          void recoverCcSwitchToolResultsOnIdle(props.sessionID);
           void worklog.recover(props.sessionID);
         }
         completeReplyPacing();
@@ -1056,12 +912,10 @@ export default function ChatApp() {
     if (!text && chatAttachments.items.length === 0 && roundResources.length === 0) return;
     if (historyLoading || readOnlyHistory || sessionOwnedByWorkbench || status !== "ready" || !sessionRef.current) return;
     if (attachmentBusy) { setAttachmentError(t.chatAttachmentStillReading); return; }
-    if (containsCcSwitchApiKey(text)) {
+    if (containsProviderApiKey(text)) {
       setInput("");
       setAttachmentError(null);
-      setCcSwitchDraft(null);
-      setCcSwitchSetupOpen(true);
-      setMemoryNotice(t.ccSwitchSecretRedirect);
+      setMemoryNotice(t.providerSecretRedirect);
       return;
     }
     if (agent.workspace || agentHistoryId || agent.busy) {
@@ -1742,17 +1596,6 @@ export default function ChatApp() {
             const list = event.currentTarget;
             followLatestRef.current = list.scrollHeight - list.clientHeight - list.scrollTop < 48;
           }}>
-            {ccSwitchSetupOpen && (
-              <CcSwitchSetupCard
-                t={t}
-                draft={ccSwitchDraft}
-                onClose={() => {
-                  ccSwitchDraftRef.current = null;
-                  setCcSwitchDraft(null);
-                  setCcSwitchSetupOpen(false);
-                }}
-              />
-            )}
             {messages.length === 0 && (
               <div className="chat-empty">
                 <ChatText text={chatEmpty} format="plain" />

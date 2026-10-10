@@ -95,7 +95,7 @@ export async function prepareProcessTerminator(): Promise<string | undefined> {
   const directory = resolve(dirname(targetBinary), "process-tools");
   await mkdir(directory, { recursive: true });
   const compiler = spawn("rustc", [
-    "--edition=2021", "-O", resolve(projectRoot, "scripts/windows-process-kill.rs"),
+    "--edition=2021", "-O", "-C", "debuginfo=0", "-C", "strip=debuginfo", resolve(projectRoot, "scripts/windows-process-kill.rs"),
     "-o", resolve(directory, "taskkill.exe"),
   ], { stdio: "inherit", windowsHide: true });
   const code = await new Promise<number | null>((done, reject) => {
@@ -103,6 +103,7 @@ export async function prepareProcessTerminator(): Promise<string | undefined> {
     compiler.once("exit", done);
   });
   if (code !== 0) throw new Error(`YUME process terminator compilation failed (${code})`);
+  await rm(resolve(directory, "taskkill.pdb"), { force: true });
   return directory;
 }
 

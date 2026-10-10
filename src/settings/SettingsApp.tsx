@@ -121,7 +121,7 @@ export default function SettingsApp() {
     const unlisten = onSettingsChanged((next) => {
       const current = settingsRef.current;
       if (current === null) return;
-      const merged = { ...current, agentPermissionApprovals: next.agentPermissionApprovals };
+      const merged = { ...current, agentPermissionApprovals: next.agentPermissionApprovals, windowsMcpEnabled: next.windowsMcpEnabled };
       settingsRef.current = merged;
       setLocalSettings(merged);
     });
@@ -143,7 +143,7 @@ export default function SettingsApp() {
     if (saveTimer.current !== null) window.clearTimeout(saveTimer.current);
     saveTimer.current = window.setTimeout(() => {
       saveTimer.current = null;
-      void setSettings(next).catch((error: unknown) =>
+      void setSettings(settingsRef.current ?? next).catch((error: unknown) =>
         console.error(error instanceof Error ? error : new Error(String(error))),
       );
     }, SAVE_DELAY_MS);

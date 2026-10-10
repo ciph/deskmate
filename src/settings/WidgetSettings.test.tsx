@@ -21,9 +21,13 @@ const invoke = mock<(command: string, payload?: unknown) => Promise<unknown>>((c
   return Promise.resolve(undefined);
 });
 mock.module("@tauri-apps/api/core", () => ({ ...tauriCore, invoke }));
+const listeners = new Map<string, (event: { payload: unknown }) => void>();
 mock.module("@tauri-apps/api/event", () => ({
   ...tauriEvent,
-  listen: () => Promise.resolve(() => undefined),
+  listen: (name: string, listener: (event: { payload: unknown }) => void) => {
+    listeners.set(name, listener);
+    return Promise.resolve(() => { listeners.delete(name); });
+  },
 }));
 const SettingsApp = (await import("./SettingsApp")).default;
 
@@ -36,6 +40,20 @@ async function openWidgets() {
 }
 
 describe("scheduled widget settings", () => {
+  test("a pending preference save preserves a component enabled by the backend", async () => {
+    invoke.mockClear();
+    render(<SettingsApp />);
+    const toggle = await screen.findByRole("checkbox", { name: t.chatLarge });
+    fireEvent.click(toggle);
+    await act(async () => {
+      const listener = listeners.get("deskmate://settings-changed");
+      expect(listener).toBeDefined();
+      listener?.({ payload: { ...settings, windowsMcpEnabled: true } });
+      await new Promise((resolve) => setTimeout(resolve, 450));
+    });
+    expect(invoke.mock.calls.find(([command]) => command === "set_settings")?.[1])
+      .toEqual({ settings: { ...settings, chatLarge: true, windowsMcpEnabled: true } });
+  });
   test("saves chat size independently from settings size", async () => {
     invoke.mockClear();
     render(<SettingsApp />);

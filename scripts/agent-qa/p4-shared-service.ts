@@ -2,7 +2,7 @@ import { strict as assert } from "node:assert";
 import { spawn } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { processGone } from "../ccswitch-harness/cleanup";
+import { processGone } from "../sidecar-harness/cleanup";
 import { prepareProcessTerminator } from "../prepare-opencode";
 import { createSession, messages, prompt, replyPermission, request, type Client } from "./client";
 import { startRuntime } from "./runtime";
