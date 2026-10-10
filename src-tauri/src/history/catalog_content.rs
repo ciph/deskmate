@@ -35,13 +35,12 @@ pub(super) fn apply_local_evidence(rows: &mut [CatalogEntry], sessions: &[Histor
     }
 }
 
-/// Upgrade old unverified entries and recheck draft sessions on each native
-/// refresh. Once records exist, an unavailable/partial transcript cannot erase
-/// that evidence. No remote deletion is issued: an open composer may still send.
+/// Check unverified entries once, until discovery reports a changed timestamp.
+/// Existing content evidence survives unavailable or partial responses.
 pub(super) fn refresh(store: &CatalogStore, client: &NativeHistoryClient) -> Result<Vec<String>, String> {
     let mut errors = Vec::new();
     for snapshot in store.all()? {
-        if snapshot.tombstone.is_some() || snapshot.has_records == Some(true)
+        if snapshot.tombstone.is_some() || snapshot.has_records.is_some()
             || snapshot.availability != Availability::Available
             || snapshot.runtime != RuntimeState::Idle || snapshot.ownership == Ownership::Agent {
             continue;

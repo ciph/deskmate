@@ -1,0 +1,5 @@
+.set-avatar-control { display: flex; flex-direction: column; align-items: flex-end; gap: var(--s-2); min-width: 0; }
+.set-avatar-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: var(--s-2); }
+.set-avatar-hint, .set-avatar-error { font-size: var(--t-small); text-align: right; }
+.set-avatar-hint { color: var(--text-dim); }
+.set-avatar-error { color: var(--danger); }

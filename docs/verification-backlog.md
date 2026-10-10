@@ -4,6 +4,94 @@
 
 ## 当前验证入口
 
+### 2026-10-10 历史加载优化与空会话自动清理
+
+基线仍为 0.4.18、`codex/optional-windows-component`、HEAD
+`e3a546f3252671b5ed9c80393fd69340bda67d5b`，保留此前双方头像和历史角色恢复的未提交改动。
+本轮没有运行生产数据删除脚本、安装或发布。
+
+- 列表先返回本地目录，原生发现后台合并刷新；刷新期间的新事件保留到下一轮。
+  目录按主键查询、事务只写变化行、导入按源数据指纹跳过；预览只失效更新时间变化的记录。
+- 普通发送与选中状态检查改为 metadata-only IPC；打开会话的模型选择并行读取，
+  正文和运行状态并行请求，复用已验证的作用域；角色资料缓存 30 秒，安装/卸载角色包立即失效。
+- 已确认空闲且无人使用的空会话在 30 秒创建/活动保护期后自动删除。
+  当前及加载中的聊天、隐藏工作台草稿、任务记录、本地回复、任何原生消息、子会话与读取不确定情况均保留。
+  工作台显示期间暂停原生清理。删除前复验，失败不创建自动重试删除墓碑；确认远端不存在后才标记已清理。
+  旧文本空记录在持有本地存储锁时核验并删除。完整边界见[统一历史契约](migrations/opencode-native/unified-history-contract.md)。
+- `bun run test:frontend` 最终 154/154 文件、1117 pass、0 fail、8 平台 skip。
+  首次运行的 provider 测试夹具未适配新 IPC，已修复并全量重跑；归档/删除测试改为观察轻量状态检查。
+- `cargo test --manifest-path src-tauri/Cargo.toml --lib` 为 728 pass、0 fail、15 ignored。
+  随后切换顺序、预览失效及读取避开清理锁的调整使用 `--lib history::` 复验：106 pass、0 fail、1 ignored。
+  覆盖 SQLite 实际写入计数、并发/回滚、复合身份、文件/工具/用户消息保留、子会话、繁忙/重试、错误响应、更新时间变化和删除失败。
+- 合成 305 条目录（Windows debug 构建，100 次读取）全表读取查找 468.198 ms、按键读取 79.4145 ms。
+  50 次无变化更新：旧全表重写 SQL 路径 452.7457 ms、增量路径 341.8089 ms；后者实际记录写入为 0，单条变化只写 1 行。
+  这是隔离微基准，不是安装版端到端打开时间。手工命令：
+  `cargo test --manifest-path src-tauri/Cargo.toml --lib catalog_index_and_delta_benchmark -- --ignored --nocapture`。
+- TypeScript 三套检查、生产前端构建通过。React Doctor 相对 HEAD 包含新增文件：80/100，0 error、1 warning，
+  仍仅为已有 `userAvatar.ts` object URL 误报（`finally` 明确释放），没有为此屏蔽规则。
+- Edge 浏览器真实 ChatApp + 隔离 IPC 夹具：混合历史角色、未知角色中性回退、32×32/8px 圆角、继续发送与旧头像保留通过，0 页面错误。
+  浏览器不连接生产 sidecar，不能替代原生自动清理验收。
+- 完整日志、截图、SQL 微基准与改动前文件快照：`E:\Codex\工作伙伴\release-artifacts\history-speed-work`。
+
+待验：新安装包下实际首次目录呈现/打开聊天时间，空草稿切换与工作台显隐跨窗口原生验收。
+本次源码尚未重新打包、安装或发布；此前头像安装包不包含本轮优化。
+
+### 2026-10-10 聊天双方头像
+
+基线：0.4.18，`codex/optional-windows-component`，HEAD
+`e3a546f3252671b5ed9c80393fd69340bda67d5b`。本次修改前工作区干净。
+
+- 双方头像为 32×32、8px 圆角正方形；通用设置提供更换、恢复默认、预览与失败提示。
+  个人图片压缩存入 `userAvatar`，复用原设置持久化与通知；三代内置小著提供独立静态头像。
+- 前端完整隔离回归：152/152 文件、1111 pass、8 平台 skip、0 fail。
+  此后新增 `UserAvatarSettings.test.tsx` 定向 2/2 通过，验证立即保存合并待保存设置、
+  重挂载恢复，以及保存失败后读取后端状态恢复头像；未把定向复验称为第二次全量测试。
+- Rust 头像模块 2/2 通过；随后设置相关模块回归 82/82 通过，覆盖旧设置默认、字段往返、格式/大小/尺寸边界。
+- 生产/测试/脚本 TypeScript 检查、生产前端构建与 `git diff --check` 通过。浏览器验收使用真实组件与模拟 IPC：更换、刷新保留、跨窗口同步、
+  损坏图片保留原值、恢复默认、四主题×360/430/760px 宽度、长消息/代码块/表格、
+  切换三代目头像全部通过，页面错误为 0。所有图片临时 URL 在成功与失败时均释放。
+- React Doctor 相对 HEAD（包含新增文件）为 0 error、1 warning；唯一 warning 指向
+  `userAvatar.ts` 的 object URL。该函数 `finally` 明确 revoke，且浏览器拦截记录确认
+  两条路径均释放，判定为高置信度误报，未加规则屏蔽。默认 origin/main 扫描包含历史问题，
+  不作为本次头像改动的新增缺陷。
+- 本机截图、浏览器回执及测试日志在 `E:\Codex\工作伙伴\release-artifacts\avatar-work`。
+
+待验：打包后的 Windows WebView 原生文件选择、真实进程重启后的头像保留，以及导入包
+头像资源的原生 asset 协议加载。浏览器夹具中的持久化/同步不代替这些原生验收。
+后续于 2026-10-10 完整构建 Windows x64 NSIS 本地候选（版本仍为 0.4.18），111.611 MiB，保存于 `E:\Codex\工作伙伴\release-artifacts\v0.4.18-avatar-windows-20261010`。安装包完整性通过，包内 EXE 仅有 Tauri UNK→NSS 标记的 3 字节差异，其余与本次 release 程序一致；SHA-256 为 `76b448b54380b85a695247f8e5100b5cb32a8922a72998e273c62d0d1d80606a`。源码指纹对应构建开始时快照，本段打包回执于构建后更新。未签名、未安装，未提交、推送或发布。
+
+
+### 2026-10-10 历史消息角色头像恢复
+
+沿用上述 0.4.18 / HEAD；修改对象为头像功能之后的未提交工作区。按每条原生
+user message 的 system 明确标记、前置角色 YAML ID 或完整已安装角色提示词匹配，
+通过 assistant.parentID 关联回复，避免用当前全局角色或邻近消息猜测。新轻聊轮次
+在 system 首行持久化 `<!-- yume:persona=<id> -->`；local-only 回复保存可选 personaId。
+缺少可靠身份的旧文本保持中性头像，未知 ID 不回退成小著；未改写或迁移生产聊天文件。
+
+- 用实际 Rust 恢复模块编译只读核验器，读取本机原生数据库：57 段非空会话中，
+  37 段有明确身份、121 个用户轮次、184 条 assistant message 可关联；包括小熊虫
+  4 段、包包 2 段及 2 段混合角色。只输出计数，未保存聊天正文/系统提示词副本。
+- `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib history::`：100 pass，
+  0 fail、0 ignored；`agent::opencode_wire_tests`：通过，覆盖 system 与 parentID 透传。
+- 完整前端回归首轮：154 文件、1115 pass、1 fail、8 平台 skip、0 unfinished。
+  唯一失败为新增组件测试在 Happy DOM 中断言实际图片加载（资源不可达而进入 fallback）；
+  改为核对角色标签后，该文件 9 pass、0 fail。真实 PNG 加载另由浏览器验证，
+  不把这次定向复验描述为第二次全量执行。
+- `bun run typecheck`、`bun run build` 退出 0，保留既有大 chunk 提示。
+  React Doctor HEAD+untracked 为 0 error、1 warning，仍为已核实的 object URL 误报。
+- Edge 实际 ChatApp + 模拟 IPC：混合历史中小熊虫/包包真实本机包封面、三代目
+  内置 PNG 均加载；无身份/已移除角色不冒用当前角色；继续发送持久化新角色标记，
+  新回复为当前小著、旧头像不变；5 个历史头像均为 32×32、8px 圆角，页面错误为 0。
+  QA 夹具修正多事件订阅广播，避免单个订阅覆盖其他订阅。
+- 证据：`E:\Codex\工作伙伴\release-artifacts\avatar-work` 下
+  `history-mixed-avatars.png`、`history-browser-qa.log`、`history-frontend-tests.log`、
+  `history-chat-memory-retest.log`、`history-typecheck.log`、`history-build.log`，
+  以及 `recovery-check.rs` / `.py`（复用实际模块的只读核验器）。
+
+后续重新构建包含本次历史修复的 0.4.18 Windows x64 NSIS：111.664 MiB（117088391 bytes），目录 `E:\Codex\工作伙伴\release-artifacts\v0.4.18-history-avatar-windows-20261010`。SHA-256：`06c9d1a6f2ab587630ffb78c1b5befa568ece0b6f94b48befe1d8ecc39df8aca`。构建退出 0，NSIS 完整性、包内 EXE 与本次 release 的 Tauri 标记归一化比对、三份头像资源哈希、构建前后源码指纹均通过。未签名、未安装、未发布；Windows WebView2 原生 asset 协议仍待实机验证。本段为构建后回写，不属于 build-inputs.json 中的构建开始快照。
+前一份 `v0.4.18-avatar-windows-20261010` 候选保持原样；请使用新目录内的安装包验证历史恢复。
+
 ### 2026-10-10 外部部署退役
 
 基线为 0.4.18 的 `codex/optional-windows-component` 工作树，保留此前 Windows 按需组件未提交改动。实现范围及旧快照恢复见[模型连接](ai-provider-support.md#yume-内置连接与外部部署退役2026-10-10)。设置和聊天不再提供外部部署；普通应用无恢复/导入 IPC，维护恢复代码仅在显式 feature 下编译。
@@ -60,7 +148,7 @@ bun run check
 | --- | --- |
 | 原审计 UI U1/U2 | 重连、busy Stop、idle 后 scheduled、多个 text parts 和迟到响应最小反例与修复；见[施工进度](audit-remediation-progress.md) |
 | 工作台 W1/W2 | 自有源码直接表达行为、固定输入统一验证、重复准备与失败恢复；普通前端绿灯不关闭此项 |
-| 历史 H1/H2/H3 | 新正文投影退出、按 key 查询、变化行写入和导入时机；保留 legacy/local-only、墓碑及身份约束 |
+| 历史 H1/H2/H3 | H2 按 key 查询、变化行写入与导入指纹已于 2026-10-10 完成源码/隔离测试；新正文投影退出及目标安装版性能仍待验。保留 legacy/local-only、墓碑及身份约束 |
 | 综合 V1 | 完整 Tauri interactive/scheduled 入口、跨 30 秒失败、真实工具子进程取消、两平台宿主与回退演练；已有 scoped OpenCode fixture 不替代完整 UI |
 | CI / Windows | Source checks 真正运行、Windows 适用 suite/中断进程树清理、branch protection required checks；静态 YAML 不能当平台执行通过 |
 | 文件清理条件项 | 以[清理执行进度](repository-cleanup-progress.md)为准；未验证的外部作者资产、生成链、Windows 和 Mac 包图标不因本地源码通过而关闭 |

@@ -8,7 +8,7 @@ function installHost() { mock.module("@tauri-apps/api/core", () => ({ invoke: as
 } })); }
 installHost();
 beforeEach(installHost);
-const { catalogList, catalogMutate, historyDateBounds } = await import("./unifiedHistory");
+const { catalogList, catalogMutate, catalogAccess, historyDateBounds } = await import("./unifiedHistory");
 afterEach(() => { calls.length = 0; restoreTauriModuleFixture(); });
 
 test("catalog search sends all metadata filters and a bounded page to the host", async () => {
@@ -25,4 +25,9 @@ test("date bounds include the selected local day, not the following midnight", (
   expect(bounds.from).toBe(new Date(2026, 8, 24).getTime());
   expect(bounds.to).toBe(new Date(2026, 8, 25).getTime() - 1);
   expect(historyDateBounds("", "")).toEqual({});
+});
+
+test("access checks request metadata only, without fetching the transcript", async () => {
+  await catalogAccess("native:synthetic");
+  expect(calls).toEqual([{ command: "history_catalog_access", args: { key: "native:synthetic" } }]);
 });

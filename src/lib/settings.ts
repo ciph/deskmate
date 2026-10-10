@@ -36,6 +36,7 @@ export interface Settings {
   theme: ThemeId;
   settingsLarge?: boolean;
   chatLarge?: boolean;
+  userAvatar?: string | null;
   // AI
   providerId: string;
   modelId: string;

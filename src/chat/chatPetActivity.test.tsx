@@ -152,7 +152,9 @@ beforeEach(() => {
         return Promise.resolve([]);
       case "history_register_native_session":
         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_fixed", directory: "." }));
-      case "history_catalog_load":
+      case "history_catalog_access":
+      return invoke("history_catalog_load").then((value: any) => value.entry);
+    case "history_catalog_load":
         return Promise.resolve({ entry: nativeHistoryFixture("ses_fixed"), messages: [] });
       case "history_catalog_list":
         return Promise.resolve(catalogPageFixture([]));

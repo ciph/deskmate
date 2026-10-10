@@ -140,7 +140,7 @@ fn unrelated_snapshot_is_skipped_while_scoped_native_run_completes() {
     runs.confirm_submission("msg_other").unwrap();
     let mut records = runs.all_records().unwrap();
     records.push(serde_json::from_value(serde_json::json!({"runId":"msg_origin", "sessionId":"ses_same", "workspacePath":"C:/project-a", "createdAt":"2026-09-23T00:00:00Z", "outcome":"completed"})).unwrap());
-    let messages = vec![crate::agent::NativeMessage { id: "msg_answer".into(), role: Some("assistant".into()), created: Some(2), parent_id: Some("msg_other".into()), completed: true, finish: Some("stop".into()), error: None, parts: vec![] }];
+    let messages = vec![crate::agent::NativeMessage { system: None, id: "msg_answer".into(), role: Some("assistant".into()), created: Some(2), parent_id: Some("msg_other".into()), completed: true, finish: Some("stop".into()), error: None, parts: vec![] }];
     // When the compatibility write sees a different trusted directory, native lifecycle continues independently.
     let disposition = super::save_scoped_snapshot(&path, &mut sessions, &records, &workspace, super::AgentHistorySnapshot { session_id: "ses_same", messages: &messages }).unwrap();
     assert_eq!(disposition, super::recovery::SnapshotWrite::UnrelatedIdentity);

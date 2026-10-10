@@ -8,7 +8,7 @@ fn entry(directory: &str) -> CatalogEntry {
     entry
 }
 fn note(id: &str, text: &str, time: u64) -> HistoryMessage {
-    HistoryMessage { role: "assistant".into(), text: text.into(), time, message_id: Some(id.into()), part_id: None, local_only: true }
+    HistoryMessage { persona_id: Some("xiaozhu".into()), role: "assistant".into(), text: text.into(), time, message_id: Some(id.into()), part_id: None, local_only: true }
 }
 
 #[test]
@@ -32,6 +32,8 @@ fn local_notes_survive_native_turns_without_crossing_colliding_directory_ids() {
     // Then each transcript contains only its own local note, once, and old source text is unchanged.
     assert_eq!(a.iter().map(|message| message.text.as_str()).collect::<Vec<_>>(), ["A local reply", "Authoritative native"]);
     assert_eq!(b.iter().map(|message| message.text.as_str()).collect::<Vec<_>>(), ["B local reply", "Authoritative native"]);
+    assert_eq!(a[0].persona_id.as_deref(), Some("xiaozhu"));
+    assert_eq!(b[0].persona_id.as_deref(), Some("xiaozhu"));
     assert_eq!(local.len(), 3);
     assert_eq!(local.iter().find(|session| session.id == original.id), Some(&original));
     std::fs::remove_dir_all(root).unwrap();

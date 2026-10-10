@@ -29,6 +29,8 @@ describe("dropped attachment sending", () => {
     fireEvent.click(screen.getByRole("button", { name: "发送" }));
     await waitFor(() => expect(promptRequests).toHaveLength(1));
     expect(promptRequests[0]?.model).toEqual({ providerID: "yume-2", modelID: "selected-model-b" });
+    expect(invoke.mock.calls.some(([command]) => command === "history_catalog_access")).toBe(true);
+    expect(invoke.mock.calls.some(([command]) => command === "history_catalog_load")).toBe(false);
     expect(invoke.mock.calls.some(([command, args]) => command === "history_model_selection_set"
       && (args as { selection?: { modelId?: string } }).selection?.modelId === "selected-model-b")).toBe(true);
   });

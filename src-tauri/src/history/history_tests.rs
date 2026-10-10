@@ -21,6 +21,7 @@ pub(super) fn ordinary(id: &str) -> HistorySession {
         created: 1,
         updated: 1,
         messages: vec![HistoryMessage {
+            persona_id: None,
             local_only: false,
             role: "user".to_owned(),
             text: "hello".to_owned(),

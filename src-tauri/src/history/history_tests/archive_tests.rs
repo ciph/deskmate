@@ -7,6 +7,7 @@ use std::fs;
 
 fn text_message(id: &str, role: &str, created: Option<u64>) -> NativeMessage {
     NativeMessage {
+        system: None,
         id: id.to_owned(),
         role: Some(role.to_owned()),
         created,

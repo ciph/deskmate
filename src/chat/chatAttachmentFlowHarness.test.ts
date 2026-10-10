@@ -128,6 +128,8 @@ function handleInvoke(command: string, args?: unknown): Promise<unknown> {
     case "history_register_native_session":
       registeredEntry = nativeHistoryFixture(historyArgument(args, "sessionId"), historyArgument(args, "directory"));
       return Promise.resolve(registeredHistoryFixture(args));
+    case "history_catalog_access":
+      return invoke("history_catalog_load", args).then((value: any) => value.entry);
     case "history_catalog_load":
       if (!registeredEntry || historyArgument(args, "key") !== registeredEntry.key) throw new Error("catalog entry missing");
       return Promise.resolve({ entry: registeredEntry, messages: [] });

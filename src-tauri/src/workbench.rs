@@ -46,6 +46,10 @@ struct WorkbenchOwnershipState {
 pub(crate) struct WorkbenchOwnership(Mutex<WorkbenchOwnershipState>);
 
 impl WorkbenchOwnership {
+    pub(crate) fn host_visible(&self) -> Result<bool, String> {
+        self.0.lock().map(|state| state.host_visible).map_err(|_| "ownership state poisoned".into())
+    }
+
     fn set_host_visible(&self, visible: bool) -> Result<(), String> {
         let mut state = self.0.lock().map_err(|_| "ownership state poisoned".to_owned())?;
         state.host_visible = visible;
@@ -273,6 +277,7 @@ pub fn workbench_open_session(
     crate::history::commands::client(&app)?
         .get(&directory, &session_id)
         .map_err(|error| error.to_string())?;
+    crate::history::maintenance::select_workbench(&app, &directory, &session_id)?;
     let target = WorkbenchSessionTarget {
         directory: directory.clone(),
         session_id: session_id.clone(),
@@ -334,6 +339,7 @@ pub fn workbench_claim_session(
         return Err("empty session id".to_owned());
     }
     let directory = crate::history::commands::authorize_directory(&app, directory.as_deref())?;
+    crate::history::maintenance::select_workbench(&app, &directory, &session_id)?;
     let result = app.state::<WorkbenchOwnership>()
         .claim_visible(&directory, &session_id, window.is_visible().map_err(|error| error.to_string())?);
     let _ = app.emit("workbench://ownership-changed", ());
@@ -509,6 +515,9 @@ pub fn workbench_show(app: tauri::AppHandle) -> Result<(), String> {
     let win = app
         .get_webview_window(WORKBENCH_LABEL)
         .ok_or("workbench window missing")?;
+    // Serialize revealing the SDK composer with unused-draft deletion.
+    let history = app.state::<crate::history::maintenance::HistoryMaintenance>();
+    let _selection = history.used.lock().map_err(|_| "history_state_unavailable")?;
     win.show().map_err(|e| e.to_string())?;
     set_host_visibility(&app, true)?;
     win.set_focus().map_err(|e| e.to_string())?;

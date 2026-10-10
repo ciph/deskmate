@@ -80,13 +80,17 @@ import { INHERIT_MODEL, getConversationModel, resolveConversationModel, setConve
 import { useAgentRun } from "./useAgentRun";
 import { useAgentHistoryView } from "./useAgentHistoryView";
 import { HistoryOrganizer } from "./HistoryOrganizer";
-import { catalogLoad, saveLocalMessages, type UnifiedHistoryRow } from "../lib/unifiedHistory";
+import { catalogAccess, catalogLoad, saveLocalMessages, type UnifiedHistoryRow } from "../lib/unifiedHistory";
 import { validateSharedConversation, loadSharedConversation, conversationReadOnlyReason } from "./sharedConversation";
 import { useHistoryOrganizerRequest } from "./useHistoryOrganizerRequest";
 import { toOpenCodeToolPart } from "./toolPart";
 import { containsProviderApiKey } from "./providerKeyGuard";
 import { useChatAttachments, type LocalAttachmentArtifact } from "./useChatAttachments";
 import type { PreparedModelAttachments } from "./useChatAttachmentsUtils";
+import { Avatar } from "../ui/Avatar";
+import { userAvatarSource } from "../lib/userAvatar";
+import { usePersonaAvatars } from "./usePersonaAvatar";
+import { historicalPersonaName, personaSystemMarker } from "./messagePersona";
 import "./chat.css";
 
 interface TextChatMessage {
@@ -99,6 +103,7 @@ interface TextChatMessage {
   readonly nativeMessageId?: string;
   readonly localOnly?: boolean;
   readonly time?: number;
+  readonly personaId?: string;
 }
 
 interface ArtifactChatMessage {
@@ -142,6 +147,7 @@ const EMPTY_PREPARED_ATTACHMENTS: PreparedModelAttachments = {
 
 interface BufferedAssistantUpdate {
   messageID: string;
+  personaId?: string;
   hasText: boolean;
   text?: string;
   activity?: ToolActivity;
@@ -174,6 +180,7 @@ function historyChatMessages(session: HistorySession): ChatMessage[] {
     id: message.partId ?? message.messageId ?? `history-${index}`,
     nativeMessageId: message.messageId,
     role: message.role,
+    personaId: message.personaId,
     text: message.text,
   }));
 }
@@ -196,6 +203,8 @@ export default function ChatApp() {
   const resourceLanguage: Lang = lang === "en-US" || lang === "ja-JP" || lang === "ko-KR" ? lang : "zh-CN";
   const [theme, setTheme] = useState<ThemeId>("dark");
   const [activePersonaId, setActivePersonaId] = useState(DEFAULT_PERSONA_ID);
+  const personaAvatars = usePersonaAvatars(messages.flatMap(message =>
+    isTextChatMessage(message) && message.personaId ? [message.personaId] : []));
   const [view, setView] = useState<View>("chat");
   const showOrganizer = useCallback(() => setView("history"), []);
   useHistoryOrganizerRequest(showOrganizer);
@@ -349,10 +358,11 @@ export default function ChatApp() {
     const generation = viewGenerationRef.current;
     if (!displayed || displayed.key !== key) return;
     try {
-      const loaded = await loadSharedConversation(displayed);
+      const entry = await catalogAccess(key);
       if (generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key) return;
-      catalogEntryRef.current = loaded.entry;
-      setCatalogEntry(loaded.entry);
+      if (entry.key !== key || JSON.stringify(entry.identity) !== JSON.stringify(displayed.identity)) throw new Error("history identity changed");
+      catalogEntryRef.current = entry;
+      setCatalogEntry(entry);
     } catch (cause) {
       if (generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key) return;
       const unavailable: UnifiedHistoryRow = { ...displayed, availability: "unavailable", runtime: "unknown",
@@ -389,6 +399,7 @@ export default function ChatApp() {
   const settingsRef = useRef<Settings | null>(null);
   /** role by server messageID; used to skip user-message parts in SSE. */
   const rolesRef = useRef<Map<string, string>>(new Map());
+  const messagePersonasRef = useRef(new Map<string, string>());
   const listRef = useRef<HTMLDivElement>(null);
   const followLatestRef = useRef(true);
   const lastScrollUserRef = useRef<string | undefined>(undefined);
@@ -473,7 +484,7 @@ export default function ChatApp() {
       setMessages((prev) =>
         visibleUpdates.reduce(
           (next, update) =>
-            upsertAssistant(next, update.messageID, (message) =>
+            upsertAssistant(next, update.messageID, update.personaId, (message) =>
               update.hasText
                 ? {
                     ...message,
@@ -511,7 +522,7 @@ export default function ChatApp() {
     const pacing = replyPacingRef.current;
     if (!pacing || pacing.released) {
       setMessages((prev) =>
-        upsertAssistant(prev, messageID, (message) => ({
+        upsertAssistant(prev, messageID, messagePersonasRef.current.get(messageID), (message) => ({
           ...message,
           text,
           activity: preserveWebSearchActivity(message.activity),
@@ -522,6 +533,7 @@ export default function ChatApp() {
     const current = pacing.pendingUpdates.get(messageID);
     pacing.pendingUpdates.set(messageID, {
       messageID,
+      personaId: messagePersonasRef.current.get(messageID),
       hasText: true,
       text,
       activity: preserveWebSearchActivity(current?.activity),
@@ -532,7 +544,7 @@ export default function ChatApp() {
     const pacing = replyPacingRef.current;
     if (!pacing || pacing.released) {
       setMessages((prev) =>
-        upsertAssistant(prev, messageID, (message) => ({
+        upsertAssistant(prev, messageID, messagePersonasRef.current.get(messageID), (message) => ({
           ...message,
           activity,
         })),
@@ -542,6 +554,7 @@ export default function ChatApp() {
     const current = pacing.pendingUpdates.get(messageID);
     pacing.pendingUpdates.set(messageID, {
       messageID,
+      personaId: messagePersonasRef.current.get(messageID),
       hasText: current?.hasText ?? false,
       text: current?.text,
       activity,
@@ -623,7 +636,9 @@ export default function ChatApp() {
     let ready = registered;
     let statusUnavailable = false;
     try {
-      ready = (await loadSharedConversation(registered)).entry;
+      const fresh = await catalogAccess(registered.key);
+      if (fresh.key !== registered.key || JSON.stringify(fresh.identity) !== JSON.stringify(registered.identity)) throw new Error("history identity changed");
+      ready = fresh;
     } catch (error: unknown) {
       statusUnavailable = true;
       console.warn("new conversation status unavailable", error instanceof Error ? error.message : String(error));
@@ -647,6 +662,7 @@ export default function ChatApp() {
     setSettingsRevision(value => value + 1);
     catalogEntryRef.current = ready;
     setCatalogEntry(ready);
+    void invoke("history_chat_selected", { key: ready.key }).catch(() => {});
     setMemoryNotice(statusUnavailable ? tRef.current.sessionStateUnknown : null);
     localReplySnapshotRef.current = false;
     setHistoryLoading(false);
@@ -654,6 +670,7 @@ export default function ChatApp() {
     setCurrentSessionId(session.id);
     resetAttachmentSession(session.id);
     rolesRef.current.clear();
+    messagePersonasRef.current.clear();
     setMessages([]);
     if (!preserveComposer) setInput("");
     setView("chat");
@@ -761,9 +778,12 @@ export default function ChatApp() {
           id: string;
           sessionID: string;
           role: string;
+          parentID?: string;
         };
         if (info.sessionID === sessionRef.current) {
           rolesRef.current.set(info.id, info.role);
+          const personaId = info.parentID ? messagePersonasRef.current.get(info.parentID) : undefined;
+          if (info.role === "assistant" && personaId) messagePersonasRef.current.set(info.id, personaId);
           petActivity.message(props.info);
           void recordCompletedAiUsage(props.info).catch(() => {});
         }
@@ -890,7 +910,7 @@ export default function ChatApp() {
       if (agentHistoryActiveRef.current || !localReplySnapshotRef.current || sessionRef.current !== sessionID) return;
       const msgs = messagesRef.current;
       const localMessages = msgs.flatMap(message => isTextChatMessage(message) && message.localOnly && message.text.trim()
-        ? [{ role: message.role, text: message.text, time: message.time ?? Date.now(), messageId: message.id, localOnly: true }]
+        ? [{ role: message.role, text: message.text, time: message.time ?? Date.now(), messageId: message.id, localOnly: true, personaId: message.personaId }]
         : []);
       const entry = catalogEntryRef.current;
       if (!entry || !localMessages.length) return;
@@ -1036,7 +1056,7 @@ export default function ChatApp() {
     if (sessionRef.current !== sessionID || generation !== viewGenerationRef.current) return false;
     let fresh: UnifiedHistoryRow;
     try {
-      fresh = (await catalogLoad(displayed.key)).entry;
+      fresh = await catalogAccess(displayed.key);
     } catch (error: unknown) {
       setMemoryNotice(tRef.current.sessionStateUnknown);
       console.error("conversation access unavailable", error instanceof Error ? error.message : String(error));
@@ -1061,6 +1081,7 @@ export default function ChatApp() {
     const attachmentNames = [...messageAttachments, ...resources].map((item) => item.name).join(", ");
     let promptText = text || prepared.fallbackPrompt || (resources.length ? `附件：${attachmentNames}` : null);
     let resourceParts: readonly OpenCodeFilePart[] = [];
+    const roundPersonaId = activePersonaIdRef.current;
     const localOnly = activePersonaIdRef.current === DEFAULT_PERSONA_ID && prepared.fileParts.length === 0 && resources.length === 0
       && (isXiaozhuNameOriginQuestion(text) || isXiaozhuIdentityQuestion(text));
     const userMessageId = localOnly ? `local_${newUserMessageId()}` : newUserMessageId();
@@ -1076,11 +1097,13 @@ export default function ChatApp() {
       }
     }
     rolesRef.current.set(userMessageId, "user");
+    messagePersonasRef.current.set(userMessageId, roundPersonaId);
     setMessages((prev) => [
       ...prev,
       {
         id: userMessageId,
         role: "user",
+        personaId: roundPersonaId,
         text: text || `附件：${attachmentNames}`,
         attachments: messageAttachments,
         resources,
@@ -1117,6 +1140,7 @@ export default function ChatApp() {
             {
               id: `${userMessageId}_origin_${index}`,
               role: "assistant",
+              personaId: roundPersonaId,
               text: line, localOnly: true, time: Date.now(),
             },
           ]);
@@ -1138,6 +1162,7 @@ export default function ChatApp() {
           {
             id: `${userMessageId}_identity`,
             role: "assistant",
+            personaId: roundPersonaId,
             text: XIAOZHU_IDENTITY_REPLY, localOnly: true, time: Date.now(),
           },
         ]);
@@ -1185,7 +1210,7 @@ export default function ChatApp() {
         setMemoryNotice(`${worklogChatCopy(lang).failed}: ${error instanceof Error ? error.message : "BRIDGE_UNAVAILABLE"}`);
       }
       if (!petActivity.isCurrent(petScope) || generation !== viewGenerationRef.current) return false;
-      const finalAccess = (await catalogLoad(displayed.key)).entry;
+      const finalAccess = await catalogAccess(displayed.key);
       if (generation !== viewGenerationRef.current || !validateSharedConversation(displayed, finalAccess)) {
         if (generation === viewGenerationRef.current) {
           catalogEntryRef.current = finalAccess;
@@ -1204,7 +1229,7 @@ export default function ChatApp() {
       await promptAsync(sessionID, promptText, {
         directory: identity.directory,
         messageID: userMessageId,
-        system: [system, buildCurrentInformationInstruction(), buildWorklogSystemInstruction()].filter(Boolean).join("\n\n"),
+        system: [personaSystemMarker(roundPersonaId), system, buildCurrentInformationInstruction(), buildWorklogSystemInstruction()].filter(Boolean).join("\n\n"),
         attachments: [...prepared.fileParts, ...resourceParts],
         model: { providerID: roundModel.sidecarId, modelID: roundModel.modelId },
       });
@@ -1361,11 +1386,10 @@ export default function ChatApp() {
     clearReplyPacing();
     setIsPersonaTyping(false);
     try {
-      const loaded = await loadSharedConversation(row);
+      const [loaded, restoredSelection] = await Promise.all([loadSharedConversation(row), getConversationModel(row.key)]);
       if (generation !== viewGenerationRef.current) return;
       const entry = loaded.entry;
       if (entry.key !== row.key) throw new Error("history identity changed");
-      const restoredSelection = await getConversationModel(entry.key);
       if (generation !== viewGenerationRef.current) return;
       modelSelectionRef.current = restoredSelection;
       setModelSelection(restoredSelection);
@@ -1378,6 +1402,7 @@ export default function ChatApp() {
         catalogEntryRef.current = entry;
         setCatalogEntry(entry);
         sessionRef.current = agentId;
+        void invoke("history_chat_selected", { key: entry.key }).catch(() => {});
         setCurrentSessionId(agentId);
         setView("chat");
         setStatus("ready");
@@ -1395,10 +1420,15 @@ export default function ChatApp() {
       setCurrentSessionId(id);
       if (id) resetAttachmentSession(id);
       rolesRef.current.clear();
+      messagePersonasRef.current.clear();
+      for (const message of loaded.messages) {
+        if (message.messageId && message.personaId) messagePersonasRef.current.set(message.messageId, message.personaId);
+      }
       setMessages(loaded.messages.map((message, index) => ({
-        id: message.messageId ?? message.partId ?? "history-" + index, role: message.role, text: message.text,
-        localOnly: message.localOnly, time: message.time,
+        id: message.partId ?? message.messageId ?? "history-" + index, role: message.role, text: message.text,
+        localOnly: message.localOnly, time: message.time, personaId: message.personaId,
       })));
+      void invoke("history_chat_selected", { key: entry.key }).catch(() => {});
       setInput("");
       setPendingWorkspace(null);
       setMemoryNotice(null);
@@ -1511,6 +1541,7 @@ export default function ChatApp() {
   };
 
   const activePersonaName = personaDisplayName(activePersonaId, lang);
+  const ownAvatar = userAvatarSource(settingsRef.current?.userAvatar);
   const chatBooting = personalizePersonaCopy(t.chatBooting, activePersonaName);
   const chatEmpty = personalizePersonaCopy(t.chatEmpty, activePersonaName);
   const statusLabel: Record<Status, string> = {
@@ -1619,6 +1650,10 @@ export default function ChatApp() {
               }
               return (
                 <div key={m.id} data-message-id={m.id} className={`chat-msg chat-msg-${m.role}`}>
+                  <Avatar sources={m.role === "user" ? (ownAvatar ? [ownAvatar] : []) : (personaAvatars[m.personaId ?? ""] ?? [])}
+                    label={m.role === "user" ? t.myAvatar : historicalPersonaName(m.personaId, lang)}
+                    fallback={m.role === "assistant" && m.personaId ? historicalPersonaName(m.personaId, lang) : undefined} />
+                  <div className="chat-msg-content">
                   {m.activity && (
                     <div
                       className={`chat-activity${typeof m.activity === "object" ? ` chat-activity-websearch${m.activity.running ? " chat-activity-running" : ""}` : ""}`}
@@ -1690,6 +1725,7 @@ export default function ChatApp() {
                     </div>
                   )}
                   {worklog.operations.filter((operation) => operation.messageId === m.id).map((operation) => <WorklogReceipt key={operation.requestId} operation={operation} language={lang} onUndo={worklog.undo} onRefresh={worklog.refresh} />)}
+                  </div>
                 </div>
               );
             })}
@@ -1886,6 +1922,7 @@ function hasVisibleMessageContent(message: ChatMessage): boolean {
 function upsertAssistant(
   prev: ChatMessage[],
   messageID: string,
+  personaId: string | undefined,
   update: (m: TextChatMessage) => TextChatMessage,
 ): ChatMessage[] {
   const idx = prev.findIndex((m) => m.id === messageID);
@@ -1896,7 +1933,7 @@ function upsertAssistant(
   }
   return [
     ...prev,
-    update({ id: messageID, role: "assistant", text: "" }),
+    update({ id: messageID, role: "assistant", personaId, text: "" }),
   ];
 }
 

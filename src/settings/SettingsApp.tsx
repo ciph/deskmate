@@ -19,6 +19,7 @@ import { listen } from "@tauri-apps/api/event";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { getPetVisibilityError, onPetVisibilityError } from "../lib/petVisibility";
 import { dict, LANGS, type Dict } from "../lib/i18n";
+import { UserAvatarControl } from "./UserAvatarControl";
 import { UpdateFooter } from "./UpdateFooter";
 import { AiTab } from "./AiTab";
 import { ToolPermissionsTab } from "./ToolPermissionsTab";
@@ -169,6 +170,12 @@ export default function SettingsApp() {
     }
   }, []);
 
+  const saveAvatar = useCallback(async (userAvatar: string | null) => {
+    const current = settingsRef.current;
+    if (current === null) throw new Error("Settings unavailable");
+    await persist({ ...current, userAvatar });
+  }, [persist]);
+
   /** Update one field locally, then persist the whole object debounced. */
   const patch = useCallback(
     <K extends keyof Settings>(key: K, value: Settings[K]) => {
@@ -212,7 +219,7 @@ export default function SettingsApp() {
               <button type="button" className="set-btn" onClick={() => setPetVisibilityError(null)}>{t.close}</button>
             </div>}
             {tab === "general" && (
-              <GeneralTab settings={settings} patch={patch} t={t} />
+              <GeneralTab settings={settings} patch={patch} t={t} saveAvatar={saveAvatar} />
             )}
             {tab === "ai" && (
               <AiTab
@@ -298,10 +305,13 @@ function ThemePicker({
 
 // ------------------------------------------------------------------ 通用
 
-function GeneralTab({ settings, patch, t }: TabProps) {
+function GeneralTab({ settings, patch, t, saveAvatar }: TabProps & { readonly saveAvatar: (value: string | null) => Promise<void> }) {
   return (
     <>
       <BentoCard title={t.tabGeneral}>
+        <Row label={t.myAvatar}>
+          <UserAvatarControl value={settings.userAvatar} onSave={saveAvatar} t={t} />
+        </Row>
         <Row label={t.autostart}>
           <Switch
             label={t.autostart}

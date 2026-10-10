@@ -229,3 +229,60 @@ fn concurrent_large_catalog_import_load_and_list_preserve_availability() {
     // Then no healthy cached read or completed refresh reports unavailable.
     assert!(results.iter().all(Result::is_ok), "{results:?}");
 }
+
+#[test]
+fn updates_only_write_changed_rows_and_get_reads_only_its_key() {
+    let root = std::env::temp_dir().join(format!("yume-delta-{}", uuid::Uuid::new_v4()));
+    let path = root.join("catalog.sqlite");
+    let store = CatalogStore::open(&path).unwrap();
+    let rows: Vec<_> = (0..305).map(|i| entry(&format!("C:/project-{i}"))).collect();
+    store.update(|stored| { *stored = rows.clone(); Ok(()) }).unwrap();
+    let connection = rusqlite::Connection::open(&path).unwrap();
+    connection.execute_batch("CREATE TABLE writes(kind TEXT); CREATE TRIGGER track_insert AFTER INSERT ON entries BEGIN INSERT INTO writes VALUES('insert'); END; CREATE TRIGGER track_update AFTER UPDATE ON entries BEGIN INSERT INTO writes VALUES('update'); END; CREATE TRIGGER track_delete AFTER DELETE ON entries BEGIN INSERT INTO writes VALUES('delete'); END;").unwrap();
+    store.update(|_| Ok(())).unwrap();
+    let count = || connection.query_row("SELECT COUNT(*) FROM writes", [], |r| r.get::<_, i64>(0)).unwrap();
+    assert_eq!(count(), 0);
+    store.update(|stored| { stored[0].pinned = true; Ok(()) }).unwrap();
+    assert_eq!(count(), 1);
+    store.update(|stored| { stored.retain(|r| r.key() != rows[1].key()); Ok(()) }).unwrap();
+    assert_eq!(count(), 2);
+    // An unrelated corrupt row must not turn a valid indexed lookup into a scan.
+    connection.execute("INSERT INTO entries VALUES ('bad', 'invalid')", []).unwrap();
+    assert_eq!(store.get(&rows[2].key()).unwrap(), rows[2]);
+    assert!(store.get("bad").is_err());
+    assert_eq!(store.get("missing").unwrap_err(), "history_not_found");
+    drop(connection);
+    std::fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+#[ignore = "manual synthetic performance measurement"]
+fn catalog_index_and_delta_benchmark() {
+    let root = std::env::temp_dir().join(format!("yume-perf-{}", uuid::Uuid::new_v4()));
+    let path = root.join("catalog.sqlite");
+    let store = CatalogStore::open(&path).unwrap();
+    let rows: Vec<_> = (0..305).map(|i| entry(&format!("C:/project-{i}"))).collect();
+    store.update(|stored| { *stored = rows.clone(); Ok(()) }).unwrap();
+    let key = rows[152].key();
+    let start = std::time::Instant::now();
+    for _ in 0..100 { assert!(store.all().unwrap().iter().any(|r| r.key() == key)); }
+    let scan = start.elapsed();
+    let start = std::time::Instant::now();
+    for _ in 0..100 { store.get(&key).unwrap(); }
+    let indexed = start.elapsed();
+    let start = std::time::Instant::now();
+    for _ in 0..50 {
+        let mut conn = rusqlite::Connection::open(&path).unwrap();
+        conn.pragma_update(None, "synchronous", "FULL").unwrap();
+        let tx = conn.transaction().unwrap();
+        tx.execute("DELETE FROM entries", []).unwrap();
+        for row in &rows { tx.execute("INSERT INTO entries VALUES (?1, ?2)", [row.key(), serde_json::to_string(row).unwrap()]).unwrap(); }
+        tx.commit().unwrap();
+    }
+    let rewrite = start.elapsed();
+    let start = std::time::Instant::now();
+    for _ in 0..50 { store.update(|_| Ok(())).unwrap(); }
+    let delta = start.elapsed();
+    println!("305 entries; 100 lookups: scan={scan:?}, indexed={indexed:?}; 50 unchanged updates: rewrite={rewrite:?}, delta={delta:?}");
+    std::fs::remove_dir_all(root).unwrap();
+}

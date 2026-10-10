@@ -322,6 +322,11 @@ fn history_refresh_removes_existing_empty_rows_from_history_then_restores_first_
     assert!(catalog_content::refresh(&store, &client).unwrap().is_empty());
     assert_eq!(page(store.all().unwrap(), CatalogQuery::default(), vec![], vec![]).total, 0);
     assert!(store.get(&row.key()).unwrap().tombstone.is_none());
+    // Unchanged confirmed-empty rows issue no further content requests.
+    assert!(catalog_content::refresh(&store, &client).unwrap().is_empty());
+    let mut changed: NativeSession = serde_json::from_str(&session("ses_one", "/fixture")).unwrap();
+    changed.time.updated = 3;
+    crate::history::reconcile::apply_discovery(&store, "/fixture", &[changed], Some(&std::collections::HashMap::new()), &[], false).unwrap();
     assert!(!catalog_content::refresh(&store, &client).unwrap().is_empty());
     assert!(catalog_content::refresh(&store, &client).unwrap().is_empty());
     assert_eq!(page(store.all().unwrap(), CatalogQuery::default(), vec![], vec![]).total, 1);
@@ -329,4 +334,58 @@ fn history_refresh_removes_existing_empty_rows_from_history_then_restores_first_
     // Once confirmed, subsequent refreshes preserve content even if the provider is offline.
     assert!(catalog_content::refresh(&store, &client).unwrap().is_empty());
     assert_eq!(worker.join().unwrap().len(), 6);
+}
+
+#[test]
+fn automatic_cleanup_requires_empty_idle_unchanged_scoped_root() {
+    let meta = session("ses_empty", "C:/allowed");
+    let head = vec![(200, meta.clone()), (200, "[]".into()), (200, meta.clone())];
+    let mut success = head.clone();
+    success.extend([(200, "[]".into()), (200, "{}".into()), (200, meta.clone()), (200, "true".into()), (404, "{}".into())]);
+    let (url, worker) = serve(success);
+    assert_eq!(NativeHistoryClient::new(&url, "Basic test").unwrap().delete_empty("C:/allowed", "ses_empty", 2), Ok(true));
+    let requests = worker.join().unwrap();
+    assert_eq!(requests.iter().filter(|r| r.starts_with("DELETE ")).count(), 1);
+    assert!(requests.iter().all(|r| r.lines().next().unwrap().contains("directory=C%3A%2Fallowed")));
+    assert!(requests[3].contains("limit=1"));
+
+    let mut cases = Vec::new();
+    // Any message is evidence: files, tools, a lone user turn, even empty parts.
+    for parts in ["[]", r#"[{"type":"file","url":"file:///test"}]"#, r#"[{"type":"tool","state":{}}]"#] {
+        let mut responses = head.clone();
+        responses.push((200, format!(r#"[{{"info":{{"id":"msg_one"}},"parts":{parts}}}]"#)));
+        cases.push(responses);
+    }
+    cases.push(vec![(200, meta.clone()), (200, r#"[{"id":"ses_child"}]"#.into())]);
+    for status in [r#"{"ses_empty":{"type":"busy"}}"#, r#"{"ses_empty":{"type":"retry","attempt":1,"message":"wait","next":5}}"#, r#"{"ses_empty":{"type":"unknown"}}"#] {
+        let mut responses = head.clone(); responses.extend([(200, "[]".into()), (200, status.into())]); cases.push(responses);
+    }
+    let mut changed = serde_json::from_str::<serde_json::Value>(&meta).unwrap();
+    changed["time"]["updated"] = 3.into();
+    let mut responses = head.clone(); responses.extend([(200, "[]".into()), (200, "{}".into()), (200, changed.to_string())]); cases.push(responses);
+    cases.push(vec![(200, changed.to_string())]);
+    changed["time"]["updated"] = 2.into(); changed["parentID"] = "ses_parent".into();
+    cases.push(vec![(200, changed.to_string())]);
+    cases.push(vec![(200, session("ses_empty", "C:/other"))]);
+    for (status, body) in [(503, "{}"), (200, "not-json"), (200, r#"[{"info":{},"parts":[]}]"#)] {
+        let mut responses = head.clone(); responses.push((status, body.into())); cases.push(responses);
+    }
+    for responses in cases {
+        let (url, worker) = serve(responses);
+        let result = NativeHistoryClient::new(&url, "Basic test").unwrap().delete_empty("C:/allowed", "ses_empty", 2);
+        assert_ne!(result, Ok(true));
+        assert!(worker.join().unwrap().iter().all(|r| !r.starts_with("DELETE ")));
+    }
+}
+
+#[test]
+fn failed_empty_delete_is_not_reported_as_removed() {
+    let meta = session("ses_empty", "C:/allowed");
+    for tail in [vec![(503, "{}".into())], vec![(200, "false".into())], vec![(200, "true".into()), (200, meta.clone())]] {
+        let mut responses = vec![(200, meta.clone()), (200, "[]".into()), (200, meta.clone()), (200, "[]".into()), (200, "{}".into()), (200, meta.clone())];
+        responses.extend(tail);
+        let (url, worker) = serve(responses);
+        assert!(NativeHistoryClient::new(&url, "Basic test").unwrap().delete_empty("C:/allowed", "ses_empty", 2).is_err());
+        worker.join().unwrap();
+    }
 }

@@ -80,7 +80,7 @@ fn workspace_directory_scopes_every_session_request() -> Result<(), String> {
             let body = match path.as_str() {
                 "/session" => "{\"id\":\"session-unicode\"}",
                 "/session/session-unicode/message" => {
-                    r#"[{"info":{"id":"msg-native","role":"assistant","parentID":"message","time":{"created":7,"completed":8}},"parts":[{"id":"prt-native","type":"text","text":"native reply"}]}]"#
+                    r#"[{"info":{"id":"msg-native","role":"assistant","parentID":"message","system":"<!-- yume:persona=baobao -->","time":{"created":7,"completed":8}},"parts":[{"id":"prt-native","type":"text","text":"native reply"}]}]"#
                 }
                 "/session/session-unicode/abort" => "true",
                 _ => "{}",
@@ -101,6 +101,8 @@ fn workspace_directory_scopes_every_session_request() -> Result<(), String> {
     assert_eq!(snapshot.len(), 1);
     assert_eq!(snapshot[0].role.as_deref(), Some("assistant"));
     assert_eq!(snapshot[0].created, Some(7));
+    assert_eq!(snapshot[0].system.as_deref(), Some("<!-- yume:persona=baobao -->"));
+    assert_eq!(snapshot[0].parent_id.as_deref(), Some("message"));
     assert_eq!(snapshot[0].parts[0].kind.as_deref(), Some("text"));
     assert_eq!(snapshot[0].parts[0].text.as_deref(), Some("native reply"));
     assert!(client.abort("session-unicode")?);

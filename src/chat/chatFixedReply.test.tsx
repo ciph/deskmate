@@ -167,7 +167,9 @@ beforeEach(() => {
         return Promise.resolve({ memories: [], promptBlock: "" });
       case "history_register_native_session":
         return Promise.resolve({ ...nativeEntry, runtime: "unknown", capabilities: { ...nativeEntry.capabilities, send: false, readOnlyReason: "runtime_unknown" } });
-      case "history_catalog_load":
+      case "history_catalog_access":
+      return invoke("history_catalog_load", args).then((value: any) => value.entry);
+    case "history_catalog_load":
         if (catalogUnavailable) return Promise.reject(new Error("synthetic unavailable"));
         return Promise.resolve({ entry: nativeEntry, messages: localMessages });
       case "history_catalog_list":

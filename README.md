@@ -15,6 +15,21 @@ component show a download/repair entry. Core chat and the workbench remain bundl
 The [documentation index](docs/README.md) lists current contracts, active work,
 verification gates and historical records.
 
+## Chat avatars
+
+Chat shows rounded-square avatars beside both participants' messages. Settings →
+General → My avatar (设置 → 通用 → 我的头像) accepts PNG, JPG and WebP up to 5 MB;
+images are center-cropped to a 128px PNG and stored locally in settings. Change or
+reset applies immediately to open chats and remains after restart. All your
+messages, including history, use your current avatar; assistant messages use the
+persona recorded for that turn, including sessions that changed roles. Old native
+history recovers explicit persona IDs or exact installed prompt matches; replies
+follow their original user-message link. Records without reliable identity stay
+neutral. New turns persist an explicit role marker; local fixed replies also keep
+their role. The three bundled Xiaozhu generations have distinct
+static portraits. Imported personas can provide `personas/<id>/avatar.png`, with
+the pack cover and then a name badge as fallbacks. No avatar is sent to the AI.
+
 ## Daily horoscope
 
 Settings → Widgets → Daily horoscope (设置 → 小组件 → 今日星运) shows today's

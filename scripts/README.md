@@ -21,6 +21,19 @@
 
 Tauri 的 `src-tauri/gen/schemas/` 来自 `tauri-build` 和实际 capability/plugin 源，是忽略的开发生成物。首次需执行 `bun run test:rust` 或 Tauri dev/build 生成编辑器 schema；当前权限源保留在 `src-tauri/capabilities/`。仓库历史中的生成 JSON 不能代替现行构建检查。
 
+## 聊天头像验收与素材
+
+- `scripts/automation-qa/chat-preview.html?avatars` 使用真实聊天组件与隔离的浏览器 IPC 夹具。
+  同源打开 `?settings&avatars` 可验证真实通用设置组件；头像通过 localStorage/storage
+  模拟持久化与跨窗口事件，仅在此预览入口生效。发送包含“排版”的消息会返回长代码块与表格。
+- `scripts/automation-qa/chat-preview.html?historyAvatars` 提供混合角色历史，覆盖小熊虫、包包、三代目与无身份/已移除角色；图片路径由验收浏览器映射到本机包素材。
+- `scripts/automation-qa/avatar-render.html?persona=xiaozhu` 从现有模型导出 128px 静态 PNG。
+  参数也支持 `xiaozhu-nidaime`、`xiaozhu-sandaime`；开发服务器启动后读取
+  `document.body.dataset.avatar` 的 PNG data URL，保存到 `public/persona-avatars/<id>.png`。
+  使用与桌宠相同的模型、材质和 idle 动作；此作者入口不打包到产品中。
+- 导入角色可在既有允许的 PNG 路径内提供 `personas/<id>/avatar.png`，无需更改包 manifest。
+  缺图回退到已验证的包封面，再回退到名称标识。
+
 ## 引擎、权限、工作台及工作记录
 
 下列合成 harness 使用新建的临时 workspace、隔离配置与 loopback provider；核对证据中的进程、端口和临时目录清理结果。CLI 是独立入口，不能因没有 import 就删除；`client`/`runtime`/provider/evidence/fixture 模块是这些入口的共享实现。

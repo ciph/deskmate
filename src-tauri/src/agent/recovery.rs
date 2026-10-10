@@ -17,6 +17,11 @@ pub(crate) fn read_session_snapshot(
     crate::history::commands::client(app)?
         .get(&workspace.to_string_lossy(), session_id)
         .map_err(|error| error.to_string())?;
+    read_scoped_snapshot(app, workspace, session_id)
+}
+
+/// Caller has just verified this exact native directory/session via NativeHistoryClient::get.
+pub(crate) fn read_scoped_snapshot(app: &tauri::AppHandle, workspace: &std::path::Path, session_id: &str) -> Result<Vec<super::NativeMessage>, String> {
     let settings = super::run_commands::current_start_settings(app)?;
     super::run_commands::lifecycle_client(app, &settings, workspace).snapshot(session_id)
 }

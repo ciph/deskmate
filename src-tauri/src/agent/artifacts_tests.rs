@@ -30,6 +30,7 @@ fn fixture() -> TestResult<(PathBuf, RunRecord)> {
 
 fn message(tool: &str, status: &str, input: serde_json::Value) -> NativeMessage {
     NativeMessage {
+        system: None,
         role: None,
         created: None,
         id: "message_one".into(),

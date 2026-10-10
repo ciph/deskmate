@@ -155,6 +155,8 @@ function handleInvoke(command: string, args?: unknown): Promise<unknown> {
       return Promise.resolve(registeredHistoryFixture(args));
     case "history_catalog_list":
       return Promise.resolve(catalogPageFixture(Array.from(historySessions.keys()).map(id => nativeHistoryFixture(id, ".", "Past"))));
+    case "history_catalog_access":
+      return invoke("history_catalog_load", args).then((value: any) => value.entry);
     case "history_catalog_load": {
       const key = historyArgument(args, "key");
       if (registeredEntry?.key === key) return Promise.resolve({ entry: registeredEntry, messages: [] });

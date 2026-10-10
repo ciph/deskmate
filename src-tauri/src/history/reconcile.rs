@@ -35,7 +35,8 @@ pub(crate) fn reconcile(store: &CatalogStore, client: &NativeHistoryClient, reco
 }
 
 pub(crate) fn apply_discovery(store: &CatalogStore, directory: &str, sessions: &[NativeSession], statuses: Option<&HashMap<String, NativeStatus>>, records: &[crate::agent::RunRecord], complete: bool) -> Result<(), String> {
-    store.update(|rows| {
+    let changed = store.update(|rows| {
+        let mut changed = Vec::new();
         if complete { for row in rows.iter_mut().filter(|row| matches!(&row.identity, CatalogIdentity::Native { directory: project, .. } if project == directory)) { row.availability = Availability::Unavailable; row.runtime = RuntimeState::Unknown; } }
         let mut indexes: HashMap<_, _> = rows.iter().enumerate().map(|(index, row)| (row.key(), index)).collect();
         for session in sessions {
@@ -49,6 +50,7 @@ pub(crate) fn apply_discovery(store: &CatalogStore, directory: &str, sessions: &
             });
             let row = &mut rows[index];
             if row.tombstone.is_some() { continue; }
+            if row.updated != session.time.updated { changed.push(row.key()); }
             if row.has_records == Some(false) && row.updated != session.time.updated {
                 row.has_records = None;
             }
@@ -66,8 +68,10 @@ pub(crate) fn apply_discovery(store: &CatalogStore, directory: &str, sessions: &
             if !matching.is_empty() { row.ownership = Ownership::Agent; }
             if matching.iter().any(|record| record.outcome.is_none()) { row.runtime = RuntimeState::Running; }
         }
-        Ok(())
-    })
+        Ok(changed)
+    })?;
+    for key in changed { super::catalog_preview::invalidate(&key); }
+    Ok(())
 }
 
 pub(crate) fn mark_unavailable(store: &CatalogStore, directory: &str) -> Result<(), String> {

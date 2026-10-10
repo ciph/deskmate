@@ -43,6 +43,7 @@ struct WireMessage {
 }
 #[derive(Deserialize)]
 struct WireInfo {
+    system: Option<String>,
     id: String,
     role: Option<String>,
     #[serde(rename = "parentID")]
@@ -186,6 +187,7 @@ impl OpenCodeClient {
         Ok(messages
             .into_iter()
             .map(|message| NativeMessage {
+                system: message.info.system,
                 id: message.info.id,
                 role: message.info.role,
                 created: message.info.time.created,

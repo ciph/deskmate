@@ -1,0 +1,15 @@
+.yume-avatar {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-card);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: var(--t-small);
+}
+.yume-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }

@@ -348,7 +348,14 @@ export function registerChatAttachmentHarness(): void {
         }
         throw new Error("unexpected catalog mutation");
       }
-      case "history_catalog_load": {
+      case "history_catalog_access": {
+        const key = historyArgument(args, "key");
+        if (registeredEntry?.key === key) return Promise.resolve(registeredEntry);
+        const record = Object.values(historyRecords).find(record => agentHistoryEntry(record).key === key);
+        if (!record || deletedHistory.has(record.id)) throw new Error("history_deleted");
+        return Promise.resolve(agentHistoryEntry(record));
+      }
+    case "history_catalog_load": {
         const key = historyArgument(args, "key");
         if (registeredEntry?.key === key) return Promise.resolve({ entry: registeredEntry, messages: [] });
         const record = Object.values(historyRecords).find(record => agentHistoryEntry(record).key === key);

@@ -7,6 +7,8 @@ use serde::{Deserialize, Serialize};
 use tauri::Manager;
 
 mod archive;
+pub(crate) mod persona;
+pub(crate) mod maintenance;
 pub(crate) mod native_api;
 pub(crate) mod catalog_model;
 mod catalog;
@@ -40,6 +42,8 @@ mod history_tests;
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct HistoryMessage {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub persona_id: Option<String>,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub local_only: bool,
     pub role: String,
@@ -302,6 +306,7 @@ pub(crate) fn save_agent_input(
     upsert_message(
         &mut session.messages,
         HistoryMessage {
+            persona_id: None,
             local_only: false,
             role: "user".to_owned(),
             text: input.text.to_owned(),

@@ -38,6 +38,7 @@ fn active(
 
 fn terminal(run_id: &str) -> Vec<NativeMessage> {
     vec![NativeMessage {
+        system: None,
         id: "msg_reply".into(),
         role: Some("assistant".into()),
         created: Some(2),
@@ -76,6 +77,7 @@ fn request_for_tool(
 
 fn permission_snapshot() -> Vec<NativeMessage> {
     vec![NativeMessage {
+        system: None,
         id: "msg_native".into(),
         role: Some("assistant".into()),
         created: Some(1),

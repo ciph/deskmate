@@ -67,6 +67,7 @@ pub(crate) struct NativeToolState {
 
 #[derive(Clone, Debug)]
 pub(crate) struct NativeMessage {
+    pub(crate) system: Option<String>,
     pub(crate) id: String,
     pub(crate) role: Option<String>,
     pub(crate) created: Option<u64>,

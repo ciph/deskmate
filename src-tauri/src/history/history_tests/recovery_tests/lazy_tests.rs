@@ -140,6 +140,7 @@ fn existing_text_skips_lazy_fetch_and_late_result_cannot_revive_delete() -> Resu
     )];
     let mut with_text = vec![agent("ses_exact")];
     with_text[0].messages.push(HistoryMessage {
+        persona_id: None,
         local_only: false,
         role: "assistant".to_owned(),
         text: "kept".to_owned(),

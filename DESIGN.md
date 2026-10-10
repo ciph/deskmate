@@ -71,6 +71,26 @@ Widget selection uses `--widget-tile-size` at `88px`, with `--s-3` gaps and `--s
 - Loading, empty results, unavailable cached sessions, request errors, pending mutations, inline rename, and delete confirmation are distinct states. Delete confirmation names the conversation and irreversible outcome; archive remains reversible. Destructive controls use `--danger`, offline labels `--warn`, selected filters `--accent-soft` and `--accent-ink`.
 - All controls have visible labels and the shared focus ring. The organizer receives keyboard focus on entry, traps focus while open, closes with Escape, and restores prior focus on exit. Delete confirmation initially focuses Cancel. Dark, mint, peach, and lavender inherit the shared palette without component-specific colors or decorative motion.
 
+### Chat avatars
+
+- Both participants use 32 × 32px square avatars with an 8px corner radius and
+  `--s-2` gap, aligned to the message content's top. Assistant avatars sit left;
+  user avatars sit right. The message content column owns bubble, attachments,
+  activity and receipts. Standalone artifacts/system status keep their own layout.
+- General settings show the same avatar geometry, Change and Reset buttons,
+  supported formats/size hint, and an inline `--danger` error. Image selection
+  uses a local file input; cancel keeps the current image. In-flight work disables
+  both buttons. Save uses the existing immediate persistence/reconciliation path.
+- Personal images are center-cropped and resized to 128px PNG, bounded to 96 KiB
+  as a data URL. Source images are limited to 5 MiB and 16 megapixels (maximum
+  edge 8192px). Settings without `userAvatar` use the default user icon. Invalid
+  images fall back without changing message geometry. Colors use existing tokens.
+- Static persona portraits are resolved once per distinct message persona, without a 3D
+  renderer in chat. A pack reimport refreshes asset URLs using the archive digest.
+  Missing portraits fall back to pack cover, then the persona's name badge.
+  Historical replies use per-message identity, never the globally selected role.
+  Unknown identity uses a neutral localized label and default avatar.
+
 ### Chat message Markdown
 - Navigation tick motion: all ticks rest at 12px; rail hover expands them to 16px; the hovered tick reaches 20px. Fixed left origin with scaleX transitions over 180ms, easing cubic-bezier(0.22, 1, 0.36, 1), lets adjacent ticks smoothly exchange lengths. Current reading position changes color only. Keyboard focus-visible receives the same expansion; reduced-motion disables transitions. Leaving the rail restores the equal resting lengths.
 - Conversation navigation follows the supplied Codex rail reference: two or more user turns create a left-edge 28px rail, 16px hit-row height and 2px muted ticks; current ticks use the text token; hover/focus lengths follow the navigation motion rule. Reserve 36px at the message list edge. A 16px-radius raised-surface preview appears beside the rail, clamped inside the timeline, with two lines of question and three lines of reply summary. Hover/focus previews, activation jumps, Escape dismisses. Long rails scroll independently. While reading older turns, streaming does not pull the list to the bottom; scrolling back down or sending a new question resumes following. All four themes use shared color and typography tokens.

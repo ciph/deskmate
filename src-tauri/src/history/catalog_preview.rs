@@ -351,6 +351,7 @@ mod tests {
 
     fn message(role: &str, text: &str, local_only: bool) -> HistoryMessage {
         HistoryMessage {
+            persona_id: None,
             role: role.into(),
             text: text.into(),
             local_only,

@@ -120,7 +120,9 @@ function handleInvoke(handlers: Record<string, () => Promise<unknown>>) {
         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_1", directory: "." }));
       case "history_catalog_list":
         return Promise.resolve(catalogPageFixture([nativeHistoryFixture("ses_old", ".", "旧会话")]));
-      case "history_catalog_load": {
+      case "history_catalog_access":
+      return invoke("history_catalog_load", args).then((value: any) => value.entry);
+    case "history_catalog_load": {
         const isOld = historyArgument(args, "key") === nativeHistoryFixture("ses_old").key;
         return Promise.resolve({ entry: nativeHistoryFixture(isOld ? "ses_old" : "ses_1", ".", isOld ? "旧会话" : "t"), messages: isOld ? [{ role: "user", text: "你好", time: 1 }] : [] });
       }
@@ -225,7 +227,9 @@ describe("deleting a conversation", () => {
         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_1", directory: "." }));
       case "history_catalog_list":
         return Promise.resolve(catalogPageFixture([nativeHistoryFixture("ses_old", ".", "旧会话")]));
-      case "history_catalog_load": {
+      case "history_catalog_access":
+      return invoke("history_catalog_load", args).then((value: any) => value.entry);
+    case "history_catalog_load": {
         const isOld = historyArgument(args, "key") === nativeHistoryFixture("ses_old").key;
         return Promise.resolve({ entry: nativeHistoryFixture(isOld ? "ses_old" : "ses_1", ".", isOld ? "旧会话" : "t"), messages: isOld ? [{ role: "user", text: "你好", time: 1 }] : [] });
       }
@@ -285,7 +289,9 @@ describe("deleting a conversation", () => {
         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_1", directory: "." }));
       case "history_catalog_list":
         return Promise.resolve(catalogPageFixture([nativeHistoryFixture("ses_old", ".", "旧会话")]));
-      case "history_catalog_load": {
+      case "history_catalog_access":
+      return invoke("history_catalog_load", args).then((value: any) => value.entry);
+    case "history_catalog_load": {
         const isOld = historyArgument(args, "key") === nativeHistoryFixture("ses_old").key;
         return Promise.resolve({ entry: nativeHistoryFixture(isOld ? "ses_old" : "ses_1", ".", isOld ? "旧会话" : "t"), messages: isOld ? [{ role: "user", text: "你好", time: 1 }] : [] });
       }
@@ -346,7 +352,9 @@ describe("resuming a conversation from history", () => {
         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_1", directory: "." }));
       case "history_catalog_list":
         return Promise.resolve(catalogPageFixture([nativeHistoryFixture("ses_old", ".", "旧会话")]));
-      case "history_catalog_load": {
+      case "history_catalog_access":
+      return invoke("history_catalog_load", args).then((value: any) => value.entry);
+    case "history_catalog_load": {
         const isOld = historyArgument(args, "key") === nativeHistoryFixture("ses_old").key;
         return Promise.resolve({ entry: nativeHistoryFixture(isOld ? "ses_old" : "ses_1", ".", isOld ? "旧会话" : "t"), messages: isOld ? [{ role: "user", text: "你好", time: 1 }] : [] });
       }
@@ -424,7 +432,9 @@ describe("memory retrieval on send", () => {
         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_1", directory: "." }));
       case "history_catalog_list":
         return Promise.resolve(catalogPageFixture([nativeHistoryFixture("ses_old", ".", "旧会话")]));
-      case "history_catalog_load": {
+      case "history_catalog_access":
+      return invoke("history_catalog_load", args).then((value: any) => value.entry);
+    case "history_catalog_load": {
         const isOld = historyArgument(args, "key") === nativeHistoryFixture("ses_old").key;
         return Promise.resolve({ entry: nativeHistoryFixture(isOld ? "ses_old" : "ses_1", ".", isOld ? "旧会话" : "t"), messages: isOld ? [{ role: "user", text: "你好", time: 1 }] : [] });
       }
@@ -455,4 +465,30 @@ describe("memory retrieval on send", () => {
       invoke.mock.calls.some(([command]) => command === "memory_context"),
     ).toBe(false);
   });
+});
+
+test("historical mixed roles use each message identity, never the currently selected persona", async () => {
+  handleInvoke({
+    history_catalog_load: () => Promise.resolve({ entry: nativeHistoryFixture("ses_old", ".", "旧会话"), messages: [
+      { role: "assistant", text: "bear answer", time: 1, messageId: "a1", personaId: "xiaoxiongchong" },
+      { role: "assistant", text: "cat answer", time: 2, messageId: "a2", personaId: "baobao" },
+      { role: "assistant", text: "third answer", time: 3, messageId: "a3", personaId: "xiaozhu-sandaime" },
+      { role: "assistant", text: "unknown answer", time: 4, messageId: "a4" },
+      { role: "assistant", text: "removed answer", time: 5, messageId: "a5", personaId: "removed-persona" },
+    ] }),
+    installed_packs: () => Promise.resolve([]),
+  });
+  render(<ChatApp />);
+  const user = userEvent.setup();
+  await user.click(await screen.findByRole("button", { name: "历史" }));
+  await user.click(await screen.findByRole("button", { name: "打开 旧会话" }));
+  await screen.findByText("bear answer");
+  const avatar = (text: string) => screen.getByText(text).closest(".chat-msg")?.querySelector(".yume-avatar");
+  expect(avatar("bear answer")?.getAttribute("aria-label")).toBe("小熊虫");
+  expect(avatar("cat answer")?.getAttribute("aria-label")).toBe("包包");
+  expect(avatar("third answer")?.getAttribute("aria-label")).toBe("小著（三代目）");
+  for (const text of ["unknown answer", "removed answer"]) {
+    expect(avatar(text)?.getAttribute("aria-label")).toBe("对方");
+    expect(avatar(text)?.querySelector("img")).toBeNull();
+  }
 });

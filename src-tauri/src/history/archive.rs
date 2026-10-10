@@ -51,6 +51,7 @@ pub(super) fn merge_agent_messages(
     session: &mut HistorySession,
     messages: &[crate::agent::NativeMessage],
 ) -> Result<(), String> {
+    let identities = super::persona::message_personas(messages, &[]);
     for message in messages {
         let Some(role) = message
             .role
@@ -80,6 +81,7 @@ pub(super) fn merge_agent_messages(
             upsert_message(
                 &mut session.messages,
                 HistoryMessage {
+                    persona_id: identities.get(&message.id).cloned(),
                     local_only: false,
                     role: role.to_owned(),
                     text: text.to_owned(),

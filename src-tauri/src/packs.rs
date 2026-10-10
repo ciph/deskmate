@@ -87,6 +87,7 @@ pub fn installed_packs(app: tauri::AppHandle) -> Result<Vec<InstalledPack>, Stri
 #[tauri::command]
 pub fn import_pack(app: tauri::AppHandle, path: String) -> Result<ImportedPack, String> {
     let imported = import_pack_into(Path::new(&path), &packs_dir(&app)?)?;
+    crate::history::persona::invalidate_profiles();
     if let Err(error) = app.emit("deskmate://pack-imported", &imported) {
         eprintln!("pack import notification failed: {error}");
     }
@@ -97,7 +98,9 @@ pub fn import_pack(app: tauri::AppHandle, path: String) -> Result<ImportedPack, 
 /// here, so they can never be reached by this command.
 #[tauri::command]
 pub fn uninstall_pack(app: tauri::AppHandle, pack_id: String) -> Result<(), String> {
-    uninstall_pack_in(&packs_dir(&app)?, &pack_id)
+    uninstall_pack_in(&packs_dir(&app)?, &pack_id)?;
+    crate::history::persona::invalidate_profiles();
+    Ok(())
 }
 
 #[cfg(test)]

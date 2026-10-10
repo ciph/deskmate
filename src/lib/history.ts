@@ -8,6 +8,7 @@ export interface HistoryMessage {
   messageId?: string;
   partId?: string;
   localOnly?: boolean;
+  personaId?: string;
 }
 
 /** A full chat session record. */

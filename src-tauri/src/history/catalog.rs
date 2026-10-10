@@ -83,13 +83,17 @@ impl CatalogStore {
     }
 
     pub(crate) fn get(&self, key: &str) -> Result<CatalogEntry, String> {
-        self.all()?.into_iter().find(|entry| entry.key() == key).ok_or_else(|| "history_not_found".into())
+        let connection = self.connection()?;
+        let raw: String = connection.query_row("SELECT metadata FROM entries WHERE key = ?1", [key], |row| row.get(0))
+            .map_err(|error| if matches!(error, rusqlite::Error::QueryReturnedNoRows) { "history_not_found".to_owned() } else { db_error(error) })?;
+        decode_row(key, &raw)
     }
 
     pub(crate) fn update<T>(&self, edit: impl FnOnce(&mut Vec<CatalogEntry>) -> Result<T, String>) -> Result<T, String> {
         let mut connection = self.connection()?;
         let transaction = connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(db_error)?;
         let mut rows = read_rows(&transaction)?;
+        let before: std::collections::HashMap<_, _> = rows.iter().map(|row| (row.key(), row.clone())).collect();
         let result = edit(&mut rows)?;
         let mut keys = std::collections::HashSet::new();
         for entry in &mut rows {
@@ -99,12 +103,16 @@ impl CatalogStore {
             }
             if !keys.insert(entry.key()) { return Err("history_catalog_duplicate".into()); }
         }
-        transaction.execute("DELETE FROM entries", []).map_err(db_error)?;
-        for entry in rows {
-            let metadata = serde_json::to_string(&entry).map_err(|_| "history_catalog_invalid")?;
-            transaction.execute("INSERT INTO entries(key, metadata) VALUES (?1, ?2)", [entry.key(), metadata]).map_err(db_error)?;
+        for key in before.keys().filter(|key| !keys.contains(*key)) {
+            transaction.execute("DELETE FROM entries WHERE key = ?1", [key]).map_err(db_error)?;
+            transaction.execute("DELETE FROM model_selections WHERE key = ?1", [key]).map_err(db_error)?;
         }
-        transaction.execute("DELETE FROM model_selections WHERE key NOT IN (SELECT key FROM entries)", []).map_err(db_error)?;
+        for entry in rows {
+            let key = entry.key();
+            if before.get(&key) == Some(&entry) { continue; }
+            let metadata = serde_json::to_string(&entry).map_err(|_| "history_catalog_invalid")?;
+            transaction.execute("INSERT INTO entries(key, metadata) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET metadata=excluded.metadata", [key, metadata]).map_err(db_error)?;
+        }
         transaction.commit().map_err(db_error)?;
         Ok(result)
     }
@@ -115,11 +123,15 @@ fn read_rows(connection: &Connection) -> Result<Vec<CatalogEntry>, String> {
     let raw = statement.query_map([], |row| Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))).map_err(db_error)?;
     raw.map(|row| {
         let (key, metadata) = row.map_err(db_error)?;
-        let entry: CatalogEntry = serde_json::from_str(&metadata).map_err(|_| "history_catalog_invalid")?;
-        entry.identity.validate().map_err(|_| "history_identity_invalid")?;
-        if key != entry.key() { return Err("history_catalog_invalid".into()); }
-        Ok(entry)
+        decode_row(&key, &metadata)
     }).collect()
+}
+
+fn decode_row(key: &str, metadata: &str) -> Result<CatalogEntry, String> {
+    let entry: CatalogEntry = serde_json::from_str(metadata).map_err(|_| "history_catalog_invalid")?;
+    entry.identity.validate().map_err(|_| "history_identity_invalid")?;
+    if key != entry.key() { return Err("history_catalog_invalid".into()); }
+    Ok(entry)
 }
 
 fn db_error(_: rusqlite::Error) -> String { "history_catalog_unavailable".into() }

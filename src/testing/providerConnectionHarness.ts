@@ -187,6 +187,8 @@ function mockChatInvoke(): void {
       return Promise.resolve([]);
       case "history_register_native_session":
         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses-1", directory: "." }));
+      case "history_catalog_access":
+        return Promise.resolve(nativeHistoryFixture("ses-1"));
       case "history_catalog_load":
         return Promise.resolve({ entry: nativeHistoryFixture("ses-1"), messages: [] });
       case "history_catalog_list":

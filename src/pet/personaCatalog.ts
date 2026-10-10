@@ -281,6 +281,10 @@ export function packLabel(pack: PackManifest, language: string): string {
  * history and settings written while a pack was present still render. Unknown
  * ids fall back to the default persona.
  */
+export function findPersonaById(id: string): PersonaEntry | undefined {
+  return PERSONA_BY_ID.get(PERSONA_ALIASES[id] ?? id);
+}
+
 export function personaById(id: string): PersonaEntry {
   const canonicalId = PERSONA_ALIASES[id] ?? id;
   return (

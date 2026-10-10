@@ -123,6 +123,7 @@ impl NativeHistoryClient {
                 if !text.is_empty() {
                     return Ok(NativeTextPreview {
                         message: Some(super::HistoryMessage {
+                            persona_id: None,
                             local_only: false,
                             role,
                             text,
@@ -337,6 +338,23 @@ impl NativeHistoryClient {
         Self::scoped(row, directory, Some(id))
     }
 
+    /// Only used by the host while draft selection and managed task launches are locked.
+    /// Do not tombstone a failed delete: a retry must prove emptiness again.
+    pub(crate) fn delete_empty(&self, directory: &str, id: &str, expected_updated: u64) -> Result<bool, NativeApiError> {
+        let session = match self.get(directory, id) {
+            Err(NativeApiError::Missing) => return Ok(true),
+            result => result?,
+        };
+        if session.parent_id.is_some() || session.time.updated != expected_updated { return Ok(false); }
+        let children: Vec<serde_json::Value> = decode(self.request("GET", directory, &format!("{}/children", Self::session_route(id)?))?.call())?;
+        if !children.is_empty() || self.has_messages(directory, id)? { return Ok(false); }
+        if matches!(self.statuses(directory)?.get(id), Some(NativeStatus::Busy | NativeStatus::Retry { .. })) { return Ok(false); }
+        let latest = self.get(directory, id)?;
+        if latest.time.updated != expected_updated { return Ok(false); }
+        self.delete_verified(directory, id)?;
+        Ok(true)
+    }
+
     pub(crate) fn delete(&self, directory: &str, id: &str) -> Result<(), NativeApiError> {
         match self.get(directory, id) {
             Err(NativeApiError::Missing) => return Ok(()),
@@ -344,6 +362,10 @@ impl NativeHistoryClient {
                 result?;
             }
         }
+        self.delete_verified(directory, id)
+    }
+
+    fn delete_verified(&self, directory: &str, id: &str) -> Result<(), NativeApiError> {
         let removed: bool = decode(
             self.request("DELETE", directory, &Self::session_route(id)?)?
                 .call(),

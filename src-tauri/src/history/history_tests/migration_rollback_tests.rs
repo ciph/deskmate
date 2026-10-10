@@ -52,6 +52,7 @@ fn text_part(id: &str, text: &str) -> NativePart {
 
 fn native_messages() -> Vec<NativeMessage> {
     let user = NativeMessage {
+        system: None,
         id: "msg_native_user".to_owned(),
         role: Some("user".to_owned()),
         created: Some(10),
@@ -62,6 +63,7 @@ fn native_messages() -> Vec<NativeMessage> {
         parts: vec![text_part("prt_native_user", "native user")],
     };
     let assistant = NativeMessage {
+        system: None,
         id: "msg_native_assistant".to_owned(),
         role: Some("assistant".to_owned()),
         created: Some(20),
@@ -229,6 +231,7 @@ fn synthetic_migration_and_separate_rollback_rehearsal_is_idempotent() -> Result
     legacy_ui_session.title = "legacy UI edit".to_owned();
     legacy_ui_session.updated = 30;
     legacy_ui_session.messages.push(HistoryMessage {
+        persona_id: None,
         local_only: false,
         role: "assistant".to_owned(),
         text: "legacy local hint".to_owned(),

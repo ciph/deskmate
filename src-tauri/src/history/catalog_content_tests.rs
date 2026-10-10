@@ -43,7 +43,7 @@ fn local_only_replies_and_legacy_records_override_empty_native_evidence() {
     let mut row = entry("ses_local");
     row.has_records = Some(false);
     let mut saved = session(&row);
-    saved.messages.push(HistoryMessage { local_only: true, role: "user".into(), text: "hi".into(), time: 1, message_id: Some("local_user".into()), part_id: None });
+    saved.messages.push(HistoryMessage { persona_id: None, local_only: true, role: "user".into(), text: "hi".into(), time: 1, message_id: Some("local_user".into()), part_id: None });
     apply_local_evidence(std::slice::from_mut(&mut row), &[saved], "/fixture");
     assert_eq!(row.has_records, Some(true));
     let mut legacy = entry("unused");

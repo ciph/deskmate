@@ -1535,6 +1535,8 @@ pub fn run() {
             history::commands::history_validate_workspace,
             history::commands::history_catalog_native_key,
             history::commands::history_catalog_load,
+            history::maintenance::history_chat_selected,
+            history::commands::history_catalog_access,
             history::catalog_preview::history_catalog_previews,
             history::catalog_mutation::history_catalog_mutate,
             history::catalog_local::history_save_local_messages,
@@ -1616,6 +1618,7 @@ pub fn run() {
             }
             let history = history::load(&handle).map_err(std::io::Error::other)?;
             app.manage(HistoryState(Mutex::new(history)));
+            app.manage(history::maintenance::HistoryMaintenance::default());
             app.manage(history::NativeSessionIndex::default());
             history::load_native_index(&handle, &app.state::<history::NativeSessionIndex>())?;
             // Memory is optional infrastructure: if the database cannot open,

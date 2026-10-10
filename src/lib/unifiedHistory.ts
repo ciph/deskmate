@@ -74,6 +74,9 @@ export type CatalogMutation =
 export function catalogList(query: CatalogQuery, refresh = false): Promise<CatalogPage> {
   return invoke<CatalogPage>("history_catalog_list", { query, refresh });
 }
+export function catalogAccess(key: string): Promise<UnifiedHistoryRow> {
+  return invoke<UnifiedHistoryRow>("history_catalog_access", { key });
+}
 export function catalogLoad(key: string): Promise<CatalogLoadResult> {
   return invoke<CatalogLoadResult>("history_catalog_load", { key });
 }

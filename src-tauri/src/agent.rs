@@ -45,7 +45,7 @@ use permissions::PendingDecision;
 #[cfg(test)]
 pub(crate) use record_store::NativePart;
 pub(crate) use record_store::{NativeMessage, RunOutcome, RunRecord, RunStore};
-pub(crate) use recovery::{read_session_snapshot, recover_after_start};
+pub(crate) use recovery::{read_session_snapshot, read_scoped_snapshot, recover_after_start};
 pub(crate) use run_commands::interrupt_owned_run;
 use serde::{Deserialize, Serialize};
 use tauri::Manager;

@@ -227,6 +227,7 @@ pub struct Settings {
     pub theme: String,
     pub settings_large: bool,
     pub chat_large: bool,
+    pub user_avatar: Option<String>,
     // AI
     pub provider_id: String,
     pub model_id: String,
@@ -284,6 +285,7 @@ impl Default for Settings {
             theme: DEFAULT_THEME.into(),
             settings_large: false,
             chat_large: false,
+            user_avatar: None,
             provider_id: String::new(),
             model_id: String::new(),
             yolo: false,
@@ -1317,12 +1319,16 @@ mod mcp_permission_tests;
 #[cfg(test)]
 #[path = "settings_horoscope_tests.rs"]
 mod horoscope_tests;
+#[path = "settings_avatar.rs"]
+mod avatar;
+
 #[tauri::command]
 pub fn set_settings(
     app: tauri::AppHandle,
     state: tauri::State<SettingsState>,
     mut settings: Settings,
 ) -> Result<(), String> {
+    avatar::validate(settings.user_avatar.as_deref())?;
     validate_provider_identifiers(&settings)?;
     settings.pet_scale = normalize_pet_scale(settings.pet_scale);
     settings.outline_width = normalize_render_value(

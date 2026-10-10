@@ -150,6 +150,7 @@ for (const action of ["archive", "failed-delete"] as const) {
     await screen.findByText("任务结果");
     expect(screen.getByPlaceholderText("输入消息,Enter 发送")).toBeTruthy();
     // When the organizer archives it or creates a deletion tombstone before remote failure.
+    const checksBefore = invoke.mock.calls.filter(([command]) => command === "history_catalog_access").length;
     fireEvent.click(screen.getByRole("button", { name: "历史" }));
     fireEvent.click(await screen.findByRole("button", { name: "会话操作 已完成任务" }));
     switch (action) {
@@ -163,7 +164,7 @@ for (const action of ["archive", "failed-delete"] as const) {
         await screen.findByText(/remote delete unavailable/);
         break;
     }
-    await waitFor(() => expect(invoke.mock.calls.filter(([command]) => command === "history_catalog_load").length).toBeGreaterThan(2));
+    await waitFor(() => expect(invoke.mock.calls.filter(([command]) => command === "history_catalog_access").length).toBeGreaterThan(checksBefore));
     fireEvent.click(screen.getByRole("button", { name: "关闭历史" }));
     // Then stale selected state cannot expose a composer or start another run.
     await waitFor(() => expect(screen.queryByPlaceholderText("输入消息,Enter 发送") === null).toBe(true));

@@ -24,6 +24,7 @@ fn record(run_id: &str, session_id: Option<&str>, workspace: &Path, created_at: 
 
 fn text_message(id: &str, role: &str, text: &str, created: u64) -> NativeMessage {
     NativeMessage {
+        system: None,
         id: id.to_owned(),
         role: Some(role.to_owned()),
         created: Some(created),

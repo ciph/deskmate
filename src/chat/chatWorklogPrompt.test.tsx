@@ -22,6 +22,8 @@ const invoke = mock((command: string): Promise<unknown> => {
         return Promise.resolve([]);
     case "history_register_native_session":
       return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_worklog_prompt", directory: "." }));
+    case "history_catalog_access":
+      return invoke("history_catalog_load").then((value: any) => value.entry);
     case "history_catalog_load":
       return Promise.resolve({ entry: nativeHistoryFixture("ses_worklog_prompt"), messages: [] });
     case "sidecar_base_url":
@@ -101,6 +103,7 @@ test("ChatApp sends dynamic local-date worklog guidance with each prompt", async
 
   await waitFor(() => expect(promptRequests).toHaveLength(1));
   const system = promptRequests[0]?.system ?? "";
+  expect(system.startsWith("<!-- yume:persona=xiaozhu -->\n\n")).toBe(true);
   expect(system).toContain("当前真实本地日期");
   expect(system).toContain("时区:");
   expect(system).toContain("websearch");
