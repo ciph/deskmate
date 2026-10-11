@@ -9,7 +9,7 @@
 | OpenCode 引擎 | `package.json` / `bun.lock` 固定 `opencode-ai` 1.18.21；由 `prepare:sidecar` 准备当前平台二进制 |
 | 原生 UI 源码 | `anomalyco/opencode` commit `826d9ad46a22bef0294998e08daa3c4904fea28f`（v1.18.21） |
 | 上游依赖 | 保留该提交的 monorepo 和根 `bun.lock`，使用 Bun 1.3.14、`bun install --frozen-lockfile` |
-| 上游 lockfile 指纹 | 历史核验 SHA-256 `334AC7FB44E967944973C979ECAA218ACA96FD19028EAB36A89EA3F2BCBA1029`；复用 clone 时重新核对实际文件 |
+| 上游 lockfile 指纹 | 2026-10-11 从上述官方固定提交重新检出的原始 `bun.lock` SHA-256 为 `55cde1d8d6921ddd764ad99e6be8755767ca81e10f439e047014b7aaacffae5c`；须与该提交的 Git blob 一致，安装后保持未修改。旧历史记录的指纹不作为当前构建输入 |
 | 本仓适配 | `src/workbench/`、prepare 脚本管理的 overlay、主题桥和 terminal WASM |
 
 上游静态核验和 Windows 阶段指纹保存在[历史基线](archive/migrations/opencode-native/baseline.md)，旧机器路径和候选包哈希不是本机当前构建输入。固定版本决策见[架构决策](migrations/opencode-native/decisions.md)。
