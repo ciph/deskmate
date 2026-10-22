@@ -4,7 +4,7 @@ use super::{
     runner::{RunnerEnvironment, RunnerHandle},
 };
 use std::sync::Arc;
-use tauri::{Emitter, Manager};
+use tauri::{Emitter, Listener, Manager};
 
 struct DesktopEnvironment(tauri::AppHandle);
 impl RunnerEnvironment for DesktopEnvironment {
@@ -44,8 +44,17 @@ pub fn start(app: tauri::AppHandle) {
         Ok(repository) => {
             let handle = RunnerHandle::start(repository, Arc::new(DesktopEnvironment(app.clone())));
             app.manage(handle);
+            let wake_app = app.clone();
+            app.listen(super::commands::WORKLOG_CHANGED_EVENT, move |_| {
+                notify(&wake_app)
+            });
         }
         Err(error) => eprintln!("worklog runner unavailable: {}", error.code),
+    }
+}
+pub fn notify(app: &tauri::AppHandle) {
+    if let Some(handle) = app.try_state::<RunnerHandle>() {
+        handle.wake();
     }
 }
 pub fn stop(app: &tauri::AppHandle) {

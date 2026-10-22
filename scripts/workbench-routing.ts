@@ -7,8 +7,7 @@ export function transformWorkbenchRouting(source: string, routeModule: string): 
   }
   replace('import { base64Encode }', `import { createSessionOwnershipRouter, sessionRoute, sessionTargetFromUrl } from ${JSON.stringify(routeModule)}\nimport { base64Encode }`);
   replace('`/server/${base64Encode("sidecar")}/session/${connection.sessionId}`', 'sessionRoute({ directory: connection.directory ?? "", sessionId: connection.sessionId })');
-  replace('`/server/${base64Encode("sidecar")}/session/${sessionId}`', 'sessionRoute(event.payload)');
-  replace('listen<string>("workbench://handoff"', 'listen<{ directory: string; sessionId: string }>("workbench://handoff"');
+  replace('`/server/${base64Encode("sidecar")}/session/${target.sessionId}`', 'sessionRoute(target)');
   replace('sessionIdFromUrl(initialUrl)', 'JSON.stringify(sessionTargetFromUrl(initialUrl))');
   replace('sessionIdFromUrl(url)', 'JSON.stringify(sessionTargetFromUrl(url))');
   replace(`syncWorkbenchOwnership = (url) => {

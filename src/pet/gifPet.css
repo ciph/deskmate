@@ -3,5 +3,7 @@
 .gif-pet-image { position: absolute; object-fit: contain; user-select: none; pointer-events: none; }
 .pet-interaction { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); border: 0; padding: 0; margin: 0; background: transparent; color: inherit; cursor: pointer; }
 .pet-interaction:focus-visible { outline: 2px solid var(--focus-ring); }
-.pet-load-error { position: absolute; inset: var(--s-3) var(--s-3) auto; padding: var(--s-2); color: var(--text); background: var(--surface-raised); border: 1px solid var(--danger); border-radius: var(--r-sm); font-size: var(--t-small); }
+.pet-load-error, .pet-load-status { position: absolute; inset: var(--s-3) var(--s-3) auto; padding: var(--s-2); color: var(--text); background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: var(--r-sm); font-size: var(--t-small); }
+.pet-load-error { border-color: var(--danger); }
+.pet-load-status { pointer-events: none; }
 .pet-load-error button { color: var(--accent-ink); background: var(--accent-soft); border: 1px solid var(--line-strong); cursor: pointer; }

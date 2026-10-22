@@ -1,7 +1,13 @@
 use super::{safe_id, unavailable, Launch, Request, WorklogBridge};
 use crate::worklog::error::{WorklogError, WorklogResult};
+use notify::{event::ModifyKind, Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use serde_json::{json, Value};
-use std::{fs, path::Path, time::Duration};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    sync::{Arc, Condvar, Mutex},
+    time::{Duration, Instant},
+};
 use tauri::{Emitter, Manager};
 
 pub fn assert_plain(path: &Path, directory: bool) -> WorklogResult<()> {
@@ -252,7 +258,11 @@ fn handle(app: &tauri::AppHandle, launch: &Launch, request: Request) -> WorklogR
     }
     Ok(result)
 }
-fn consume(app: &tauri::AppHandle, launch: &Launch, path: &Path) -> WorklogResult<()> {
+fn consume(
+    launch: &Launch,
+    path: &Path,
+    execute: impl FnOnce(Request) -> WorklogResult<Value>,
+) -> WorklogResult<()> {
     assert_plain(&launch.directory, true)?;
     assert_plain(path, false)?;
     if fs::metadata(path).map_err(|_| unavailable())?.len() > 256 * 1024 {
@@ -269,7 +279,7 @@ fn consume(app: &tauri::AppHandle, launch: &Launch, path: &Path) -> WorklogResul
     if request.request_id != name {
         return Err(WorklogError::validation("Request identity mismatch"));
     }
-    let result = match handle(app, launch, request) {
+    let result = match execute(request) {
         Ok(value) => json!({"version":1,"requestId":name,"status":"completed","result":value}),
         Err(error) => json!({"version":1,"requestId":name,"status":"rejected","error":error}),
     };
@@ -295,46 +305,203 @@ fn consume(app: &tauri::AppHandle, launch: &Launch, path: &Path) -> WorklogResul
     fs::remove_file(path).map_err(|_| unavailable())?;
     Ok(())
 }
-pub fn start(app: tauri::AppHandle) {
-    std::thread::spawn(move || loop {
-        let bridge = app.state::<WorklogBridge>();
-        if let Ok(mut grants) = bridge.grants.lock() {
-            grants
-                .active
-                .retain(|_, turn| turn.created.elapsed().as_secs() < 1800);
+// Below the tool's 15 s receipt wait; slow/in-flight native calls can still return pending.
+const RECONCILE_INTERVAL: Duration = Duration::from_secs(10);
+
+#[derive(Default)]
+struct WakeState {
+    pending: bool,
+    stopped: bool,
+    watch_failed: bool,
+}
+
+#[derive(Default)]
+pub(super) struct Wake {
+    state: Mutex<WakeState>,
+    changed: Condvar,
+}
+impl Wake {
+    pub(super) fn notify(&self) {
+        let mut state = self.state.lock().unwrap_or_else(|error| error.into_inner());
+        state.pending = true;
+        self.changed.notify_one();
+    }
+    fn invalidate_watch(&self) {
+        let mut state = self.state.lock().unwrap_or_else(|error| error.into_inner());
+        state.watch_failed = true;
+        state.pending = true;
+        self.changed.notify_one();
+    }
+    fn take_watch_failure(&self) -> bool {
+        let mut state = self.state.lock().unwrap_or_else(|error| error.into_inner());
+        std::mem::take(&mut state.watch_failed)
+    }
+    pub(super) fn stop(&self) {
+        let mut state = self.state.lock().unwrap_or_else(|error| error.into_inner());
+        state.stopped = true;
+        self.changed.notify_one();
+    }
+    // Consume pending before scanning; notifications during the scan remain set for the next pass.
+    fn wait_until(&self, deadline: Instant) -> bool {
+        let mut state = self.state.lock().unwrap_or_else(|error| error.into_inner());
+        while !state.pending && !state.stopped {
+            let now = Instant::now();
+            if now >= deadline {
+                break;
+            }
+            state = self
+                .changed
+                .wait_timeout(state, deadline - now)
+                .unwrap_or_else(|error| error.into_inner())
+                .0;
         }
-        let launch = bridge.launch.lock().ok().and_then(|value| value.clone());
-        if let Some(launch) = launch {
-            if let Ok(entries) = fs::read_dir(&launch.directory) {
-                for entry in entries.flatten() {
-                    let path = entry.path();
-                    let expired = entry
-                        .metadata()
-                        .ok()
-                        .and_then(|metadata| metadata.modified().ok())
-                        .and_then(|modified| modified.elapsed().ok())
-                        .is_some_and(|age| age.as_secs() > 1800);
-                    if expired && assert_plain(&path, false).is_ok() {
-                        if let Err(error) = fs::remove_file(&path) {
-                            eprintln!("Worklog expired file cleanup: {}", error.kind());
-                        }
-                        continue;
-                    }
-                    if path.extension().and_then(|extension| extension.to_str()) == Some("request")
+        state.pending = false;
+        !state.stopped
+    }
+}
+
+fn request_event(event: &Event) -> bool {
+    if event.need_rescan() || matches!(event.kind, EventKind::Any | EventKind::Other) {
+        return true;
+    }
+    matches!(
+        event.kind,
+        EventKind::Create(_) | EventKind::Modify(ModifyKind::Name(_) | ModifyKind::Any)
+    ) && (event.paths.is_empty()
+        || event.paths.iter().any(|path| {
+            path.extension().and_then(|extension| extension.to_str()) == Some("request")
+        }))
+}
+
+#[derive(Default)]
+struct DirectoryWatch {
+    directory: Option<PathBuf>,
+    watcher: Option<RecommendedWatcher>,
+}
+impl DirectoryWatch {
+    fn refresh(&mut self, directory: Option<&Path>, wake: &Arc<Wake>, reconcile: bool) {
+        let failed = wake.take_watch_failure();
+        let changed = self.directory.as_deref() != directory;
+        if !changed && !failed && !reconcile && self.watcher.is_some() {
+            return;
+        }
+        if changed || failed {
+            self.watcher = None;
+        }
+        self.directory = directory.map(Path::to_path_buf);
+        let Some(directory) = directory else { return };
+        if assert_plain(directory, true).is_err() {
+            self.watcher = None;
+            return;
+        }
+        // Rearm on reconciliation too: a replaced directory may have lost its delete notification.
+        if let Some(watcher) = &mut self.watcher {
+            let _ = watcher.unwatch(directory);
+            if watcher
+                .watch(directory, RecursiveMode::NonRecursive)
+                .is_ok()
+            {
+                return;
+            }
+            self.watcher = None;
+        }
+        let signal = wake.clone();
+        let watched = directory.to_path_buf();
+        let result =
+            notify::recommended_watcher(move |result: notify::Result<Event>| match result {
+                Ok(event) => {
+                    if event.paths.iter().any(|path| path == &watched)
+                        && matches!(
+                            event.kind,
+                            EventKind::Remove(_) | EventKind::Modify(ModifyKind::Name(_))
+                        )
                     {
-                        if let Err(error) = consume(&app, &launch, &path) {
-                            eprintln!("Worklog bridge: {}", error.code);
-                            if assert_plain(&path, false).is_ok() {
-                                if let Err(error) = fs::remove_file(&path) {
-                                    eprintln!("Worklog request cleanup: {}", error.kind());
-                                }
-                            }
-                        }
+                        signal.invalidate_watch();
+                    } else if request_event(&event) {
+                        signal.notify();
+                    }
+                }
+                Err(_) => signal.invalidate_watch(),
+            })
+            .and_then(|mut watcher| {
+                watcher.watch(directory, RecursiveMode::NonRecursive)?;
+                Ok(watcher)
+            });
+        match result {
+            Ok(watcher) => self.watcher = Some(watcher),
+            Err(_) => eprintln!(
+                "Worklog file notifications unavailable; periodic reconciliation remains active"
+            ),
+        }
+    }
+}
+
+fn scan(
+    launch: &Launch,
+    mut execute: impl FnMut(Request) -> WorklogResult<Value>,
+) -> WorklogResult<()> {
+    // Never enumerate through a replaced symlink/reparse directory, including expired-file cleanup.
+    assert_plain(&launch.directory, true)?;
+    for entry in fs::read_dir(&launch.directory)
+        .map_err(|_| unavailable())?
+        .flatten()
+    {
+        let path = entry.path();
+        let expired = entry
+            .metadata()
+            .ok()
+            .and_then(|metadata| metadata.modified().ok())
+            .and_then(|modified| modified.elapsed().ok())
+            .is_some_and(|age| age.as_secs() > 1800);
+        if expired && assert_plain(&path, false).is_ok() {
+            if let Err(error) = fs::remove_file(&path) {
+                eprintln!("Worklog expired file cleanup: {}", error.kind());
+            }
+            continue;
+        }
+        if path.extension().and_then(|extension| extension.to_str()) == Some("request") {
+            if let Err(error) = consume(launch, &path, &mut execute) {
+                eprintln!("Worklog bridge: {}", error.code);
+                if assert_plain(&path, false).is_ok() {
+                    if let Err(error) = fs::remove_file(&path) {
+                        eprintln!("Worklog request cleanup: {}", error.kind());
                     }
                 }
             }
         }
-        std::thread::sleep(Duration::from_millis(100));
+    }
+    Ok(())
+}
+
+pub fn start(app: tauri::AppHandle) {
+    std::thread::spawn(move || {
+        let bridge = app.state::<WorklogBridge>();
+        let mut watch = DirectoryWatch::default();
+        let mut next_reconcile = Instant::now();
+        while bridge.wake.wait_until(next_reconcile) {
+            let now = Instant::now();
+            let reconcile = now >= next_reconcile;
+            if reconcile {
+                next_reconcile = now + RECONCILE_INTERVAL;
+                if let Ok(mut grants) = bridge.grants.lock() {
+                    grants
+                        .active
+                        .retain(|_, turn| turn.created.elapsed().as_secs() < 1800);
+                }
+            }
+            let launch = bridge.launch.lock().ok().and_then(|value| value.clone());
+            // Install before scanning: pre-watch requests are found by the scan, later ones wake it.
+            watch.refresh(
+                launch.as_ref().map(|value| value.directory.as_path()),
+                &bridge.wake,
+                reconcile,
+            );
+            if let Some(launch) = launch {
+                if let Err(error) = scan(&launch, |request| handle(&app, &launch, request)) {
+                    eprintln!("Worklog bridge scan: {}", error.code);
+                }
+            }
+        }
     });
 }
 #[cfg(test)]
@@ -369,3 +536,7 @@ mod tests {
 #[cfg(test)]
 #[path = "bridge_http_tests.rs"]
 mod http_tests;
+
+#[cfg(test)]
+#[path = "bridge_worker_tests.rs"]
+mod worker_tests;

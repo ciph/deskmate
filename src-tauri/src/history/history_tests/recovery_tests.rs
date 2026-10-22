@@ -16,6 +16,7 @@ fn record(run_id: &str, session_id: Option<&str>, workspace: &Path, created_at: 
         pending_outcome: None,
         pending_error_summary: None,
         message_ids: Vec::new(),
+            pending_usage_message_ids: Vec::new(),
         part_ids: Vec::new(),
         call_ids: Vec::new(),
         initial_input: None,
@@ -24,6 +25,7 @@ fn record(run_id: &str, session_id: Option<&str>, workspace: &Path, created_at: 
 
 fn text_message(id: &str, role: &str, text: &str, created: u64) -> NativeMessage {
     NativeMessage {
+        usage: None,
         system: None,
         id: id.to_owned(),
         role: Some(role.to_owned()),

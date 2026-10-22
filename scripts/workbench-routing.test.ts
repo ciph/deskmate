@@ -10,7 +10,7 @@ test("handoff and ownership retain directory and session identity in the generat
   const transformed = transformWorkbenchRouting(entry, "E:/yume/src/workbench/session-route.ts");
   // When the build adapts the host bridge.
   // Then every route operation uses the composite target, including same-ID project switches.
-  expect(transformed).toContain("sessionRoute(event.payload)");
+  expect(transformed).toContain("sessionRoute(target)");
   expect(transformed).toContain('from "E:/yume/src/workbench/session-route.ts"');
   expect(transformed).toContain('bridge.core.invoke("workbench_resolve_session", { sessionId })');
   expect(transformed).toContain("syncWorkbenchOwnership = createSessionOwnershipRouter(");

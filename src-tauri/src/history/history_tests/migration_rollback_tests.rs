@@ -32,6 +32,7 @@ fn record(
         pending_outcome: None,
         pending_error_summary: None,
         message_ids: Vec::new(),
+            pending_usage_message_ids: Vec::new(),
         part_ids: Vec::new(),
         call_ids: Vec::new(),
         initial_input: None,
@@ -52,6 +53,7 @@ fn text_part(id: &str, text: &str) -> NativePart {
 
 fn native_messages() -> Vec<NativeMessage> {
     let user = NativeMessage {
+        usage: None,
         system: None,
         id: "msg_native_user".to_owned(),
         role: Some("user".to_owned()),
@@ -63,6 +65,7 @@ fn native_messages() -> Vec<NativeMessage> {
         parts: vec![text_part("prt_native_user", "native user")],
     };
     let assistant = NativeMessage {
+        usage: None,
         system: None,
         id: "msg_native_assistant".to_owned(),
         role: Some("assistant".to_owned()),

@@ -3,7 +3,7 @@ use serde::Deserialize;
 use std::{
     collections::{HashMap, HashSet},
     path::PathBuf,
-    sync::Mutex,
+    sync::{Arc, Mutex},
 };
 use tauri::Manager;
 
@@ -46,6 +46,7 @@ pub struct WorklogBridge {
     root: Option<PathBuf>,
     launch: Mutex<Option<Launch>>,
     grants: Mutex<Registrations>,
+    wake: Arc<worker::Wake>,
 }
 impl WorklogBridge {
     pub fn initialize(app: &tauri::AppHandle) -> Self {
@@ -63,12 +64,14 @@ impl WorklogBridge {
             root,
             launch: Mutex::new(None),
             grants: Mutex::new(Registrations::default()),
+            wake: Arc::new(worker::Wake::default()),
         }
     }
     pub fn reset_launch(&self, endpoint: String, auth_header: String) -> WorklogResult<PathBuf> {
         // A restart attempt retires its predecessor even if validation or IPC setup fails.
         let mut launch = self.launch.lock().map_err(|_| unavailable())?;
         *launch = None;
+        self.wake.notify();
         *self.grants.lock().map_err(|_| unavailable())? = Registrations::default();
         crate::history::native_api::NativeHistoryClient::new(&endpoint, &auth_header)
             .map_err(|_| WorklogError::validation("Invalid managed sidecar connection"))?;
@@ -83,6 +86,9 @@ impl WorklogBridge {
             auth_header,
         });
         Ok(directory)
+    }
+    pub fn shutdown(&self) {
+        self.wake.stop();
     }
     pub fn register(
         &self,
@@ -234,6 +240,7 @@ mod tests {
                 auth_header: "Basic fixture".into(),
             })),
             grants: Mutex::new(Registrations::default()),
+            wake: Arc::new(worker::Wake::default()),
         }
     }
     #[test]

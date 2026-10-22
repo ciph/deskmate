@@ -6,6 +6,7 @@ mod collector;
 mod collector_tests;
 mod continuation;
 mod lifecycle;
+mod usage_retry;
 #[cfg(test)]
 mod lifecycle_contract_tests;
 mod lifecycle_finish;

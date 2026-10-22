@@ -98,7 +98,8 @@ pub(super) fn message_personas(messages: &[NativeMessage], profiles: &[(String, 
 mod tests {
     use super::*;
     fn message(id: &str, role: &str, parent: Option<&str>, system: Option<&str>) -> NativeMessage {
-        NativeMessage { id: id.into(), role: Some(role.into()), parent_id: parent.map(str::to_owned),
+        NativeMessage { usage: None,
+        id: id.into(), role: Some(role.into()), parent_id: parent.map(str::to_owned),
             system: system.map(str::to_owned), created: Some(1), completed: true, finish: None, error: None, parts: vec![] }
     }
     #[test]

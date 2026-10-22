@@ -8,7 +8,6 @@ import { PetPomodoro } from "./PetPomodoro";
 import { petLayout } from "./petLayout";
 import { personaById } from "./personaCatalog";
 import { GifPetView } from "./GifPetView";
-import { GlbPetView } from "./GlbPetView";
 import { usePackRevision } from "./usePackRevision";
 import { usePetActivityState } from "./useGifState";
 import { usePetSleep } from "./usePetSleep";
@@ -35,8 +34,9 @@ async function getSettingsWithRetry(): Promise<Settings> {
 }
 const report = (error: unknown) => console.error("pet interaction failed", error instanceof Error ? error.message : String(error));
 const openSettings = () => { void invoke("open_settings").catch(report); };
+const loadGlbView = () => import("./GlbPetView");
 
-export default function PetApp({ gifLoad, clock }: { readonly gifLoad?: typeof loadGifPersona; readonly clock?: SleepClock } = {}) {
+export default function PetApp({ gifLoad, glbLoad = loadGlbView, clock }: { readonly gifLoad?: typeof loadGifPersona; readonly glbLoad?: typeof loadGlbView; readonly clock?: SleepClock } = {}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<PetRenderer | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -45,6 +45,8 @@ export default function PetApp({ gifLoad, clock }: { readonly gifLoad?: typeof l
   const [readyGif, setReadyGif] = useState<{ readonly identity: { readonly personaId: string }; readonly data: LoadedGifPersona } | null>(null);
   const [readyRig, setReadyRig] = useState<object | null>(null);
   const [readyGlb, setReadyGlb] = useState<object | null>(null);
+  const [GlbView, setGlbView] = useState<typeof import("./GlbPetView").GlbPetView | null>(null);
+  const [glbAttempt, setGlbAttempt] = useState(0);
   const personaId = settings?.personaId ?? "";
   const revision = usePackRevision(personaById(personaId).packId);
   const runtimeId = JSON.stringify([personaId, revision]);
@@ -81,6 +83,19 @@ export default function PetApp({ gifLoad, clock }: { readonly gifLoad?: typeof l
   const loadedRig = useCallback(() => setReadyRig(personaIdentity), [personaIdentity]);
   const loadedGlb = useCallback((loaded: boolean) => setReadyGlb(loaded ? personaIdentity : null), [personaIdentity]);
   const settingsReady = settings !== null;
+  const glbLoading = settingsReady && !twoDimensional && !ready && loadError === null;
+  useEffect(() => {
+    if (!settingsReady || twoDimensional || GlbView !== null) return;
+    let disposed = false;
+    setLoadError(null);
+    void glbLoad().then((module) => {
+      if (!disposed) setGlbView(() => module.GlbPetView);
+    }).catch((error: unknown) => {
+      if (!disposed) setLoadError(error instanceof Error ? error.message : String(error));
+    });
+    return () => { disposed = true; };
+  }, [settingsReady, twoDimensional, runtimeId, glbLoad, glbAttempt, GlbView]);
+  const retryGlb = () => { setLoadError(null); setReadyGlb(null); setGlbAttempt((attempt) => attempt + 1); };
   useEffect(() => {
     if (settingsReady) void invoke("configure_pet_geometry", { gif: twoDimensional, envelope }).catch(report);
   }, [twoDimensional, envelope, settingsReady]);
@@ -113,9 +128,10 @@ export default function PetApp({ gifLoad, clock }: { readonly gifLoad?: typeof l
         leaving={leaving} visible={visible} onError={setLoadError} onLoaded={loaded} load={gifLoad} />
         : rig ? <Rig2dPetView key={runtimeId} personaId={personaId} revision={revision} state={state} width={layout.width}
           leaving={leaving} visible={visible} onError={setLoadError} onLoaded={loadedRig} />
-        : <GlbPetView key={runtimeId} mood={activity.mood} settings={settings} width={layout.width} height={layout.height} rendererRef={rendererRef} onError={setLoadError} onReady={loadedGlb} />}
+        : GlbView !== null ? <GlbView key={`${runtimeId}:${glbAttempt}`} mood={activity.mood} settings={settings} width={layout.width} height={layout.height} rendererRef={rendererRef} onError={setLoadError} onReady={loadedGlb} /> : null}
     </button>}
     <PetPomodoro language={settings?.language ?? "zh-CN"} scale={petScale} />
-    {loadError !== null && <div role="alert" className="pet-load-error">桌宠加载失败 <button type="button" onClick={openSettings}>打开设置切换角色</button></div>}
+    {glbLoading && <div role="status" className="pet-load-status">正在加载 3D 桌宠…</div>}
+    {loadError !== null && <div role="alert" className="pet-load-error">桌宠加载失败 {settingsReady && !twoDimensional && <button type="button" onClick={retryGlb}>重试</button>} <button type="button" onClick={openSettings}>打开设置切换角色</button></div>}
   </div>;
 }

@@ -32,7 +32,7 @@ test("isolated child failures, startup errors and timeout cannot report success"
     expect(() => boundedBudget("600001")).toThrow();
     expect(() => boundedBudget("NaN")).toThrow();
   } finally { await rm(root, { recursive: true, force: true }); }
-});
+}, 20_000); // Allow the 10 s child budget plus Windows process-tree teardown.
 
 test("the complete CLI returns failure even when another child passes", async () => {
   const root = await mkdtemp(join(tmpdir(), "yume-test-cli-"));

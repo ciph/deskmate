@@ -12,9 +12,20 @@ use tauri::{Emitter, Manager};
 use crate::Sidecar;
 
 /// One-shot session handoff: the light chat hands a session to the workbench,
-/// which consumes it once on its next connection bootstrap (§8.1).
+/// which consumes it once after its router and listener are ready (§8.1).
 #[derive(Default)]
-pub(crate) struct WorkbenchHandoff(pub(crate) Mutex<Option<WorkbenchSessionTarget>>);
+pub(crate) struct WorkbenchHandoff(Mutex<Option<WorkbenchSessionTarget>>);
+
+/// Creation is serialized independently of page readiness; failure leaves the slot retryable.
+#[derive(Default)]
+pub(crate) struct WorkbenchWindow(Mutex<()>);
+
+impl WorkbenchWindow {
+    fn ensure<T>(&self, find: impl FnOnce() -> Option<T>, create: impl FnOnce() -> Result<T, String>) -> Result<T, String> {
+        let _creation = self.0.lock().map_err(|_| "workbench creation state poisoned")?;
+        match find() { Some(window) => Ok(window), None => create() }
+    }
+}
 
 /// Per-session input ownership (§8.1): sessions whose input the workbench
 /// currently owns. While a session is owned, the light chat defers its
@@ -154,7 +165,7 @@ const MAX_PICKED_FILE_BYTES: u64 = 64 * 1024 * 1024;
 /// code rather than config so navigation stays gated: only the app shell,
 /// Tauri IPC/asset hosts, and the loopback sidecar may load; external pages
 /// can never enter this window, so they can never reach its bridge commands.
-pub(crate) fn create_window(app: &tauri::AppHandle) -> Result<(), String> {
+fn create_window(app: &tauri::AppHandle) -> Result<tauri::WebviewWindow, String> {
     use tauri::{WebviewUrl, WebviewWindowBuilder};
     // Same base WebView2 flags as the config-declared windows. CDP remote
     // debugging is opt-in via YUME_CDP_PORT (QA only; never on in production).
@@ -207,7 +218,7 @@ pub(crate) fn create_window(app: &tauri::AppHandle) -> Result<(), String> {
             let _ = event_window.hide();
         }
     });
-    Ok(())
+    Ok(window)
 }
 
 #[derive(Serialize)]
@@ -240,28 +251,23 @@ pub fn workbench_connection(
         .app_data_dir()
         .map_err(|_| "app data dir unavailable".to_string())?;
     let sidecar = app.state::<Sidecar>();
-    let target = app
-        .try_state::<WorkbenchHandoff>()
-        .and_then(|state| state.0.lock().ok().and_then(|mut pending| pending.take()));
+    // The page takes the handoff only after its router and event listener are ready.
+    // In particular, a second handoff during the initial health wait stays pending.
     Ok(WorkbenchConnection {
         url: format!("http://127.0.0.1:{}", sidecar.port),
         username: Some("opencode".to_string()),
         password: Some(sidecar.password.clone()),
-        directory: target
-            .as_ref()
-            .map(|target| target.directory.clone())
-            .unwrap_or_else(|| data_dir.join("workspace").to_string_lossy().into_owned()),
-        session_id: target.map(|target| target.session_id),
+        directory: data_dir.join("workspace").to_string_lossy().into_owned(),
+        session_id: None,
     })
 }
 
-/// Hand a session to the workbench (from the light chat or the workbench
-/// itself): store it as the pending handoff, notify the (already-loaded)
-/// window so it navigates in place, then reveal the window. Opening the
+/// Hand a session to the workbench: save the target before creating/revealing
+/// the window. Its ready page consumes the latest target and claims input. Opening the
 /// workbench sends no message, copies no history, and creates no new session
 /// (§8.1) — the workbench entry merely routes to the given session.
 #[tauri::command]
-pub fn workbench_open_session(
+pub async fn workbench_open_session(
     window: tauri::WebviewWindow,
     app: tauri::AppHandle,
     session_id: String,
@@ -270,6 +276,11 @@ pub fn workbench_open_session(
     if window.label() != WORKBENCH_LABEL && window.label() != "chat" {
         return Err("only chat or workbench windows can hand off a session".to_string());
     }
+    tauri::async_runtime::spawn_blocking(move || open_session(&app, session_id, directory))
+        .await.map_err(|_| "workbench open worker failed".to_owned())?
+}
+
+fn open_session(app: &tauri::AppHandle, session_id: String, directory: Option<String>) -> Result<(), String> {
     if !crate::worklog::bridge::safe_id(&session_id) {
         return Err("empty session id".to_string());
     }
@@ -289,20 +300,19 @@ pub fn workbench_open_session(
         .0
         .lock()
         .map_err(|_| "handoff state poisoned".to_string())? = Some(target.clone());
-    workbench_show(app.clone())?;
-    // Claim input ownership for the session so the light chat defers its own
-    // handlers for it while the workbench owns it (§8.1).
-    if let Some(ownership) = app.try_state::<WorkbenchOwnership>() {
-        let workbench = app.get_webview_window(WORKBENCH_LABEL).ok_or("workbench window missing")?;
-        ownership.claim_visible(&directory, &session_id, workbench.is_visible().map_err(|error| error.to_string())?)?;
-    }
-    // The page is created at startup and may already be loaded; tell it where
-    // to go (the entry also reads the pending handoff on fresh bootstraps).
-    let _ = app.emit_to(WORKBENCH_LABEL, "workbench://handoff", target);
-    // Ownership changed: any window showing this session should re-check and
-    // defer/resume its handlers accordingly.
-    let _ = app.emit("workbench://ownership-changed", ());
+    show(app)?;
+    // A notification is only a wakeup. The page atomically takes the latest target
+    // after registering its listener, so opening during bootstrap cannot lose it.
+    app.emit_to(WORKBENCH_LABEL, "workbench://handoff", ()).map_err(|error| error.to_string())?;
     Ok(())
+}
+
+/// Called after the page has installed its listener and mounted its router.
+#[tauri::command]
+pub(crate) fn workbench_take_handoff(window: tauri::WebviewWindow, app: tauri::AppHandle) -> Result<Option<WorkbenchSessionTarget>, String> {
+    require_workbench(&window)?;
+    app.state::<WorkbenchHandoff>().0.lock()
+        .map(|mut pending| pending.take()).map_err(|_| "handoff state poisoned".to_owned())
 }
 
 /// Whether the workbench currently owns the given session's input (§8.1). The
@@ -510,11 +520,17 @@ pub async fn workbench_open_external(
 /// Show and focus the workbench window. Callable from any YUME window; it only
 /// reveals the window and carries no data.
 #[tauri::command]
-pub fn workbench_show(app: tauri::AppHandle) -> Result<(), String> {
+pub async fn workbench_show(app: tauri::AppHandle) -> Result<(), String> {
+    // WebView creation must not block Tauri's UI thread on Windows.
+    tauri::async_runtime::spawn_blocking(move || show(&app))
+        .await.map_err(|_| "workbench show worker failed".to_owned())?
+}
+
+fn show(app: &tauri::AppHandle) -> Result<(), String> {
     let _service = crate::component_activation::service_use()?;
-    let win = app
-        .get_webview_window(WORKBENCH_LABEL)
-        .ok_or("workbench window missing")?;
+    let win = app.state::<WorkbenchWindow>().ensure(
+        || app.get_webview_window(WORKBENCH_LABEL), || create_window(app),
+    )?;
     // Serialize revealing the SDK composer with unused-draft deletion.
     let history = app.state::<crate::history::maintenance::HistoryMaintenance>();
     let _selection = history.used.lock().map_err(|_| "history_state_unavailable")?;

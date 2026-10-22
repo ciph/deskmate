@@ -162,6 +162,7 @@ fn permission_reply_rejects_a_run_terminalized_by_collection() -> TestResult<()>
     runs.reconcile(
         "msg_aborted",
         &[crate::agent::record_store::NativeMessage {
+            usage: None,
             system: None,
             role: None,
             created: None,
@@ -211,6 +212,7 @@ fn permission_reply_requires_current_exact_scoped_request() -> TestResult<()> {
     runs.reconcile(
         "msg_current",
         &[crate::agent::record_store::NativeMessage {
+            usage: None,
             system: None,
             role: Some("assistant".into()),
             created: Some(1),

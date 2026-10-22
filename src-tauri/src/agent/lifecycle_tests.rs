@@ -71,6 +71,7 @@ fn every_failed_commit_preserves_ram_disk_and_restart_then_can_retry() -> TestRe
         }
         let before = serde_json::to_value(state.active_record("msg_run")?).checked("before")?;
         let messages = [NativeMessage {
+            usage: None,
             system: None,
             id: "msg_reply".into(),
             parent_id: Some("msg_run".into()),
@@ -212,6 +213,7 @@ fn terminal_message_with_unresolved_tool(
     state.bind_session("msg_run", "ses_run")?;
     state.confirm_submission("msg_run")?;
     let mut earlier = NativeMessage {
+        usage: None,
         system: None,
         id: "msg_earlier".into(),
         role: Some("assistant".into()),
@@ -236,6 +238,7 @@ fn terminal_message_with_unresolved_tool(
         }],
     };
     let mut latest = NativeMessage {
+        usage: None,
         system: None,
         id: "msg_latest".into(),
         created: Some(2),

@@ -5,11 +5,11 @@ use super::{
     repository::Repository,
     repository_runtime::ClaimedRun,
 };
-use chrono::{Datelike, Duration as ChronoDuration, NaiveDate, Utc};
+use chrono::{DateTime, Datelike, Duration as ChronoDuration, NaiveDate, Utc};
 use std::collections::BTreeSet;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
-    Arc,
+    Arc, Condvar, Mutex,
 };
 use std::time::{Duration, Instant};
 
@@ -21,18 +21,71 @@ pub trait RunnerEnvironment: Send + Sync {
             .map(|endpoint| format!("{}/{}", endpoint.provider_id, endpoint.model_id))
     }
 }
+// Lost notifications, wall-clock/timezone changes and external DB writes are rechecked.
+const IDLE_RECHECK: Duration = Duration::from_secs(60);
+const BLOCKED_RECHECK: Duration = Duration::from_secs(1);
+
+#[derive(Default)]
+struct RunnerWake {
+    pending: Mutex<bool>,
+    changed: Condvar,
+}
+impl RunnerWake {
+    fn notify(&self) {
+        *self
+            .pending
+            .lock()
+            .unwrap_or_else(|error| error.into_inner()) = true;
+        self.changed.notify_one();
+    }
+    fn begin_cycle(&self) {
+        *self
+            .pending
+            .lock()
+            .unwrap_or_else(|error| error.into_inner()) = false;
+    }
+    fn wait(&self, delay: Duration, stop: &AtomicBool) {
+        let pending = self
+            .pending
+            .lock()
+            .unwrap_or_else(|error| error.into_inner());
+        let _guard = self
+            .changed
+            .wait_timeout_while(pending, delay, |pending| {
+                !*pending && !stop.load(Ordering::Relaxed)
+            })
+            .unwrap_or_else(|error| error.into_inner());
+    }
+}
+fn wait_until(next: Option<DateTime<Utc>>, now: DateTime<Utc>) -> Duration {
+    match next {
+        Some(next) if next <= now => BLOCKED_RECHECK,
+        Some(next) => (next - now)
+            .to_std()
+            .unwrap_or(IDLE_RECHECK)
+            .min(IDLE_RECHECK),
+        None => IDLE_RECHECK,
+    }
+}
 pub struct RunnerHandle {
     stop: Arc<AtomicBool>,
+    wake: Arc<RunnerWake>,
 }
 impl RunnerHandle {
     pub fn start(repository: Arc<Repository>, environment: Arc<dyn RunnerEnvironment>) -> Self {
         let stop = Arc::new(AtomicBool::new(false));
+        let wake = Arc::new(RunnerWake::default());
         let worker_stop = stop.clone();
+        let worker_wake = wake.clone();
         std::thread::spawn(move || {
             while !worker_stop.load(Ordering::Relaxed) {
+                // Consume before reading the DB: a commit during the cycle stays pending.
+                worker_wake.begin_cycle();
                 let identity = environment.model_identity().unwrap_or_default();
+                let mut failed = false;
                 if let Err(error) = repository.enqueue_due(Utc::now(), &identity) {
                     eprintln!("worklog scheduler: {}", error.code);
+                    failed = true;
                 }
                 match repository.claim_run(Utc::now()) {
                     Ok(Some(run)) => {
@@ -45,22 +98,37 @@ impl RunnerHandle {
                             }
                         }
                         environment.changed();
+                        continue;
                     }
                     Ok(None) => {}
-                    Err(error) => eprintln!("worklog claim: {}", error.code),
-                }
-                for _ in 0..10 {
-                    if worker_stop.load(Ordering::Relaxed) {
-                        break;
+                    Err(error) => {
+                        eprintln!("worklog claim: {}", error.code);
+                        failed = true;
                     }
-                    std::thread::sleep(Duration::from_millis(100));
                 }
+                let now = Utc::now();
+                let delay = if failed {
+                    IDLE_RECHECK
+                } else {
+                    match repository.next_runner_deadline(now) {
+                        Ok(next) => wait_until(next, now),
+                        Err(error) => {
+                            eprintln!("worklog deadline: {}", error.code);
+                            IDLE_RECHECK
+                        }
+                    }
+                };
+                worker_wake.wait(delay, &worker_stop);
             }
         });
-        Self { stop }
+        Self { stop, wake }
+    }
+    pub fn wake(&self) {
+        self.wake.notify();
     }
     pub fn stop(&self) {
         self.stop.store(true, Ordering::Relaxed);
+        self.wake.notify();
     }
 }
 impl Drop for RunnerHandle {
@@ -212,3 +280,7 @@ mod publication_tests;
 #[cfg(test)]
 #[path = "runner_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "runner_wake_tests.rs"]
+mod wake_tests;

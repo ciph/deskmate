@@ -80,7 +80,7 @@ fn workspace_directory_scopes_every_session_request() -> Result<(), String> {
             let body = match path.as_str() {
                 "/session" => "{\"id\":\"session-unicode\"}",
                 "/session/session-unicode/message" => {
-                    r#"[{"info":{"id":"msg-native","role":"assistant","parentID":"message","system":"<!-- yume:persona=baobao -->","time":{"created":7,"completed":8}},"parts":[{"id":"prt-native","type":"text","text":"native reply"}]}]"#
+                    r#"[{"info":{"id":"msg-native","sessionID":"session-unicode","role":"assistant","parentID":"message","system":"<!-- yume:persona=baobao -->","providerID":"provider","modelID":"selected-model-b","tokens":{"input":2,"output":3,"reasoning":4,"cache":{"read":5,"write":6}},"time":{"created":7,"completed":8}},"parts":[{"id":"prt-native","type":"text","text":"native reply"}]}]"#
                 }
                 "/session/session-unicode/abort" => "true",
                 _ => "{}",
@@ -103,6 +103,12 @@ fn workspace_directory_scopes_every_session_request() -> Result<(), String> {
     assert_eq!(snapshot[0].created, Some(7));
     assert_eq!(snapshot[0].system.as_deref(), Some("<!-- yume:persona=baobao -->"));
     assert_eq!(snapshot[0].parent_id.as_deref(), Some("message"));
+    let usage = snapshot[0].usage.as_ref().expect("completed snapshot retains native usage");
+    assert_eq!(usage.message_id, "msg-native");
+    assert_eq!(usage.sidecar_id, "provider");
+    assert_eq!(usage.model_id, "selected-model-b");
+    assert_eq!(usage.created_at_ms, 7);
+    assert_eq!(usage.tokens, 20);
     assert_eq!(snapshot[0].parts[0].kind.as_deref(), Some("text"));
     assert_eq!(snapshot[0].parts[0].text.as_deref(), Some("native reply"));
     assert!(client.abort("session-unicode")?);
@@ -239,5 +245,85 @@ fn accepted_prompt_confirmation_recovers_from_native_facts_without_replay() -> R
     assert!(permissions.waiting("msg_confirm").is_ok());
     assert_eq!(server.join().map_err(|_| "join")??, 1);
     std::fs::remove_dir_all(root).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[test]
+fn incomplete_usage_never_disrupts_snapshot_and_invalid_counts_are_not_captured() -> Result<(), String> {
+    let listener = TcpListener::bind("127.0.0.1:0").map_err(|error| error.to_string())?;
+    let port = listener.local_addr().map_err(|error| error.to_string())?.port();
+    let base = serde_json::json!({"info": {
+        "id":"msg-usage", "sessionID":"session-usage", "role":"assistant", "parentID":"message", "providerID":"provider", "modelID":"model",
+        "time":{"created":7,"completed":8}, "tokens":{"input":2,"output":3,"reasoning":4,"cache":{"read":5,"write":6}}
+    }, "parts":[]});
+    let cases: Vec<(&str, serde_json::Value, Option<u64>)> = vec![
+        ("sessionID", serde_json::Value::Null, None),
+        ("providerID", serde_json::Value::Null, None),
+        ("modelID", serde_json::json!(""), None),
+        ("providerID", serde_json::json!(17), None),
+        ("modelID", serde_json::json!({"invalid":true}), None),
+        ("tokens", serde_json::Value::Null, None),
+        ("tokens", serde_json::json!("invalid"), None),
+        ("tokens", serde_json::json!({}), None),
+        ("tokens", serde_json::json!({"input":100_000_001,"output":0,"reasoning":0,"cache":{"read":0,"write":0}}), None),
+        ("tokens", serde_json::json!({"input":u64::MAX,"output":1,"reasoning":0,"cache":{"read":0,"write":0}}), None),
+        ("tokens", serde_json::json!({"input":0,"output":0,"reasoning":0,"cache":{"read":0,"write":0}}), Some(0)),
+        ("tokens", serde_json::json!({"input":0,"output":0}), None),
+        ("tokens", serde_json::json!({"input":-1,"output":"invalid","reasoning":4,"cache":{"read":0,"write":0}}), None),
+        ("tokens", serde_json::json!({"input":0,"output":0,"reasoning":0,"cache":{"read":"invalid","write":0}}), None),
+        ("role", serde_json::json!("user"), None),
+        ("time", serde_json::json!({"created":7}), None),
+        ("time", serde_json::json!({"completed":8}), None),
+        ("time", serde_json::json!({"created":u64::MAX,"completed":8}), None),
+    ];
+    let expected: Vec<Option<u64>> = cases.iter().map(|(_, _, expected)| *expected).collect();
+    let payloads: Vec<String> = cases.into_iter().map(|(field, value, _)| {
+        let mut message = base.clone();
+        if value.is_null() { message["info"].as_object_mut().unwrap().remove(field); }
+        else { message["info"][field] = value; }
+        serde_json::json!([message]).to_string()
+    }).collect();
+    let server = std::thread::spawn(move || -> Result<(), String> {
+        for body in payloads {
+            let (mut stream, _) = listener.accept().map_err(|error| error.to_string())?;
+            assert!(read_request(&mut stream)?.starts_with("GET /session/session-usage/message?"));
+            write!(stream, "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{body}", body.len()).map_err(|error| error.to_string())?;
+            stream.flush().map_err(|error| error.to_string())?;
+        }
+        Ok(())
+    });
+    let client = client_for(port, Path::new(r"E:\synthetic-usage-workspace"));
+    for expected in expected {
+        let messages = client.snapshot("session-usage")?;
+        assert_eq!(messages.len(), 1);
+        assert_eq!(messages[0].usage.as_ref().map(|usage| usage.tokens), expected);
+    }
+    server.join().map_err(|_| "usage server join".to_owned())??;
+    Ok(())
+}
+
+#[test]
+fn snapshot_rejects_a_different_or_invalid_session_before_capture() -> Result<(), String> {
+    let listener = TcpListener::bind("127.0.0.1:0").map_err(|error| error.to_string())?;
+    let port = listener.local_addr().map_err(|error| error.to_string())?.port();
+    let server = std::thread::spawn(move || -> Result<(), String> {
+        for session in [serde_json::json!("another-session"), serde_json::json!(17)] {
+            let (mut stream, _) = listener.accept().map_err(|error| error.to_string())?;
+            assert!(read_request(&mut stream)?.starts_with("GET /session/session-usage/message?"));
+            let body = serde_json::json!([{"info":{
+                "id":"msg-usage", "sessionID":session, "role":"assistant", "parentID":"message",
+                "providerID":"provider", "modelID":"model", "time":{"created":7,"completed":8},
+                "tokens":{"input":2,"output":3,"reasoning":4,"cache":{"read":5,"write":6}}
+            },"parts":[]}]).to_string();
+            write!(stream, "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{body}", body.len()).map_err(|error| error.to_string())?;
+            stream.flush().map_err(|error| error.to_string())?;
+        }
+        Ok(())
+    });
+    let client = client_for(port, Path::new(r"E:\synthetic-usage-workspace"));
+    for _ in 0..2 {
+        assert_eq!(client.snapshot("session-usage").unwrap_err(), "agent_snapshot_session_mismatch");
+    }
+    server.join().map_err(|_| "usage session server join".to_owned())??;
     Ok(())
 }

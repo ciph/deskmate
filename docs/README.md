@@ -15,6 +15,7 @@
 | [附件原生回归](attachment-native-regression.md) | 拖拽、WebKit 播放与取消请求的实机 gate |
 | [统一历史契约](migrations/opencode-native/unified-history-contract.md) | 会话身份、模型偏好、空白记录、组织操作与共享入口 |
 | [工作台构建](workbench-build.md) | 当前固定输入、生成物、完整重建、轻量 Windows 包及按需组件 |
+| [运行生命周期](runtime-lifecycle.md) | 工作台首次创建、3D 按需加载、受管引擎恢复与有界诊断日志 |
 | [维护与验收脚本](../scripts/README.md) | 构建/作者/QA/发布 CLI 的职责、输入输出、平台和退出条件 |
 | [原生能力矩阵](migrations/opencode-native/capabilities.md) | 固定引擎能力与带日期的运行证据；未验证项明确保留 |
 | [架构决策](migrations/opencode-native/decisions.md) | 有效决定、被替代的理由和重审条件 |

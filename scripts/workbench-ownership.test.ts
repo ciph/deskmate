@@ -61,3 +61,53 @@ test("native show reclaims the current scope after hidden rejection without DOM 
   await drain();
   expect(listeners.size).toBe(0);
 });
+
+
+test("lazy handoff waits for the actual router and serializes ready/event races", async () => {
+  const entry = readFileSync(resolve(import.meta.dir, "workbench-overlay/workbench/entry.tsx"), "utf8");
+  const adapted = transformWorkbenchRouting(entry, "E:/yume/src/workbench/session-route.ts");
+  const start = adapted.indexOf("  // Listen before taking the saved target.");
+  const end = adapted.indexOf("\n}\n\nvoid main()", start);
+  const code = new Bun.Transpiler({ loader: "ts" }).transformSync(adapted.slice(start, end));
+  let markReady!: () => void;
+  const historyReady = new Promise<void>((resolve) => { markReady = resolve; });
+  const routes: string[] = [];
+  const activeHistory = { set: ({ value }: { value: string }) => { routes.push(value); } };
+  const window = new EventTarget();
+  let notify!: () => void;
+  let pending: { directory: string; sessionId: string } | null = { directory: "C:/one", sessionId: "ses_same" };
+  let reads = 0;
+  let concurrent = 0;
+  let maximumConcurrent = 0;
+  let cleaned = false;
+  const bridge = {
+    event: { listen: async (_name: string, callback: () => void) => { notify = callback; return () => { cleaned = true; }; } },
+    core: { invoke: async (command: string) => {
+      expect(command).toBe("workbench_take_handoff");
+      reads += 1;
+      maximumConcurrent = Math.max(maximumConcurrent, ++concurrent);
+      await Promise.resolve();
+      const target = pending;
+      pending = null;
+      concurrent -= 1;
+      return target;
+    } },
+  };
+  const run = new Function("bridge", "window", "historyReady", "activeHistory", "sessionRoute", `return (async () => { ${code} })()`)(bridge, window, historyReady, activeHistory, sessionRoute);
+  for (let i = 0; i < 5; i++) await Promise.resolve();
+  expect(reads).toBe(0);
+  pending = { directory: "C:/two", sessionId: "ses_same" };
+  notify();
+  notify();
+  markReady();
+  await run;
+  for (let i = 0; i < 20; i++) await Promise.resolve();
+  expect(routes).toEqual([sessionRoute({ directory: "C:/two", sessionId: "ses_same" })]);
+  expect(maximumConcurrent).toBe(1);
+  pending = { directory: "C:/one", sessionId: "ses_next" };
+  notify();
+  for (let i = 0; i < 20; i++) await Promise.resolve();
+  expect(routes[1]).toBe(sessionRoute({ directory: "C:/one", sessionId: "ses_next" }));
+  window.dispatchEvent(new Event("pagehide"));
+  expect(cleaned).toBe(true);
+});

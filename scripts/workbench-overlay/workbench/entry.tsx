@@ -45,7 +45,7 @@ async function bootstrap(): Promise<WorkbenchBootstrap> {
   throw new Error("yume workbench: no sidecar connection (window.__TAURI__ missing and VITE_YUME_SIDECAR_URL unset)")
 }
 
-// The host creates this window at app start, while the managed sidecar may
+// The host creates this window on demand, while the managed sidecar may
 // still be booting; wait for a real health answer before mounting the app so
 // the first paint is not the error boundary. A timeout still renders and lets
 // the app's own connection gate surface the failure.
@@ -83,11 +83,14 @@ function setLastActiveUrl(value: string) {
 // this window) can navigate the already-loaded page in place, without a full
 // reload and without re-running bootstrap (§8.1).
 let activeHistory: ReturnType<typeof createMemoryHistory> | undefined
+let markHistoryReady: () => void
+const historyReady = new Promise<void>((resolve) => { markHistoryReady = resolve })
 let syncWorkbenchOwnership: ((url: string) => void) | undefined
 
 function WorkbenchMemoryRouter(props: BaseRouterProps & { initialUrl: string }) {
   const history = createMemoryHistory()
   activeHistory = history
+  markHistoryReady()
   if (props.initialUrl !== "/") history.set({ value: props.initialUrl, replace: true, scroll: false })
   onCleanup(
     history.listen((value) => {
@@ -315,18 +318,7 @@ async function main() {
     })
   }
 
-  // In-place navigation for session handoffs after the page has already
-  // bootstrapped (host emits `workbench://handoff` from the light chat / pet;
-  // the same pending value is also honored on fresh bootstraps via
-  // connection.sessionId above).
-  if (bridge) {
-    void bridge.event.listen<string>("workbench://handoff", (event) => {
-      const sessionId = event.payload
-      if (!sessionId || !activeHistory) return
-      activeHistory.set({ value: `/server/${base64Encode("sidecar")}/session/${sessionId}`, replace: false })
-    })
-  }
-
+  // In-place navigation is installed after mounting below.
   const root = document.getElementById("root")
   if (!(root instanceof HTMLElement)) throw new Error("yume workbench: #root element missing")
 
@@ -340,6 +332,26 @@ async function main() {
     ),
     root,
   )
+
+  // Listen before taking the saved target. During a slow first bootstrap,
+  // repeated opens replace pending state without relying on a missed event.
+  if (bridge) {
+    let handoffQueue = Promise.resolve()
+    let disposed = false
+    const takeHandoff = () => {
+      handoffQueue = handoffQueue.then(async () => {
+        await historyReady
+        if (disposed) return
+        const target = await bridge.core.invoke<{ directory: string; sessionId: string } | null>("workbench_take_handoff")
+        if (!target || !activeHistory) return
+        activeHistory.set({ value: `/server/${base64Encode("sidecar")}/session/${target.sessionId}`, replace: false })
+      }).catch((error) => console.error("workbench handoff failed", error))
+      return handoffQueue
+    }
+    const unlistenHandoff = await bridge.event.listen("workbench://handoff", takeHandoff)
+    window.addEventListener("pagehide", () => { disposed = true; unlistenHandoff() }, { once: true })
+    await takeHandoff()
+  }
 }
 
 void main()

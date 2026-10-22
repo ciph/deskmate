@@ -171,6 +171,7 @@ pub(super) fn settle(
         .ok_or("agent_session_unknown")?;
     let settings = super::run_commands::current_start_settings(app)?;
     let client = super::run_commands::lifecycle_client(app, &settings, &record.workspace_path);
+    let generation = crate::sidecar_generation(app)?;
     match client.settle_tools(session, &record.run_id, reason) {
         Ok(messages) => Ok(messages),
         Err(error) => {
@@ -181,8 +182,7 @@ pub(super) fn settle(
             use tauri::Manager;
             let state = app.state::<AgentRunState>();
             let pending = state.active_record(&record.run_id)?;
-            stop_owned_process_tree(app)?;
-            crate::restart_sidecar(app)?;
+            stop_owned_process_tree(app, generation)?;
             if let Some(outcome) = pending.pending_outcome {
                 state.request_finish(&record.run_id, outcome, pending.pending_error_summary)?;
             }
@@ -194,24 +194,17 @@ pub(super) fn settle(
     }
 }
 
-fn stop_owned_process_tree(app: &tauri::AppHandle) -> Result<(), String> {
-    use tauri::Manager;
-    let sidecar = app.state::<crate::Sidecar>();
-    let mut owned = sidecar.child.lock().map_err(|_| "sidecar lock poisoned")?;
-    let Some(child) = owned.as_mut() else {
-        return Ok(());
-    };
-    if child
-        .try_wait()
-        .map_err(|error| error.to_string())?
-        .is_some()
-    {
-        return Ok(());
-    }
-    terminate_process_tree(child.id())?;
-    child.wait().map_err(|error| error.to_string())?;
-    *owned = None;
-    Ok(())
+fn stop_owned_process_tree(app: &tauri::AppHandle, generation: u64) -> Result<(), String> {
+    crate::isolate_sidecar_for_recovery(app, generation, |owned| {
+        let Some(child) = owned.as_mut() else { return Ok(()); };
+        if child.try_wait().map_err(|error| error.to_string())?.is_none() {
+            terminate_process_tree(child.id())?;
+            child.wait().map_err(|error| error.to_string())?;
+        }
+        crate::forget_sidecar_child(app, child.id());
+        *owned = None;
+        Ok(())
+    })
 }
 
 pub(super) fn terminate_process_tree(pid: u32) -> Result<(), String> {

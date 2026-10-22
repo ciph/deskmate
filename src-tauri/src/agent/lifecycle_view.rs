@@ -6,6 +6,10 @@ use super::{
 use std::path::PathBuf;
 
 impl AgentRunState {
+    pub(crate) fn record(&self, run_id: &str) -> Result<Option<RunRecord>, String> {
+        self.store.get(run_id)
+    }
+
     pub(crate) fn all_records(&self) -> Result<Vec<RunRecord>, String> {
         self.store.load()
     }
@@ -129,6 +133,8 @@ impl AgentRunState {
         let data = self.data.lock().map_err(|_| "agent_state_unavailable")?;
         Ok(data.active.as_ref().is_some_and(|record| {
             record.run_id == candidate.run_id && record.session_id == candidate.session_id
+                && record.workspace_path == candidate.workspace_path
+                && record.created_at == candidate.created_at
         }))
     }
 

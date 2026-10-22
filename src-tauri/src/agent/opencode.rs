@@ -51,6 +51,41 @@ struct WireInfo {
     finish: Option<String>,
     time: WireTime,
     error: Option<WireError>,
+    #[serde(rename = "providerID")]
+    provider_id: Option<serde_json::Value>,
+    #[serde(rename = "modelID")]
+    model_id: Option<serde_json::Value>,
+    tokens: Option<serde_json::Value>,
+    #[serde(rename = "sessionID")]
+    session_id: Option<serde_json::Value>,
+}
+
+impl WireInfo {
+    fn usage(&self, session: &str) -> Option<crate::ai_usage::UsageObservation> {
+        if self.role.as_deref() != Some("assistant") || self.time.completed.is_none()
+            || self.session_id.as_ref().and_then(serde_json::Value::as_str) != Some(session)
+        {
+            return None;
+        }
+        let tokens = self.tokens.as_ref()?.as_object()?;
+        let count = |field: &str| tokens.get(field).and_then(serde_json::Value::as_u64);
+        let cache = tokens.get("cache");
+        let cached = |field: &str| {
+            cache.and_then(|cache| cache.get(field)).and_then(serde_json::Value::as_u64)
+        };
+        let observation = crate::ai_usage::UsageObservation {
+            message_id: self.id.clone(),
+            sidecar_id: self.provider_id.as_ref()?.as_str()?.to_owned(),
+            model_id: self.model_id.as_ref()?.as_str()?.to_owned(),
+            created_at_ms: i64::try_from(self.time.created?).ok()?,
+            tokens: count("input")?
+                .checked_add(count("output")?)?
+                .checked_add(count("reasoning")?)?
+                .checked_add(cached("read")?)?
+                .checked_add(cached("write")?)?,
+        };
+        observation.is_valid().then_some(observation)
+    }
 }
 #[derive(Deserialize)]
 struct WireTime {
@@ -184,9 +219,15 @@ impl OpenCodeClient {
             .map_err(http_error)?
             .into_json()
             .map_err(|_| "agent_wire_invalid")?;
+        if messages.iter().any(|message| {
+            message.info.session_id.as_ref().is_some_and(|id| id.as_str() != Some(session))
+        }) {
+            return Err("agent_snapshot_session_mismatch".into());
+        }
         Ok(messages
             .into_iter()
             .map(|message| NativeMessage {
+                usage: message.info.usage(session),
                 system: message.info.system,
                 id: message.info.id,
                 role: message.info.role,

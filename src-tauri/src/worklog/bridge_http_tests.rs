@@ -117,6 +117,7 @@ fn bridge(server: &Server) -> (tempfile::TempDir, WorklogBridge, Launch) {
         root: Some(root.path().into()),
         launch: Mutex::new(None),
         grants: Mutex::new(super::super::Registrations::default()),
+        wake: Arc::new(Wake::default()),
     };
     bridge
         .reset_launch(server.endpoint.clone(), AUTH.into())
@@ -156,6 +157,39 @@ fn execute(
         super::super::dispatch::execute(repo, request, grant, user, "fixture/model")
     })
 }
+fn execute_file(
+    bridge: &WorklogBridge,
+    launch: &Launch,
+    repo: &Repository,
+    request: &Request,
+) -> WorklogResult<Value> {
+    let temporary = launch.directory.join(format!("{}.tmp", request.request_id));
+    let file = temporary.with_extension("request");
+    fs::write(
+        &temporary,
+        serde_json::to_vec(&json!({
+            "version": request.version, "requestId": request.request_id,
+            "directory": request.directory, "sessionId": request.session_id,
+            "messageId": request.message_id, "callId": request.call_id,
+            "action": request.action, "args": request.args,
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    fs::rename(&temporary, &file).unwrap();
+    scan(launch, |parsed| execute(bridge, launch, repo, &parsed))?;
+    let receipt: Value =
+        serde_json::from_slice(&fs::read(file.with_extension("response")).unwrap()).unwrap();
+    assert_eq!(receipt["requestId"], request.request_id);
+    assert_eq!(receipt["status"], "completed", "{receipt}");
+    assert!(!file.exists());
+    assert!(!file.with_extension("response-tmp").exists());
+    scan(launch, |_| {
+        panic!("duplicate notification must not submit twice")
+    })?;
+    Ok(receipt["result"].clone())
+}
+
 fn query(date: &str) -> DateQuery {
     DateQuery {
         start: date.into(),
@@ -176,7 +210,7 @@ fn authenticated_rust_bridge_executes_all_five_tools_with_workspace() {
         directory,
         "把今天完成登录联调记入日报；现在生成今天的日报、修改今天的日报，并且周五汇总周报",
     );
-    let saved = execute(
+    let saved = execute_file(
         &bridge,
         &launch,
         &repo,
@@ -188,8 +222,8 @@ fn authenticated_rust_bridge_executes_all_five_tools_with_workspace() {
     )
     .unwrap();
     let id = saved["receipt"]["entityId"].as_str().unwrap();
-    execute(&bridge,&launch,&repo,&request(directory,"update",json!({"id":id,"expectedRevision":1,"businessDate":date,"text":"登录联调验收完成","status":"done"}))).unwrap();
-    let found = execute(
+    execute_file(&bridge,&launch,&repo,&request(directory,"update",json!({"id":id,"expectedRevision":1,"businessDate":date,"text":"登录联调验收完成","status":"done"}))).unwrap();
+    let found = execute_file(
         &bridge,
         &launch,
         &repo,
@@ -197,7 +231,7 @@ fn authenticated_rust_bridge_executes_all_five_tools_with_workspace() {
     )
     .unwrap();
     assert_eq!(found["entries"][0]["revision"], 2);
-    execute(
+    execute_file(
         &bridge,
         &launch,
         &repo,
@@ -208,7 +242,7 @@ fn authenticated_rust_bridge_executes_all_five_tools_with_workspace() {
         ),
     )
     .unwrap();
-    execute(
+    execute_file(
         &bridge,
         &launch,
         &repo,
@@ -646,4 +680,26 @@ fn failed_launch_setup_revokes_old_grants_before_validation_or_filesystem_work()
         );
         assert!(repo.query_entries(&query(&date)).unwrap().is_empty());
     }
+}
+
+#[test]
+fn launch_reset_wakes_idle_worker_even_when_new_connection_is_invalid() {
+    let server = Server::start(None, None);
+    let (_root, bridge, first) = bridge(&server);
+    assert!(bridge.wake.wait_until(Instant::now() + RECONCILE_INTERVAL));
+    assert!(!bridge.wake.state.lock().unwrap().pending);
+    bridge
+        .reset_launch(server.endpoint.clone(), AUTH.into())
+        .unwrap();
+    assert!(bridge.wake.state.lock().unwrap().pending);
+    assert!(bridge.wake.wait_until(Instant::now() + RECONCILE_INTERVAL));
+    assert_ne!(bridge.launch_id().unwrap(), first.directory);
+    assert!(bridge
+        .reset_launch("https://example.invalid".into(), AUTH.into())
+        .is_err());
+    assert!(bridge.wake.state.lock().unwrap().pending);
+    assert!(bridge.wake.wait_until(Instant::now() + RECONCILE_INTERVAL));
+    assert!(bridge.launch.lock().unwrap().is_none());
+    bridge.shutdown();
+    assert!(!bridge.wake.wait_until(Instant::now() + RECONCILE_INTERVAL));
 }

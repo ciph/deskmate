@@ -8,7 +8,7 @@ use tauri::{Manager, State};
 use url::Url;
 
 mod local;
-pub(crate) use local::{capture_agent_usage, record_ai_usage};
+pub(crate) use local::{capture_agent_usage, record_ai_usage, UsageObservation};
 
 const USAGE_PATH: &str = "/my-usage/api/detail";
 const FETCH_TIMEOUT: Duration = Duration::from_secs(8);

@@ -15,6 +15,7 @@ pub(crate) struct AgentRunState {
     pub(super) data: Mutex<RunData>,
     pub(super) store: RunStore,
     operation: Mutex<()>,
+    pub(super) usage_retries: Mutex<super::usage_retry::UsageRetries>,
     archive_failure: Mutex<Option<(String, String)>>,
     pub(super) collection_failure: Mutex<Option<(String, std::time::Instant)>>,
 }
@@ -30,6 +31,7 @@ impl AgentRunState {
             }),
             store,
             operation: Mutex::new(()),
+            usage_retries: Mutex::new(super::usage_retry::UsageRetries::default()),
             archive_failure: Mutex::new(None),
             collection_failure: Mutex::new(None),
         }
@@ -41,10 +43,11 @@ impl AgentRunState {
             .iter()
             .find(|record| record.outcome.is_none())
             .cloned();
-        let recent = records
+        let recent: Vec<_> = records
             .into_iter()
             .filter(|record| record.outcome.is_some())
             .collect();
+        let usage_retries = super::usage_retry::UsageRetries::new(active.as_ref(), &recent);
         Ok(Self {
             data: Mutex::new(RunData {
                 active,
@@ -53,6 +56,7 @@ impl AgentRunState {
             }),
             store,
             operation: Mutex::new(()),
+            usage_retries: Mutex::new(usage_retries),
             archive_failure: Mutex::new(None),
             collection_failure: Mutex::new(None),
         })
@@ -102,6 +106,7 @@ impl AgentRunState {
             pending_outcome: None,
             pending_error_summary: None,
             message_ids: Vec::new(),
+            pending_usage_message_ids: Vec::new(),
             part_ids: Vec::new(),
             call_ids: Vec::new(),
             initial_input: Some(input.into()),
@@ -131,6 +136,9 @@ impl AgentRunState {
         register()?;
         let mut next = record.clone();
         next.session_id = Some(session_id.into());
+        if next == *record {
+            return Ok(());
+        }
         self.store.write(&next)?;
         data.active = Some(next);
         Ok(())
@@ -262,6 +270,9 @@ impl AgentRunState {
             .ok_or_else(|| "agent_run_unknown".to_owned())?;
         let mut next = record.clone();
         update(&mut next);
+        if next == *record {
+            return Ok(());
+        }
         self.store.write(&next)?;
         data.active = Some(next);
         Ok(())

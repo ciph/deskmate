@@ -10,6 +10,7 @@ use std::{cell::Cell, fs};
 mod permission_tests;
 mod race_tests;
 mod reply_tests;
+mod usage_tests;
 
 fn fixture(name: &str) -> TestResult<(std::path::PathBuf, std::path::PathBuf)> {
     let root = std::env::temp_dir().join(format!(
@@ -38,6 +39,7 @@ fn active(
 
 fn terminal(run_id: &str) -> Vec<NativeMessage> {
     vec![NativeMessage {
+        usage: None,
         system: None,
         id: "msg_reply".into(),
         role: Some("assistant".into()),
@@ -77,6 +79,7 @@ fn request_for_tool(
 
 fn permission_snapshot() -> Vec<NativeMessage> {
     vec![NativeMessage {
+        usage: None,
         system: None,
         id: "msg_native".into(),
         role: Some("assistant".into()),
@@ -325,6 +328,45 @@ fn uncertain_submission_settlement_releases_ownership_despite_archive_failure() 
         permissions.waiting("msg_run").err().as_deref(),
         Some("agent_run_unknown")
     );
+    fs::remove_dir_all(root)?;
+    Ok(())
+}
+
+#[test]
+fn sixty_identical_thousand_message_snapshots_do_not_write_run_records() -> TestResult<()> {
+    let (root, workspace) = fixture("unchanged-work")?;
+    let (runs, permissions) = active(&root, &workspace)?;
+    let mut snapshot = permission_snapshot();
+    let template = snapshot.pop().unwrap();
+    let snapshot: Vec<_> = (0..1000).map(|index| {
+        let mut message = template.clone();
+        message.id = format!("msg_{index}");
+        message.parts[0].id = format!("part_{index}");
+        message.parts[0].call_id = Some(format!("call_{index}"));
+        message
+    }).collect();
+    let tick = || collect_once_with(&runs, &permissions, CollectorActions {
+        snapshot: |_: &RunRecord| Ok(SnapshotRead::Messages(snapshot.clone())),
+        pending: |_: &RunRecord| Ok(Vec::new()),
+        archive: |_: &RunRecord, _: &[NativeMessage]| Ok(()),
+        respond: |_: &RunRecord, _: &PermissionRequest, _: Reply| Ok(()),
+    });
+    tick()?;
+    let before = runs.store.io_counts();
+    for _ in 0..60 { tick()?; }
+    let after = runs.store.io_counts();
+    let delta: Vec<_> = after.iter().zip(before).map(|(after, before)| after-before).collect();
+    println!("collector_repeat snapshots=60 messages=1000 run_io_delta={delta:?}");
+    assert_eq!(delta, [0, 0, 0, 0], "read/serialize/sync/rename");
+    runs.store.inject_write_failure(true);
+    tick()?; // No-op is allowed even when a new commit would fail.
+    assert_eq!(runs.request_finish("msg_run", RunOutcome::Cancelled, None), Err("agent_storage_unavailable".into()));
+    assert!(runs.active_record("msg_run")?.pending_outcome.is_none());
+    runs.store.inject_write_failure(false);
+    runs.request_finish("msg_run", RunOutcome::Cancelled, None)?;
+    let pending_counts = runs.store.io_counts();
+    runs.request_finish("msg_run", RunOutcome::Cancelled, None)?;
+    assert_eq!(runs.store.io_counts(), pending_counts);
     fs::remove_dir_all(root)?;
     Ok(())
 }

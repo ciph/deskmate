@@ -25,6 +25,7 @@ fn snapshot_recovery_deduplicates_native_references_and_never_replays() -> TestR
     state.bind_session("msg_run", "ses_run").checked("bind")?;
     state.confirm_submission("msg_run").checked("confirm")?;
     let duplicate = NativeMessage {
+        usage: None,
         system: None,
         role: None,
         created: None,
@@ -87,6 +88,7 @@ fn intermediate_tool_calls_keep_run_active_until_explicit_terminal_message() -> 
     state.confirm_submission("msg_run").checked("confirm")?;
 
     let read_round = NativeMessage {
+        usage: None,
         system: None,
         role: None,
         created: None,
@@ -111,6 +113,7 @@ fn intermediate_tool_calls_keep_run_active_until_explicit_terminal_message() -> 
         }],
     };
     let edit_round = NativeMessage {
+        usage: None,
         system: None,
         role: None,
         created: None,
@@ -171,6 +174,7 @@ fn intermediate_tool_calls_keep_run_active_until_explicit_terminal_message() -> 
     ));
 
     let final_round = NativeMessage {
+        usage: None,
         system: None,
         role: None,
         created: None,
@@ -220,6 +224,7 @@ fn intermediate_tool_calls_keep_run_active_until_explicit_terminal_message() -> 
         .reconcile(
             "msg_error_run",
             &[NativeMessage {
+                usage: None,
                 system: None,
                 role: None,
                 created: None,

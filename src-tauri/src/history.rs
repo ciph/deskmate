@@ -324,10 +324,16 @@ pub(crate) fn save_agent_snapshot(
     workspace: &Path,
     snapshot: AgentHistorySnapshot<'_>,
 ) -> Result<(), String> {
-    let records = app.state::<crate::agent::AgentRunState>().all_records()?;
     let state = app.state::<HistoryState>();
     let mut list = state.0.lock().map_err(|_| "history_state_unavailable")?;
-    save_scoped_snapshot(&history_path(app)?, &mut list, &records, workspace, snapshot).map(|_| ())
+    save_snapshot_from_run_store(&history_path(app)?, &mut list,
+        &app.state::<crate::agent::AgentRunState>(), workspace, snapshot)
+}
+
+fn save_snapshot_from_run_store(path: &Path, list: &mut Vec<HistorySession>, runs: &crate::agent::AgentRunState, workspace: &Path, snapshot: AgentHistorySnapshot<'_>) -> Result<(), String> {
+    let session = list.iter().find(|session| session.id == snapshot.session_id).ok_or("history_not_found")?;
+    let records = session.origin_run_id.as_deref().map(|id| runs.record(id)).transpose()?.flatten().into_iter().collect::<Vec<_>>();
+    save_scoped_snapshot(path, list, &records, workspace, snapshot).map(|_| ())
 }
 
 fn save_scoped_snapshot(path: &Path, list: &mut Vec<HistorySession>, records: &[crate::agent::RunRecord], workspace: &Path, snapshot: AgentHistorySnapshot<'_>) -> Result<recovery::SnapshotWrite, String> {

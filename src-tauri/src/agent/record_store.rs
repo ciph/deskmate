@@ -14,7 +14,7 @@ pub(crate) enum RunOutcome {
     Interrupted,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RunRecord {
     pub(crate) run_id: String,
@@ -30,6 +30,8 @@ pub(crate) struct RunRecord {
     pub(crate) pending_error_summary: Option<String>,
     #[serde(default)]
     pub(crate) message_ids: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) pending_usage_message_ids: Vec<String>,
     #[serde(default)]
     pub(crate) part_ids: Vec<String>,
     #[serde(default)]
@@ -67,6 +69,7 @@ pub(crate) struct NativeToolState {
 
 #[derive(Clone, Debug)]
 pub(crate) struct NativeMessage {
+    pub(crate) usage: Option<crate::ai_usage::UsageObservation>,
     pub(crate) system: Option<String>,
     pub(crate) id: String,
     pub(crate) role: Option<String>,
@@ -78,10 +81,20 @@ pub(crate) struct NativeMessage {
     pub(crate) parts: Vec<NativePart>,
 }
 
+#[cfg(test)]
+#[derive(Default)]
+struct StoreIo {
+    fail: std::sync::atomic::AtomicBool,
+    reads: std::sync::atomic::AtomicUsize,
+    serializations: std::sync::atomic::AtomicUsize,
+    syncs: std::sync::atomic::AtomicUsize,
+    renames: std::sync::atomic::AtomicUsize,
+}
+
 #[derive(Clone)]
 pub(crate) struct RunStore(
     PathBuf,
-    #[cfg(test)] std::sync::Arc<std::sync::atomic::AtomicBool>,
+    #[cfg(test)] std::sync::Arc<StoreIo>,
 );
 
 impl RunStore {
@@ -89,13 +102,20 @@ impl RunStore {
         Self(
             root,
             #[cfg(test)]
-            std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false)),
+            std::sync::Arc::new(StoreIo::default()),
         )
     }
 
     #[cfg(test)]
     pub(crate) fn inject_write_failure(&self, fail: bool) {
-        self.1.store(fail, std::sync::atomic::Ordering::SeqCst);
+        self.1.fail.store(fail, std::sync::atomic::Ordering::SeqCst);
+    }
+
+    #[cfg(test)]
+    pub(crate) fn io_counts(&self) -> [usize; 4] {
+        use std::sync::atomic::Ordering::SeqCst;
+        [self.1.reads.load(SeqCst), self.1.serializations.load(SeqCst),
+         self.1.syncs.load(SeqCst), self.1.renames.load(SeqCst)]
     }
 
     pub(crate) fn load(&self) -> Result<Vec<RunRecord>, String> {
@@ -108,6 +128,8 @@ impl RunStore {
             if path.extension().and_then(|value| value.to_str()) != Some("json") {
                 continue;
             }
+            #[cfg(test)]
+            self.1.reads.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
             let bytes = fs::read(path).map_err(|_| "agent_storage_unavailable")?;
             records.push(serde_json::from_slice(&bytes).map_err(|_| "agent_record_invalid")?);
         }
@@ -115,12 +137,37 @@ impl RunStore {
         Ok(records)
     }
 
+    pub(crate) fn get(&self, run_id: &str) -> Result<Option<RunRecord>, String> {
+        if !crate::worklog::bridge::safe_id(run_id) {
+            return Err("agent_record_invalid".into());
+        }
+        let path = self.0.join(format!("{run_id}.json"));
+        let metadata = match fs::symlink_metadata(&path) {
+            Ok(metadata) => metadata,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+            Err(_) => return Err("agent_storage_unavailable".into()),
+        };
+        if !metadata.is_file() || metadata.file_type().is_symlink() {
+            return Err("agent_record_invalid".into());
+        }
+        #[cfg(test)]
+        self.1.reads.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        let bytes = fs::read(path).map_err(|_| "agent_storage_unavailable")?;
+        let record: RunRecord = serde_json::from_slice(&bytes).map_err(|_| "agent_record_invalid")?;
+        if record.run_id != run_id {
+            return Err("agent_record_invalid".into());
+        }
+        Ok(Some(record))
+    }
+
     pub(crate) fn write(&self, record: &RunRecord) -> Result<(), String> {
         #[cfg(test)]
-        if self.1.load(std::sync::atomic::Ordering::SeqCst) {
+        if self.1.fail.load(std::sync::atomic::Ordering::SeqCst) {
             return Err("agent_storage_unavailable".into());
         }
         fs::create_dir_all(&self.0).map_err(|_| "agent_storage_unavailable")?;
+        #[cfg(test)]
+        self.1.serializations.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         let bytes = serde_json::to_vec_pretty(record).map_err(|_| "agent_record_invalid")?;
         let pending = self
             .0
@@ -130,11 +177,15 @@ impl RunStore {
             .write(true)
             .open(&pending)
             .map_err(|_| "agent_storage_unavailable")?;
+        #[cfg(test)]
+        self.1.syncs.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         file.write_all(&bytes)
             .and_then(|_| file.sync_all())
             .map_err(|_| "agent_storage_unavailable")?;
         drop(file);
         let target = self.0.join(format!("{}.json", record.run_id));
+        #[cfg(test)]
+        self.1.renames.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         if fs::rename(&pending, &target).is_err() {
             let _ = fs::remove_file(&pending);
             return Err("agent_storage_unavailable".into());

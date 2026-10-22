@@ -8,13 +8,15 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command};
 use std::sync::{
     atomic::{AtomicBool, Ordering},
-    Arc, Mutex, OnceLock,
+    Arc, Condvar, Mutex, OnceLock, RwLock, RwLockReadGuard,
 };
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use sha2::{Digest, Sha256};
 use tauri::{Emitter, Manager, RunEvent, State};
 
+mod sidecar_supervisor;
+mod sidecar_logs;
 mod agent;
 mod ai_usage;
 #[cfg(feature = "legacy-ai-recovery")]
@@ -62,6 +64,8 @@ const RESOURCE_ERROR_EVENT: &str = "deskmate://resource-error";
 /// Sidecar state: the spawned `opencode serve` process and its base URL.
 pub(crate) struct Sidecar {
     child: Mutex<Option<Child>>,
+    generation: RwLock<u64>,
+    logs: Mutex<Option<sidecar_logs::SidecarLogs>>,
     pub(crate) port: u16,
     /// Per-launch random password the sidecar requires (Basic auth). Generated
     /// fresh each start, never persisted; shared only with YUME-owned windows
@@ -69,10 +73,57 @@ pub(crate) struct Sidecar {
     pub(crate) password: String,
 }
 
+impl Sidecar {
+    pub(crate) fn generation_guard(&self, expected: u64) -> Result<Option<RwLockReadGuard<'_, u64>>, String> {
+        let generation = self.generation.read().map_err(|_| "sidecar generation poisoned")?;
+        Ok(if *generation == expected { Some(generation) } else { None })
+    }
+}
+
+pub(crate) fn sidecar_generation(app: &tauri::AppHandle) -> Result<u64, String> {
+    app.state::<Sidecar>().generation.read().map(|generation| *generation)
+        .map_err(|_| "sidecar generation poisoned".to_owned())
+}
+
+/// Every publication/revocation invalidates results read from the previous engine.
+fn mutate_sidecar_child<T>(app: &tauri::AppHandle, action: impl FnOnce(&mut Option<Child>) -> Result<T, String>) -> Result<T, String> {
+    let sidecar = app.state::<Sidecar>();
+    let mut generation = sidecar.generation.write().map_err(|_| "sidecar generation poisoned")?;
+    let mut child = sidecar.child.lock().map_err(|_| "sidecar lock poisoned")?;
+    let before = child.as_ref().map(Child::id);
+    let result = action(&mut child);
+    if child.as_ref().map(Child::id) != before { *generation = generation.wrapping_add(1); }
+    result
+}
+
 #[derive(Default)]
 struct SidecarSupervisor {
     stopping: AtomicBool,
     recovery: Mutex<()>,
+    policy: Mutex<sidecar_supervisor::RetryPolicy>,
+    wake_revision: Mutex<u64>,
+    wake: Condvar,
+}
+
+impl SidecarSupervisor {
+    fn notify(&self) {
+        if let Ok(mut revision) = self.wake_revision.lock() {
+            *revision = revision.wrapping_add(1);
+            self.wake.notify_all();
+        }
+    }
+
+    fn wait(&self, timeout: Duration) {
+        let Ok(revision) = self.wake_revision.lock() else { return; };
+        let observed = *revision;
+        let _wait = self.wake.wait_timeout_while(revision, timeout, |revision| {
+            *revision == observed && !self.stopping.load(Ordering::SeqCst)
+        });
+    }
+}
+
+pub(crate) fn sidecar_stopping(app: &tauri::AppHandle) -> bool {
+    app.state::<SidecarSupervisor>().stopping.load(Ordering::SeqCst)
 }
 
 /// Basic-auth header value for the current managed sidecar.
@@ -975,6 +1026,7 @@ fn spawn_sidecar(app: &tauri::AppHandle, port: u16) -> std::io::Result<Child> {
         }
     }
     let password = app.state::<Sidecar>().password.clone();
+    let mut log_secrets = vec![password.clone(), sidecar_auth_header(app)];
     cmd.env("OPENCODE_SERVER_PASSWORD", password);
     // Username stays the server default ("opencode"); sidecar_auth_header matches it.
 
@@ -1002,11 +1054,11 @@ fn spawn_sidecar(app: &tauri::AppHandle, port: u16) -> std::io::Result<Child> {
             None,
         ),
     };
-    cmd.env(
-        "OPENCODE_CONFIG_CONTENT",
-        yume_context::with_plugin(config, app),
-    );
+    let config = yume_context::with_plugin(config, app);
+    sidecar_logs::collect_json_secrets(&config, &mut log_secrets);
+    cmd.env("OPENCODE_CONFIG_CONTENT", config);
     if let Some(auth) = auth {
+        sidecar_logs::collect_json_secrets(&auth, &mut log_secrets);
         cmd.env("OPENCODE_AUTH_CONTENT", auth);
     }
 
@@ -1017,19 +1069,23 @@ fn spawn_sidecar(app: &tauri::AppHandle, port: u16) -> std::io::Result<Child> {
         cmd.creation_flags(CREATE_NO_WINDOW);
     }
 
-    let log_path = data_dir.join("sidecar.log");
-    if let Ok(log) = std::fs::File::create(&log_path) {
-        if let Ok(log_err) = log.try_clone() {
-            cmd.stdout(log).stderr(log_err);
-        }
-    }
-
+    let logs = {
+        let sidecar = app.state::<Sidecar>();
+        let mut logs = sidecar.logs.lock().map_err(|_| std::io::Error::other("sidecar log state poisoned"))?;
+        if logs.is_none() { *logs = Some(sidecar_logs::SidecarLogs::open(data_dir.join("sidecar.log"), &log_secrets)?); }
+        logs.as_ref().expect("log sink just initialized").clone()
+    };
+    sidecar_logs::configure(&mut cmd);
     let mut child = cmd.spawn()?;
     #[cfg(windows)]
     if let Err(error) = windows_startup::record_child(&app.config().identifier, &data_dir, child.id()) {
         // The owned Child handle remains exact even if registration failed.
         let _ = child.kill();
         let _ = child.wait();
+        return Err(error);
+    }
+    if let Err(error) = logs.attach(&mut child, log_secrets) {
+        stop_sidecar_child(app, child);
         return Err(error);
     }
     Ok(child)
@@ -1053,111 +1109,206 @@ fn stop_sidecar_child(app: &tauri::AppHandle, mut child: Child) {
 
 pub(crate) fn restart_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
     let supervisor = app.state::<SidecarSupervisor>();
-    let _recovery = supervisor
-        .recovery
-        .lock()
-        .map_err(|_| "sidecar recovery lock poisoned")?;
+    let _recovery = supervisor.recovery.lock().map_err(|_| "sidecar recovery lock poisoned")?;
+    if supervisor.stopping.load(Ordering::SeqCst) { return Err("sidecar_stopping".into()); }
     if app.try_state::<agent::AgentRunState>().is_some() {
         agent::interrupt_owned_run(app, "sidecar_restarted");
     }
-    replace_sidecar(app)
+    supervisor.policy.lock().map_err(|_| "sidecar policy poisoned")?.manual_retry();
+    let result = replace_sidecar(app);
+    supervisor.notify();
+    result
+}
+
+/// Isolate only the engine observed by the failed task, then join automatic backoff.
+/// Isolation and scheduling share recovery, so an old incident cannot revoke a replacement.
+pub(crate) fn isolate_sidecar_for_recovery(app: &tauri::AppHandle, expected: u64, isolate: impl FnOnce(&mut Option<Child>) -> Result<(), String>) -> Result<(), String> {
+    let supervisor = app.state::<SidecarSupervisor>();
+    let _recovery = supervisor.recovery.lock().map_err(|_| "sidecar recovery lock poisoned")?;
+    if supervisor.stopping.load(Ordering::SeqCst) { return Err("sidecar_stopping".into()); }
+    if sidecar_generation(app)? != expected { return Ok(()); }
+    mutate_sidecar_child(app, isolate)?;
+    supervisor.policy.lock().map_err(|_| "sidecar policy poisoned")?.record_failure(Instant::now());
+    supervisor.notify();
+    Ok(())
 }
 
 // Caller holds the component task-admission boundary and has checked all work.
 pub(crate) fn restart_idle_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
     let supervisor = app.state::<SidecarSupervisor>();
-    let _recovery = supervisor.recovery.lock().map_err(|_| "sidecar recovery lock poisoned")?;
-    replace_sidecar(app)?;
-    let deadline = std::time::Instant::now() + Duration::from_secs(15);
-    while std::time::Instant::now() < deadline {
-        if ureq::get(&format!("{}/global/health", sidecar_url(app)))
-            .set("Authorization", &sidecar_auth_header(app))
-            .timeout(Duration::from_millis(500)).call().is_ok() { return Ok(()); }
-        std::thread::sleep(Duration::from_millis(200));
+    let generation = {
+        let _recovery = supervisor.recovery.lock().map_err(|_| "sidecar recovery lock poisoned")?;
+        if supervisor.stopping.load(Ordering::SeqCst) { return Err("sidecar_stopping".into()); }
+        supervisor.policy.lock().map_err(|_| "sidecar policy poisoned")?.manual_retry();
+        replace_sidecar(app)?;
+        sidecar_generation(app)?
+    };
+    supervisor.notify();
+    // Readiness waits outside recovery, while the caller retains task admission.
+    let deadline = Instant::now() + sidecar_supervisor::STARTUP_TIMEOUT;
+    while Instant::now() < deadline {
+        if supervisor.stopping.load(Ordering::SeqCst) || sidecar_generation(app)? != generation {
+            return Err("component_service_replaced".into());
+        }
+        if sidecar_supervisor::probe_current_generation(generation, || sidecar_healthy(app), || {
+            let _recovery = supervisor.recovery.lock().map_err(|_| "sidecar recovery lock poisoned")?;
+            if supervisor.stopping.load(Ordering::SeqCst) || !sidecar_owned_running(app)? {
+                return Err("component_service_replaced".into());
+            }
+            sidecar_generation(app)
+        })? { return Ok(()); }
+        supervisor.wait(Duration::from_millis(200));
     }
     Err("component_service_not_ready".into())
 }
 
 fn replace_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
-    let sidecar = app.state::<Sidecar>();
-    let mut previous = sidecar
-        .child
-        .lock()
-        .map_err(|_| "sidecar lock poisoned")?
-        .take();
-    if let Some(child) = previous.take() {
+    if let Some(child) = mutate_sidecar_child(app, |slot| Ok(slot.take()))? {
         stop_sidecar_child(app, child);
     }
-    let child = spawn_sidecar(app, sidecar.port).map_err(|error| error.to_string())?;
-    *sidecar.child.lock().map_err(|_| "sidecar lock poisoned")? = Some(child);
-    history::commands::refresh_after_ready(app.clone());
-    Ok(())
+    spawn_supervised_sidecar(app)
+}
+
+fn record_sidecar_diagnostic(app: &tauri::AppHandle, line: &str) {
+    let sidecar = app.state::<Sidecar>();
+    let mut secrets = vec![sidecar.password.clone(), sidecar_auth_header(app)];
+    if let Some((config, auth)) = settings::sidecar_environment(app) {
+        sidecar_logs::collect_json_secrets(&config, &mut secrets);
+        sidecar_logs::collect_json_secrets(&auth, &mut secrets);
+    }
+    let result = (|| -> std::io::Result<()> {
+        let mut logs = sidecar.logs.lock().map_err(|_| std::io::Error::other("sidecar log state poisoned"))?;
+        if logs.is_none() {
+            let data_dir = app.path().app_data_dir().map_err(std::io::Error::other)?;
+            std::fs::create_dir_all(&data_dir)?;
+            *logs = Some(sidecar_logs::SidecarLogs::open(data_dir.join("sidecar.log"), &secrets)?);
+        }
+        logs.as_ref().expect("log sink just initialized").record(line, &secrets)
+    })();
+    if result.is_err() { eprintln!("sidecar diagnostic capture unavailable"); }
+}
+
+fn spawn_supervised_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
+    let result = spawn_sidecar(app, app.state::<Sidecar>().port);
+    let supervisor = app.state::<SidecarSupervisor>();
+    let mut policy = supervisor.policy.lock().map_err(|_| "sidecar policy poisoned")?;
+    match result {
+        Ok(child) => {
+            mutate_sidecar_child(app, |slot| { *slot = Some(child); Ok(()) })?;
+            policy.record_spawn(Instant::now());
+            Ok(())
+        }
+        Err(error) => {
+            policy.record_failure(Instant::now());
+            record_sidecar_diagnostic(app, &format!("spawn_failed kind={:?} os_code={:?} automatic_attempts={} exhausted={}", error.kind(), error.raw_os_error(), policy.retries_started(), policy.exhausted()));
+            Err("sidecar_spawn_failed".into())
+        }
+    }
+}
+
+fn sidecar_healthy(app: &tauri::AppHandle) -> bool {
+    ureq::get(&format!("{}/global/health", sidecar_url(app)))
+        .set("Authorization", &sidecar_auth_header(app))
+        .timeout(Duration::from_millis(500)).call().is_ok()
+}
+
+fn record_sidecar_failure(app: &tauri::AppHandle) {
+    let exhausted = app.state::<SidecarSupervisor>().policy.lock().map(|mut policy| {
+        policy.record_failure(Instant::now());
+        policy.exhausted()
+    }).unwrap_or(false);
+    if exhausted { record_sidecar_diagnostic(app, "automatic_retry_budget_exhausted"); }
+}
+
+fn sidecar_failed(app: &tauri::AppHandle) {
+    if app.try_state::<agent::AgentRunState>().is_some() {
+        agent::interrupt_owned_run(app, "sidecar_crashed");
+    }
+    workbench::release_ownership(app);
+    let _ = app.emit("sidecar://restarting", ());
 }
 
 fn start_sidecar_supervisor(app: tauri::AppHandle) {
-    std::thread::spawn(move || loop {
-        std::thread::sleep(Duration::from_millis(500));
+    std::thread::spawn(move || {
+      let mut next_health_probe = Instant::now();
+      let mut health_generation = None;
+      let mut observed_wake = 0;
+      loop {
         let supervisor = app.state::<SidecarSupervisor>();
-        if supervisor.stopping.load(Ordering::SeqCst) {
-            break;
+        supervisor.wait(sidecar_supervisor::POLL_INTERVAL);
+        if let Ok(revision) = supervisor.wake_revision.lock() {
+            if *revision != observed_wake {
+                observed_wake = *revision;
+                next_health_probe = Instant::now();
+            }
         }
-        let Ok(_recovery) = supervisor.recovery.lock() else {
-            break;
-        };
-        let (needs_recovery, crashed) = {
-            let sidecar = app.state::<Sidecar>();
-            let Ok(mut slot) = sidecar.child.lock() else {
-                break;
-            };
-            match slot.as_mut() {
-                Some(child) => match child.try_wait() {
-                    Ok(Some(_)) => {
-                        forget_sidecar_child(&app, child.id());
-                        *slot = None;
-                        (true, true)
-                    }
-                    Err(_) => {
-                        // An uncertain process remains recorded for conservative recovery.
-                        *slot = None;
-                        (true, true)
-                    }
-                    Ok(None) => (false, false),
-                },
-                None => {
-                    *slot = None;
-                    (true, false)
+        if supervisor.stopping.load(Ordering::SeqCst) { break; }
+        let generation = {
+            let Ok(_recovery) = supervisor.recovery.lock() else { break; };
+            if supervisor.stopping.load(Ordering::SeqCst) { break; }
+            // Keep uncertain Child handles: a failed status read never authorizes a duplicate engine.
+            let observed = mutate_sidecar_child(&app, |slot| {
+                match slot.as_mut() {
+                    Some(child) => match child.try_wait() {
+                        Ok(Some(status)) => {
+                            record_sidecar_diagnostic(&app, &format!("process_exited code={:?}", status.code()));
+                            forget_sidecar_child(&app, child.id());
+                            *slot = None;
+                            Ok((false, true))
+                        }
+                        Ok(None) => Ok((true, false)),
+                        Err(_) => Err("sidecar process status unavailable".into()),
+                    },
+                    None => Ok((false, false)),
                 }
+            });
+            let Ok((running, crashed)) = observed else { continue; };
+            if crashed {
+                record_sidecar_failure(&app);
+                sidecar_failed(&app);
             }
+            if !running {
+                let retry = supervisor.policy.lock().map(|mut policy| policy.take_retry(Instant::now())).unwrap_or(false);
+                if retry { let _ = spawn_supervised_sidecar(&app); }
+                continue;
+            }
+            if !supervisor.policy.lock().map(|policy| policy.needs_health_probe()).unwrap_or(false) { continue; }
+            let Ok(generation) = sidecar_generation(&app) else { break; };
+            if health_generation == Some(generation) && Instant::now() < next_health_probe { continue; }
+            health_generation = Some(generation);
+            generation
         };
-        if !needs_recovery {
-            continue;
-        }
-        if crashed {
-            if app.try_state::<agent::AgentRunState>().is_some() {
-                agent::interrupt_owned_run(&app, "sidecar_crashed");
+        // HTTP and all backoff waits release recovery, so manual retry and shutdown remain available.
+        let healthy = sidecar_healthy(&app);
+        let Ok(_recovery) = supervisor.recovery.lock() else { break; };
+        if supervisor.stopping.load(Ordering::SeqCst) { break; }
+        if sidecar_generation(&app).ok() != Some(generation) { continue; }
+        let observation = match supervisor.policy.lock() {
+            Ok(mut policy) => {
+                let observation = policy.observe_health(Instant::now(), healthy);
+                next_health_probe = Instant::now() + policy.health_probe_interval();
+                observation
+            },
+            Err(_) => break,
+        };
+        match observation {
+            sidecar_supervisor::HealthObservation::TimedOut => {
+                record_sidecar_diagnostic(&app, "health_timeout");
+                if let Ok(Some(child)) = mutate_sidecar_child(&app, |slot| Ok(slot.take())) { stop_sidecar_child(&app, child); }
+                record_sidecar_failure(&app);
+                sidecar_failed(&app);
             }
-            workbench::release_ownership(&app);
-            let _ = app.emit("sidecar://restarting", ());
-        }
-        loop {
-            if supervisor.stopping.load(Ordering::SeqCst) {
-                return;
-            }
-            match spawn_sidecar(&app, app.state::<Sidecar>().port) {
-                Ok(child) => {
-                    if let Ok(mut slot) = app.state::<Sidecar>().child.lock() {
-                        *slot = Some(child);
-                    }
+            sidecar_supervisor::HealthObservation::Healthy { became_healthy, budget_reset } => {
+                if became_healthy {
+                    record_sidecar_diagnostic(&app, "health_ready");
                     history::commands::refresh_after_ready(app.clone());
                     let _ = app.emit("sidecar://restarted", ());
-                    break;
                 }
-                Err(error) => {
-                    eprintln!("sidecar recovery failed: {error}");
-                    std::thread::sleep(Duration::from_secs(1));
-                }
+                if budget_reset { record_sidecar_diagnostic(&app, "stable_health_retry_budget_reset"); }
             }
+            _ => {}
         }
+      }
     });
 }
 
@@ -1419,6 +1570,8 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .manage(Sidecar {
             child: Mutex::new(None),
+            generation: RwLock::new(0),
+            logs: Mutex::new(None),
             port,
             password: sidecar_password,
         })
@@ -1426,6 +1579,7 @@ pub fn run() {
         .manage(windows_component::ComponentState::default())
         .manage(component_activation::ActivationState::default())
         .manage(workbench::WorkbenchHandoff::default())
+        .manage(workbench::WorkbenchWindow::default())
         .manage(workbench::WorkbenchOwnership::default())
         .manage(pomodoro::PomodoroState::default())
         .manage(AttachmentStore::default())
@@ -1483,6 +1637,7 @@ pub fn run() {
             sidecar_base_url,
             sidecar_auth,
             workbench::workbench_connection,
+            workbench::workbench_take_handoff,
             workbench_theme::workbench_theme,
             workbench::workbench_open_external,
             workbench::workbench_open_session,
@@ -1631,11 +1786,6 @@ pub fn run() {
                 pet_geometry::apply(&pet, loaded.pet_scale, &loaded.persona_id);
                 pet_startup::place(&pet, &loaded.persona_id, loaded.pet_position);
             }
-            // The workbench window is created in code (not config) so its
-            // navigation stays allowlist-gated; see workbench::create_window.
-            if let Err(error) = workbench::create_window(&handle) {
-                eprintln!("workbench window creation failed: {error}");
-            }
             let history = history::load(&handle).map_err(std::io::Error::other)?;
             app.manage(HistoryState(Mutex::new(history)));
             app.manage(history::maintenance::HistoryMaintenance::default());
@@ -1674,16 +1824,8 @@ pub fn run() {
             settings::start_scheduler(handle.clone());
 
             setup_tray(&handle)?;
-            match spawn_sidecar(&handle, port) {
-                Ok(child) => {
-                    // SAFE-UNWRAP: a poisoned sidecar mutex means an earlier setup command panicked.
-                    *app.state::<Sidecar>().child.lock().unwrap() = Some(child);
-                    agent::recover_after_start(handle.clone());
-                    history::commands::refresh_after_ready(handle.clone());
-                }
-                Err(e) => {
-                    eprintln!("failed to spawn opencode sidecar: {e}");
-                }
+            if spawn_supervised_sidecar(&handle).is_ok() {
+                agent::recover_after_start(handle.clone());
             }
             start_sidecar_supervisor(handle.clone());
             app.manage(tool_permissions::events::PermissionEvents::start(format!(
@@ -1701,10 +1843,16 @@ pub fn run() {
         // SAFE-EXPECT: building the Tauri app is the final startup boundary; failures are fatal.
         .expect("error while building tauri application")
         .run(|app, event| {
+            if let RunEvent::Resumed = event {
+                worklog::runner_runtime::notify(app);
+                app.state::<SidecarSupervisor>().notify();
+            }
             if let RunEvent::Exit = event {
                 app.state::<SidecarSupervisor>()
                     .stopping
                     .store(true, Ordering::SeqCst);
+                app.state::<SidecarSupervisor>().notify();
+                if let Some(bridge) = app.try_state::<worklog::bridge::WorklogBridge>() { bridge.shutdown(); }
                 if app.try_state::<agent::AgentRunState>().is_some() {
                     agent::interrupt_owned_run(app, "app_exited");
                 }
@@ -1714,10 +1862,49 @@ pub fn run() {
                 worklog::runner_runtime::stop(app);
                 pomodoro::stop_checker(app);
                 settings::flush_pet_position(app);
-                // SAFE-UNWRAP: a poisoned sidecar mutex means an earlier setup command panicked.
-                if let Some(child) = app.state::<Sidecar>().child.lock().unwrap().take() {
-                    stop_sidecar_child(app, child);
-                }
+                let supervisor = app.state::<SidecarSupervisor>();
+                if let Ok(_recovery) = supervisor.recovery.lock() {
+                    if let Ok(Some(child)) = mutate_sidecar_child(app, |slot| Ok(slot.take())) { stop_sidecar_child(app, child); }
+                };
             }
         });
+}
+
+
+#[cfg(test)]
+mod sidecar_wait_tests {
+    use super::*;
+
+    #[test]
+    fn shutdown_interrupts_wait_without_acquiring_recovery() {
+        let supervisor = Arc::new(SidecarSupervisor::default());
+        let recovery = supervisor.recovery.lock().unwrap();
+        let (send, receive) = std::sync::mpsc::channel();
+        let waiting = supervisor.clone();
+        let thread = std::thread::spawn(move || {
+            waiting.wait(Duration::from_secs(3600));
+            send.send(()).unwrap();
+        });
+        supervisor.stopping.store(true, Ordering::SeqCst);
+        supervisor.notify();
+        receive.recv_timeout(Duration::from_secs(2)).expect("shutdown must not wait for recovery/backoff");
+        drop(recovery);
+        thread.join().unwrap();
+    }
+
+    #[test]
+    fn manual_retry_wakes_a_backoff_wait() {
+        let supervisor = Arc::new(SidecarSupervisor::default());
+        let (send, receive) = std::sync::mpsc::channel();
+        let waiting = supervisor.clone();
+        let thread = std::thread::spawn(move || {
+            let revision = waiting.wake_revision.lock().unwrap();
+            send.send(()).unwrap();
+            let observed = *revision;
+            let _guard = waiting.wake.wait_timeout_while(revision, Duration::from_secs(3600), |revision| *revision == observed).unwrap();
+        });
+        receive.recv_timeout(Duration::from_secs(2)).unwrap();
+        supervisor.notify();
+        thread.join().unwrap();
+    }
 }

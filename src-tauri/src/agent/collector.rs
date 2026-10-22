@@ -25,10 +25,27 @@ pub(crate) enum CollectionMode {
     Recovery,
 }
 
+#[cfg(test)]
 pub(super) fn collect_once_with<S, P, A, R>(
     state: &AgentRunState,
     permissions: &AgentPermissionState,
+    actions: CollectorActions<S, P, A, R>,
+) -> Result<(), String>
+where
+    S: FnOnce(&RunRecord) -> Result<SnapshotRead, String>,
+    P: FnOnce(&RunRecord) -> Result<Vec<PermissionRequest>, String>,
+    A: FnOnce(&RunRecord, &[NativeMessage]) -> Result<(), String>,
+    R: FnMut(&RunRecord, &PermissionRequest, Reply) -> Result<(), String>,
+{
+    collect_once_guarded_with(state, permissions, actions, || Ok(Some(())), |_, _| Ok(()))
+}
+
+pub(super) fn collect_once_guarded_with<S, P, A, R, G>(
+    state: &AgentRunState,
+    permissions: &AgentPermissionState,
     mut actions: CollectorActions<S, P, A, R>,
+    guard: impl FnOnce() -> Result<Option<G>, String>,
+    capture: impl FnOnce(&RunRecord, &[NativeMessage]) -> Result<(), String>,
 ) -> Result<(), String>
 where
     S: FnOnce(&RunRecord) -> Result<SnapshotRead, String>,
@@ -55,6 +72,7 @@ where
     let mut reported_error = None;
     {
         let _operation = state.lock_operation()?;
+        let Some(_connection) = guard()? else { return Ok(()); };
         if !state.matches_active(&candidate)? {
             return Ok(());
         }
@@ -97,6 +115,7 @@ where
                 {
                     return Err("agent_tools_unsettled".into());
                 }
+                capture(&current, &messages)?;
                 let archive_error = (actions.archive)(&current, &messages).err();
                 state.report_archive_error(&candidate.run_id, archive_error.as_deref());
                 state.set_collection_error(&candidate.run_id, None)?;
@@ -197,7 +216,9 @@ pub(crate) fn collect_active_run_once(
             permissions.ensure_run_registered(&record, &approvals)?;
         }
     }
-    let result = collect_once_with(
+    let sidecar = app.state::<crate::Sidecar>();
+    let generation = crate::sidecar_generation(app)?;
+    let result = collect_once_guarded_with(
         &state,
         &permissions,
         CollectorActions {
@@ -273,14 +294,6 @@ pub(crate) fn collect_active_run_once(
                         messages,
                     },
                 );
-                if let Err(error) = crate::ai_usage::capture_agent_usage(
-                    app,
-                    &record.workspace_path,
-                    session,
-                    messages,
-                ) {
-                    eprintln!("agent usage capture {}: {error}", record.run_id);
-                }
                 archived
             },
             respond: |record: &RunRecord, request: &PermissionRequest, reply: Reply| {
@@ -291,6 +304,16 @@ pub(crate) fn collect_active_run_once(
                     &record.workspace_path,
                 )
             },
+        },
+        || sidecar.generation_guard(generation),
+        |record, messages| {
+            let missing = crate::ai_usage::capture_agent_usage(app, record, messages).unwrap_or_else(|error| {
+                eprintln!("agent usage capture {}: {error}", record.run_id);
+                messages.iter().filter(|message| message.parent_id.as_deref() == Some(&record.run_id)
+                    && message.role.as_deref() == Some("assistant") && message.completed)
+                    .map(|message| message.id.clone()).collect()
+            });
+            state.set_usage_pending(record, retain_unobserved_usage(record, messages, missing))
         },
     );
     if let Err(ref error) = result {
@@ -306,9 +329,70 @@ pub(crate) fn collect_active_run_once(
     result
 }
 
+
+pub(super) fn retain_unobserved_usage(record: &RunRecord, messages: &[NativeMessage], mut missing: Vec<String>) -> Vec<String> {
+    missing.extend(record.pending_usage_message_ids.iter().filter(|id| {
+        !messages.iter().any(|message| &message.id == *id
+            && message.parent_id.as_deref() == Some(&record.run_id)
+            && message.role.as_deref() == Some("assistant") && message.completed)
+    }).cloned());
+    missing
+}
+
+pub(super) fn retry_usage_with<G>(
+    state: &AgentRunState,
+    candidate: &RunRecord,
+    snapshot: impl FnOnce() -> Result<Vec<NativeMessage>, String>,
+    guard: impl FnOnce() -> Result<Option<G>, String>,
+    capture: impl FnOnce(&RunRecord, &[NativeMessage]) -> Result<Vec<String>, String>,
+) -> Result<(), String> {
+    let messages = snapshot()?;
+    let _operation = state.lock_operation()?;
+    let Some(_connection) = guard()? else { return Ok(()); };
+    let Some(current) = state.record(&candidate.run_id)? else { return state.discard_missing_usage(candidate); };
+    if !super::usage_retry::same_identity(candidate, &current) { return Ok(()); }
+    let requested = &candidate.pending_usage_message_ids;
+    let selected: Vec<_> = messages.into_iter().filter(|message| requested.contains(&message.id)
+        && current.pending_usage_message_ids.contains(&message.id)).collect();
+    let missing = capture(&current, &selected)?;
+    state.set_usage_pending(&current, retain_unobserved_usage(&current, &selected, missing))
+}
+
+fn retry_usage_once(app: &tauri::AppHandle, state: &AgentRunState) {
+    let now = std::time::Instant::now();
+    let candidate = match state.usage_retry_candidate(now) {
+        Ok(Some(candidate)) => candidate,
+        Ok(None) => return,
+        Err(error) => { eprintln!("agent usage retry: {error}"); return; }
+    };
+    let result = (|| -> Result<(), String> {
+        let generation = crate::sidecar_generation(app)?;
+        let session = candidate.session_id.as_deref().ok_or("agent_session_unknown")?;
+        let settings = super::run_commands::current_start_settings(app)?;
+        let sidecar = app.state::<crate::Sidecar>();
+        retry_usage_with(state, &candidate,
+            || super::run_commands::lifecycle_client(app, &settings, &candidate.workspace_path).snapshot(session),
+            || sidecar.generation_guard(generation),
+            |record, messages| crate::ai_usage::capture_agent_usage(app, record, messages))
+    })();
+    if let Err(error) = result { eprintln!("agent usage retry {}: {error}", candidate.run_id); }
+    if let Err(error) = state.finish_usage_retry(&candidate.run_id, std::time::Instant::now()) {
+        eprintln!("agent usage retry scheduling: {error}");
+    }
+}
+
 pub(crate) fn start_collector(app: tauri::AppHandle) {
+    let usage_app = app.clone();
     std::thread::spawn(move || loop {
+        if crate::sidecar_stopping(&usage_app) { return; }
         std::thread::sleep(std::time::Duration::from_secs(1));
+        if crate::sidecar_stopping(&usage_app) { return; }
+        retry_usage_once(&usage_app, &usage_app.state::<AgentRunState>());
+    });
+    std::thread::spawn(move || loop {
+        if crate::sidecar_stopping(&app) { return; }
+        std::thread::sleep(std::time::Duration::from_secs(1));
+        if crate::sidecar_stopping(&app) { return; }
         if let Err(error) = collect_active_run_once(&app, CollectionMode::Live) {
             eprintln!("agent collector: {error}");
         }
