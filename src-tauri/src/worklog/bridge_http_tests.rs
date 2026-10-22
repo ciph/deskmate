@@ -506,22 +506,21 @@ fn duplicate_native_registration_cannot_revive_revoked_expired_or_old_launch_sou
         "msg_user".into()
     )));
     let key = ("/workspace/a".into(), "ses_same".into(), "msg_later".into());
-    bridge
-        .grants
-        .lock()
-        .unwrap()
-        .active
-        .get_mut(&key)
-        .unwrap()
-        .created = std::time::Instant::now() - Duration::from_secs(1801);
+    let created = bridge.grants.lock().unwrap().active[&key].created;
+    // Observe expiry in the future without subtracting from a young system clock.
+    let expired_at = created + Duration::from_secs(1801);
     native("msg_later").unwrap();
-    assert!(
-        bridge.grants.lock().unwrap().active[&key]
-            .created
-            .elapsed()
-            .as_secs()
-            >= 1800
-    );
+    {
+        let mut grants = bridge.grants.lock().unwrap();
+        assert_eq!(grants.active[&key].created, created);
+        // Simulate the expiry sweep; duplicate registration must preserve its tombstone.
+        grants.active.retain(|_, turn| {
+            expired_at.saturating_duration_since(turn.created).as_secs() < 1800
+        });
+        assert!(!grants.active.contains_key(&key));
+    }
+    native("msg_later").unwrap();
+    assert!(!bridge.grants.lock().unwrap().active.contains_key(&key));
     bridge
         .reset_launch(server.endpoint.clone(), AUTH.into())
         .unwrap();
