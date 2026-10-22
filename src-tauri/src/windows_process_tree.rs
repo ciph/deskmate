@@ -168,11 +168,22 @@ fn snapshot() -> Result<(u64, Vec<(u32, u32)>), String> {
 }
 
 pub(crate) fn terminate(pid: u32) -> Result<(), String> {
+    terminate_checked(pid, None)
+}
+
+pub(crate) fn terminate_created(pid: u32, created: u64) -> Result<(), String> {
+    terminate_checked(pid, Some(created))
+}
+
+fn terminate_checked(pid: u32, expected_created: Option<u64>) -> Result<(), String> {
     if pid == 0 || pid == std::process::id() {
         return Err("refusing to terminate zero or self".into());
     }
     let deadline = Instant::now() + Duration::from_secs(5);
     let root = Process::open(pid)?.ok_or("process root no longer exists")?;
+    if expected_created.is_some_and(|expected| expected != root.created) {
+        return Err("process root identity changed".into());
+    }
     let mut processes = HashMap::from([(pid, root)]);
     let mut order = vec![pid];
     let mut rescanning = false;

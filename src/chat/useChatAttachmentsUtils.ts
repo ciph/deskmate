@@ -124,6 +124,7 @@ export function toGeneratedArtifact(
 
 export async function prepareOpenCodeFilePart(
   attachment: ReadyChatAttachment,
+  signal?: AbortSignal,
 ): Promise<OpenCodeFilePart> {
   const modelReady = await prepareModelReadyAttachment({
     metadata: {
@@ -133,7 +134,8 @@ export async function prepareOpenCodeFilePart(
       size: attachment.size,
     },
     bytes: bytesFromDataUrl(attachment.dataUrl),
-  });
+  }, signal);
+  signal?.throwIfAborted();
   return toOpenCodeFilePart(modelReady);
 }
 

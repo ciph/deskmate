@@ -4,6 +4,45 @@
 
 ## 当前验证入口
 
+### 2026-10-22 性能整改 B0 / B1
+
+基线：0.4.20，HEAD `d92a9c872b01300a27d90a675cfa9247bfd2fd2b`；实际开发入口为
+`C:/Users/chenglingxiao/.codex/worktrees/build-v0418-9081/deskmate-public-release`，施工分支
+`codex/yume-performance-remediation`。以下证据对应未提交差异，不是旧主仓或安装版。
+
+- A01：Windows 原子主实例占有在插件初始化之前完成；旧插件窗口须归属当前 PID。
+  删除名称/CORS 全局进程清理，按宿主与子进程出生时间、镜像和应用身份回收记录中的孤儿。
+  原生隔离子进程测试 5 pass、1 ignored fixture，包括并发占有、宿主崩溃回收与无关 sibling 保留。
+- A02：日志桥使用宿主认证、规范化工作目录和精确父消息/工具 call ID；工作台先登记无权限待验证回合，
+  执行前核实真实用户消息。关闭自动提取不禁止显式工具；重启（含创建新目录或连接校验失败）先撤销旧启动。
+  同回合重放不能恢复撤销授权或清空失败查询。真实 Rust HTTP 桥 48 pass；TypeScript 传输 10 pass。
+- A03：本地 PDF worker 随构建输出；成功、异常、截断、取消都释放 loading task；附件准备支持中止。
+  同产品源码的 Vite 浏览器探针正常/损坏/超 160k 各 7 次，共 21/21，结束后 0 存活 worker。
+  浏览器探针与产品构建 worker SHA-256 相同；不等于 Tauri 本地协议、WebView2 RSS 或 macOS 验收。
+- A04：记忆导出的 applicability 查询复用 400 ID 分批；32767 / 50000 条旧逻辑实际失败，修复后完整字段、
+  状态、上下文、来源、任务关联及顺序校验通过。记忆模块 97 pass；未改 schema 或迁移。
+- 最终完整 Rust 库：747 pass、0 fail、16 ignored，退出 0（4 线程）。
+  前端 155/155 文件、1135 pass、0 fail、8 skip、0 unfinished，每文件子进程退出 0。
+  前端 Bun 子进程结束后日志包装进程未收尾，已核对命令/PID 后回收；没有声称总包装命令退出 0。
+- 三套 TypeScript、前端生产构建、正常 Windows debug 可执行文件构建和 `git diff --check` 退出 0。
+  React Doctor 0.9.18 changed 扫描 9 文件、82/100，No issues found，退出 0。保留已有构建警告。
+  未改工作台 overlay，未完整重建上游工作台；未安装、推送或发布。
+- 修复过程中保留失败日志：A01 死亡进程镜像查询失败改为同句柄退出/出生时间判断；A02 Windows HTTP
+  测试夹具继承非阻塞 socket，明确设回阻塞并避免析构二次 panic 后并行回归通过；未削弱业务断言。
+
+待验：完整 Tauri 生产启动路径的并发/二次启动任务连续性；WebView2 本地 worker 协议、真实取消、20+ 次循环
+后的堆/RSS 收敛；macOS WebKit。当前工具不能操作 Windows 原生 GUI，以上保持未验，B1 不标整体验收通过，
+不进入依赖 B1 的 B2 产品修改。尚未测得端到端性能增益。
+开工时记录的安装版 YUME/引擎 PID 在收尾只读检查时已不在运行；退出原因未确定，未为验证重启安装版，
+也未据此声称活跃任务连续性通过。前后进程摘要保存在 baseline/relevant-processes-after 回执。
+
+保留边界：旧版没有归属记录的孤儿，以及 spawn 到写记录之间崩溃的子进程，均保守保留；
+当前启动期间 revoked/expired 回合保存 32 字节摘要墓碑，数量随该次启动的回合数增长。
+另发现既有自然语言调度解析把“工作日志”中的“工作日”当工作日限定；未在认证修复中扩大修改，待独立语义回归。
+
+完整回执：`E:/Codex/工作伙伴/reports/yume-performance-remediation-20261022`，其中
+`verification-summary.json`、`source-snapshot.json`、`b1-tracked.patch` 与逐项日志保存证据。
+
 ### 2026-10-10 历史加载优化与空会话自动清理
 
 基线仍为 0.4.18、`codex/optional-windows-component`、HEAD

@@ -10,8 +10,8 @@ export function newUserMessageId(): string {
   return `msg_${crypto.randomUUID().replaceAll("-", "")}`;
 }
 
-export const registerWorklogTurn = (sessionId: string, messageId: string, userText: string): Promise<void> =>
-  invoke("worklog_register_turn", { sessionId, messageId, userText });
+export const registerWorklogTurn = (sessionId: string, messageId: string, userText: string, directory: string): Promise<void> =>
+  invoke("worklog_register_turn", { sessionId, messageId, userText, directory });
 
 export function worklogOutput(output: unknown): { readonly requestId: string; readonly error: string | null } | null {
   let value: unknown = output;

@@ -16,6 +16,8 @@ pub(super) fn repository<T>(
     f(guard.as_ref().ok_or("MEMORY_UNAVAILABLE")?).map_err(|_| "MEMORY_OPERATION_FAILED".to_owned())
 }
 pub(crate) fn register(app: &tauri::AppHandle, mut r: Registration) -> Result<String, String> {
+    let log_bridge = app.state::<crate::worklog::bridge::WorklogBridge>();
+    let log_launch = log_bridge.launch_id().ok();
     if crate::yume_context::excluded_session(app, &r.session_id) {
         return Err("INTERNAL_SESSION".into());
     }
@@ -51,6 +53,18 @@ pub(crate) fn register(app: &tauri::AppHandle, mut r: Registration) -> Result<St
         .any(|row| row.key() == r.catalog_key && row.tombstone.is_some())
     {
         return Err("DELETED_SESSION".into());
+    }
+    // chat.message runs before native user-message persistence. This only registers
+    // a source identity; the worklog bridge verifies the actual user text at tool time.
+    if let Some(log_launch) = log_launch {
+        if let Err(error) = log_bridge.register_native(
+            &log_launch,
+            r.directory.clone(),
+            r.session_id.clone(),
+            r.message_id.clone(),
+        ) {
+            eprintln!("Worklog source registration unavailable: {}", error.code);
+        }
     }
     let settings = app
         .state::<crate::settings::SettingsState>()

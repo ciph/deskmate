@@ -722,3 +722,162 @@ fn batched_provenance_stays_attributed_to_its_own_memory() {
         .all(|source| source.conversation_id.is_none()));
     assert!(found.linked_task_ids.is_empty());
 }
+
+fn assert_large_export_preserves_complete_records(total: usize) {
+    use super::domain::{Memory, MemoryContext, MemoryRecord, MemorySource, Sensitivity};
+    use rusqlite::params;
+
+    let repo = repo();
+    let mut expected = Vec::with_capacity(total);
+    // One transaction keeps fixture setup linear; the normal export still uses
+    // the real schema, triggers, row decoding, and provenance queries.
+    repo.store()
+        .with_transaction(|tx| {
+            let mut memories = tx.prepare(
+                "INSERT INTO memories (id, scope, persona_id, type, memory_key, content, \
+                 status, confidence, importance, sensitivity, source_kind, valid_from, \
+                 expires_at, created_at, updated_at, revision, supersedes_id) \
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, \
+                         ?14, ?15, ?16, ?17)",
+            )?;
+            let mut contexts = tx.prepare(
+                "INSERT INTO memory_applicability \
+                 (memory_id, workspace, topic, state, aliases, source_time) \
+                 VALUES (?1, ?2, ?3, ?4, '', 0)",
+            )?;
+            let mut sources = tx.prepare(
+                "INSERT INTO memory_sources \
+                 (id, memory_id, conversation_id, message_id, source_kind, created_at) \
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            )?;
+            let mut links = tx.prepare(
+                "INSERT INTO memory_task_links (memory_id, task_id, created_at) \
+                 VALUES (?1, ?2, ?3)",
+            )?;
+            for index in 0..total {
+                let status = [
+                    MemoryStatus::Active,
+                    MemoryStatus::Expired,
+                    MemoryStatus::Superseded,
+                ][index % 3];
+                let memory = Memory {
+                    id: format!("memory-{index:05}"),
+                    scope: if index % 2 == 0 {
+                        MemoryScope::Global
+                    } else {
+                        MemoryScope::Persona
+                    },
+                    persona_id: (index % 2 != 0).then(|| format!("persona-{}", index % 4)),
+                    memory_type: MemoryType::Preference,
+                    memory_key: Some(format!("preference.{index}")),
+                    content: format!("第 {index} 条导出偏好"),
+                    status,
+                    confidence: (index % 10) as f64 / 10.0,
+                    importance: (index % 5 + 1) as i64,
+                    sensitivity: Sensitivity::Normal,
+                    source_kind: SourceKind::Explicit,
+                    valid_from: "2025-12-01T00:00:00Z".into(),
+                    expires_at: (status == MemoryStatus::Expired)
+                        .then(|| "2025-12-31T00:00:00Z".into()),
+                    created_at: "2025-12-01T00:00:00Z".into(),
+                    updated_at: format!("2025-12-02T00:00:{:02}Z", index % 60),
+                    revision: (index % 7 + 1) as i64,
+                    supersedes_id: (index > 0 && status == MemoryStatus::Active)
+                        .then(|| format!("memory-{:05}", index - 1)),
+                };
+                memories.execute(params![
+                    memory.id,
+                    memory.scope.as_str(),
+                    memory.persona_id,
+                    memory.memory_type.as_str(),
+                    memory.memory_key,
+                    memory.content,
+                    memory.status.as_str(),
+                    memory.confidence,
+                    memory.importance,
+                    memory.sensitivity.as_str(),
+                    memory.source_kind.as_str(),
+                    memory.valid_from,
+                    memory.expires_at,
+                    memory.created_at,
+                    memory.updated_at,
+                    memory.revision,
+                    memory.supersedes_id,
+                ])?;
+                let context = (index % 4 != 0).then(|| MemoryContext {
+                    workspace: (index % 4 != 3).then(|| format!("C:/fixture/project-{index}")),
+                    topic: Some(format!("topic-{index}")),
+                    state: ["active", "paused", "completed"][index % 3].into(),
+                });
+                if let Some(context) = &context {
+                    contexts.execute(params![
+                        memory.id,
+                        context.workspace,
+                        context.topic,
+                        context.state
+                    ])?;
+                }
+                let provenance: Vec<_> = (0..index % 3)
+                    .map(|offset| MemorySource {
+                        conversation_id: Some(format!("session-{index}-{offset}")),
+                        message_id: Some(format!("message-{index}-{offset}")),
+                        source_kind: SourceKind::Explicit,
+                        created_at: format!("2025-12-01T00:00:{offset:02}Z"),
+                    })
+                    .collect();
+                // Insert in reverse timestamp order to verify export ordering.
+                for (offset, source) in provenance.iter().enumerate().rev() {
+                    sources.execute(params![
+                        format!("source-{index}-{offset}"),
+                        memory.id,
+                        source.conversation_id,
+                        source.message_id,
+                        source.source_kind.as_str(),
+                        source.created_at,
+                    ])?;
+                }
+                let task_ids: Vec<_> = (0..(index / 3) % 3)
+                    .map(|offset| format!("task-{index}-{offset}"))
+                    .collect();
+                for (offset, task_id) in task_ids.iter().enumerate().rev() {
+                    links.execute(params![
+                        memory.id,
+                        task_id,
+                        format!("2025-12-01T00:00:{offset:02}Z")
+                    ])?;
+                }
+                expected.push(MemoryRecord {
+                    memory,
+                    context,
+                    sources: provenance,
+                    linked_task_ids: task_ids,
+                });
+            }
+            Ok(())
+        })
+        .expect("seed complete export fixture");
+
+    expected.sort_by(|left, right| {
+        right
+            .memory
+            .importance
+            .cmp(&left.memory.importance)
+            .then_with(|| right.memory.updated_at.cmp(&left.memory.updated_at))
+            .then_with(|| left.memory.id.cmp(&right.memory.id))
+    });
+    let exported = super::export::build(&repo, "test").expect("export all records");
+    assert_eq!(exported.memories.len(), total, "export must not be capped");
+    for (position, (actual, expected)) in exported.memories.iter().zip(&expected).enumerate() {
+        assert_eq!(actual, expected, "record or ordering changed at {position}");
+    }
+}
+
+#[test]
+fn export_preserves_all_records_at_32767_memories() {
+    assert_large_export_preserves_complete_records(32_767);
+}
+
+#[test]
+fn export_preserves_all_records_at_50000_memories() {
+    assert_large_export_preserves_complete_records(50_000);
+}

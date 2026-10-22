@@ -5,6 +5,7 @@ fn request(args: Value) -> Request {
     Request {
         version: 1,
         request_id: uuid::Uuid::new_v4().to_string(),
+        directory: "/workspace/a".into(),
         session_id: "ses_fixture".into(),
         message_id: "msg_assistant".into(),
         call_id: "call_fixture".into(),

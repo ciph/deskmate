@@ -208,10 +208,27 @@ impl<C: Clock> MemoryRepository<C> {
             let mut sources = select_sources_for(tx, &ids)?;
             let mut task_links = select_task_links_for(tx, &ids)?;
             let mut contexts = HashMap::new();
-            if !ids.is_empty() {
-                let sql=format!("SELECT memory_id,workspace,topic,state FROM memory_applicability WHERE memory_id IN ({})",vec!["?";ids.len()].join(","));
-                let mut stmt=tx.prepare(&sql)?;
-                for row in stmt.query_map(rusqlite::params_from_iter(&ids),|r| Ok((r.get::<_,String>(0)?,super::domain::MemoryContext{workspace:r.get(1)?,topic:r.get(2)?,state:r.get(3)?})))? { let (id,context)=row?; contexts.insert(id,context); }
+            for chunk in ids.chunks(PROVENANCE_BATCH) {
+                let sql = format!(
+                    "SELECT memory_id, workspace, topic, state FROM memory_applicability \
+                     WHERE memory_id IN ({})",
+                    placeholders(chunk.len()),
+                );
+                let mut statement = tx.prepare(&sql)?;
+                let rows = statement.query_map(rusqlite::params_from_iter(chunk), |row| {
+                    Ok((
+                        row.get::<_, String>(0)?,
+                        super::domain::MemoryContext {
+                            workspace: row.get(1)?,
+                            topic: row.get(2)?,
+                            state: row.get(3)?,
+                        },
+                    ))
+                })?;
+                for row in rows {
+                    let (id, context) = row?;
+                    contexts.insert(id, context);
+                }
             }
             let records = memories
                 .into_iter()

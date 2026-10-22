@@ -1,3 +1,5 @@
+/// <reference path="./pdfWorkerUrl.d.ts" />
+
 export const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024;
 const MAX_TEXT_CHARS = 160_000;
 const DOCX_MIME =
@@ -44,7 +46,9 @@ export type ModelReadyAttachment = TextModelReadyAttachment | ImageModelReadyAtt
 
 export async function prepareModelReadyAttachment(
   source: StagedAttachmentSource,
+  signal?: AbortSignal,
 ): Promise<ModelReadyAttachment> {
+  signal?.throwIfAborted();
   const { metadata, bytes } = source;
   if (metadata.size > MAX_ATTACHMENT_BYTES) {
     throw new Error(`${metadata.name} 超过 20 MB 限制`);
@@ -69,7 +73,7 @@ export async function prepareModelReadyAttachment(
 
   let text: string;
   if (mime === "application/pdf" || extension === "pdf") {
-    text = await extractPdfText(bytes);
+    text = await extractPdfText(bytes, signal);
   } else if (mime === DOCX_MIME || extension === "docx") {
     text = await extractDocxText(bytes);
   } else if (TEXT_EXTENSIONS.has(extension) || mime.startsWith("text/")) {
@@ -78,6 +82,7 @@ export async function prepareModelReadyAttachment(
     throw new Error(`${metadata.name} 暂不支持读取，请选择图片、PDF、DOCX 或文本文件`);
   }
 
+  signal?.throwIfAborted();
   const truncated = text.length > MAX_TEXT_CHARS;
   const bounded = truncated ? text.slice(0, MAX_TEXT_CHARS) : text;
   const suffix = truncated
@@ -178,21 +183,41 @@ async function extractDocxText(data: ArrayBuffer): Promise<string> {
   return (await mammoth.extractRawText(input)).value;
 }
 
-async function extractPdfText(data: ArrayBuffer): Promise<string> {
-  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  const document = await pdfjs.getDocument({ data, useSystemFonts: true }).promise;
-  const pages: string[] = [];
-  let extractedChars = 0;
-  for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
-    const page = await document.getPage(pageNumber);
-    const content = await page.getTextContent();
-    const pageText = content.items
-      .map((item) => ("str" in item ? item.str : ""))
-      .filter(Boolean)
-      .join(" ");
-    pages.push(pageText);
-    extractedChars += pageText.length;
-    if (extractedChars >= MAX_TEXT_CHARS) break;
+async function extractPdfText(data: ArrayBuffer, signal?: AbortSignal): Promise<string> {
+  const [pdfjs, { default: workerSrc }] = await Promise.all([
+    import("pdfjs-dist/legacy/build/pdf.mjs"),
+    import("pdfjs-dist/legacy/build/pdf.worker.min.mjs?url"),
+  ]);
+  signal?.throwIfAborted();
+  pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+  const loadingTask = pdfjs.getDocument({ data, useSystemFonts: true });
+  let onAbort: (() => void) | undefined;
+  const cancelled = signal && new Promise<never>((_, reject) => {
+    onAbort = () => reject(signal.reason);
+    signal.addEventListener("abort", onAbort, { once: true });
+  });
+  const read = async () => {
+    const document = await loadingTask.promise;
+    const pages: string[] = [];
+    let extractedChars = 0;
+    for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
+      signal?.throwIfAborted();
+      const page = await document.getPage(pageNumber);
+      const content = await page.getTextContent();
+      const pageText = content.items
+        .map((item) => ("str" in item ? item.str : ""))
+        .filter(Boolean)
+        .join(" ");
+      pages.push(pageText);
+      extractedChars += pageText.length + (pageNumber > 1 ? 2 : 0);
+      if (extractedChars > MAX_TEXT_CHARS) break;
+    }
+    return pages.join("\n\n");
+  };
+  try {
+    return await (cancelled ? Promise.race([read(), cancelled]) : read());
+  } finally {
+    if (onAbort) signal?.removeEventListener("abort", onAbort);
+    await loadingTask.destroy();
   }
-  return pages.join("\n\n");
 }

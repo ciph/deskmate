@@ -14,7 +14,7 @@ test("only record exposes a required execution mode; query has no intent protoco
 });
 
 test("malformed input fails without exposing bridge paths", async () => {
-  const result = JSON.parse(await worklogTool("record","fixture",{}).execute({input:"claimed save"}, {sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_fixture",ask:async()=>{},abort:AbortSignal.abort()}));
+  const result = JSON.parse(await worklogTool("record","fixture",{}).execute({input:"claimed save"}, {directory:"/workspace/a",sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_fixture",ask:async()=>{},abort:AbortSignal.abort()}));
   expect(result.status).toBe("rejected");
   expect(result.result).toBeUndefined();
   expect(result.error.message).toBe("Work journal input must be an object");
@@ -25,7 +25,7 @@ test("stale resource directory errors do not disclose local IPC paths", async ()
   const missing = join(tmpdir(),"worklog-missing-resource-fixture",crypto.randomUUID());
   process.env.YUME_WORKLOG_IPC_DIR = missing;
   try {
-    const raw = await worklogTool("record","fixture",{}).execute({input:{}}, {sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_fixture",ask:async()=>{},abort:new AbortController().signal});
+    const raw = await worklogTool("record","fixture",{}).execute({input:{}}, {directory:"/workspace/a",sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_fixture",ask:async()=>{},abort:new AbortController().signal});
     expect(JSON.parse(raw).status).toBe("rejected");
     expect(raw.includes(missing)).toBe(false);
   } finally {
@@ -38,7 +38,7 @@ test("does not publish a request when cancelled before execution", async () => {
   const previous = process.env.YUME_WORKLOG_IPC_DIR;
   process.env.YUME_WORKLOG_IPC_DIR = directory;
   try {
-    const result = JSON.parse(await worklogTool("record","fixture",{}).execute({input:{text:"synthetic"}}, {sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_fixture",ask:async()=>{},abort:AbortSignal.abort()}));
+    const result = JSON.parse(await worklogTool("record","fixture",{}).execute({input:{text:"synthetic"}}, {directory:"/workspace/a",sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_fixture",ask:async()=>{},abort:AbortSignal.abort()}));
     expect(result.status).toBe("rejected");
     expect(result.result).toBeUndefined();
     const files = await readdir(directory);
@@ -54,7 +54,7 @@ test("returns only the matching host receipt and removes consumed acknowledgment
   const previous = process.env.YUME_WORKLOG_IPC_DIR;
   process.env.YUME_WORKLOG_IPC_DIR = directory;
   try {
-    const pending = worklogTool("record","fixture",{}).execute({input:{text:"synthetic"}}, {sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_receipt",ask:async()=>{},abort:new AbortController().signal});
+    const pending = worklogTool("record","fixture",{}).execute({input:{text:"synthetic"}}, {directory:"/workspace/a",sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_receipt",ask:async()=>{},abort:new AbortController().signal});
     let filename: string | undefined;
     const deadline = Date.now()+1000;
     while (!filename && Date.now()<deadline) { filename=(await readdir(directory)).find(file=>file.endsWith(".request")); if (!filename) await Bun.sleep(10); }
@@ -76,7 +76,7 @@ test("query returns entries and reports from the matching host response", async 
   const previous = process.env.YUME_WORKLOG_IPC_DIR;
   process.env.YUME_WORKLOG_IPC_DIR = directory;
   try {
-    const pending = worklogTool("query","fixture",{}).execute({input:{start:"2026-09-08",end:"2026-09-08"}}, {sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_query",ask:async()=>{},abort:new AbortController().signal});
+    const pending = worklogTool("query","fixture",{}).execute({input:{start:"2026-09-08",end:"2026-09-08"}}, {directory:"/workspace/a",sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_query",ask:async()=>{},abort:new AbortController().signal});
     let filename: string | undefined;
     const deadline = Date.now()+1000;
     while (!filename && Date.now()<deadline) { filename=(await readdir(directory)).find(file=>file.endsWith(".request")); if (!filename) await Bun.sleep(10); }
@@ -99,7 +99,7 @@ test("query rejection is not converted into an empty result", async () => {
   const previous = process.env.YUME_WORKLOG_IPC_DIR;
   process.env.YUME_WORKLOG_IPC_DIR = directory;
   try {
-    const pending = worklogTool("query","fixture",{}).execute({input:{start:"2026-09-07",end:"2026-09-07"}}, {sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_query_rejected",ask:async()=>{},abort:new AbortController().signal});
+    const pending = worklogTool("query","fixture",{}).execute({input:{start:"2026-09-07",end:"2026-09-07"}}, {directory:"/workspace/a",sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_query_rejected",ask:async()=>{},abort:new AbortController().signal});
     let filename: string | undefined;
     const deadline = Date.now()+1000;
     while (!filename && Date.now()<deadline) { filename=(await readdir(directory)).find(file=>file.endsWith(".request")); if (!filename) await Bun.sleep(10); }
@@ -122,7 +122,7 @@ test("query unavailable is not converted into an empty result", async () => {
   const previous = process.env.YUME_WORKLOG_IPC_DIR;
   delete process.env.YUME_WORKLOG_IPC_DIR;
   try {
-    const raw = await worklogTool("query","fixture",{}).execute({input:{start:"2026-09-08",end:"2026-09-08"}}, {sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_query_unavailable",ask:async()=>{},abort:new AbortController().signal});
+    const raw = await worklogTool("query","fixture",{}).execute({input:{start:"2026-09-08",end:"2026-09-08"}}, {directory:"/workspace/a",sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_query_unavailable",ask:async()=>{},abort:new AbortController().signal});
     const result = JSON.parse(raw);
     expect(result.status).toBe("rejected");
     expect(result.result).toBeUndefined();
@@ -139,7 +139,7 @@ test("permission refusal publishes no IPC and is not an empty query result", asy
   process.env.YUME_WORKLOG_IPC_DIR = directory;
   try {
     const result = JSON.parse(await queryTool.execute({input:{start:"2026-09-08"}}, {
-      sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_denied",abort:new AbortController().signal,
+      directory:"/workspace/a",sessionID:"ses_fixture",messageID:"msg_fixture",callID:"call_denied",abort:new AbortController().signal,
       ask:async(request)=> { expect(request.permission).toBe("worklog_query"); throw new Error("User rejected"); },
     }));
     expect(result.status).toBe("rejected");
@@ -149,5 +149,41 @@ test("permission refusal publishes no IPC and is not an empty query result", asy
   } finally {
     if(previous===undefined)delete process.env.YUME_WORKLOG_IPC_DIR;else process.env.YUME_WORKLOG_IPC_DIR=previous;
     await rm(directory,{recursive:true});
+  }
+});
+
+test("all five tools bind workspace to runtime context and use separate receipt IDs", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "worklog-scope-test-"));
+  const previous = process.env.YUME_WORKLOG_IPC_DIR;
+  process.env.YUME_WORKLOG_IPC_DIR = directory;
+  try {
+    const actions = ["record", "query", "update", "generate_report", "schedule_report"];
+    const pending = actions.flatMap(action => ["/workspace/项目 A", "/workspace/B"].map(workspace =>
+      worklogTool(action, "transport fixture", {}).execute({ input: {} }, {
+        directory: workspace, sessionID: "ses_same", messageID: "msg_same", callID: "call_same",
+        ask: async () => {}, abort: new AbortController().signal,
+      })));
+    let files: string[] = [];
+    const deadline = Date.now() + 2_000;
+    while (files.length < 10 && Date.now() < deadline) {
+      files = (await readdir(directory)).filter(file => file.endsWith(".request"));
+      if (files.length < 10) await Bun.sleep(10);
+    }
+    expect(files).toHaveLength(10);
+    const requests = await Promise.all(files.map(async file => JSON.parse(await readFile(join(directory, file), "utf8"))));
+    expect(new Set(requests.map(request => request.requestId)).size).toBe(10);
+    for (const action of actions) {
+      expect(requests.filter(request => request.action === action).map(request => request.directory).sort())
+        .toEqual(["/workspace/B", "/workspace/项目 A"]);
+    }
+    for (const request of requests) {
+      expect(Object.keys(request).sort()).toEqual(["action", "args", "callId", "directory", "messageId", "requestId", "sessionId", "version"]);
+      // Transport-only fixture: authenticated dispatch is exercised in bridge_http_tests.rs.
+      await writeFile(join(directory, `${request.requestId}.response`), JSON.stringify({ version: 1, requestId: request.requestId, status: "completed", result: {} }));
+    }
+    expect((await Promise.all(pending)).every(raw => JSON.parse(raw).status === "completed")).toBe(true);
+  } finally {
+    if (previous === undefined) delete process.env.YUME_WORKLOG_IPC_DIR; else process.env.YUME_WORKLOG_IPC_DIR = previous;
+    await rm(directory, { recursive: true });
   }
 });

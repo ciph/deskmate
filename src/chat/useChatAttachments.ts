@@ -17,6 +17,7 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
   const itemsRef = useRef<readonly AttachmentLifecycleState[]>([]);
   const artifactsRef = useRef<readonly ArtifactState[]>([]);
   const retryUploadsRef = useRef(new Map<string, RetryUpload>());
+  const preparationRef = useRef<{ controller: AbortController; localIds: Set<string> } | null>(null);
   const [items, setItems] = useState<readonly AttachmentLifecycleState[]>([]);
   const [artifacts, setArtifacts] = useState<readonly ArtifactState[]>([]);
 
@@ -121,12 +122,14 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
   }, [dispatchItem, runConvert]);
 
   const cancel = useCallback((localId: string) => {
+    if (preparationRef.current?.localIds.has(localId)) preparationRef.current.controller.abort();
     discardCurrentSource(findItem(itemsRef.current, localId), sessionIdRef.current, discardBackend);
     retryUploadsRef.current.delete(localId);
     dispatchItem(localId, { type: "cancel" });
   }, [discardBackend, dispatchItem]);
 
   const remove = useCallback((localId: string) => {
+    if (preparationRef.current?.localIds.has(localId)) preparationRef.current.controller.abort();
     discardCurrentSource(findItem(itemsRef.current, localId), sessionIdRef.current, discardBackend);
     retryUploadsRef.current.delete(localId);
     dispatchItem(localId, { type: "remove" });
@@ -205,6 +208,7 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
 
   const resetSession = useCallback((sessionId: string) => {
     if (sessionIdRef.current === sessionId) return;
+    preparationRef.current?.controller.abort();
     sessionIdRef.current = sessionId;
     retryUploadsRef.current.clear();
     setComposerItems(itemsRef.current.map((item) => reduceAttachmentState(item, { type: "sessionReset" })));
@@ -226,14 +230,34 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
     setComposerItems(remaining);
   }, [discardBackend, setComposerItems]);
 
-	  const prepareModelAttachments = useCallback(async (message: string) => {
-	    const readyItems = itemsRef.current.filter((item) => item.kind === "ready");
-	    const fileParts = await Promise.all(readyItems.map(async (item) => {
-	      const ready = await readChatAttachment({ sessionId: sessionIdRef.current, attachmentId: item.source.id }, host);
-	      return prepareOpenCodeFilePart(ready);
-	    }));
-	    return buildPreparedModelAttachments(message, fileParts);
-	  }, [host]);
+  const prepareModelAttachments = useCallback(async (message: string) => {
+    preparationRef.current?.controller.abort();
+    const readyItems = itemsRef.current.filter((item) => item.kind === "ready");
+    const preparation = {
+      controller: new AbortController(),
+      localIds: new Set(readyItems.map((item) => item.localId)),
+    };
+    preparationRef.current = preparation;
+    const { signal } = preparation.controller;
+    const sessionId = sessionIdRef.current;
+    try {
+      const fileParts = await Promise.all(readyItems.map(async (item) => {
+        const ready = await readChatAttachment({ sessionId, attachmentId: item.source.id }, host);
+        signal.throwIfAborted();
+        return prepareOpenCodeFilePart(ready, signal);
+      }));
+      signal.throwIfAborted();
+      return buildPreparedModelAttachments(message, fileParts);
+    } catch (error: unknown) {
+      // A failed attachment also stops other PDFs still being prepared for this send.
+      preparation.controller.abort();
+      throw error;
+    } finally {
+      if (preparationRef.current === preparation) preparationRef.current = null;
+    }
+  }, [host]);
+
+  useEffect(() => () => { preparationRef.current?.controller.abort(); }, []);
 
   useEffect(() => {
     if (options.sessionId !== sessionIdRef.current) resetSession(options.sessionId);

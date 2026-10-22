@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { lstat, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-type Context = { readonly sessionID: string; readonly messageID: string; readonly callID: string; readonly abort: AbortSignal; readonly ask: (request: { readonly permission: string; readonly patterns: string[]; readonly always: string[]; readonly metadata: Record<string, unknown> }) => Promise<void> };
+type Context = { readonly directory: string; readonly sessionID: string; readonly messageID: string; readonly callID: string; readonly abort: AbortSignal; readonly ask: (request: { readonly permission: string; readonly patterns: string[]; readonly always: string[]; readonly metadata: Record<string, unknown> }) => Promise<void> };
 type Args = { readonly input: unknown };
 class BridgeError extends Error {}
 
@@ -29,9 +29,10 @@ export function worklogTool(action: string, description: string, properties: Rec
       if (!directory) return JSON.stringify({ version: 1, status: "rejected", error: { code: "BRIDGE_UNAVAILABLE", message: "Work records are unavailable" } });
       const metadata = await lstat(directory);
       if (!metadata.isDirectory() || metadata.isSymbolicLink()) throw new BridgeError("Invalid work journal bridge directory");
-      const hash = createHash("sha256").update(JSON.stringify([context.sessionID, context.messageID, context.callID, action])).digest("hex").slice(0,32);
+      if (typeof context.directory !== "string" || !context.directory.trim()) throw new BridgeError("Missing tool workspace");
+      const hash = createHash("sha256").update(JSON.stringify([context.directory, context.sessionID, context.messageID, context.callID, action])).digest("hex").slice(0,32);
       const requestId = `${hash.slice(0,8)}-${hash.slice(8,12)}-${hash.slice(12,16)}-${hash.slice(16,20)}-${hash.slice(20)}`;
-      const body = JSON.stringify({ version: 1, requestId, sessionId: context.sessionID, messageId: context.messageID, callId: context.callID, action, args: args.input });
+      const body = JSON.stringify({ version: 1, requestId, directory: context.directory, sessionId: context.sessionID, messageId: context.messageID, callId: context.callID, action, args: args.input });
       if (Buffer.byteLength(body) > 256 * 1024) throw new BridgeError("Work journal request exceeds 256 KiB");
       const temporary = join(directory, `${requestId}.tmp`);
       const request = join(directory, `${requestId}.request`);

@@ -1,5 +1,7 @@
 #[cfg(windows)]
 mod windows_process_tree;
+#[cfg(windows)]
+mod windows_startup;
 // allow: SIZE_OK — legacy Tauri bootstrap root owns startup/resource wiring; this patch keeps the migration at that boundary.
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
@@ -680,37 +682,6 @@ fn pick_free_port() -> u16 {
         .expect("no free port available")
 }
 
-/// Kill orphaned `opencode serve` sidecars from previous runs.
-#[cfg(windows)]
-fn cleanup_orphan_sidecars() {
-    use std::os::windows::process::CommandExt;
-    use std::time::{Duration, Instant};
-    const CREATE_NO_WINDOW: u32 = 0x0800_0000;
-
-    // Only matches opencode processes spawned by us: our sidecar is the only
-    // one passing `--cors http://tauri.localhost` on its command line.
-    let script = "Get-CimInstance Win32_Process -Filter \"Name = 'opencode.exe'\" | Where-Object { $_.CommandLine -match 'tauri\\.localhost' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }";
-    let Ok(mut child) = Command::new("powershell.exe")
-        .args(["-NoProfile", "-NonInteractive", "-Command", script])
-        .creation_flags(CREATE_NO_WINDOW)
-        .spawn()
-    else {
-        return;
-    };
-    let deadline = Instant::now() + Duration::from_secs(2);
-    loop {
-        match child.try_wait() {
-            Ok(Some(_)) | Err(_) => break,
-            Ok(None) if Instant::now() >= deadline => {
-                let _ = child.kill();
-                let _ = child.wait();
-                break;
-            }
-            Ok(None) => std::thread::sleep(Duration::from_millis(50)),
-        }
-    }
-}
-
 const CURRENT_XIAOZHU_INTRO: &str = "你好！我是当代游戏电子游戏音乐先锋——小著。";
 const LEGACY_XIAOZHU_INTROS: &[&str] = &[
     "你好！我是**著名**当代游戏电子游戏音乐先锋——霄太郎，当然\\~您叫我**小著**就行。",
@@ -996,7 +967,7 @@ fn spawn_sidecar(app: &tauri::AppHandle, port: u16) -> std::io::Result<Child> {
     configure_sidecar_environment(&mut cmd, &data_dir);
     cmd.env_remove("YUME_WORKLOG_IPC_DIR");
     if let Some(bridge) = app.try_state::<worklog::bridge::WorklogBridge>() {
-        match bridge.reset_launch(format!("http://127.0.0.1:{port}")) {
+        match bridge.reset_launch(format!("http://127.0.0.1:{port}"), crate::sidecar_auth_header(app)) {
             Ok(directory) => {
                 cmd.env("YUME_WORKLOG_IPC_DIR", directory);
             }
@@ -1053,7 +1024,31 @@ fn spawn_sidecar(app: &tauri::AppHandle, port: u16) -> std::io::Result<Child> {
         }
     }
 
-    cmd.spawn()
+    let mut child = cmd.spawn()?;
+    #[cfg(windows)]
+    if let Err(error) = windows_startup::record_child(&app.config().identifier, &data_dir, child.id()) {
+        // The owned Child handle remains exact even if registration failed.
+        let _ = child.kill();
+        let _ = child.wait();
+        return Err(error);
+    }
+    Ok(child)
+}
+
+fn forget_sidecar_child(app: &tauri::AppHandle, pid: u32) {
+    #[cfg(windows)]
+    if let Ok(data_dir) = app.path().app_data_dir() {
+        windows_startup::forget_child(&data_dir, pid);
+    }
+    #[cfg(not(windows))]
+    let _ = (app, pid);
+}
+
+fn stop_sidecar_child(app: &tauri::AppHandle, mut child: Child) {
+    let _ = child.kill();
+    if child.wait().is_ok() {
+        forget_sidecar_child(app, child.id());
+    }
 }
 
 pub(crate) fn restart_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
@@ -1090,9 +1085,8 @@ fn replace_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
         .lock()
         .map_err(|_| "sidecar lock poisoned")?
         .take();
-    if let Some(mut child) = previous.take() {
-        let _ = child.kill();
-        let _ = child.wait();
+    if let Some(child) = previous.take() {
+        stop_sidecar_child(app, child);
     }
     let child = spawn_sidecar(app, sidecar.port).map_err(|error| error.to_string())?;
     *sidecar.child.lock().map_err(|_| "sidecar lock poisoned")? = Some(child);
@@ -1117,7 +1111,13 @@ fn start_sidecar_supervisor(app: tauri::AppHandle) {
             };
             match slot.as_mut() {
                 Some(child) => match child.try_wait() {
-                    Ok(Some(_)) | Err(_) => {
+                    Ok(Some(_)) => {
+                        forget_sidecar_child(&app, child.id());
+                        *slot = None;
+                        (true, true)
+                    }
+                    Err(_) => {
+                        // An uncertain process remains recorded for conservative recovery.
                         *slot = None;
                         (true, true)
                     }
@@ -1308,32 +1308,45 @@ fn app_version(app: tauri::AppHandle) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    // Kill orphaned `opencode serve` sidecars left behind by force-killed
-    // previous runs (identified by our unique `--cors http://tauri.localhost`
-    // marker). Runs synchronously BEFORE spawning the new sidecar so the
-    // fresh one is never targeted.
-    #[cfg(all(windows, not(feature = "worklog-qa")))]
-    cleanup_orphan_sidecars();
-
+    let context = tauri::generate_context!();
+    #[cfg(windows)]
+    let primary = match windows_startup::PrimaryGuard::acquire(&context.config().identifier) {
+        Ok(Some(primary)) => primary,
+        Ok(None) => {
+            windows_startup::notify_primary(&context.config().identifier);
+            return;
+        }
+        Err(error) => {
+            eprintln!("cannot establish primary application ownership: {error}");
+            return;
+        }
+    };
     let port = pick_free_port();
-
     let mut builder = tauri::Builder::default();
+    #[cfg(windows)]
+    { builder = builder.manage(primary); }
 
-    // Registered first, before any other plugin or window is created: a second
-    // launch (double-clicking the icon again, autostart racing a manual start,
-    // a stuck process from a crash) takes a named OS mutex here and exits
-    // immediately if one is already held, forwarding its argv/cwd to the running
-    // instance instead. This is what stops "several dozen processes" from a
-    // single misbehaving launch path, and it also removes the two symptoms that
-    // motivated it: two instances fighting over global shortcuts, and two
-    // instances opening the same `deskmate-memory.db` file.
+    // Keep the plugin's normal second-launch notification on every desktop.
+    // Windows also holds an earlier atomic guard across the plugin's window gap.
     #[cfg(desktop)]
     {
         builder = builder.plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            // A second launch is treated exactly like the tray "show" action:
-            // bring the existing chat into view rather than doing nothing.
             let _ = show_chat(app);
         }));
+        #[cfg(windows)]
+        {
+            builder = builder.plugin(tauri::plugin::Builder::<_, ()>::new("windows-primary-owner")
+                .setup(|app, _| {
+                    if !app.state::<windows_startup::PrimaryGuard>().owns_plugin_window() {
+                        // An older binary may hold only the plugin mutex. Its
+                        // absent/still-starting window must never authorize spawn.
+                        windows_startup::notify_primary(&app.config().identifier);
+                        app.cleanup_before_exit();
+                        std::process::exit(0);
+                    }
+                    Ok(())
+                }).build());
+        }
     }
 
     let sidecar_password = uuid::Uuid::new_v4().to_string();
@@ -1574,6 +1587,13 @@ pub fn run() {
             let handle = app.handle().clone();
             #[cfg(feature = "worklog-qa")]
             validate_worklog_qa_identity(&handle)?;
+            #[cfg(windows)]
+            {
+                let data_dir = handle.path().app_data_dir()?;
+                if let Err(error) = app.state::<windows_startup::PrimaryGuard>().cleanup(&data_dir) {
+                    eprintln!("recorded sidecar recovery unavailable: {error}");
+                }
+            }
             chat_attachments::start_stale_sweep(&handle);
             chat_attachments::resources::initialize(&handle).map_err(std::io::Error::other)?;
 
@@ -1677,7 +1697,7 @@ pub fn run() {
             updater::confirm_installed_update(&handle);
             Ok(())
         })
-        .build(tauri::generate_context!())
+        .build(context)
         // SAFE-EXPECT: building the Tauri app is the final startup boundary; failures are fatal.
         .expect("error while building tauri application")
         .run(|app, event| {
@@ -1695,9 +1715,8 @@ pub fn run() {
                 pomodoro::stop_checker(app);
                 settings::flush_pet_position(app);
                 // SAFE-UNWRAP: a poisoned sidecar mutex means an earlier setup command panicked.
-                if let Some(mut child) = app.state::<Sidecar>().child.lock().unwrap().take() {
-                    let _ = child.kill();
-                    let _ = child.wait();
+                if let Some(child) = app.state::<Sidecar>().child.lock().unwrap().take() {
+                    stop_sidecar_child(app, child);
                 }
             }
         });

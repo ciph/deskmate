@@ -49,24 +49,103 @@ pub fn cleanup_stale(root: &Path) -> WorklogResult<()> {
     }
     Ok(())
 }
+fn fetch(launch: &Launch, directory: &str, route: &str, limit: u64) -> WorklogResult<Value> {
+    use std::io::Read;
+    crate::history::native_api::NativeHistoryClient::new(&launch.endpoint, &launch.auth_header)
+        .map_err(|_| unavailable())?;
+    let response = ureq::AgentBuilder::new()
+        .timeout(Duration::from_secs(5))
+        .redirects(0)
+        .build()
+        .get(&format!("{}{route}", launch.endpoint))
+        .query("directory", directory)
+        .set("Authorization", &launch.auth_header)
+        .call()
+        .map_err(|_| unavailable())?;
+    let mut bytes = Vec::new();
+    response
+        .into_reader()
+        .take(limit + 1)
+        .read_to_end(&mut bytes)
+        .map_err(|_| unavailable())?;
+    if bytes.len() as u64 > limit {
+        return Err(unavailable());
+    }
+    serde_json::from_slice(&bytes).map_err(|_| unavailable())
+}
 fn parent(launch: &Launch, request: &Request) -> WorklogResult<String> {
     if !safe_id(&request.session_id) || !safe_id(&request.message_id) || !safe_id(&request.call_id)
     {
         return Err(WorklogError::validation("Invalid tool context"));
     }
-    let agent = ureq::AgentBuilder::new()
-        .timeout(Duration::from_secs(5))
-        .build();
-    let messages: Vec<Value> = agent
-        .get(&format!(
-            "{}/session/{}/message?limit=200",
-            launch.endpoint, request.session_id
-        ))
-        .call()
-        .map_err(|_| unavailable())?
-        .into_json()
-        .map_err(|_| unavailable())?;
-    verify_parent(&messages, request)
+    let directory = super::canonical_directory(&request.directory)?;
+    let session = fetch(
+        launch,
+        &directory,
+        &format!("/session/{}", request.session_id),
+        64 * 1024,
+    )?;
+    if session["id"].as_str() != Some(&request.session_id)
+        || session["directory"]
+            .as_str()
+            .and_then(|path| super::canonical_directory(path).ok())
+            .as_deref()
+            != Some(&directory)
+    {
+        return Err(WorklogError::new(
+            "INVALID_CONTEXT",
+            "Tool session does not belong to this workspace",
+        ));
+    }
+    // Fetch only the current assistant; unrelated attachments/history never enter this lookup.
+    let message = fetch(
+        launch,
+        &directory,
+        &format!(
+            "/session/{}/message/{}",
+            request.session_id, request.message_id
+        ),
+        8 * 1024 * 1024,
+    )?;
+    verify_parent(&[message], request)
+}
+fn native_user_text(launch: &Launch, request: &Request, user: &str) -> WorklogResult<String> {
+    if !safe_id(user) {
+        return Err(unavailable());
+    }
+    let directory = super::canonical_directory(&request.directory)?;
+    let message = fetch(
+        launch,
+        &directory,
+        &format!("/session/{}/message/{user}", request.session_id),
+        96 * 1024 * 1024,
+    )?;
+    if message["info"]["id"].as_str() != Some(user)
+        || message["info"]["role"] != "user"
+        || message["info"]["sessionID"].as_str() != Some(&request.session_id)
+    {
+        return Err(WorklogError::new(
+            "INVALID_CONTEXT",
+            "Native user source is unavailable",
+        ));
+    }
+    let text = message["parts"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|part| {
+            part["type"] == "text" && part["synthetic"] != true && part["ignored"] != true
+        })
+        .filter_map(|part| part["text"].as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    if text.trim().is_empty() {
+        return Err(WorklogError::new(
+            "INVALID_CONTEXT",
+            "Native user text is unavailable",
+        ));
+    }
+    Ok(text)
 }
 fn verify_parent(messages: &[Value], request: &Request) -> WorklogResult<String> {
     let message = messages
@@ -97,33 +176,75 @@ fn verify_parent(messages: &[Value], request: &Request) -> WorklogResult<String>
         .map(str::to_owned)
         .ok_or_else(unavailable)
 }
-fn handle(app: &tauri::AppHandle, launch: &Launch, request: Request) -> WorklogResult<Value> {
-    if request.version != 1 || uuid::Uuid::parse_str(&request.request_id).is_err() {
-        return Err(WorklogError::validation("Unsupported bridge request"));
-    }
-    let user = parent(launch, &request)?;
-    let model = {
-        let state = app.state::<crate::settings::SettingsState>();
-        let settings = state.0.lock().map_err(|_| unavailable())?;
-        format!("{}/{}", settings.provider_id, settings.model_id)
-    };
-    let bridge = app.state::<WorklogBridge>();
+fn ensure_current(bridge: &WorklogBridge, launch: &Launch) -> WorklogResult<()> {
     let current = bridge.launch.lock().map_err(|_| unavailable())?;
     if current.as_ref().map(|value| &value.directory) != Some(&launch.directory) {
         return Err(WorklogError::new("STALE_CONTEXT", "Sidecar was restarted"));
     }
-    let grants = bridge.grants.lock().map_err(|_| unavailable())?;
-    let grant = grants
-        .get(&(request.session_id.clone(), user.clone()))
+    Ok(())
+}
+
+// Production and tests share the authenticated lookup, grant lookup and repository dispatch.
+fn process(
+    bridge: &WorklogBridge,
+    launch: &Launch,
+    request: &Request,
+    execute: impl FnOnce(&super::auth::Grant, &str) -> WorklogResult<Value>,
+) -> WorklogResult<Value> {
+    if request.version != 1 || uuid::Uuid::parse_str(&request.request_id).is_err() {
+        return Err(WorklogError::validation("Unsupported bridge request"));
+    }
+    ensure_current(bridge, launch)?;
+    let directory = super::canonical_directory(&request.directory)?;
+    let user = parent(launch, request)?;
+    let needs_source = {
+        let grants = bridge.grants.lock().map_err(|_| unavailable())?;
+        grants
+            .active
+            .get(&(directory.clone(), request.session_id.clone(), user.clone()))
+            .is_some_and(|turn| turn.grant.is_none())
+    };
+    let source = if needs_source {
+        Some(native_user_text(launch, request, &user)?)
+    } else {
+        None
+    };
+    // Hold the launch through commit: reset cannot race a validated old request into a write.
+    let current = bridge.launch.lock().map_err(|_| unavailable())?;
+    if current.as_ref().map(|value| &value.directory) != Some(&launch.directory) {
+        return Err(WorklogError::new("STALE_CONTEXT", "Sidecar was restarted"));
+    }
+    let mut grants = bridge.grants.lock().map_err(|_| unavailable())?;
+    let turn = grants
+        .active
+        .get_mut(&(directory, request.session_id.clone(), user.clone()))
+        .filter(|turn| turn.created.elapsed().as_secs() < 1800)
         .ok_or_else(|| {
             WorklogError::new(
                 "NEEDS_EXPLICIT_REQUEST",
                 "This conversation turn has no work journal authorization",
             )
         })?;
-    let result = app
-        .state::<crate::worklog::WorklogState>()
-        .with_repository(|repo| super::dispatch::execute(repo, &request, grant, &user, &model))?;
+    if turn.grant.is_none() {
+        let mut grant = super::auth::grant(source.as_deref().ok_or_else(unavailable)?)?;
+        grant.received_date = turn.received_date;
+        grant.created = turn.created;
+        turn.grant = Some(grant);
+    }
+    execute(turn.grant.as_ref().ok_or_else(unavailable)?, &user)
+}
+
+fn handle(app: &tauri::AppHandle, launch: &Launch, request: Request) -> WorklogResult<Value> {
+    let model = {
+        let state = app.state::<crate::settings::SettingsState>();
+        let settings = state.0.lock().map_err(|_| unavailable())?;
+        format!("{}/{}", settings.provider_id, settings.model_id)
+    };
+    let bridge = app.state::<WorklogBridge>();
+    let result = process(&bridge, launch, &request, |grant, user| {
+        app.state::<crate::worklog::WorklogState>()
+            .with_repository(|repo| super::dispatch::execute(repo, &request, grant, user, &model))
+    })?;
     if request.action != "query" {
         if app.emit("deskmate://worklog-changed", ()).is_err() {
             eprintln!("Worklog notification unavailable; committed data remains readable");
@@ -178,7 +299,9 @@ pub fn start(app: tauri::AppHandle) {
     std::thread::spawn(move || loop {
         let bridge = app.state::<WorklogBridge>();
         if let Ok(mut grants) = bridge.grants.lock() {
-            grants.retain(|_, grant| grant.created.elapsed().as_secs() < 1800);
+            grants
+                .active
+                .retain(|_, turn| turn.created.elapsed().as_secs() < 1800);
         }
         let launch = bridge.launch.lock().ok().and_then(|value| value.clone());
         if let Some(launch) = launch {
@@ -222,6 +345,7 @@ mod tests {
         let request = Request {
             version: 1,
             request_id: uuid::Uuid::new_v4().to_string(),
+            directory: "/workspace/a".into(),
             session_id: "ses_test".into(),
             message_id: "msg_assistant".into(),
             call_id: "call_true".into(),
@@ -241,3 +365,7 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "bridge_http_tests.rs"]
+mod http_tests;

@@ -312,9 +312,11 @@ fn dispatch(app: &tauri::AppHandle, value: Value) -> Result<Value, String> {
 
 #[tauri::command]
 pub(crate) async fn memory_register_turn(
+    window: tauri::WebviewWindow,
     app: tauri::AppHandle,
     registration: Registration,
 ) -> Result<String, String> {
+    crate::tool_permissions::runtime::require_chat(&window)?;
     tauri::async_runtime::spawn_blocking(move || register(&app, registration))
         .await
         .map_err(|_| "REGISTRATION_FAILED")?

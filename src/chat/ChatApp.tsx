@@ -1014,6 +1014,7 @@ export default function ChatApp() {
     try {
       prepared = await chatAttachments.prepareModelAttachments(text);
     } catch (error: unknown) {
+      if (generation !== viewGenerationRef.current || (error instanceof DOMException && error.name === "AbortError")) return;
       setAttachmentError(error instanceof Error ? error.message : t.chatAttachmentReadFailed);
       return;
     }
@@ -1205,7 +1206,7 @@ export default function ChatApp() {
         userNameInstruction: userNameInstruction(s?.userName ?? ""),
       });
       try {
-        await registerWorklogTurn(sessionID, userMessageId, text);
+        await registerWorklogTurn(sessionID, userMessageId, text, identity.directory);
       } catch (error: unknown) {
         setMemoryNotice(`${worklogChatCopy(lang).failed}: ${error instanceof Error ? error.message : "BRIDGE_UNAVAILABLE"}`);
       }
