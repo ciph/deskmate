@@ -24,8 +24,12 @@ impl CatalogStore {
     }
 
     fn connection(&self) -> Result<Connection, String> {
+        self.connection_with_timeout(Duration::from_secs(5))
+    }
+
+    fn connection_with_timeout(&self, timeout: Duration) -> Result<Connection, String> {
         let connection = Connection::open(&self.path).map_err(db_error)?;
-        connection.busy_timeout(Duration::from_secs(5)).map_err(db_error)?;
+        connection.busy_timeout(timeout).map_err(db_error)?;
         connection.pragma_update(None, "synchronous", "FULL").map_err(db_error)?;
         Ok(connection)
     }
@@ -87,6 +91,26 @@ impl CatalogStore {
         let raw: String = connection.query_row("SELECT metadata FROM entries WHERE key = ?1", [key], |row| row.get(0))
             .map_err(|error| if matches!(error, rusqlite::Error::QueryReturnedNoRows) { "history_not_found".to_owned() } else { db_error(error) })?;
         decode_row(key, &raw)
+    }
+
+    pub(super) fn with_snapshot_entries<T>(
+        &self,
+        native_key: &str,
+        legacy_key: &str,
+        apply: impl FnOnce(Option<CatalogEntry>, Option<CatalogEntry>) -> Result<T, String>,
+    ) -> Result<T, String> {
+        use rusqlite::OptionalExtension;
+        // Archiving is best effort; even connection pragmas must not wait under the run lock.
+        let mut connection = self.connection_with_timeout(Duration::ZERO)?;
+        let transaction = connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(db_error)?;
+        let read = |key: &str| -> Result<Option<CatalogEntry>, String> {
+            let raw: Option<String> = transaction.query_row(
+                "SELECT metadata FROM entries WHERE key = ?1", [key], |row| row.get(0),
+            ).optional().map_err(db_error)?;
+            raw.map(|json| decode_row(key, &json)).transpose()
+        };
+        // Reserve against writers through replacement, including tombstone migration and WAL mode.
+        apply(read(native_key)?, read(legacy_key)?)
     }
 
     pub(crate) fn update<T>(&self, edit: impl FnOnce(&mut Vec<CatalogEntry>) -> Result<T, String>) -> Result<T, String> {

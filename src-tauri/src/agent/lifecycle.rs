@@ -2,7 +2,7 @@ use super::record_store::{NativeMessage, RunOutcome, RunRecord, RunStore};
 use std::{
     collections::BTreeSet,
     path::Path,
-    sync::{Mutex, MutexGuard},
+    sync::{Mutex, MutexGuard, TryLockError},
 };
 
 pub(super) struct RunData {
@@ -15,6 +15,7 @@ pub(crate) struct AgentRunState {
     pub(super) data: Mutex<RunData>,
     pub(super) store: RunStore,
     operation: Mutex<()>,
+    collection: Mutex<()>,
     pub(super) usage_retries: Mutex<super::usage_retry::UsageRetries>,
     archive_failure: Mutex<Option<(String, String)>>,
     pub(super) collection_failure: Mutex<Option<(String, std::time::Instant)>>,
@@ -31,6 +32,7 @@ impl AgentRunState {
             }),
             store,
             operation: Mutex::new(()),
+            collection: Mutex::new(()),
             usage_retries: Mutex::new(super::usage_retry::UsageRetries::default()),
             archive_failure: Mutex::new(None),
             collection_failure: Mutex::new(None),
@@ -56,6 +58,7 @@ impl AgentRunState {
             }),
             store,
             operation: Mutex::new(()),
+            collection: Mutex::new(()),
             usage_retries: Mutex::new(usage_retries),
             archive_failure: Mutex::new(None),
             collection_failure: Mutex::new(None),
@@ -78,6 +81,23 @@ impl AgentRunState {
         self.operation
             .lock()
             .map_err(|_| "agent_state_unavailable".to_owned())
+    }
+
+    // Do not let overlapping live/recovery ticks publish older text with the
+    // same message/part IDs. Control commands never acquire this mutex.
+    pub(super) fn try_collection(&self) -> Result<Option<MutexGuard<'_, ()>>, String> {
+        match self.collection.try_lock() {
+            Ok(guard) => Ok(Some(guard)),
+            Err(TryLockError::WouldBlock) => Ok(None),
+            Err(TryLockError::Poisoned(_)) => Err("agent_state_unavailable".into()),
+        }
+    }
+
+    pub(super) fn matches_snapshot(&self, candidate: &RunRecord) -> Result<bool, String> {
+        let data = self.data.lock().map_err(|_| "agent_state_unavailable")?;
+        // Full value comparison is the revision token. Cancellation, ownership,
+        // recovered input and concurrent usage updates all invalidate it.
+        Ok(data.active.as_ref() == Some(candidate))
     }
 
     pub(crate) fn begin(&self, run_id: &str, workspace: &Path, input: &str) -> Result<(), String> {

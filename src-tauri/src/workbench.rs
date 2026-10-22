@@ -137,6 +137,32 @@ impl WorkbenchOwnership {
         Ok(state.current.take().is_some())
     }
 
+    pub(crate) fn while_not_owned<T>(
+        &self,
+        directory: &str,
+        session_id: &str,
+        apply: impl FnOnce() -> Result<T, String>,
+    ) -> Result<T, String> {
+        let directory = crate::history::catalog_model::canonical_directory(directory)
+            .map_err(|_| "history_identity_invalid")?;
+        let mut state = self.0.try_lock().map_err(|error| match error {
+            std::sync::TryLockError::WouldBlock => "history_ownership_busy",
+            std::sync::TryLockError::Poisoned(_) => "ownership state poisoned",
+        })?;
+        if state.current.as_ref().is_some_and(|current|
+            Instant::now().saturating_duration_since(current.refreshed_at) > OWNERSHIP_LEASE) {
+            state.current = None;
+        }
+        if state.current.as_ref().is_some_and(|current| current.session_id == session_id
+            && crate::history::catalog_model::canonical_directory(&current.directory).is_ok_and(|owned| owned == directory)) {
+            return Err("history_agent_owned".into());
+        }
+        // Keep claims serialized through the snapshot's history and catalog commit.
+        let result = apply();
+        drop(state);
+        result
+    }
+
     pub(crate) fn is_owned(&self, directory: &str, session_id: &str) -> Result<bool, String> {
         self.is_owned_at(directory, session_id, Instant::now())
     }
@@ -697,8 +723,50 @@ mod visibility_tests;
 
 #[cfg(test)]
 mod ownership_tests {
-    use super::WorkbenchOwnership;
+    use super::{WorkbenchOwnership, OWNERSHIP_LEASE};
     use std::time::{Duration, Instant};
+
+    #[test]
+    fn archive_guard_never_waits_for_a_concurrent_ownership_mutation() {
+        let ownership = WorkbenchOwnership::default();
+        let _busy = ownership.0.lock().unwrap();
+        assert_eq!(ownership.while_not_owned("c:/project", "ses_agent", || panic!("busy ownership archived")),
+            Err::<(), _>("history_ownership_busy".into()));
+    }
+
+    #[test]
+    fn archive_guard_obeys_live_lease_full_scope_and_expiration() {
+        let ownership = WorkbenchOwnership::default();
+        ownership.claim_at("C:/PROJECT", "ses_agent", Instant::now()).unwrap();
+        assert_eq!(ownership.while_not_owned("c:/project", "ses_agent", || panic!("owned archive")), Err::<(), _>("history_agent_owned".into()));
+        assert_eq!(ownership.while_not_owned("c:/other", "ses_agent", || Ok(7)), Ok(7));
+        assert_eq!(ownership.while_not_owned("c:/project", "ses_other", || Ok(8)), Ok(8));
+        ownership.claim_at("c:/project", "ses_agent", Instant::now() - OWNERSHIP_LEASE - Duration::from_millis(1)).unwrap();
+        assert_eq!(ownership.while_not_owned("c:/project", "ses_agent", || Ok(9)), Ok(9));
+    }
+
+    #[test]
+    fn archive_guard_holds_ownership_until_publish_finishes() {
+        use std::sync::{mpsc, Arc};
+        let ownership = Arc::new(WorkbenchOwnership::default());
+        let (started_tx, started_rx) = mpsc::channel();
+        let (claimed_tx, claimed_rx) = mpsc::channel();
+        let mut claimant = None;
+        ownership.while_not_owned("c:/project", "ses_agent", || {
+            let pending = ownership.clone();
+            claimant = Some(std::thread::spawn(move || {
+                started_tx.send(()).unwrap();
+                pending.claim_at("c:/project", "ses_agent", Instant::now()).unwrap();
+                claimed_tx.send(()).unwrap();
+            }));
+            started_rx.recv_timeout(Duration::from_secs(2)).unwrap();
+            assert!(matches!(claimed_rx.recv_timeout(Duration::from_millis(50)), Err(mpsc::RecvTimeoutError::Timeout)));
+            Ok(())
+        }).unwrap();
+        claimed_rx.recv_timeout(Duration::from_secs(2)).unwrap();
+        claimant.unwrap().join().unwrap();
+        assert!(ownership.is_owned("c:/project", "ses_agent").unwrap());
+    }
 
     #[test]
     fn claiming_a_new_session_releases_only_the_previous_session() {

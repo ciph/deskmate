@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { listInstalledPacks, onPackImported } from "../lib/packs";
 import { builtinPersonaAvatar, personaAvatarSources } from "../pet/personaAvatar";
 
@@ -29,8 +29,8 @@ export function usePersonaAvatars(personaIds: readonly string[]): Readonly<Recor
     void refresh();
     return () => { disposed = true; void stop.then(unlisten => unlisten()).catch(() => {}); };
   }, [key]);
-  return Object.fromEntries(personaIds.map(id => {
+  return useMemo(() => Object.fromEntries((JSON.parse(key) as string[]).map(id => {
     const builtin = builtinPersonaAvatar(id);
     return [id, builtin.length ? builtin : loaded?.key === key ? loaded.sources[id] ?? [] : []];
-  }));
+  })), [key, loaded]);
 }

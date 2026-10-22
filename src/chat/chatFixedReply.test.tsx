@@ -37,6 +37,7 @@ let localMessages: HistoryMessage[] = [];
 let catalogUnavailable = false;
 let catalogRunning = false;
 let promptCount = 0;
+let deferredAbort: (() => Promise<unknown>) | null = null;
 const nativeEntry: UnifiedHistoryRow = {
   key: 'native:["test",".","ses_fixed"]',
   identity: { kind: "native", sidecarId: "test", directory: ".", sessionId: "ses_fixed" },
@@ -143,6 +144,7 @@ beforeEach(() => {
   catalogRunning = false;
   catalogRow = nativeEntry;
   promptCount = 0;
+  deferredAbort = null;
   ownershipChanged = null;
   workbenchOwned = false;
   workbenchState = "idle";
@@ -191,6 +193,8 @@ beforeEach(() => {
         });
         return Promise.resolve();
       }
+      case "chat_abort_session":
+        return deferredAbort?.() ?? Promise.resolve();
       case "history_save":
         return Promise.resolve(undefined);
       case "workbench_session_owned":
@@ -543,19 +547,21 @@ describe("小著固定名字由来回复", () => {
     await act(async () => {
       fireEvent.scroll(list);
       receive({ type: "message.part.updated", properties: { part: {
-        sessionID: "ses_fixed", messageID: "msg-slow", type: "text", text: "这是超过两秒才到的**内容",
+        sessionID: "ses_fixed", messageID: "msg-slow", type: "text", text: "这是超过两秒才到的**内容甲",
       } } });
       await Promise.resolve();
     });
+    await act(async () => { jest.advanceTimersByTime(33); await Promise.resolve(); });
     expect(scrollTo).not.toHaveBeenCalled();
     await act(async () => {
       list.scrollTop = 800;
       fireEvent.scroll(list);
       receive({ type: "message.part.updated", properties: { part: {
-        sessionID: "ses_fixed", messageID: "msg-slow", type: "text", text: "这是超过两秒才到的**内容",
+        sessionID: "ses_fixed", messageID: "msg-slow", type: "text", text: "这是超过两秒才到的**内容甲乙",
       } } });
       await Promise.resolve();
     });
+    await act(async () => { jest.advanceTimersByTime(33); await Promise.resolve(); });
     expect(scrollTo).toHaveBeenCalledWith({ top: 1000 });
 
     await act(async () => {
@@ -564,7 +570,7 @@ describe("小著固定名字由来回复", () => {
     });
     expect(document.querySelector(".chat-typing")).toBeNull();
     expect(document.querySelector(".chat-msg-assistant strong")).toBeNull();
-    expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("这是超过两秒才到的**内容");
+    expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("这是超过两秒才到的**内容甲乙");
   });
 
   test("does not add an empty placeholder bubble next to the typing indicator", async () => {
@@ -800,4 +806,63 @@ test("switching to another native directory and session rejects the previous str
   expect(screen.queryByText("旧会话迟到内容")).toBeNull();
   expect(screen.getByText("另一会话继续回复")).toBeDefined();
   expect(document.querySelector(".chat-typing")).toBeNull();
+});
+
+
+test("native part IDs resume into one assistant row without duplicated restored content", async () => {
+  render(<ChatApp />);
+  await screen.findByPlaceholderText("输入消息,Enter 发送");
+  catalogRunning = true;
+  localMessages = [
+    { role: "assistant", text: "hello ", time: 1, messageId: "m1", partId: "p1" },
+    { role: "assistant", text: "world", time: 1, messageId: "m1", partId: "p2" },
+  ];
+  fireEvent.click(screen.getByRole("button", { name: "历史" }));
+  fireEvent.click(await screen.findByRole("button", { name: "打开 t" }));
+  await screen.findByText("hello world");
+  const row = document.querySelector('[data-message-id="m1"]');
+  await act(async () => {
+    eventHandler?.({ type: "message.part.updated", properties: { part: {
+      sessionID: "ses_fixed", messageID: "m1", id: "p2", type: "text", text: "world!",
+    } } });
+    eventHandler?.({ type: "message.part.updated", properties: { part: {
+      sessionID: "ses_fixed", messageID: "m1", id: "p2", type: "text", text: "world!",
+    } } });
+    eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  expect(screen.getByText("hello world!")).toBeDefined();
+  expect(document.querySelectorAll(".chat-msg-assistant")).toHaveLength(1);
+  expect(document.querySelector('[data-message-id="m1"]')).toBe(row);
+});
+
+
+test("a Stop confirmation for an old generation cannot cancel a newly selected native run", async () => {
+  render(<ChatApp />);
+  const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.change(input, { target: { value: "old request" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptCount).toBe(1));
+  let finishAbort: (() => void) | undefined;
+  deferredAbort = () => new Promise(resolve => { finishAbort = () => resolve(undefined); });
+  fireEvent.click(screen.getByRole("button", { name: "停" }));
+  await waitFor(() => expect(finishAbort).toBeDefined());
+  catalogRow = { ...nativeEntry, key: 'native:["test","C:/other","ses_other"]',
+    identity: { kind: "native", sidecarId: "test", directory: "C:/other", sessionId: "ses_other" } };
+  catalogRunning = true;
+  localMessages = [{ role: "assistant", text: "other initial", time: 2, messageId: "other-message", partId: "other-part" }];
+  fireEvent.click(screen.getByRole("button", { name: "历史" }));
+  fireEvent.click(await screen.findByRole("button", { name: "打开 t" }));
+  await screen.findByText("other initial");
+  await act(async () => {
+    finishAbort?.();
+    await Promise.resolve(); await Promise.resolve();
+    eventHandler?.({ type: "message.part.updated", properties: { part: {
+      sessionID: "ses_other", messageID: "other-message", id: "other-part", type: "text", text: "other final after old Stop",
+    } } });
+    eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_other" } });
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  expect(screen.getByText("other final after old Stop")).toBeDefined();
+  expect(screen.queryByText("other initial")).toBeNull();
 });

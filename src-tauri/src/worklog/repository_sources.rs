@@ -1,5 +1,6 @@
 use super::{contract::*, error::WorklogResult};
 use rusqlite::{params, Connection};
+use std::collections::{HashMap, HashSet};
 
 pub(crate) fn stale_date(db: &Connection, date: &str) -> WorklogResult<()> {
     db.execute(
@@ -17,107 +18,166 @@ pub(crate) fn erase_source(
     kind: &str,
     request: &DeleteRecord,
 ) -> WorklogResult<()> {
-    stale_source(db, kind, &request.id)?;
-    let mut stmt=db.prepare("SELECT DISTINCT v.report_id FROM report_sources s JOIN report_versions v ON v.id=s.version_id WHERE s.source_kind=?1 AND s.source_id=?2")?;
-    let linked = stmt
-        .query_map(params![kind, request.id], |r| r.get::<_, String>(0))?
-        .collect::<Result<Vec<_>, _>>()?;
-    for report in linked {
-        if kind == "entry" {
-            let mut versions = db.prepare("SELECT id FROM report_versions WHERE report_id=?1")?;
-            let ids = versions
-                .query_map([&report], |r| r.get::<_, String>(0))?
-                .collect::<Result<Vec<_>, _>>()?;
-            for id in ids {
-                erase_source(
-                    db,
-                    "daily_version",
-                    &DeleteRecord {
-                        request_id: String::new(),
-                        id,
-                        expected_revision: 0,
-                        delete_linked_reports: request.delete_linked_reports,
-                    },
-                )?;
-            }
-        }
-        if request.delete_linked_reports {
-            erase_report(db, &report)?;
-        } else {
-            db.execute("UPDATE reports SET source_deleted=1 WHERE id=?1", [&report])?;
-        }
-    }
-    // Snapshots exist independently of report_sources, including unfinished runs.
-    let mut versions =
-        db.prepare("SELECT id,source_revision_manifest,source_snapshot FROM report_versions")?;
-    let rows = versions
-        .query_map([], |r| {
-            Ok((
-                r.get::<_, String>(0)?,
-                r.get::<_, String>(1)?,
-                r.get::<_, String>(2)?,
-            ))
-        })?
-        .collect::<Result<Vec<_>, _>>()?;
-    for (id, manifest, snapshot) in rows {
-        let mut refs: Vec<SourceRef> = serde_json::from_str(&manifest)?;
-        let mut snaps: Vec<SourceSnapshot> = serde_json::from_str(&snapshot)?;
-        refs.retain(|s| s.kind != kind || s.id != request.id);
-        snaps.retain(|s| s.source.kind != kind || s.source.id != request.id);
-        db.execute(
-            "UPDATE report_versions SET source_revision_manifest=?1,source_snapshot=?2 WHERE id=?3",
-            params![
-                serde_json::to_string(&refs)?,
-                serde_json::to_string(&snaps)?,
-                id
-            ],
-        )?;
-    }
-    let mut runs = db.prepare("SELECT id,source_manifest,source_snapshot FROM report_runs")?;
-    let rows = runs
-        .query_map([], |r| {
-            Ok((
-                r.get::<_, String>(0)?,
-                r.get::<_, String>(1)?,
-                r.get::<_, String>(2)?,
-            ))
-        })?
-        .collect::<Result<Vec<_>, _>>()?;
-    for (id, manifest, snapshot) in rows {
-        let mut refs: Vec<SourceRef> = serde_json::from_str(&manifest)?;
-        let mut snaps: Vec<SourceSnapshot> = serde_json::from_str(&snapshot)?;
-        let affected = refs.iter().any(|s| s.kind == kind && s.id == request.id);
-        refs.retain(|s| s.kind != kind || s.id != request.id);
-        snaps.retain(|s| s.source.kind != kind || s.source.id != request.id);
-        if affected {
-            db.execute("UPDATE report_runs SET source_manifest=?1,source_snapshot=?2,state=CASE WHEN state IN ('queued','running','retry_wait') THEN 'cancelled' ELSE state END WHERE id=?3",params![serde_json::to_string(&refs)?,serde_json::to_string(&snaps)?,id])?;
-        }
-    }
-    db.execute(
-        "DELETE FROM report_sources WHERE source_kind=?1 AND source_id=?2",
-        params![kind, request.id],
-    )?;
-    Ok(())
+    erase_batch(
+        db,
+        Some((kind, &request.id)),
+        None,
+        request.delete_linked_reports,
+    )
 }
 pub(crate) fn erase_report(db: &Connection, id: &str) -> WorklogResult<()> {
-    let mut stmt = db.prepare("SELECT id FROM report_versions WHERE report_id=?1")?;
-    let versions = stmt
-        .query_map([id], |r| r.get::<_, String>(0))?
-        .collect::<Result<Vec<_>, _>>()?;
-    for version in versions {
-        erase_source(
-            db,
-            "daily_version",
-            &DeleteRecord {
-                request_id: String::new(),
-                id: version,
-                expected_revision: 0,
-                delete_linked_reports: false,
-            },
-        )?;
+    // Deleting one report does not authorize deleting the bodies of dependent reports.
+    erase_batch(db, None, Some(id), false)
+}
+
+struct StoredSources {
+    id: String,
+    report_id: Option<String>,
+    manifest: Vec<SourceRef>,
+    snapshots: Vec<SourceSnapshot>,
+}
+impl StoredSources {
+    fn read(row: &rusqlite::Row<'_>) -> rusqlite::Result<Self> {
+        Ok(Self {
+            id: row.get(0)?,
+            report_id: row.get(1)?,
+            manifest: super::repository::decode(row.get(2)?, 2)?,
+            snapshots: super::repository::decode(row.get(3)?, 3)?,
+        })
     }
-    db.execute("DELETE FROM reports WHERE id=?1", [id])?;
-    db.execute("UPDATE worklog_operations SET status='deleted' WHERE entity_kind='report' AND entity_id=?1",[id])?;
+    fn erase(&mut self, sources: &HashMap<String, HashSet<String>>) -> bool {
+        let before = (self.manifest.len(), self.snapshots.len());
+        let removed = |s: &SourceRef| sources.get(&s.kind).is_some_and(|ids| ids.contains(&s.id));
+        self.manifest.retain(|s| !removed(s));
+        self.snapshots.retain(|s| !removed(&s.source));
+        before != (self.manifest.len(), self.snapshots.len())
+    }
+}
+fn erase_batch(
+    db: &Connection,
+    source: Option<(&str, &str)>,
+    deleted_report: Option<&str>,
+    delete_linked_reports: bool,
+) -> WorklogResult<()> {
+    // Snapshots and unfinished runs can exist independently of report_sources.
+    let mut statement = db.prepare(
+        "SELECT id,report_id,source_revision_manifest,source_snapshot FROM report_versions",
+    )?;
+    let mut versions = statement
+        .query_map([], StoredSources::read)?
+        .collect::<Result<Vec<_>, _>>()?;
+    let mut statement = db.prepare("SELECT run.id,report.id,run.source_manifest,run.source_snapshot FROM report_runs run LEFT JOIN reports report ON report.kind=run.kind AND report.period_start=run.period_start AND report.period_end=run.period_end AND run.state IN ('queued','running','retry_wait')")?;
+    let mut runs = statement
+        .query_map([], StoredSources::read)?
+        .collect::<Result<Vec<_>, _>>()?;
+    let mut dependents: HashMap<(String, String), HashSet<String>> = HashMap::new();
+    let mut report_versions: HashMap<&str, Vec<&str>> = HashMap::new();
+    for version in &versions {
+        let report = version.report_id.as_deref().expect("version has report id");
+        report_versions.entry(report).or_default().push(&version.id);
+        for source in version
+            .manifest
+            .iter()
+            .chain(version.snapshots.iter().map(|s| &s.source))
+        {
+            dependents
+                .entry((source.kind.clone(), source.id.clone()))
+                .or_default()
+                .insert(report.to_owned());
+        }
+    }
+    let mut statement = db.prepare("SELECT s.source_kind,s.source_id,v.report_id FROM report_sources s JOIN report_versions v ON v.id=s.version_id")?;
+    let mut rows = statement.query([])?;
+    while let Some(row) = rows.next()? {
+        dependents
+            .entry((row.get(0)?, row.get(1)?))
+            .or_default()
+            .insert(row.get(2)?);
+    }
+    let mut pending = Vec::new();
+    if let Some((kind, id)) = source {
+        pending.push((kind.to_owned(), id.to_owned()));
+    }
+    let mut affected_reports = HashSet::new();
+    if let Some(report) = deleted_report {
+        affected_reports.insert(report.to_owned());
+        if let Some(versions) = report_versions.get(report) {
+            pending.extend(
+                versions
+                    .iter()
+                    .map(|id| ("daily_version".to_owned(), (*id).to_owned())),
+            );
+        }
+    }
+    let mut sources: HashMap<String, HashSet<String>> = HashMap::new();
+    while let Some((kind, id)) = pending.pop() {
+        if !sources.entry(kind.clone()).or_default().insert(id.clone()) {
+            continue;
+        }
+        if let Some(reports) = dependents.get(&(kind, id)) {
+            for report in reports {
+                if affected_reports.insert(report.clone()) {
+                    if let Some(versions) = report_versions.get(report.as_str()) {
+                        pending.extend(
+                            versions
+                                .iter()
+                                .map(|id| ("daily_version".to_owned(), (*id).to_owned())),
+                        );
+                    }
+                }
+            }
+        }
+    }
+    // Release borrowed version IDs before filtering the single decoded snapshot set.
+    drop(report_versions);
+    let deletes = |id: &str| {
+        deleted_report == Some(id) || (delete_linked_reports && affected_reports.contains(id))
+    };
+    let mut update_version = db.prepare(
+        "UPDATE report_versions SET source_revision_manifest=?1,source_snapshot=?2 WHERE id=?3",
+    )?;
+    for version in &mut versions {
+        if !deletes(version.report_id.as_deref().expect("version has report id"))
+            && version.erase(&sources)
+        {
+            update_version.execute(params![
+                serde_json::to_string(&version.manifest)?,
+                serde_json::to_string(&version.snapshots)?,
+                version.id
+            ])?;
+        }
+    }
+    let mut update_run = db.prepare("UPDATE report_runs SET source_manifest=?1,source_snapshot=?2,state=CASE WHEN state IN ('queued','running','retry_wait') THEN 'cancelled' ELSE state END WHERE id=?3")?;
+    for run in &mut runs {
+        if run.erase(&sources) {
+            update_run.execute(params![
+                serde_json::to_string(&run.manifest)?,
+                serde_json::to_string(&run.snapshots)?,
+                run.id
+            ])?;
+        } else if run.report_id.as_deref().is_some_and(deletes) {
+            // A regeneration may use only entries, not a version of its deleted target.
+            db.execute(
+                "UPDATE report_runs SET state='cancelled' WHERE id=?1",
+                [&run.id],
+            )?;
+        }
+    }
+    let mut remove_source =
+        db.prepare("DELETE FROM report_sources WHERE source_kind=?1 AND source_id=?2")?;
+    for (kind, ids) in sources {
+        for id in ids {
+            remove_source.execute(params![kind, id])?;
+        }
+    }
+    for report in &affected_reports {
+        if deletes(report) {
+            db.execute("DELETE FROM reports WHERE id=?1", [report])?;
+            db.execute("UPDATE worklog_operations SET status='deleted' WHERE entity_kind='report' AND entity_id=?1", [report])?;
+        } else {
+            db.execute("UPDATE reports SET stale=1,source_deleted=1 WHERE id=?1 AND (stale=0 OR source_deleted=0)", [report])?;
+        }
+    }
     Ok(())
 }
 

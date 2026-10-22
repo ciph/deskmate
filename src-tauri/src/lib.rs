@@ -1824,7 +1824,7 @@ pub fn run() {
                 agent::recover_after_start(handle.clone());
             }
             start_sidecar_supervisor(handle.clone());
-            app.manage(tool_permissions::events::PermissionEvents::start(format!(
+            app.manage(tool_permissions::events::PermissionEvents::start_managed(handle.clone(), format!(
                 "http://127.0.0.1:{port}"
             )));
             agent::start_collector(handle.clone());

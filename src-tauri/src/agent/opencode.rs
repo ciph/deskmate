@@ -99,6 +99,10 @@ struct WireError {
 #[derive(Deserialize)]
 struct WirePart {
     id: String,
+    #[serde(default, rename = "messageID", deserialize_with = "present_identity")]
+    message_id: Option<serde_json::Value>,
+    #[serde(default, rename = "sessionID", deserialize_with = "present_identity")]
+    session_id: Option<serde_json::Value>,
     #[serde(default)]
     synthetic: bool,
     #[serde(rename = "type")]
@@ -109,6 +113,46 @@ struct WirePart {
     tool: Option<String>,
     state: Option<WireToolState>,
 }
+// Preserve explicit null so a supplied but invalid part identity cannot pass as absent.
+fn present_identity<'de, D: serde::Deserializer<'de>>(
+    deserializer: D,
+) -> Result<Option<serde_json::Value>, D::Error> {
+    serde_json::Value::deserialize(deserializer).map(Some)
+}
+
+impl WireMessage {
+    fn into_native(self, session: &str) -> NativeMessage {
+        NativeMessage {
+            usage: self.info.usage(session),
+            system: self.info.system,
+            id: self.info.id,
+            role: self.info.role,
+            created: self.info.time.created,
+            parent_id: self.info.parent_id,
+            completed: self.info.time.completed.is_some(),
+            finish: self.info.finish,
+            error: self.info.error.map(|error| error.name),
+            parts: self.parts.into_iter().map(|part| NativePart {
+                id: part.id,
+                synthetic: part.synthetic,
+                kind: part.kind,
+                text: part.text,
+                call_id: part.call_id,
+                tool: part.tool,
+                state: part.state.map(|state| NativeToolState {
+                    input: state.input,
+                    output: match (state.status.as_str(), state.error) {
+                        ("error", Some(error)) => serde_json::Value::String(error),
+                        _ => state.output,
+                    },
+                    metadata: state.metadata,
+                    status: state.status,
+                }),
+            }).collect(),
+        }
+    }
+}
+
 #[derive(Deserialize)]
 struct WireToolState {
     status: String,
@@ -224,41 +268,53 @@ impl OpenCodeClient {
         }) {
             return Err("agent_snapshot_session_mismatch".into());
         }
-        Ok(messages
-            .into_iter()
-            .map(|message| NativeMessage {
-                usage: message.info.usage(session),
-                system: message.info.system,
-                id: message.info.id,
-                role: message.info.role,
-                created: message.info.time.created,
-                parent_id: message.info.parent_id,
-                completed: message.info.time.completed.is_some(),
-                finish: message.info.finish,
-                error: message.info.error.map(|error| error.name),
-                parts: message
-                    .parts
-                    .into_iter()
-                    .map(|part| NativePart {
-                        id: part.id,
-                        synthetic: part.synthetic,
-                        kind: part.kind,
-                        text: part.text,
-                        call_id: part.call_id,
-                        tool: part.tool,
-                        state: part.state.map(|state| NativeToolState {
-                            input: state.input,
-                            output: match (state.status.as_str(), state.error) {
-                                ("error", Some(error)) => serde_json::Value::String(error),
-                                _ => state.output,
-                            },
-                            metadata: state.metadata,
-                            status: state.status,
-                        }),
-                    })
-                    .collect(),
+        Ok(messages.into_iter().map(|message| message.into_native(session)).collect())
+    }
+
+    pub(crate) fn message(&self, session: &str, message_id: &str) -> Result<NativeMessage, String> {
+        if !crate::worklog::bridge::safe_id(session) || !crate::worklog::bridge::safe_id(message_id) {
+            return Err("agent_invalid_id".into());
+        }
+        let message: WireMessage = self.agent
+            .get(&self.workspace_url(&format!("/session/{session}/message/{message_id}"))?)
+            .set("Authorization", &self.endpoint.auth_header)
+            .call()
+            .map_err(http_error)?
+            .into_json()
+            .map_err(|_| "agent_wire_invalid")?;
+        if message.info.id != message_id
+            || message.info.session_id.as_ref().and_then(serde_json::Value::as_str) != Some(session)
+            || message.parts.iter().any(|part| {
+                part.message_id.as_ref().is_some_and(|id| id.as_str() != Some(message_id))
+                    || part.session_id.as_ref().is_some_and(|id| id.as_str() != Some(session))
             })
-            .collect())
+        {
+            return Err("agent_message_identity_mismatch".into());
+        }
+        if !matches!(message.info.role.as_deref(), Some("user" | "assistant"))
+            || message.info.time.created.is_none()
+            || (message.info.role.as_deref() == Some("assistant")
+                && message.info.parent_id.as_deref().is_none_or(|id| !crate::worklog::bridge::safe_id(id)))
+        {
+            return Err("agent_message_incomplete".into());
+        }
+        let mut part_ids = std::collections::HashSet::new();
+        for part in &message.parts {
+            if part.id.is_empty() || !part_ids.insert(&part.id)
+                || part.kind.as_deref().is_none_or(str::is_empty)
+                || part.message_id.is_none() || part.session_id.is_none()
+                || (part.kind.as_deref() == Some("tool")
+                    && (part.call_id.as_deref().is_none_or(str::is_empty)
+                        || part.tool.as_deref().is_none_or(str::is_empty)
+                        || part.state.as_ref().is_none_or(|state| {
+                            !matches!(state.status.as_str(), "pending" | "running" | "completed" | "error")
+                        })))
+                || (matches!(part.kind.as_deref(), Some("text" | "reasoning")) && part.text.is_none())
+            {
+                return Err("agent_message_incomplete".into());
+            }
+        }
+        Ok(message.into_native(session))
     }
 
     fn workspace_url(&self, path: &str) -> Result<String, String> {

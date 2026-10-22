@@ -11,6 +11,7 @@ mod permission_tests;
 mod race_tests;
 mod reply_tests;
 mod usage_tests;
+mod projection_tests;
 
 fn fixture(name: &str) -> TestResult<(std::path::PathBuf, std::path::PathBuf)> {
     let root = std::env::temp_dir().join(format!(

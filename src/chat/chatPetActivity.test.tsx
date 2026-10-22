@@ -28,7 +28,11 @@ let eventHandler: ((event: OpenCodeEvent) => void) | null = null;
 const activityEvents: PetActivityEvent[] = [];
 const originalFetch = globalThis.fetch;
 let abortStatus: "idle" | "busy" = "idle";
-let promptTransport: "ok" | "lost_confirmed" | "lost_unknown" = "ok";
+let promptTransport: "ok" | "lost_confirmed" | "lost_unknown" | "lost_not_found" = "ok";
+let submissionRead: (() => Promise<Response>) | null = null;
+let failBeforePrompt = false;
+let failNextCatalogAccess = false;
+let registrationWait: (() => Promise<unknown>) | null = null;
 let submittedMessageId: string | null = null;
 let promptAttempts = 0;
 
@@ -86,6 +90,7 @@ function installOpenCodeTransport(): void {
       return Promise.resolve(makeJsonResponse({ ses_fixed: { type: abortStatus } }));
     }
     if (url.endsWith("/session/ses_fixed/message")) {
+      if (submissionRead) return submissionRead();
       if (promptTransport === "lost_unknown") return Promise.reject(new Error("sidecar offline"));
       if (promptTransport === "lost_confirmed" && submittedMessageId) {
         return Promise.resolve(makeJsonResponse([{ info: {
@@ -136,6 +141,10 @@ beforeEach(() => {
   activityEvents.length = 0;
   abortStatus = "idle";
   promptTransport = "ok";
+  submissionRead = null;
+  failBeforePrompt = false;
+  failNextCatalogAccess = false;
+  registrationWait = null;
   submittedMessageId = null;
   promptAttempts = 0;
   eventHandler = null;
@@ -153,7 +162,13 @@ beforeEach(() => {
       case "history_register_native_session":
         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_fixed", directory: "." }));
       case "history_catalog_access":
-      return invoke("history_catalog_load").then((value: any) => value.entry);
+        if (failNextCatalogAccess) { failNextCatalogAccess = false; return Promise.reject(new Error("private internal access detail")); }
+        return invoke("history_catalog_load").then((value: any) => value.entry);
+      case "worklog_register_turn":
+        if (failBeforePrompt) failNextCatalogAccess = true;
+        return Promise.resolve();
+      case "memory_register_turn":
+        return registrationWait?.() ?? Promise.resolve();
     case "history_catalog_load":
         return Promise.resolve({ entry: nativeHistoryFixture("ses_fixed"), messages: [] });
       case "history_catalog_list":
@@ -355,3 +370,208 @@ test("a new request in the same session rejects text from a known old parent", a
   expect(screen.getByText("current reply text")).toBeDefined();
   expect(activityEvents.filter(event => event.type === "success")).toHaveLength(0);
 });
+
+
+test("a queued second snapshot flushes before idle and preserves ordered parts", async () => {
+  const info = await sendPrompt();
+  await deliverEvents([
+    { type: "message.updated", properties: { info: { ...info, time: { created: 1 } } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, id: "p1", type: "text", text: "first" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, id: "p1", type: "text", text: "first final " } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, id: "p2", type: "text", text: "🚀 second" } } },
+    { type: "session.idle", properties: { sessionID: info.sessionID } },
+  ]);
+  expect(screen.getByText("first final 🚀 second")).toBeDefined();
+  expect(document.querySelectorAll('[data-message-id="assistant"]')).toHaveLength(1);
+  expect(document.querySelector(".chat-typing")).toBeNull();
+});
+
+test("error flushes queued content before its error row and rejects later chunks", async () => {
+  const info = await sendPrompt();
+  await deliverEvents([
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "first" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "legal pending tail" } } },
+    { type: "session.error", properties: { sessionID: info.sessionID, error: { name: "stream failed" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "stale after error" } } },
+  ]);
+  const rows = document.querySelectorAll(".chat-msg-assistant");
+  expect(rows[0]?.textContent).toContain("legal pending tail");
+  expect(rows[1]?.textContent).toContain("stream failed");
+  expect(screen.queryByText("stale after error")).toBeNull();
+});
+
+test("confirmed Stop keeps queued legal content and a new request never receives its stale timer", async () => {
+  const info = await sendPrompt();
+  await deliverEvents([
+    { type: "message.updated", properties: { info: { ...info, time: { created: 1 } } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "first" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "before stop final" } } },
+  ]);
+  fireEvent.click(screen.getByRole("button", { name: "停" }));
+  await waitFor(() => expect(activityEvents.some(event => event.type === "cancel")).toBe(true));
+  expect(screen.getByText("before stop final")).toBeDefined();
+  fireEvent.change(screen.getByPlaceholderText("输入消息,Enter 发送"), { target: { value: "retry with a new turn" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptAttempts).toBe(2));
+  await deliverEvents([
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "stale retry tail" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: "new-assistant", type: "text", text: "current retry text" } } },
+    { type: "session.idle", properties: { sessionID: info.sessionID } },
+  ]);
+  expect(screen.getByText("before stop final")).toBeDefined();
+  expect(screen.getByText("current retry text")).toBeDefined();
+  expect(screen.queryByText("stale retry tail")).toBeNull();
+});
+
+test("tool events flush prior text and duplicate text after a tool clears only plain activity", async () => {
+  const info = await sendPrompt();
+  await deliverEvents([
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "initial" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "same text" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, id: "tool", type: "tool", tool: "bash", state: { status: "running", title: "running command" } } } },
+  ]);
+  expect(screen.getByText("same text")).toBeDefined();
+  expect(screen.getByText("running command")).toBeDefined();
+  await deliverEvents([
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "same text" } } },
+    { type: "session.idle", properties: { sessionID: info.sessionID } },
+  ]);
+  expect(screen.queryByText("running command")).toBeNull();
+  expect(screen.getByText("same text")).toBeDefined();
+});
+
+
+test("an unconfirmed Stop leaves queued content and subsequent chunks live", async () => {
+  const info = await sendPrompt();
+  abortStatus = "busy";
+  await deliverEvents([
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "first" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "pending before failed Stop" } } },
+  ]);
+  fireEvent.click(screen.getByRole("button", { name: "停" }));
+  await waitFor(() => expect(invoke.mock.calls.some(([command]) => command === "chat_abort_session")).toBe(true));
+  await deliverEvents([
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "still live after failed Stop" } } },
+    { type: "session.idle", properties: { sessionID: info.sessionID } },
+  ]);
+  expect(screen.getByText("still live after failed Stop")).toBeDefined();
+  expect(activityEvents.filter(event => event.type === "cancel")).toHaveLength(0);
+});
+
+test("unmount discards an already queued presentation timer", async () => {
+  const info = await sendPrompt();
+  await deliverEvents([
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "visible first" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "queued before unmount" } } },
+  ]);
+  cleanup();
+  await act(async () => { await new Promise(resolve => setTimeout(resolve, 50)); });
+  expect(screen.queryByText("queued before unmount")).toBeNull();
+  expect(activityEvents.filter(event => event.type === "cancel")).toHaveLength(1);
+});
+
+
+test("completed assistant metadata flushes queued text without waiting for session idle", async () => {
+  const info = await sendPrompt();
+  await deliverEvents([
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "first" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "metadata terminal final" } } },
+    { type: "message.updated", properties: { info } },
+  ]);
+  expect(screen.getByText("metadata terminal final")).toBeDefined();
+  // Text publication does not change the existing idle-confirmed celebration contract.
+  expect(activityEvents.filter(event => event.type === "success")).toHaveLength(0);
+  expect(screen.getByRole("button", { name: "停" })).toBeDefined();
+});
+
+
+test("confirmed missing prompt removes its optimistic row, keeps the draft and allows one visible retry", async () => {
+  promptTransport = "lost_not_found";
+  await sendPrompt();
+  await screen.findByRole("alert");
+  expect(screen.getByRole("alert").textContent).toBe("消息发送失败，草稿已保留，请重试。");
+  expect(document.querySelectorAll(".chat-msg-user")).toHaveLength(0);
+  expect((screen.getByPlaceholderText("输入消息,Enter 发送") as HTMLTextAreaElement).value).toBe("请回答一个测试问题");
+  expect(promptAttempts).toBe(1);
+  promptTransport = "ok";
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptAttempts).toBe(2));
+  expect(document.querySelectorAll(".chat-msg-user")).toHaveLength(1);
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect((screen.getByPlaceholderText("输入消息,Enter 发送") as HTMLTextAreaElement).value).toBe("");
+});
+
+test("a failure before prompt submission removes only its optimistic question and shows no internal detail", async () => {
+  failBeforePrompt = true;
+  await sendPrompt();
+  await screen.findByRole("alert");
+  expect(screen.getByRole("alert").textContent).toBe("消息发送失败，草稿已保留，请重试。");
+  expect(document.querySelectorAll(".chat-msg-user")).toHaveLength(0);
+  expect((screen.getByPlaceholderText("输入消息,Enter 发送") as HTMLTextAreaElement).value).toBe("请回答一个测试问题");
+  expect(promptAttempts).toBe(0);
+  expect(screen.queryByText(/private internal access detail/)).toBeNull();
+});
+
+test("late unknown submission confirmation cannot revive a request after confirmed Stop", async () => {
+  promptTransport = "lost_unknown";
+  let finishConfirmation: (() => void) | undefined;
+  submissionRead = () => new Promise((_resolve, reject) => { finishConfirmation = () => reject(new Error("unavailable")); });
+  await sendPrompt();
+  await waitFor(() => expect(finishConfirmation).toBeDefined());
+  fireEvent.click(screen.getByRole("button", { name: "停" }));
+  await waitFor(() => expect(activityEvents.some(event => event.type === "cancel")).toBe(true));
+  await act(async () => { finishConfirmation?.(); await Promise.resolve(); await Promise.resolve(); });
+  expect(screen.queryByText(/消息可能已提交/) === null).toBe(true);
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(screen.queryByRole("button", { name: "停" })).toBeNull();
+  expect(document.querySelectorAll(".chat-msg-user")).toHaveLength(1);
+});
+
+
+test("Stop during native turn registration prevents a later prompt submission", async () => {
+  let finishRegistration: (() => void) | undefined;
+  registrationWait = () => new Promise(resolve => { finishRegistration = () => resolve(undefined); });
+  await sendPrompt();
+  await waitFor(() => expect(finishRegistration).toBeDefined());
+  fireEvent.click(screen.getByRole("button", { name: "停" }));
+  await waitFor(() => expect(activityEvents.some(event => event.type === "cancel")).toBe(true));
+  await act(async () => { finishRegistration?.(); await Promise.resolve(); await Promise.resolve(); });
+  expect(promptAttempts).toBe(0);
+  expect(screen.queryByRole("button", { name: "停" }) === null).toBe(true);
+  expect(screen.queryByRole("alert") === null).toBe(true);
+});
+
+
+for (const result of ["confirmed", "unknown", "not_found"] as const) {
+  test(`native completion before ${result} confirmation never restores the sent draft`, async () => {
+    promptTransport = "lost_not_found";
+    let finishConfirmation: (() => void) | undefined;
+    submissionRead = () => {
+      // Idle independently recovers worklog receipts; only the submission read is delayed.
+      if (finishConfirmation) return Promise.resolve(makeJsonResponse([]));
+      return new Promise((resolve, reject) => {
+        finishConfirmation = () => result === "unknown"
+          ? reject(new Error("temporarily unreadable"))
+          : resolve(makeJsonResponse(result === "confirmed" ? [{ info: { id: submittedMessageId, sessionID: "ses_fixed", role: "user" }, parts: [] }] : []));
+      });
+    };
+    const info = await sendPrompt();
+    await waitFor(() => expect(finishConfirmation).toBeDefined());
+    await deliverEvents([
+      { type: "message.updated", properties: { info: { ...info, time: { created: 1 }, finish: undefined } } },
+      { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "native completed answer" } } },
+      { type: "message.updated", properties: { info } },
+      { type: "session.idle", properties: { sessionID: info.sessionID } },
+    ]);
+    expect(activityEvents.filter(event => event.type === "success")).toHaveLength(1);
+    await act(async () => { finishConfirmation?.(); await Promise.resolve(); await Promise.resolve(); });
+    const input = screen.getByPlaceholderText("输入消息,Enter 发送") as HTMLTextAreaElement;
+    await waitFor(() => expect(input.disabled).toBe(false));
+    expect(input.value).toBe("");
+    expect(document.querySelectorAll(".chat-msg-user")).toHaveLength(1);
+    expect(screen.getByText("native completed answer").textContent).toBe("native completed answer");
+    expect(screen.queryByRole("alert") === null).toBe(true);
+    expect(screen.queryByText(/消息可能已提交/) === null).toBe(true);
+    expect(promptAttempts).toBe(1);
+  });
+}

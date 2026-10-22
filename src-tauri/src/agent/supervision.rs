@@ -27,6 +27,17 @@ pub(super) fn snapshot(
         .as_deref()
         .ok_or("agent_session_unknown")?;
     let messages = client.snapshot(session)?;
+    inspect_messages(client, state, record, messages, true)
+}
+
+pub(super) fn inspect_messages(
+    client: &OpenCodeClient,
+    state: &AgentRunState,
+    record: &RunRecord,
+    messages: Vec<NativeMessage>,
+    authoritative: bool,
+) -> Result<Vec<NativeMessage>, String> {
+    let session = record.session_id.as_deref().ok_or("agent_session_unknown")?;
     let now =
         u64::try_from(chrono::Utc::now().timestamp_millis()).map_err(|_| "history_time_invalid")?;
     let owned = messages
@@ -62,6 +73,11 @@ pub(super) fn snapshot(
         return Ok(messages);
     }
     let busy = client.is_busy(session)?;
+    if !authoritative && (!busy || now.saturating_sub(oldest) >= TOOL_LIFECYCLE_MS) {
+        // A missed completion event must never turn a cached running tool into
+        // an interrupted run or trigger isolation of a successfully finished run.
+        return snapshot(client, state, record);
+    }
     let reason = if !busy {
         "agent_execution_lost"
     } else if now.saturating_sub(oldest) >= TOOL_LIFECYCLE_MS {

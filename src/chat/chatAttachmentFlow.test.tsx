@@ -101,5 +101,12 @@ describe("ChatApp staged attachment flow", () => {
     await screen.findByRole("alert");
     expect(discardedIds()).toEqual([]);
     expect(screen.getByText("notes.md")).toBeDefined();
+    expect(document.querySelectorAll(".chat-msg-user")).toHaveLength(0);
+    setPromptFails(false);
+    fireEvent.click(screen.getByRole("button", { name: "发送" }));
+    await waitFor(() => expect(promptRequests).toHaveLength(2));
+    await waitFor(() => expect(discardedIds()).toEqual(["stage-notes"]));
+    expect(document.querySelectorAll(".chat-msg-user")).toHaveLength(1);
+    expect(screen.queryByRole("alert") === null).toBe(true);
   });
 });

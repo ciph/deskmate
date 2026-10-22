@@ -1,10 +1,10 @@
 use super::{ordinary, temp_file};
 use crate::history::{
     load_path,
-    storage::{persist_path, persist_path_with},
+    storage::{persist_path, persist_path_with, prepare_path, prepare_path_with_write},
     HistorySession,
 };
-use std::fs;
+use std::{fs, io::Write, path::Path};
 
 #[test]
 fn old_history_json_remains_readable() -> Result<(), String> {
@@ -78,5 +78,106 @@ fn failed_replace_preserves_old_file_and_memory() -> Result<(), String> {
         1
     );
     fs::remove_dir_all(parent).map_err(|error| error.to_string())?;
+    Ok(())
+}
+
+fn pending_files(path: &Path) -> Result<Vec<std::path::PathBuf>, String> {
+    fs::read_dir(path.parent().ok_or_else(|| "missing parent".to_owned())?)
+        .map_err(|error| error.to_string())?
+        .map(|entry| {
+            entry
+                .map(|entry| entry.path())
+                .map_err(|error| error.to_string())
+        })
+        .filter(|entry| entry.as_ref().map_or(true, |entry| entry != path))
+        .collect()
+}
+
+#[test]
+fn prepared_history_waits_for_commit_before_replacing_target() -> Result<(), String> {
+    let path = temp_file("prepare-commit");
+    persist_path(&path, &[ordinary("old")])?;
+    let prepared = prepare_path(&path, &[ordinary("new")])?;
+    assert_eq!(load_path(&path)?[0].id, "old");
+    let pending = pending_files(&path)?;
+    assert_eq!(pending.len(), 1);
+    assert_eq!(load_path(&pending[0])?[0].id, "new");
+    prepared.commit()?;
+    assert_eq!(load_path(&path)?[0].id, "new");
+    assert!(pending_files(&path)?.is_empty());
+    fs::remove_dir_all(path.parent().ok_or_else(|| "missing parent".to_owned())?)
+        .map_err(|error| error.to_string())?;
+    Ok(())
+}
+
+#[test]
+fn abandoning_prepared_history_removes_only_its_temporary_file() -> Result<(), String> {
+    let path = temp_file("prepare-abandon");
+    persist_path(&path, &[ordinary("old")])?;
+    let prepared = prepare_path(&path, &[ordinary("abandoned")])?;
+    let concurrent = prepare_path(&path, &[ordinary("concurrent")])?;
+    assert_eq!(pending_files(&path)?.len(), 2);
+    drop(prepared);
+    assert_eq!(load_path(&path)?[0].id, "old");
+    let pending = pending_files(&path)?;
+    assert_eq!(pending.len(), 1);
+    assert_eq!(load_path(&pending[0])?[0].id, "concurrent");
+    concurrent.commit()?;
+    assert_eq!(load_path(&path)?[0].id, "concurrent");
+    assert!(pending_files(&path)?.is_empty());
+    fs::remove_dir_all(path.parent().ok_or_else(|| "missing parent".to_owned())?)
+        .map_err(|error| error.to_string())?;
+    Ok(())
+}
+
+#[test]
+fn failed_prepared_commit_preserves_target_and_removes_temporary_file() -> Result<(), String> {
+    let path = temp_file("prepare-failed-commit");
+    persist_path(&path, &[ordinary("old")])?;
+    let previous_bytes = fs::read(&path).map_err(|error| error.to_string())?;
+    let prepared = prepare_path(&path, &[ordinary("new")])?;
+    assert_eq!(pending_files(&path)?.len(), 1);
+    assert_eq!(
+        prepared.commit_with(|_, _| Err("injected_replace_failure".to_owned())),
+        Err("injected_replace_failure".to_owned())
+    );
+    assert_eq!(
+        fs::read(&path).map_err(|error| error.to_string())?,
+        previous_bytes
+    );
+    assert!(pending_files(&path)?.is_empty());
+    fs::remove_dir_all(path.parent().ok_or_else(|| "missing parent".to_owned())?)
+        .map_err(|error| error.to_string())?;
+    Ok(())
+}
+
+#[test]
+fn failed_prepare_write_or_sync_preserves_target_and_cleans_up() -> Result<(), String> {
+    for fail_after_full_write in [false, true] {
+        let path = temp_file("prepare-failed-write-sync");
+        persist_path(&path, &[ordinary("old")])?;
+        let previous_bytes = fs::read(&path).map_err(|error| error.to_string())?;
+        let result = prepare_path_with_write(&path, &[ordinary("new")], |file, bytes| {
+            let written = if fail_after_full_write {
+                bytes.len()
+            } else {
+                bytes.len() / 2
+            };
+            file.write_all(&bytes[..written])?;
+            Err(std::io::Error::other(if fail_after_full_write {
+                "injected_sync_failure"
+            } else {
+                "injected_write_failure"
+            }))
+        });
+        assert_eq!(result.err(), Some("history_storage_unavailable".to_owned()));
+        assert_eq!(
+            fs::read(&path).map_err(|error| error.to_string())?,
+            previous_bytes
+        );
+        assert!(pending_files(&path)?.is_empty());
+        fs::remove_dir_all(path.parent().ok_or_else(|| "missing parent".to_owned())?)
+            .map_err(|error| error.to_string())?;
+    }
     Ok(())
 }

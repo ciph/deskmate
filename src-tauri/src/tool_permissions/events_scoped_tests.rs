@@ -35,17 +35,23 @@ fn scoped_path_request_falls_back_to_stream_and_defaults_missing_path() {
     ));
     std::fs::create_dir_all(&root).expect("create workspace");
     let events = PermissionEvents::default();
-    events.accept(json!({
-        "type":"permission.asked",
-        "properties":{
-            "id":"p-glob",
-            "sessionID":"s-owned",
-            "permission":"glob",
-            "patterns":["**/*snake*"],
-            "metadata":{"pattern":"**/*snake*"}
-        }
-    }));
-    events.state.lock().expect("lock stream").connected = true;
+    events.begin_connection(0).expect("connect stream");
+    events.accept(
+        0,
+        json!({
+            "directory":crate::agent::opencode_wire_directory(&root),
+            "payload": {
+            "type":"permission.asked",
+            "properties":{
+                "id":"p-glob",
+                "sessionID":"s-owned",
+                "permission":"glob",
+                "patterns":["**/*snake*"],
+                "metadata":{"pattern":"**/*snake*"}
+            }
+            }
+        }),
+    );
     let workspace = root.canonicalize().expect("canonical workspace");
 
     // When: the scoped Agent boundary collects pending permissions.

@@ -2,6 +2,7 @@ pub(crate) mod artifacts;
 #[cfg(test)]
 mod artifacts_tests;
 mod collector;
+mod collector_refresh;
 #[cfg(test)]
 mod collector_tests;
 mod continuation;

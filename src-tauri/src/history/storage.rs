@@ -14,6 +14,74 @@ pub(super) fn load_path(path: &Path) -> Result<Vec<HistorySession>, String> {
     }
 }
 
+pub(super) struct PreparedHistoryFile {
+    pending: std::path::PathBuf,
+    target: std::path::PathBuf,
+    committed: bool,
+}
+
+impl PreparedHistoryFile {
+    pub(super) fn commit(self) -> Result<(), String> {
+        self.commit_with(replace_file)
+    }
+
+    pub(super) fn commit_with(
+        mut self,
+        replace: impl FnOnce(&Path, &Path) -> Result<(), String>,
+    ) -> Result<(), String> {
+        replace(&self.pending, &self.target)?;
+        self.committed = true;
+        Ok(())
+    }
+}
+
+impl Drop for PreparedHistoryFile {
+    fn drop(&mut self) {
+        if !self.committed {
+            let _ = fs::remove_file(&self.pending);
+        }
+    }
+}
+
+pub(super) fn prepare_path(
+    path: &Path,
+    list: &[HistorySession],
+) -> Result<PreparedHistoryFile, String> {
+    prepare_path_with_write(path, list, |file, bytes| {
+        file.write_all(bytes).and_then(|_| file.sync_all())
+    })
+}
+
+pub(super) fn prepare_path_with_write(
+    path: &Path,
+    list: &[HistorySession],
+    write_and_sync: impl FnOnce(&mut fs::File, &[u8]) -> std::io::Result<()>,
+) -> Result<PreparedHistoryFile, String> {
+    let parent = path
+        .parent()
+        .ok_or_else(|| "history_storage_unavailable".to_owned())?;
+    fs::create_dir_all(parent).map_err(|_| "history_storage_unavailable")?;
+    let bytes = serde_json::to_vec_pretty(list).map_err(|_| "history_invalid")?;
+    let pending = parent.join(format!(".history-{}.tmp", uuid::Uuid::new_v4()));
+    let file = OpenOptions::new()
+        .create_new(true)
+        .write(true)
+        .open(&pending)
+        .map_err(|_| "history_storage_unavailable")?;
+    let prepared = PreparedHistoryFile {
+        pending,
+        target: path.to_owned(),
+        committed: false,
+    };
+    // The handle closes before cleanup, including when an injected writer panics.
+    let written = {
+        let mut file = file;
+        write_and_sync(&mut file, &bytes)
+    };
+    written.map_err(|_| "history_storage_unavailable".to_owned())?;
+    Ok(prepared)
+}
+
 pub(super) fn persist_path(path: &Path, list: &[HistorySession]) -> Result<(), String> {
     persist_path_with(path, list, replace_file)
 }
@@ -23,28 +91,7 @@ pub(super) fn persist_path_with(
     list: &[HistorySession],
     replace: impl FnOnce(&Path, &Path) -> Result<(), String>,
 ) -> Result<(), String> {
-    let parent = path
-        .parent()
-        .ok_or_else(|| "history_storage_unavailable".to_owned())?;
-    fs::create_dir_all(parent).map_err(|_| "history_storage_unavailable")?;
-    let bytes = serde_json::to_vec_pretty(list).map_err(|_| "history_invalid")?;
-    let pending = parent.join(format!(".history-{}.tmp", uuid::Uuid::new_v4()));
-    let mut file = OpenOptions::new()
-        .create_new(true)
-        .write(true)
-        .open(&pending)
-        .map_err(|_| "history_storage_unavailable")?;
-    let written = file.write_all(&bytes).and_then(|_| file.sync_all());
-    drop(file);
-    if written.is_err() {
-        let _ = fs::remove_file(&pending);
-        return Err("history_storage_unavailable".to_owned());
-    }
-    let result = replace(&pending, path);
-    if result.is_err() {
-        let _ = fs::remove_file(pending);
-    }
-    result
+    prepare_path(path, list)?.commit_with(replace)
 }
 
 #[cfg(windows)]

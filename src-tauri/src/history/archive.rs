@@ -28,23 +28,29 @@ pub(super) fn upsert_agent_snapshot(
     list: &mut Vec<HistorySession>,
     snapshot: AgentHistorySnapshot<'_>,
 ) -> Result<(), String> {
-    let mut session = list
+    if let Some(session) = merged_agent_snapshot(list, snapshot)? {
+        save_to_path(path, list, session)?;
+    }
+    Ok(())
+}
+
+pub(super) fn merged_agent_snapshot(
+    list: &[HistorySession],
+    snapshot: AgentHistorySnapshot<'_>,
+) -> Result<Option<HistorySession>, String> {
+    let original = list
         .iter()
         .find(|session| session.id == snapshot.session_id)
-        .cloned()
         .ok_or_else(|| "history_not_found".to_owned())?;
-    let original = session.clone();
-    if session.deleted {
+    if original.deleted {
         return Err("history_deleted".to_owned());
     }
-    if session.origin_run_id.is_none() {
+    if original.origin_run_id.is_none() {
         return Err("history_agent_owned".to_owned());
     }
+    let mut session = original.clone();
     merge_agent_messages(&mut session, snapshot.messages)?;
-    if session == original {
-        return Ok(());
-    }
-    save_to_path(path, list, session)
+    Ok((session != *original).then_some(session))
 }
 
 pub(super) fn merge_agent_messages(
@@ -98,5 +104,3 @@ pub(super) fn merge_agent_messages(
         .map_or(session.updated, |message| message.time);
     Ok(())
 }
-
-

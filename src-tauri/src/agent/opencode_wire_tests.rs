@@ -327,3 +327,235 @@ fn snapshot_rejects_a_different_or_invalid_session_before_capture() -> Result<()
     server.join().map_err(|_| "usage session server join".to_owned())??;
     Ok(())
 }
+
+fn single_message_response(
+    status: &'static str,
+    body: serde_json::Value,
+) -> Result<(u16, std::thread::JoinHandle<Result<String, String>>), String> {
+    let listener = TcpListener::bind("127.0.0.1:0").map_err(|error| error.to_string())?;
+    let port = listener.local_addr().map_err(|error| error.to_string())?.port();
+    let server = std::thread::spawn(move || {
+        let (mut stream, _) = listener.accept().map_err(|error| error.to_string())?;
+        let request = read_request(&mut stream)?;
+        let body = body.to_string();
+        write!(stream, "HTTP/1.1 {status}\r\nContent-Length: {}\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{body}", body.len()).map_err(|error| error.to_string())?;
+        stream.flush().map_err(|error| error.to_string())?;
+        Ok(request)
+    });
+    Ok((port, server))
+}
+
+fn authoritative_message() -> serde_json::Value {
+    serde_json::json!({"info": {
+        "id":"msg_native", "sessionID":"ses_native", "role":"assistant", "parentID":"msg_user",
+        "system":"system", "finish":"stop", "error":{"name":"ProviderError"},
+        "providerID":"provider", "modelID":"model", "time":{"created":7,"completed":8},
+        "tokens":{"input":2,"output":3,"reasoning":4,"cache":{"read":5,"write":6}}
+    }, "parts":[
+        {"id":"prt_text","messageID":"msg_native","sessionID":"ses_native","type":"text","text":"reply","synthetic":true},
+        {"id":"prt_tool","messageID":"msg_native","sessionID":"ses_native","type":"tool",
+         "callID":"call_native","tool":"read","state":{"status":"completed","input":{"path":"a"},
+         "output":{"text":"contents"},"metadata":{"title":"a"}}},
+        {"id":"prt_error","messageID":"msg_native","sessionID":"ses_native","type":"tool","callID":"call_error","tool":"bash",
+         "state":{"status":"error","input":{},"output":"stale","error":"denied","metadata":{}}}
+    ]})
+}
+
+#[test]
+fn single_message_get_preserves_complete_native_fields_directory_and_auth() -> Result<(), String> {
+    let (port, server) = single_message_response("200 OK", authoritative_message())?;
+    let client = OpenCodeClient::new(AgentEndpoint {
+        base_url: format!("http://127.0.0.1:{port}"),
+        provider_id: "provider".into(), model_id: "model".into(),
+        workspace: Path::new(r"\\?\E:\工作 伙伴\保留#?&%").to_path_buf(),
+        auth_header: "Basic Zml4dHVyZTpwYXNzd29yZA==".into(),
+    });
+    let message = client.message("ses_native", "msg_native")?;
+    assert_eq!(message.id, "msg_native");
+    assert_eq!(message.system.as_deref(), Some("system"));
+    assert_eq!(message.role.as_deref(), Some("assistant"));
+    assert_eq!(message.parent_id.as_deref(), Some("msg_user"));
+    assert_eq!(message.created, Some(7));
+    assert!(message.completed);
+    assert_eq!(message.finish.as_deref(), Some("stop"));
+    assert_eq!(message.error.as_deref(), Some("ProviderError"));
+    let usage = message.usage.as_ref().expect("complete authoritative usage");
+    assert_eq!((&*usage.message_id, &*usage.sidecar_id, &*usage.model_id), ("msg_native", "provider", "model"));
+    assert_eq!((usage.created_at_ms, usage.tokens), (7, 20));
+    assert_eq!(message.parts.len(), 3);
+    assert_eq!(message.parts[0].id, "prt_text");
+    assert!(message.parts[0].synthetic);
+    assert_eq!(message.parts[0].text.as_deref(), Some("reply"));
+    let tool = &message.parts[1];
+    assert_eq!(tool.kind.as_deref(), Some("tool"));
+    assert_eq!(tool.call_id.as_deref(), Some("call_native"));
+    assert_eq!(tool.tool.as_deref(), Some("read"));
+    assert!(!tool.synthetic);
+    let state = tool.state.as_ref().expect("tool state");
+    assert_eq!(state.status, "completed");
+    assert_eq!(state.input, serde_json::json!({"path":"a"}));
+    assert_eq!(state.output, serde_json::json!({"text":"contents"}));
+    assert_eq!(state.metadata, serde_json::json!({"title":"a"}));
+    assert_eq!(message.parts[2].state.as_ref().unwrap().output, serde_json::json!("denied"));
+    let request = server.join().map_err(|_| "message server join")??;
+    assert!(request.starts_with("GET /session/ses_native/message/msg_native?"));
+    assert!(request.lines().any(|line| line == "Authorization: Basic Zml4dHVyZTpwYXNzd29yZA=="));
+    let target = request.split_whitespace().nth(1).ok_or("missing request target")?;
+    let url = url::Url::parse(&format!("http://127.0.0.1{target}")).map_err(|error| error.to_string())?;
+    assert_eq!(url.query_pairs().collect::<Vec<_>>(), vec![("directory".into(), "E:\\工作 伙伴\\保留#?&%".into())]);
+    assert!(url.fragment().is_none());
+    Ok(())
+}
+
+#[test]
+fn single_message_rejects_missing_or_mismatched_message_and_part_identities() -> Result<(), String> {
+    let mut cases = Vec::new();
+    let mut wrong_id = authoritative_message();
+    wrong_id["info"]["id"] = serde_json::json!("msg_other");
+    cases.push(wrong_id);
+    let mut missing_session = authoritative_message();
+    missing_session["info"].as_object_mut().unwrap().remove("sessionID");
+    cases.push(missing_session);
+    for value in [serde_json::json!("ses_other"), serde_json::json!(17), serde_json::Value::Null] {
+        let mut message = authoritative_message();
+        message["info"]["sessionID"] = value;
+        cases.push(message);
+    }
+    for field in ["messageID", "sessionID"] {
+        for value in [serde_json::json!("other"), serde_json::json!(17), serde_json::Value::Null] {
+            let mut message = authoritative_message();
+            message["parts"][0][field] = value;
+            cases.push(message);
+        }
+    }
+    for body in cases {
+        let (port, server) = single_message_response("200 OK", body)?;
+        assert_eq!(client_for(port, Path::new("E:\\fixture")).message("ses_native", "msg_native").unwrap_err(), "agent_message_identity_mismatch");
+        assert!(server.join().map_err(|_| "identity server join")??.starts_with("GET /session/ses_native/message/msg_native?"));
+    }
+    Ok(())
+}
+
+#[test]
+fn single_message_rejects_unsafe_path_ids_before_http() -> Result<(), String> {
+    let listener = TcpListener::bind("127.0.0.1:0").map_err(|error| error.to_string())?;
+    listener.set_nonblocking(true).map_err(|error| error.to_string())?;
+    let client = client_for(listener.local_addr().map_err(|error| error.to_string())?.port(), Path::new("E:\\fixture"));
+    for invalid in ["", ".", "..", "../other", "a/b", "a\\b", "a?directory=x", "a#x", "%2f", "a b", "a\r\nb", "消息", &"a".repeat(129)] {
+        assert_eq!(client.message(invalid, "msg_native").unwrap_err(), "agent_invalid_id");
+        assert_eq!(client.message("ses_native", invalid).unwrap_err(), "agent_invalid_id");
+    }
+    assert_eq!(listener.accept().unwrap_err().kind(), std::io::ErrorKind::WouldBlock);
+    Ok(())
+}
+
+#[test]
+fn single_message_keeps_404_and_malformed_payload_errors() -> Result<(), String> {
+    for (status, body, expected) in [
+        ("404 Not Found", serde_json::json!({"error":"not found"}), "agent_http_404"),
+        ("200 OK", serde_json::json!({"info":{},"parts":[]}), "agent_wire_invalid"),
+    ] {
+        let (port, server) = single_message_response(status, body)?;
+        assert_eq!(client_for(port, Path::new("E:\\fixture")).message("ses_native", "msg_native").unwrap_err(), expected);
+        assert!(server.join().map_err(|_| "error server join")??.starts_with("GET /session/ses_native/message/msg_native?"));
+    }
+    Ok(())
+}
+
+#[test]
+fn full_snapshot_keeps_legacy_optional_identity_behavior() -> Result<(), String> {
+    let mut message = authoritative_message();
+    message["info"].as_object_mut().unwrap().remove("sessionID");
+    message["parts"][0]["sessionID"] = serde_json::Value::Null;
+    message["parts"][0]["messageID"] = serde_json::json!(17);
+    let (port, server) = single_message_response("200 OK", serde_json::json!([message]))?;
+    let snapshot = client_for(port, Path::new("E:\\fixture")).snapshot("ses_native")?;
+    assert_eq!(snapshot.len(), 1);
+    assert_eq!(snapshot[0].id, "msg_native");
+    assert!(snapshot[0].usage.is_none());
+    assert_eq!(snapshot[0].parts.len(), 3);
+    assert_eq!(snapshot[0].parts[0].text.as_deref(), Some("reply"));
+    assert!(server.join().map_err(|_| "snapshot server join")??.starts_with("GET /session/ses_native/message?"));
+    Ok(())
+}
+
+#[test]
+fn single_message_rejects_incomplete_structures_before_cache_replacement() -> Result<(), String> {
+    let mut cases = Vec::new();
+    for field in ["role", "time", "parentID"] {
+        let mut message = authoritative_message();
+        if field == "time" { message["info"]["time"] = serde_json::json!({}); }
+        else { message["info"].as_object_mut().unwrap().remove(field); }
+        cases.push(message);
+    }
+    for role in ["", "system", "tool"] {
+        let mut message = authoritative_message();
+        message["info"]["role"] = serde_json::json!(role);
+        cases.push(message);
+    }
+    for field in ["type", "text", "messageID", "sessionID"] {
+        let mut message = authoritative_message();
+        message["parts"][0].as_object_mut().unwrap().remove(field);
+        cases.push(message);
+    }
+    for field in ["state", "callID", "tool"] {
+        let mut message = authoritative_message();
+        message["parts"][1].as_object_mut().unwrap().remove(field);
+        cases.push(message);
+    }
+    for field in ["id", "type"] {
+        let mut message = authoritative_message();
+        message["parts"][0][field] = serde_json::json!("");
+        cases.push(message);
+    }
+    for field in ["callID", "tool"] {
+        let mut message = authoritative_message();
+        message["parts"][1][field] = serde_json::json!("");
+        cases.push(message);
+    }
+    for status in ["", "unknown"] {
+        let mut message = authoritative_message();
+        message["parts"][1]["state"]["status"] = serde_json::json!(status);
+        cases.push(message);
+    }
+    for parent in ["", "../other"] {
+        let mut message = authoritative_message();
+        message["info"]["parentID"] = serde_json::json!(parent);
+        cases.push(message);
+    }
+    let mut duplicate = authoritative_message();
+    duplicate["parts"][1]["id"] = duplicate["parts"][0]["id"].clone();
+    cases.push(duplicate);
+    let mut reasoning = authoritative_message();
+    reasoning["parts"][0]["type"] = serde_json::json!("reasoning");
+    reasoning["parts"][0].as_object_mut().unwrap().remove("text");
+    cases.push(reasoning);
+    cases.push(serde_json::json!({"info":{"id":"msg_native","sessionID":"ses_native","time":{}},"parts":[]}));
+    for body in cases {
+        let (port, server) = single_message_response("200 OK", body)?;
+        assert_eq!(client_for(port, Path::new("E:\\fixture")).message("ses_native", "msg_native").unwrap_err(), "agent_message_incomplete");
+        server.join().map_err(|_| "incomplete server join")??;
+    }
+    Ok(())
+}
+
+#[test]
+fn single_message_accepts_valid_user_assistant_empty_parts_and_empty_text() -> Result<(), String> {
+    for role in ["user", "assistant"] {
+        for parts in [serde_json::json!([]), serde_json::json!([
+            {"id":"prt_text","messageID":"msg_native","sessionID":"ses_native","type":"text","text":""},
+            {"id":"prt_reasoning","messageID":"msg_native","sessionID":"ses_native","type":"reasoning","text":""}
+        ])] {
+            let mut body = serde_json::json!({"info":{"id":"msg_native","sessionID":"ses_native","role":role,"time":{"created":0}},"parts":parts});
+            if role == "assistant" { body["info"]["parentID"] = serde_json::json!("msg_user"); }
+            let (port, server) = single_message_response("200 OK", body)?;
+            let message = client_for(port, Path::new("E:\\fixture")).message("ses_native", "msg_native")?;
+            assert_eq!(message.role.as_deref(), Some(role));
+            assert_eq!(message.created, Some(0));
+            assert!(!message.completed);
+            assert!(message.usage.is_none());
+            server.join().map_err(|_| "valid message server join")??;
+        }
+    }
+    Ok(())
+}

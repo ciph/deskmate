@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type ClipboardEvent,
@@ -62,13 +63,14 @@ import {
 import { ArtifactCard } from "./ArtifactCard";
 import { AttachmentTray } from "./AttachmentTray";
 import { LocalResourceTray } from "./LocalResourceTray";
-import { MessageLocalResources } from "./MessageLocalResources";
 import { useLocalResources } from "./useLocalResources";
-import { isMediaFile, prepareChatResources, stripLocalResourceContext, type LocalResource } from "./localResources";
+import { isMediaFile, prepareChatResources, type LocalResource } from "./localResources";
 import { localResourceError } from "./localResourceCopy";
 import { ChatText } from "./ChatText";
+import { createStreamTextBuffer } from "./streamText";
+import { ChatMessageRow, type TextChatMessage, type ToolActivity } from "./ChatMessageRow";
 import { ChatNavigation } from "./ChatNavigation";
-import { useWorklogChat } from "./useWorklogChat";
+import { useWorklogChat, type ChatWorklogOperation } from "./useWorklogChat";
 import { WorklogReceipt, worklogChatCopy } from "./WorklogReceipt";
 import { buildWorklogSystemInstruction, newUserMessageId, registerWorklogTurn, WORKLOG_TOOLS } from "./worklogActions";
 import { buildCurrentInformationInstruction } from "./currentInformation";
@@ -87,24 +89,10 @@ import { toOpenCodeToolPart } from "./toolPart";
 import { containsProviderApiKey } from "./providerKeyGuard";
 import { useChatAttachments, type LocalAttachmentArtifact } from "./useChatAttachments";
 import type { PreparedModelAttachments } from "./useChatAttachmentsUtils";
-import { Avatar } from "../ui/Avatar";
 import { userAvatarSource } from "../lib/userAvatar";
 import { usePersonaAvatars } from "./usePersonaAvatar";
-import { historicalPersonaName, personaSystemMarker } from "./messagePersona";
+import { personaSystemMarker } from "./messagePersona";
 import "./chat.css";
-
-interface TextChatMessage {
-  id: string;
-  role: "user" | "assistant";
-  text: string;
-  activity?: ToolActivity;
-  attachments?: ModelReadyAttachment[];
-  resources?: readonly LocalResource[];
-  readonly nativeMessageId?: string;
-  readonly localOnly?: boolean;
-  readonly time?: number;
-  readonly personaId?: string;
-}
 
 interface ArtifactChatMessage {
   id: string;
@@ -114,14 +102,6 @@ interface ArtifactChatMessage {
 }
 
 type ChatMessage = TextChatMessage | ArtifactChatMessage;
-
-type WebSearchActivity = {
-  readonly kind: "websearch";
-  readonly running: boolean;
-  readonly sites: readonly string[];
-};
-
-type ToolActivity = string | WebSearchActivity;
 
 interface PersonaData {
   persona: string;
@@ -138,6 +118,8 @@ type Status = "booting" | "ready" | "busy" | "error";
 type View = "chat" | "history";
 
 const FIXED_REPLY_TYPING_DELAY_MS = 1_000;
+const EMPTY_AVATAR_SOURCES: readonly string[] = [];
+const EMPTY_OPERATIONS: readonly ChatWorklogOperation[] = [];
 const EMPTY_PREPARED_ATTACHMENTS: PreparedModelAttachments = {
   fileParts: [],
   fallbackPrompt: null,
@@ -151,21 +133,30 @@ function waitForDelay(milliseconds: number): Promise<void> {
 }
 
 function settleToolActivity(activity: ToolActivity | undefined): ToolActivity | undefined {
-  return typeof activity === "object" ? { ...activity, running: false } : undefined;
+  return typeof activity === "object" ? (activity.running ? { ...activity, running: false } : activity) : undefined;
 }
 
 function preserveWebSearchActivity(activity: ToolActivity | undefined): ToolActivity | undefined {
   return typeof activity === "object" ? activity : undefined;
 }
 
-function historyChatMessages(session: HistorySession): ChatMessage[] {
-  return session.messages.map((message, index) => ({
-    id: message.partId ?? message.messageId ?? `history-${index}`,
-    nativeMessageId: message.messageId,
-    role: message.role,
-    personaId: message.personaId,
-    text: message.text,
-  }));
+function historyChatMessages<T extends Pick<HistorySession, "messages">>(session: T): ChatMessage[] {
+  const result: ChatMessage[] = [];
+  const assistants = new Map<string, TextChatMessage>();
+  for (const [index, message] of session.messages.entries()) {
+    const grouped = message.role === "assistant" && !message.localOnly && message.messageId;
+    const existing = grouped ? assistants.get(grouped) : undefined;
+    if (existing) { existing.text += message.text; continue; }
+    const next: TextChatMessage = {
+      id: grouped || message.partId || message.messageId || `history-${index}`,
+      nativeMessageId: message.messageId,
+      role: message.role, personaId: message.personaId, text: message.text,
+      localOnly: message.localOnly, time: message.time,
+    };
+    if (grouped) assistants.set(grouped, next);
+    result.push(next);
+  }
+  return result;
 }
 
 function runMatchesConversation(run: { sessionId: string | null; workspacePath: string } | null, entry: UnifiedHistoryRow | null): boolean {
@@ -392,6 +383,27 @@ export default function ChatApp() {
   const fixedReplySequenceRef = useRef(0);
   const replyRequestRef = useRef<{ readonly requestId: string | null } | null>(null);
   const messageParentsRef = useRef(new Map<string, string>());
+  const [streamText] = useState(() => createStreamTextBuffer((updates) => {
+    setMessages((previous) => {
+      const remaining = new Map(updates.map(update => [update.messageId, update.text]));
+      let changed = false;
+      const next = previous.map(message => {
+        const text = remaining.get(message.id);
+        if (text === undefined || !isTextChatMessage(message)) return message;
+        remaining.delete(message.id);
+        const activity = preserveWebSearchActivity(message.activity);
+        if (message.text === text && message.activity === activity) return message;
+        changed = true;
+        return { ...message, text, activity };
+      });
+      for (const [id, text] of remaining) {
+        changed = true;
+        next.push({ id, role: "assistant", personaId: messagePersonasRef.current.get(id), text });
+      }
+      return changed ? next : previous;
+    });
+  }));
+
 
   const appendArtifactMessage = useCallback((artifact: LocalAttachmentArtifact) => {
     setMessages((prev) => [
@@ -431,20 +443,14 @@ export default function ChatApp() {
   );
 
   const cancelReplyPresentation = () => {
+    streamText.flush();
+    streamText.reset();
     replyRequestRef.current = null;
   };
 
-  const updateAssistantText = (messageID: string, text: string) => {
-    setMessages((prev) =>
-      upsertAssistant(prev, messageID, messagePersonasRef.current.get(messageID), (message) => ({
-        ...message,
-        text,
-        activity: preserveWebSearchActivity(message.activity),
-      })),
-    );
-  };
-
   const updateAssistantTool = (messageID: string, activity: ToolActivity) => {
+    streamText.flush();
+    streamText.invalidate(messageID);
     setMessages((prev) =>
       upsertAssistant(prev, messageID, messagePersonasRef.current.get(messageID), (message) => ({
         ...message,
@@ -454,6 +460,8 @@ export default function ChatApp() {
   };
 
   const clearAssistantTool = (messageID: string) => {
+    streamText.flush();
+    streamText.invalidate(messageID);
     setMessages((prev) =>
       prev.flatMap((message) => {
         if (message.id !== messageID) return [message];
@@ -464,14 +472,15 @@ export default function ChatApp() {
   };
 
   const completeReplyPresentation = () => {
+    streamText.flush();
     setIsPersonaTyping(false);
     setStatus("ready");
     setMessages((prev) =>
-      prev.map((message) =>
-        isTextChatMessage(message) && message.activity
-          ? { ...message, activity: settleToolActivity(message.activity) }
-          : message,
-      ),
+      prev.map((message) => {
+        if (!isTextChatMessage(message) || !message.activity) return message;
+        const activity = settleToolActivity(message.activity);
+        return activity === message.activity ? message : { ...message, activity };
+      }),
     );
   };
 
@@ -488,11 +497,14 @@ export default function ChatApp() {
     return () => {
       petActivity.cancel();
       fixedReplySequenceRef.current += 1;
-      cancelReplyPresentation();
+      streamText.reset();
+      replyRequestRef.current = null;
     };
-  }, []);
+  }, [petActivity, streamText]);
 
   const resetSession = useCallback(async (preserveComposer = false): Promise<boolean> => {
+    streamText.flush();
+    streamText.reset();
     const generation = ++viewGenerationRef.current;
     const previousSession = sessionRef.current;
     const carriedSelection = modelSelectionRef.current;
@@ -548,7 +560,7 @@ export default function ChatApp() {
     setView("chat");
     setStatus("ready");
     return true;
-  }, [cleanupAttachmentSession, resetAttachmentSession, petActivity]);
+  }, [cleanupAttachmentSession, resetAttachmentSession, petActivity, streamText]);
 
   const loadPersona = useCallback((id: string): Promise<void> => {
     const resolvedId = resolvePersonaId(id);
@@ -648,6 +660,7 @@ export default function ChatApp() {
           sessionID: string;
           role: string;
           parentID?: string;
+          time?: { completed?: number };
         };
         if (info.sessionID === sessionRef.current) {
           rolesRef.current.set(info.id, info.role);
@@ -656,6 +669,7 @@ export default function ChatApp() {
           if (info.role === "assistant" && personaId) messagePersonasRef.current.set(info.id, personaId);
           petActivity.message(props.info);
           void recordCompletedAiUsage(props.info).catch(() => {});
+          if (info.role === "assistant" && info.time?.completed !== undefined) streamText.flush();
         }
         break;
       }
@@ -663,6 +677,7 @@ export default function ChatApp() {
         const part = props.part as {
           sessionID: string;
           messageID: string;
+          id?: string;
           type: string;
           text?: string;
           tool?: string;
@@ -677,7 +692,7 @@ export default function ChatApp() {
 
         if (part.type === "text") {
           setIsPersonaTyping(true);
-          updateAssistantText(part.messageID, part.text ?? "");
+          streamText.push(part.messageID, part.id, part.text ?? "");
         } else if (part.type === "tool") {
           if (WORKLOG_TOOLS.some((tool) => tool === part.tool)) {
             worklog.acceptTool(part);
@@ -859,7 +874,7 @@ export default function ChatApp() {
               id: run.sessionId, title: loaded.entry.displayTitle, created: loaded.entry.created,
               updated: loaded.entry.updated, messages: loaded.messages, originRunId: run.runId,
               agentDetails: loaded.agentDetails,
-            }));
+            } satisfies HistorySession));
           } catch (cause) {
             setMemoryNotice(tRef.current.historyLoadFailed);
             console.warn("agent catalog adoption failed", cause instanceof Error ? cause.message : String(cause));
@@ -963,6 +978,7 @@ export default function ChatApp() {
         return false;
       }
     }
+    cancelReplyPresentation();
     rolesRef.current.set(userMessageId, "user");
     messagePersonasRef.current.set(userMessageId, roundPersonaId);
     setMessages((prev) => [
@@ -979,7 +995,6 @@ export default function ChatApp() {
     ]);
     if (!promptText) return false;
     const petScope = { sessionId: sessionID, requestId: userMessageId };
-    cancelReplyPresentation();
     petActivity.start(petScope);
     setStatus("busy");
     setIsPersonaTyping(false);
@@ -1037,6 +1052,9 @@ export default function ChatApp() {
       }
     }
     replyRequestRef.current = { requestId: userMessageId };
+    const matchesSubmission = () => generation === viewGenerationRef.current
+      && sessionID === sessionRef.current && replyRequestRef.current?.requestId === userMessageId;
+    const isCurrentSubmission = () => matchesSubmission() && petActivity.isCurrent(petScope);
     let promptStarted = false;
     try {
       const s = settingsRef.current;
@@ -1088,6 +1106,7 @@ export default function ChatApp() {
         directory: identity.directory, sessionId: sessionID, messageId: userMessageId,
         providerId: roundModel.sidecarId, modelId: roundModel.modelId,
       } }).catch(() => { /* The managed plugin also registers the native turn. */ });
+      if (!isCurrentSubmission()) return false;
       promptStarted = true;
       await promptAsync(sessionID, promptText, {
         directory: identity.directory,
@@ -1098,10 +1117,14 @@ export default function ChatApp() {
       });
       return true;
     } catch (error: unknown) {
-      if (!petActivity.isCurrent(petScope)) return false;
+      if (!matchesSubmission()) return false;
       if (promptStarted) {
         const submission = await confirmPromptSubmission(sessionID, userMessageId, identity.directory);
+        if (!matchesSubmission()) return false;
         if (submission === "confirmed") return true;
+        // Stop/switch clear the request identity; an unchanged identity can already have
+        // finished through native SSE while this read was pending. Never restore that draft.
+        if (!petActivity.isCurrent(petScope)) return true;
         if (submission === "unknown") {
           setMemoryNotice(tRef.current.chatSubmissionUnknown);
           petActivity.mood("thinking");
@@ -1115,9 +1138,10 @@ export default function ChatApp() {
       cancelReplyPresentation();
       setIsPersonaTyping(false);
       setStatus("ready");
-      if (prepared.fileParts.length > 0 || resources.length > 0) {
-        setAttachmentError(tRef.current.chatAttachmentSendFailed);
-      }
+      // Only the optimistic row is ours to retract; native/unknown submissions stay intact.
+      setMessages(previous => previous.filter(message => message.id !== userMessageId));
+      setAttachmentError(prepared.fileParts.length > 0 || resources.length > 0
+        ? tRef.current.chatAttachmentSendFailed : tRef.current.chatSendFailed);
       return false;
     }
   };
@@ -1220,16 +1244,20 @@ export default function ChatApp() {
   const abort = async () => {
     const sessionID = sessionRef.current;
     if (!sessionID || isCancelling || sessionOwnedByWorkbench || readOnlyHistory || historyLoading) return;
+    const generation = viewGenerationRef.current;
+    const request = replyRequestRef.current;
     setIsCancelling(true);
     setMemoryNotice(null);
     try {
       await abortSession(sessionID, sessionDirectory());
+      if (sessionRef.current !== sessionID || generation !== viewGenerationRef.current || request !== replyRequestRef.current) return;
       petActivity.cancel();
       fixedReplySequenceRef.current += 1;
       cancelReplyPresentation();
       setIsPersonaTyping(false);
       setStatus("ready");
     } catch (error: unknown) {
+      if (sessionRef.current !== sessionID || generation !== viewGenerationRef.current || request !== replyRequestRef.current) return;
       const unknown = error instanceof SessionAbortError && error.code === "UNKNOWN";
       setMemoryNotice(unknown ? t.chatStopUnknown : t.chatStopFailed);
     } finally {
@@ -1239,6 +1267,8 @@ export default function ChatApp() {
 
   /** Load actual native messages via the host, preserving the composite identity. */
   const resumeSession = useCallback(async (row: UnifiedHistoryRow) => {
+    streamText.flush();
+    streamText.reset();
     const generation = ++viewGenerationRef.current;
     setHistoryLoading(true);
     petActivity.cancel();
@@ -1287,10 +1317,8 @@ export default function ChatApp() {
       for (const message of loaded.messages) {
         if (message.messageId && message.personaId) messagePersonasRef.current.set(message.messageId, message.personaId);
       }
-      setMessages(loaded.messages.map((message, index) => ({
-        id: message.partId ?? message.messageId ?? "history-" + index, role: message.role, text: message.text,
-        localOnly: message.localOnly, time: message.time, personaId: message.personaId,
-      })));
+      streamText.restore(loaded.messages.filter(message => message.role === "assistant" && !message.localOnly));
+      setMessages(historyChatMessages(loaded));
       void invoke("history_chat_selected", { key: entry.key }).catch(() => {});
       setInput("");
       setPendingWorkspace(null);
@@ -1304,7 +1332,7 @@ export default function ChatApp() {
     } finally {
       if (generation === viewGenerationRef.current) setHistoryLoading(false);
     }
-  }, [agent, cleanupAttachmentSession, leaveAgentHistory, openHistory, openScopedAgentHistory, resetAttachmentSession, petActivity]);
+  }, [agent, cleanupAttachmentSession, leaveAgentHistory, openHistory, openScopedAgentHistory, resetAttachmentSession, petActivity, streamText]);
 
   /** Start a fresh session. */
   const newChat = useCallback(async () => {
@@ -1403,6 +1431,18 @@ export default function ChatApp() {
 
   const activePersonaName = personaDisplayName(activePersonaId, lang);
   const ownAvatar = userAvatarSource(settingsRef.current?.userAvatar);
+  const ownAvatarSources = useMemo(() => ownAvatar ? [ownAvatar] : EMPTY_AVATAR_SOURCES, [ownAvatar]);
+  const operationsByMessage = useMemo(() => {
+    const byMessage = new Map<string, ChatWorklogOperation[]>();
+    for (const operation of worklog.operations) {
+      const entries = byMessage.get(operation.messageId);
+      if (entries) entries.push(operation);
+      else byMessage.set(operation.messageId, [operation]);
+    }
+    return byMessage;
+  }, [worklog.operations]);
+  const messageIds = useMemo(() => new Set(messages.map(message => message.id)), [messages]);
+
   const chatBooting = personalizePersonaCopy(t.chatBooting, activePersonaName);
   const chatEmpty = personalizePersonaCopy(t.chatEmpty, activePersonaName);
   const statusLabel: Record<Status, string> = {
@@ -1510,84 +1550,13 @@ export default function ChatApp() {
                 );
               }
               return (
-                <div key={m.id} data-message-id={m.id} className={`chat-msg chat-msg-${m.role}`}>
-                  <Avatar sources={m.role === "user" ? (ownAvatar ? [ownAvatar] : []) : (personaAvatars[m.personaId ?? ""] ?? [])}
-                    label={m.role === "user" ? t.myAvatar : historicalPersonaName(m.personaId, lang)}
-                    fallback={m.role === "assistant" && m.personaId ? historicalPersonaName(m.personaId, lang) : undefined} />
-                  <div className="chat-msg-content">
-                  {m.activity && (
-                    <div
-                      className={`chat-activity${typeof m.activity === "object" ? ` chat-activity-websearch${m.activity.running ? " chat-activity-running" : ""}` : ""}`}
-                      role={typeof m.activity === "object" ? "status" : undefined}
-                      aria-live={typeof m.activity === "object" ? "polite" : undefined}
-                    >
-                      {typeof m.activity === "object" ? (
-                        <>
-                          <AppIcon
-                            name="network"
-                            size={16}
-                            className="chat-activity-icon app-icon-network"
-                          />
-                          <span>{t.chatWebSearch}</span>
-                          {m.activity.sites.length > 0 && (
-                            <>
-                              <span className="chat-websearch-divider" aria-hidden="true">
-                                ·
-                              </span>
-                              <span
-                                className={`chat-websearch-sites${m.activity.sites.length > 1 ? " chat-websearch-sites-scrolling" : ""}`}
-                                title={m.activity.sites.join(" · ")}
-                              >
-                                <span className="chat-websearch-sites-track">
-                                  <span className="chat-websearch-sites-group">
-                                    {m.activity.sites.join(" · ")}
-                                  </span>
-                                  {m.activity.sites.length > 1 && (
-                                    <span
-                                      className="chat-websearch-sites-group"
-                                      aria-hidden="true"
-                                    >
-                                      {m.activity.sites.join(" · ")}
-                                    </span>
-                                  )}
-                                </span>
-                              </span>
-                            </>
-                          )}
-                        </>
-                      ) : (
-                        <>
-                          <AppIcon name="general" size={16} className="chat-activity-icon" />{" "}
-                          {m.activity}
-                        </>
-                      )}
-                    </div>
-                  )}
-                  {m.attachments && m.attachments.length > 0 && (
-                    <div className="chat-message-attachments">
-                      {m.attachments.map((attachment) => (
-                        <AttachmentPreview
-                          key={attachment.id}
-                          attachment={attachment}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  {m.role === "user" && (m.resources?.length || m.text.includes("<yume-local-resources>")) ? (
-                    <MessageLocalResources directory={currentDirectory ?? ""} sessionId={currentSessionId ?? ""}
-                      messageId={m.nativeMessageId ?? m.id} resources={m.resources} lang={resourceLanguage} />
-                  ) : null}
-                  {m.localOnly && m.role === "assistant" && <div className="chat-activity">{lang === "zh-CN" ? "本地回复" : "Local reply"}</div>}
-                  {(m.text.trim().length > 0 || m.role === "user") && (
-                    <div className="chat-bubble">
-                      <ChatText text={m.role === "user" ? stripLocalResourceContext(m.text) : m.text} format={m.role === "assistant" ? "markdown" : "plain"}
-                        streaming={status === "busy" && m.role === "assistant" && m.id === messages.at(-1)?.id}
-                        lang={lang} />
-                    </div>
-                  )}
-                  {worklog.operations.filter((operation) => operation.messageId === m.id).map((operation) => <WorklogReceipt key={operation.requestId} operation={operation} language={lang} onUndo={worklog.undo} onRefresh={worklog.refresh} />)}
-                  </div>
-                </div>
+                <ChatMessageRow key={m.id} message={m}
+                  avatarSources={m.role === "user" ? ownAvatarSources : (personaAvatars[m.personaId ?? ""] ?? EMPTY_AVATAR_SOURCES)}
+                  t={t} lang={lang} resourceLanguage={resourceLanguage}
+                  currentDirectory={currentDirectory} currentSessionId={currentSessionId}
+                  streaming={status === "busy" && m.role === "assistant" && m.id === messages.at(-1)?.id}
+                  operations={operationsByMessage.get(m.id) ?? EMPTY_OPERATIONS}
+                  onUndo={worklog.undo} onRefresh={worklog.refresh} />
               );
             })}
             {isPersonaTyping && (
@@ -1595,7 +1564,7 @@ export default function ChatApp() {
                 {t.chatTyping}
               </div>
             )}
-            {worklog.operations.filter((operation) => !messages.some((message) => message.id === operation.messageId)).map((operation) => <WorklogReceipt key={operation.requestId} operation={operation} language={lang} onUndo={worklog.undo} onRefresh={worklog.refresh} />)}
+            {worklog.operations.filter((operation) => !messageIds.has(operation.messageId)).map((operation) => <WorklogReceipt key={operation.requestId} operation={operation} language={lang} onUndo={worklog.undo} onRefresh={worklog.refresh} />)}
             <WorkspaceTask language={lang} agent={agent} historyDetails={agentHistoryArchive?.agentDetails} compact sessionId={currentSessionId} directory={currentDirectory} />
           </div>
 
@@ -1718,24 +1687,6 @@ export default function ChatApp() {
     )}
     </div>
   );
-}
-
-function AttachmentPreview({
-  attachment,
-}: {
-  attachment: ModelReadyAttachment;
-}) {
-  if (attachment.kind === "image") {
-    return (
-      <img
-        className="chat-attachment-image"
-        src={attachment.dataUrl}
-        alt={attachment.name}
-        title={attachment.name}
-      />
-    );
-  }
-  return <div className="chat-attachment-document">文档 · {attachment.name}</div>;
 }
 
 function attachmentPreviewFromPart(part: OpenCodeFilePart): ModelReadyAttachment {

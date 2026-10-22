@@ -28,12 +28,14 @@ mod catalog_migration_tests;
 mod native_index;
 mod recovery;
 mod storage;
+mod staged_snapshot;
 pub(crate) mod view;
 
 use archive::{upsert_agent_snapshot, upsert_message};
 
 pub(crate) use native_index::NativeSessionIndex;
 use storage::{load_path, persist_path};
+pub(crate) use staged_snapshot::{prepare_agent_snapshot, PreparedAgentSnapshot};
 pub(crate) use view::continuation_origin;
 
 #[cfg(test)]
