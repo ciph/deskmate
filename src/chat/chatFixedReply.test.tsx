@@ -35,6 +35,7 @@ let workbenchOpenFailure: "history_native_missing" | "history_native_timeout" | 
 const originalFetch = globalThis.fetch;
 let localMessages: HistoryMessage[] = [];
 let catalogUnavailable = false;
+let catalogRunning = false;
 let promptCount = 0;
 const nativeEntry: UnifiedHistoryRow = {
   key: 'native:["test",".","ses_fixed"]',
@@ -44,6 +45,7 @@ const nativeEntry: UnifiedHistoryRow = {
   ownership: "unowned", runtime: "idle", tombstone: null,
   capabilities: { open: true, openWorkbench: true, send: true, rename: true, pin: true, archive: true, delete: true, readOnlyReason: null },
 };
+let catalogRow = nativeEntry;
 
 mock.module("@tauri-apps/api/core", () => ({ ...tauriCore, invoke }));
 mock.module("@tauri-apps/api/event", () => ({
@@ -59,6 +61,7 @@ function makeJsonResponse(body: unknown): Response {
 }
 
 function installOpenCodeTransport(): void {
+  const eventStreams = new Set<ReadableStreamDefaultController<Uint8Array>>();
   const fetchMock = mock((input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input).split("?")[0] ?? "";
     if (url.endsWith("/event")) {
@@ -66,10 +69,11 @@ function installOpenCodeTransport(): void {
         new Response(
           new ReadableStream<Uint8Array>({
             start(controller) {
+              eventStreams.add(controller);
+              init?.signal?.addEventListener("abort", () => { eventStreams.delete(controller); controller.close(); }, { once: true });
               eventHandler = (event: OpenCodeEvent) => {
-                controller.enqueue(
-                  new TextEncoder().encode(`data: ${JSON.stringify(event)}\n\n`),
-                );
+                const bytes = new TextEncoder().encode("data: " + JSON.stringify(event) + "\n\n");
+                for (const stream of eventStreams) stream.enqueue(bytes);
               };
             },
           }),
@@ -136,6 +140,8 @@ beforeEach(() => {
   eventHandler = null;
   localMessages = [];
   catalogUnavailable = false;
+  catalogRunning = false;
+  catalogRow = nativeEntry;
   promptCount = 0;
   ownershipChanged = null;
   workbenchOwned = false;
@@ -171,9 +177,9 @@ beforeEach(() => {
       return invoke("history_catalog_load", args).then((value: any) => value.entry);
     case "history_catalog_load":
         if (catalogUnavailable) return Promise.reject(new Error("synthetic unavailable"));
-        return Promise.resolve({ entry: nativeEntry, messages: localMessages });
+        return Promise.resolve({ entry: catalogRunning ? { ...catalogRow, runtime: "running", capabilities: { ...catalogRow.capabilities, send: false, readOnlyReason: "runtime_running" } } : catalogRow, messages: localMessages });
       case "history_catalog_list":
-        return Promise.resolve({ items: [nativeEntry], total: 1, hasMore: false, offline: false, errors: [], directories: ["."] });
+        return Promise.resolve({ items: [catalogRow], total: 1, hasMore: false, offline: false, errors: [], directories: ["."] });
       case "history_save_local_messages": {
         if (!args || typeof args !== "object" || !("messages" in args) || !Array.isArray(args.messages)) throw new Error("Missing local messages");
         localMessages = args.messages.map((message: unknown): HistoryMessage => {
@@ -429,7 +435,7 @@ describe("小著固定名字由来回复", () => {
     expect(document.querySelector(".chat-typing")).toBeNull();
   });
 
-  test("keeps a fast streaming reply hidden until two seconds have elapsed", async () => {
+  test("shows a 100 ms first chunk immediately and settles a 300 ms response", async () => {
     render(<ChatApp />);
     const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
     const send = screen.getByRole("button", { name: "发送" });
@@ -452,6 +458,7 @@ describe("小著固定名字由来回复", () => {
     expect(screen.getByText("正在思考..")).toBeDefined();
 
     await act(async () => {
+      jest.advanceTimersByTime(100);
       receive({
         type: "message.part.updated",
         properties: {
@@ -463,29 +470,21 @@ describe("小著固定名字由来回复", () => {
           },
         },
       });
-      receive({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
       await Promise.resolve();
     });
 
-    expect(document.querySelectorAll(".chat-msg-assistant .chat-bubble")).toHaveLength(0);
+    expect(screen.getByText("这是很快返回的内容")).toBeDefined();
     expect(document.querySelector(".chat-typing")).not.toBeNull();
-
     await act(async () => {
-      jest.advanceTimersByTime(1999);
-      await Promise.resolve();
-    });
-    expect(screen.queryByText("这是很快返回的内容")).toBeNull();
-
-    await act(async () => {
-      jest.advanceTimersByTime(1);
-      await Promise.resolve();
+      jest.advanceTimersByTime(200);
+      receive({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
       await Promise.resolve();
     });
     expect(screen.getByText("这是很快返回的内容")).toBeDefined();
     expect(document.querySelector(".chat-typing")).toBeNull();
   });
 
-  test("shows slow streaming replies at their real arrival time after the minimum wait", async () => {
+  test("shows slow streaming replies at their real arrival time", async () => {
     render(<ChatApp />);
     const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
     const send = screen.getByRole("button", { name: "发送" });
@@ -589,7 +588,7 @@ describe("小著固定名字由来回复", () => {
       await Promise.resolve();
     });
     await act(async () => {
-      jest.advanceTimersByTime(2000);
+      jest.advanceTimersByTime(100);
       await Promise.resolve();
     });
 
@@ -606,6 +605,11 @@ describe("小著固定名字由来回复", () => {
           },
         },
       });
+      await Promise.resolve();
+    });
+    expect(document.querySelector(".chat-activity")?.textContent).toContain("读取文件");
+    expect(document.querySelectorAll(".chat-msg-assistant .chat-bubble")).toHaveLength(0);
+    await act(async () => {
       receive({
         type: "message.part.updated",
         properties: {
@@ -740,3 +744,60 @@ describe("小著固定名字由来回复", () => {
 
 
 
+
+
+test("reopening a running read-only native session continues receiving its live text", async () => {
+  render(<ChatApp />);
+  const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.change(input, { target: { value: "普通运行中的问题" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptCount).toBe(1));
+  catalogRunning = true;
+  localMessages = [
+    { role: "user", text: "普通运行中的问题", time: 1, messageId: "native-user" },
+    { role: "assistant", text: "载入时的部分", time: 2, messageId: "live-native" },
+  ];
+  fireEvent.click(screen.getByRole("button", { name: "历史" }));
+  fireEvent.click(await screen.findByRole("button", { name: "打开 t" }));
+  await screen.findByText("载入时的部分");
+  expect(screen.queryByPlaceholderText("输入消息,Enter 发送")).toBeNull();
+  await act(async () => {
+    eventHandler?.({ type: "message.part.updated", properties: { part: {
+      sessionID: "ses_fixed", messageID: "live-native", type: "text", text: "重新打开后继续更新的正文",
+    } } });
+    eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  expect(screen.getByText("重新打开后继续更新的正文")).toBeDefined();
+  expect(screen.queryByText("载入时的部分")).toBeNull();
+  expect(document.querySelector(".chat-typing")).toBeNull();
+});
+
+
+test("switching to another native directory and session rejects the previous stream's text", async () => {
+  render(<ChatApp />);
+  const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.change(input, { target: { value: "旧会话普通问题" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptCount).toBe(1));
+  catalogRow = { ...nativeEntry, key: 'native:["test","C:/other","ses_other"]',
+    identity: { kind: "native", sidecarId: "test", directory: "C:/other", sessionId: "ses_other" } };
+  catalogRunning = true;
+  localMessages = [{ role: "assistant", text: "另一会话快照", time: 2, messageId: "other-message" }];
+  fireEvent.click(screen.getByRole("button", { name: "历史" }));
+  fireEvent.click(await screen.findByRole("button", { name: "打开 t" }));
+  await screen.findByText("另一会话快照");
+  await act(async () => {
+    eventHandler?.({ type: "message.part.updated", properties: { part: {
+      sessionID: "ses_fixed", messageID: "old-message", type: "text", text: "旧会话迟到内容",
+    } } });
+    eventHandler?.({ type: "message.part.updated", properties: { part: {
+      sessionID: "ses_other", messageID: "other-message", type: "text", text: "另一会话继续回复",
+    } } });
+    eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_other" } });
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  expect(screen.queryByText("旧会话迟到内容")).toBeNull();
+  expect(screen.getByText("另一会话继续回复")).toBeDefined();
+  expect(document.querySelector(".chat-typing")).toBeNull();
+});

@@ -3,7 +3,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { Menu, MenuItem } from "@tauri-apps/api/menu";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getSettings, onPetScalePreview, onSettingsChanged, type Settings } from "../lib/settings";
-import { onMood, type PetMood } from "../lib/petState";
 import type { PetRenderer } from "./PetRenderer";
 import { PetPomodoro } from "./PetPomodoro";
 import { petLayout } from "./petLayout";
@@ -38,12 +37,6 @@ const report = (error: unknown) => console.error("pet interaction failed", error
 const openSettings = () => { void invoke("open_settings").catch(report); };
 
 export default function PetApp({ gifLoad, clock }: { readonly gifLoad?: typeof loadGifPersona; readonly clock?: SleepClock } = {}) {
-  const [glbMood, setGlbMood] = useState<PetMood>("idle");
-  useEffect(() => {
-    let disposed = false;
-    const listener = onMood((mood) => { if (!disposed) setGlbMood(mood); });
-    return () => { disposed = true; void listener.then(stop => stop()); };
-  }, []);
   const rootRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<PetRenderer | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -120,7 +113,7 @@ export default function PetApp({ gifLoad, clock }: { readonly gifLoad?: typeof l
         leaving={leaving} visible={visible} onError={setLoadError} onLoaded={loaded} load={gifLoad} />
         : rig ? <Rig2dPetView key={runtimeId} personaId={personaId} revision={revision} state={state} width={layout.width}
           leaving={leaving} visible={visible} onError={setLoadError} onLoaded={loadedRig} />
-        : <GlbPetView key={runtimeId} mood={glbMood} settings={settings} width={layout.width} height={layout.height} rendererRef={rendererRef} onError={setLoadError} onReady={loadedGlb} />}
+        : <GlbPetView key={runtimeId} mood={activity.mood} settings={settings} width={layout.width} height={layout.height} rendererRef={rendererRef} onError={setLoadError} onReady={loadedGlb} />}
     </button>}
     <PetPomodoro language={settings?.language ?? "zh-CN"} scale={petScale} />
     {loadError !== null && <div role="alert" className="pet-load-error">桌宠加载失败 <button type="button" onClick={openSettings}>打开设置切换角色</button></div>}

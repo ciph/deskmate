@@ -3,17 +3,17 @@ import type { PetActivityEvent, PetMood } from "../lib/petState";
 
 export interface GifState {
   readonly request: { readonly sessionId: string; readonly requestId: string } | null;
-  readonly terminal: boolean;
+  readonly terminal: false | "success" | "error" | "cancel";
   readonly base: PetMood;
   readonly thinkingSince: number | null;
   readonly thinkingVariant: "thinking" | "working";
   readonly feedback: { readonly state: "success" | "error"; readonly until: number } | null;
-  readonly startedRequests: ReadonlySet<string>;
-  readonly eventIds: ReadonlySet<string>;
+  readonly producerEpoch: number;
+  readonly sequence: number;
 }
 export const initialGifState: GifState = {
   thinkingVariant: "thinking", request: null, terminal: false, base: "idle", thinkingSince: null, feedback: null,
-  startedRequests: new Set(), eventIds: new Set(),
+  producerEpoch: 0, sequence: 0,
 };
 export interface GifTiming {
   readonly successMs: number;
@@ -27,25 +27,29 @@ export function reduceGifState(
   state: GifState, event: PetActivityEvent, now: number, visible = true,
   timing: GifPlayback = defaultGifTiming,
 ): GifState {
-  if (state.eventIds.has(event.eventId)) return state;
-  const requestKey = JSON.stringify([event.sessionId, event.requestId]);
+  const { producerEpoch, sequence } = event;
+  if (!Number.isSafeInteger(producerEpoch) || producerEpoch < 1 || !Number.isSafeInteger(sequence) || sequence < 1
+    || event.eventId !== `${producerEpoch}:${sequence}`) return state;
+  // A producer-wide watermark survives terminal events and persona changes without retaining request history.
+  if (producerEpoch < state.producerEpoch || (producerEpoch === state.producerEpoch && sequence <= state.sequence)) return state;
+  const sameRequest = state.request?.sessionId === event.sessionId && state.request.requestId === event.requestId;
   if (event.type === "start") {
-    if (state.startedRequests.has(requestKey)) return state;
-    return { thinkingVariant: "thinking", request: event, terminal: false, base: "thinking", thinkingSince: now, feedback: null,
-      startedRequests: new Set([...state.startedRequests, requestKey]), eventIds: new Set([event.eventId]) };
+    if (sameRequest) return state;
+    return { thinkingVariant: "thinking", request: { sessionId: event.sessionId, requestId: event.requestId },
+      terminal: false, base: "thinking", thinkingSince: now, feedback: null, producerEpoch, sequence };
   }
-  if (state.request?.sessionId !== event.sessionId || state.request.requestId !== event.requestId || state.terminal) return state;
-  const accepted = { ...state, eventIds: new Set([...state.eventIds, event.eventId]) };
+  if (producerEpoch !== state.producerEpoch || !sameRequest || state.terminal) return state;
+  const accepted = { ...state, sequence };
   switch (event.type) {
     case "mood":
       return { ...accepted, base: event.mood,
         thinkingSince: event.mood === "thinking" ? state.thinkingSince ?? now : null };
     case "success":
     case "error":
-      return { ...accepted, terminal: true, base: "idle", thinkingSince: null,
+      return { ...accepted, terminal: event.type, base: "idle", thinkingSince: null,
         feedback: visible ? { state: event.type, until: now + (event.type === "success" ? timing.successMs : timing.errorMs) } : null };
     case "cancel":
-      return { ...accepted, terminal: true, base: "idle", thinkingSince: null, feedback: null };
+      return { ...accepted, terminal: event.type, base: "idle", thinkingSince: null, feedback: null };
     default: {
       const exhaustive: never = event;
       return exhaustive;
@@ -78,6 +82,6 @@ export function applyGifEvent(
 }
 
 export function gifIdleEligible(state: GifState, now: number): boolean {
-  return (state.request === null || state.terminal) && state.base === "idle"
+  return (state.request === null || Boolean(state.terminal)) && state.base === "idle"
     && (state.feedback === null || now >= state.feedback.until);
 }

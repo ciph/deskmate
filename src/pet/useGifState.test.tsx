@@ -13,7 +13,7 @@ afterEach(async () => { cleanup(); await act(async () => {}); clearMocks(); });
 function Harness({ identity = "a", policy = playback, random }: { readonly identity?: string; readonly policy?: GifPlayback; readonly random: () => number }) {
   return <output>{useGifState(true, policy, identity, random)}</output>;
 }
-const start = { type: "start", sessionId: "s", requestId: "r", eventId: "1" } as const;
+const start = { type: "start", sessionId: "s", requestId: "r", producerEpoch: 1, sequence: 1, eventId: "1:1" } as const;
 test("StrictMode and batched duplicate events consume one sample", async () => {
   // Given the real event subscription under StrictMode.
   let calls = 0;
@@ -52,10 +52,10 @@ test("records deterministic real hook episode, cancellation and reinitialization
   const record = (step: string) => trace.push({ step, display: view.container.textContent, samples: calls });
   // When the same request leaves thinking, returns, cancels, then a new request changes persona/policy.
   await act(async () => { await emit("deskmate://pet-activity", start); }); record("start");
-  await act(async () => { await emit("deskmate://pet-activity", { ...start, type: "mood", mood: "working", eventId: "2" }); }); record("explicit working");
-  await act(async () => { await emit("deskmate://pet-activity", { ...start, type: "mood", mood: "thinking", eventId: "3" }); }); record("return thinking");
-  await act(async () => { await emit("deskmate://pet-activity", { ...start, type: "cancel", eventId: "4" }); }); record("cancel");
-  await act(async () => { await emit("deskmate://pet-activity", { ...start, requestId: "next", eventId: "5" }); }); record("new request");
+  await act(async () => { await emit("deskmate://pet-activity", { ...start, type: "mood", mood: "working", sequence: 2, eventId: "1:2" }); }); record("explicit working");
+  await act(async () => { await emit("deskmate://pet-activity", { ...start, type: "mood", mood: "thinking", sequence: 3, eventId: "1:3" }); }); record("return thinking");
+  await act(async () => { await emit("deskmate://pet-activity", { ...start, type: "cancel", sequence: 4, eventId: "1:4" }); }); record("cancel");
+  await act(async () => { await emit("deskmate://pet-activity", { ...start, requestId: "next", sequence: 5, eventId: "1:5" }); }); record("new request");
   view.rerender(<StrictMode><Harness identity="b" random={random} /></StrictMode>); record("persona b");
   view.rerender(<StrictMode><Harness identity="b" policy={defaultGifTiming} random={random} /></StrictMode>); record("legacy policy");
   view.rerender(<StrictMode><Harness identity="b" random={random} /></StrictMode>); record("random policy");
@@ -81,4 +81,31 @@ test("uncommitted suspended render cannot change event selection inputs", async 
   await act(async () => { await emit("deskmate://pet-activity", start); });
   // Then it uses the last committed selector, never the suspended render inputs.
   expect(view.container.querySelector("output")?.textContent).toBe("thinking");
+});
+
+
+test("persona changes preserve replay barriers and duplicate events do not rerender", async () => {
+  let samples = 0;
+  let renders = 0;
+  function ReplayHarness({ identity }: { readonly identity: string }) {
+    renders++;
+    return <output>{useGifState(true, playback, identity, () => { samples++; return 0.1; })}</output>;
+  }
+  const view = render(<ReplayHarness identity="a" />);
+  await act(async () => {});
+  await act(async () => {
+    await emit("deskmate://pet-activity", start);
+    await emit("deskmate://pet-activity", { ...start, type: "success", sequence: 2, eventId: "1:2" });
+  });
+  view.rerender(<ReplayHarness identity="b" />);
+  expect(view.container.textContent).toBe("idle");
+  const settledRenders = renders;
+  await act(async () => {
+    for (let index = 0; index < 10000; index++) await emit("deskmate://pet-activity", start);
+    await emit("deskmate://pet-activity", { ...start, sequence: 3, eventId: "1:3" });
+    await emit("deskmate://pet-activity", { ...start, type: "mood", mood: "thinking", sequence: 4, eventId: "1:4" });
+  });
+  expect(view.container.textContent).toBe("idle");
+  expect(samples).toBe(1);
+  expect(renders).toBe(settledRenders);
 });

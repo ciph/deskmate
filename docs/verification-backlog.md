@@ -4,11 +4,46 @@
 
 ## 当前验证入口
 
+### 2026-10-22 性能整改 B2
+
+B1 已保存为本地提交 `a48ee36be8195766322439843fd76db69819fa40`。按用户“保存然后下一步”授权，
+在 0.4.20 的 `codex/yume-performance-remediation` 上完成独立前端整改；B1 原生门槛保留为交付检查。
+
+- C05：普通模型正文和工具内容不再等满 2 秒，本地固定台词节奏保留。停止、已知旧父消息、跨目录/会话和
+  卸载有回归；重开运行中原生历史继续接收正文与 idle。审查发现的历史恢复回归保留 RED→GREEN 证据。
+- C10：同请求连续 10,000 次相同 mood 广播从 10,000 次降为 1 次；双方生产者共享 epoch/sequence。
+  消费端历史 Set 被固定大小水位替代。10,000 个不同事件累计复制元素 50,015,002→0、历史集合元素 10,002→0；
+  这不是总内存为零或原生速度测量。GLB/GIF/rig2d 共用事件通道，保留 GLB 原始动作语义。
+- C15：500 轮/1,000 行/50 次正文更新，观察器创建 51→1、累计 observe 51,051→1,001。
+  真浏览器正文更新阶段创建/订阅/断开/几何读取增量均为 0；实际高度变化、新增删除、跳转和 Tab/Escape/Enter 通过。
+- I07c：焦点/可见性/联网事件唤醒；计划状态查询在前次完成后等待可见/隐藏 idle 5/30 秒、busy 1/5 秒。
+  可见性与状态探测最多在途一个，manifest 单独处理。当前窗口更新用 Channel，相同快照不额外提交 React 状态。
+  语言切换保留进度和取消；字典 ref 在提交阶段更新。32 项定向测试通过。
+- 最终三套 TypeScript、完整前端 156/156 文件（1172 pass、0 fail、8 skip、0 unfinished）、生产前端构建均退出 0。
+  Node 24.14.1 / Bun 1.3.14。套件和构建串行，包装器直接写文件并正常退出。
+- React Doctor 0.9.18 changed / HEAD / include-untracked 扫描 23 文件，退出 0，新增诊断 0；81/100。
+  B1 的 82 分来自不同基线和 9 文件；当前 13 项评分诊断全部匹配既有基线，不声明仓库零诊断。
+  新增 render-ref 问题已修，未禁用规则；独立代码复核无剩余阻断。
+- Chromium 直接导入最终产品源码，合成 SSE/IPC：普通回复首次事件→DOM 8.8 ms，结束→就绪 DOM 3.4 ms，
+  最终正文一致，实际 Stop 回到可编辑状态。这是单次回归预算，非真实模型或 WebView2 性能统计。
+  合成慢 IPC 下 100 次唤醒仅 2 次状态查询、最多并发 1；模拟隐藏 idle 6.1 秒无额外查询，恢复显示 50% 进度。
+  三个页面无捕获浏览器错误；未建模的历史/工作台/权限非关键 IPC 记录在 chat-result.json，不能当这些功能验收。
+- B2 没有改 Rust/工作台 overlay，未重跑 Rust 或构建含 B2 的 Windows EXE；B1 的 747 项 Rust 通过是保留基线。
+  Vite 既有大 chunk 警告保留。未安装、推送或发布。
+
+待验：B1 原生二次/并发启动任务连续性与 PDF 本地协议/堆收敛；B2 Tauri/WebView2 焦点/隐藏、真实更新生命周期、
+长会话滚动与宠物动作像素、10 分钟空闲 CPU/GPU/功耗、macOS 与真实模型。现有工具不能操作 Windows 原生 GUI，
+浏览器和单测不能关闭这些门槛。未知父消息先于元数据、无 requestId 的 session idle/error 仍不能严格归属到请求；
+存储禁用+完整页面重载+时钟回退的 epoch 顺序边界保留，不保证跨消费者完整重建的旧事件去重。
+
+证据：`E:/Codex/工作伙伴/reports/yume-performance-b2-20261022`，包括 `verification-summary.json`、
+`source-snapshot.json`、`b2-checkpoint.json`、`review.json`、`doctor-score-review.json` 和 HTML/浏览器截图。
+
 ### 2026-10-22 性能整改 B0 / B1
 
 基线：0.4.20，HEAD `d92a9c872b01300a27d90a675cfa9247bfd2fd2b`；实际开发入口为
 `C:/Users/chenglingxiao/.codex/worktrees/build-v0418-9081/deskmate-public-release`，施工分支
-`codex/yume-performance-remediation`。以下证据对应未提交差异，不是旧主仓或安装版。
+`codex/yume-performance-remediation`。以下为 B1 当时的差异证据，现已保存于 `a48ee36`，不是旧主仓或安装版。
 
 - A01：Windows 原子主实例占有在插件初始化之前完成；旧插件窗口须归属当前 PID。
   删除名称/CORS 全局进程清理，按宿主与子进程出生时间、镜像和应用身份回收记录中的孤儿。
@@ -32,7 +67,7 @@
 
 待验：完整 Tauri 生产启动路径的并发/二次启动任务连续性；WebView2 本地 worker 协议、真实取消、20+ 次循环
 后的堆/RSS 收敛；macOS WebKit。当前工具不能操作 Windows 原生 GUI，以上保持未验，B1 不标整体验收通过，
-不进入依赖 B1 的 B2 产品修改。尚未测得端到端性能增益。
+以上为 B1 当时的门禁状态；后续用户授权推进独立 B2，仍未关闭原生检查。尚未测得端到端性能增益。
 开工时记录的安装版 YUME/引擎 PID 在收尾只读检查时已不在运行；退出原因未确定，未为验证重启安装版，
 也未据此声称活跃任务连续性通过。前后进程摘要保存在 baseline/relevant-processes-after 回执。
 

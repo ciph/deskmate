@@ -39,7 +39,7 @@ test("same-ID successful pack upgrade replaces active image and geometry under S
   const load = async () => installed;
   const view = render(<StrictMode><PetApp gifLoad={load} /></StrictMode>);
   await act(async () => {});
-  await act(async () => { await emit("deskmate://pet-activity", { type: "start", sessionId: "s", requestId: "r", eventId: "1" }); });
+  await act(async () => { await emit("deskmate://pet-activity", { type: "start", sessionId: "s", requestId: "r", producerEpoch: 1, sequence: 1, eventId: "1:1" }); });
   const oldImage = view.container.querySelector("img.gif-pet-image");
   expect(oldImage?.getAttribute("style")).toContain("160px");
   // When native installation succeeds for the same active persona.

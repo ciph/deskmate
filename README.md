@@ -15,6 +15,10 @@ component show a download/repair entry. Core chat and the workbench remain bundl
 The [documentation index](docs/README.md) lists current contracts, active work,
 verification gates and historical records.
 
+Model replies and tool activity appear as soon as they arrive. Local fixed persona
+replies retain their intentional typing cadence. Pet activity follows the current
+request, so late events from an older request do not override it.
+
 ## Chat avatars
 
 Chat shows rounded-square avatars beside both participants' messages. Settings →

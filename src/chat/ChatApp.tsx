@@ -23,7 +23,7 @@ import {
   SessionAbortError,
   type OpenCodeEvent,
 } from "../lib/opencode";
-import { broadcastMood, broadcastPetActivity } from "../lib/petState";
+import { broadcastPetActivity } from "../lib/petState";
 import { recordCompletedAiUsage } from "../lib/localAiUsage";
 import { createChatPetActivity } from "./petActivity";
 import { DEFAULT_PERSONA_ID } from "../pet/personaCatalog";
@@ -137,29 +137,12 @@ type Status = "booting" | "ready" | "busy" | "error";
 
 type View = "chat" | "history";
 
-const MIN_REPLY_PRESENTATION_MS = 2_000;
-const FIXED_REPLY_TYPING_DELAY_MS = MIN_REPLY_PRESENTATION_MS / 2;
+const FIXED_REPLY_TYPING_DELAY_MS = 1_000;
 const EMPTY_PREPARED_ATTACHMENTS: PreparedModelAttachments = {
   fileParts: [],
   fallbackPrompt: null,
   shouldSendToModel: false,
 };
-
-interface BufferedAssistantUpdate {
-  messageID: string;
-  personaId?: string;
-  hasText: boolean;
-  text?: string;
-  activity?: ToolActivity;
-}
-
-interface ReplyPacing {
-  id: number;
-  released: boolean;
-  completed: boolean;
-  pendingUpdates: Map<string, BufferedAssistantUpdate>;
-  releaseTimer: ReturnType<typeof globalThis.setTimeout> | null;
-}
 
 function waitForDelay(milliseconds: number): Promise<void> {
   return new Promise((resolve) => {
@@ -407,8 +390,8 @@ export default function ChatApp() {
   /** mirror of `messages` for persisting history outside render. */
   const messagesRef = useRef<ChatMessage[]>([]);
   const fixedReplySequenceRef = useRef(0);
-  const replyPacingRef = useRef<ReplyPacing | null>(null);
-  const replyPacingSequenceRef = useRef(0);
+  const replyRequestRef = useRef<{ readonly requestId: string | null } | null>(null);
+  const messageParentsRef = useRef(new Map<string, string>());
 
   const appendArtifactMessage = useCallback((artifact: LocalAttachmentArtifact) => {
     setMessages((prev) => [
@@ -447,20 +430,42 @@ export default function ChatApp() {
     (item) => item.kind === "failed" && item.phase === "staging",
   );
 
-  const clearReplyPacing = () => {
-    const pacing = replyPacingRef.current;
-    if (pacing?.releaseTimer !== null && pacing?.releaseTimer !== undefined) {
-      globalThis.clearTimeout(pacing.releaseTimer);
-    }
-    replyPacingRef.current = null;
+  const cancelReplyPresentation = () => {
+    replyRequestRef.current = null;
   };
 
-  const finishPacedReply = (pacing: ReplyPacing) => {
-    if (replyPacingRef.current !== pacing) return;
-    clearReplyPacing();
+  const updateAssistantText = (messageID: string, text: string) => {
+    setMessages((prev) =>
+      upsertAssistant(prev, messageID, messagePersonasRef.current.get(messageID), (message) => ({
+        ...message,
+        text,
+        activity: preserveWebSearchActivity(message.activity),
+      })),
+    );
+  };
+
+  const updateAssistantTool = (messageID: string, activity: ToolActivity) => {
+    setMessages((prev) =>
+      upsertAssistant(prev, messageID, messagePersonasRef.current.get(messageID), (message) => ({
+        ...message,
+        activity,
+      })),
+    );
+  };
+
+  const clearAssistantTool = (messageID: string) => {
+    setMessages((prev) =>
+      prev.flatMap((message) => {
+        if (message.id !== messageID) return [message];
+        const next = { ...message, activity: undefined };
+        return next.role === "assistant" && !hasVisibleMessageContent(next) ? [] : [next];
+      }),
+    );
+  };
+
+  const completeReplyPresentation = () => {
     setIsPersonaTyping(false);
     setStatus("ready");
-    broadcastMood("idle");
     setMessages((prev) =>
       prev.map((message) =>
         isTextChatMessage(message) && message.activity
@@ -470,145 +475,11 @@ export default function ChatApp() {
     );
   };
 
-  const releaseReplyPacing = (id: number) => {
-    const pacing = replyPacingRef.current;
-    if (!pacing || pacing.id !== id) return;
-    pacing.released = true;
-    pacing.releaseTimer = null;
-    const pendingUpdates = Array.from(pacing.pendingUpdates.values());
-    pacing.pendingUpdates.clear();
-    const visibleUpdates = pendingUpdates.filter(
-      (update) => update.hasText || update.activity !== undefined,
-    );
-    if (visibleUpdates.length > 0) {
-      setMessages((prev) =>
-        visibleUpdates.reduce(
-          (next, update) =>
-            upsertAssistant(next, update.messageID, update.personaId, (message) =>
-              update.hasText
-                ? {
-                    ...message,
-                    text: update.text ?? "",
-                    activity: update.activity,
-                  }
-                : { ...message, activity: update.activity },
-            ),
-          prev,
-        ),
-      );
-    }
-    if (pacing.completed) finishPacedReply(pacing);
-  };
-
-  const startReplyPacing = (): number => {
-    clearReplyPacing();
-    const id = replyPacingSequenceRef.current + 1;
-    replyPacingSequenceRef.current = id;
-    const pacing: ReplyPacing = {
-      id,
-      released: false,
-      completed: false,
-      pendingUpdates: new Map(),
-      releaseTimer: null,
-    };
-    replyPacingRef.current = pacing;
-    pacing.releaseTimer = globalThis.setTimeout(() => {
-      releaseReplyPacing(id);
-    }, MIN_REPLY_PRESENTATION_MS);
-    return id;
-  };
-
-  const queueAssistantText = (messageID: string, text: string) => {
-    const pacing = replyPacingRef.current;
-    if (!pacing || pacing.released) {
-      setMessages((prev) =>
-        upsertAssistant(prev, messageID, messagePersonasRef.current.get(messageID), (message) => ({
-          ...message,
-          text,
-          activity: preserveWebSearchActivity(message.activity),
-        })),
-      );
-      return;
-    }
-    const current = pacing.pendingUpdates.get(messageID);
-    pacing.pendingUpdates.set(messageID, {
-      messageID,
-      personaId: messagePersonasRef.current.get(messageID),
-      hasText: true,
-      text,
-      activity: preserveWebSearchActivity(current?.activity),
-    });
-  };
-
-  const queueAssistantTool = (messageID: string, activity: ToolActivity) => {
-    const pacing = replyPacingRef.current;
-    if (!pacing || pacing.released) {
-      setMessages((prev) =>
-        upsertAssistant(prev, messageID, messagePersonasRef.current.get(messageID), (message) => ({
-          ...message,
-          activity,
-        })),
-      );
-      return;
-    }
-    const current = pacing.pendingUpdates.get(messageID);
-    pacing.pendingUpdates.set(messageID, {
-      messageID,
-      personaId: messagePersonasRef.current.get(messageID),
-      hasText: current?.hasText ?? false,
-      text: current?.text,
-      activity,
-    });
-  };
-
-  const clearAssistantTool = (messageID: string) => {
-    const pacing = replyPacingRef.current;
-    if (!pacing || pacing.released) {
-      setMessages((prev) =>
-        prev.flatMap((message) => {
-          if (message.id !== messageID) return [message];
-          const next = { ...message, activity: undefined };
-          return next.role === "assistant" && !hasVisibleMessageContent(next)
-            ? []
-            : [next];
-        }),
-      );
-      return;
-    }
-    const current = pacing.pendingUpdates.get(messageID);
-    if (!current) return;
-    if (!current.hasText) {
-      pacing.pendingUpdates.delete(messageID);
-      return;
-    }
-    pacing.pendingUpdates.set(messageID, { ...current, activity: undefined });
-  };
-
-  const completeReplyPacing = () => {
-    const pacing = replyPacingRef.current;
-    if (!pacing) {
-      setIsPersonaTyping(false);
-      setStatus("ready");
-      broadcastMood("idle");
-      setMessages((prev) =>
-        prev.map((message) =>
-          isTextChatMessage(message) && message.activity
-            ? { ...message, activity: settleToolActivity(message.activity) }
-            : message,
-        ),
-      );
-      return;
-    }
-    pacing.completed = true;
-    if (pacing.released) finishPacedReply(pacing);
-  };
-
   const waitForFixedReplyStart = async (sequence: number): Promise<boolean> => {
     await waitForDelay(FIXED_REPLY_TYPING_DELAY_MS);
     if (fixedReplySequenceRef.current !== sequence) return false;
     setIsPersonaTyping(true);
     petActivity.mood("thinking");
-    broadcastMood("thinking");
     await waitForDelay(FIXED_REPLY_TYPING_DELAY_MS);
     return fixedReplySequenceRef.current === sequence;
   };
@@ -617,7 +488,7 @@ export default function ChatApp() {
     return () => {
       petActivity.cancel();
       fixedReplySequenceRef.current += 1;
-      clearReplyPacing();
+      cancelReplyPresentation();
     };
   }, []);
 
@@ -653,7 +524,7 @@ export default function ChatApp() {
     }
     petActivity.cancel();
     fixedReplySequenceRef.current += 1;
-    clearReplyPacing();
+    cancelReplyPresentation();
     setIsPersonaTyping(false);
     const nextSelection = preserveComposer ? carriedSelection : INHERIT_MODEL;
     modelSelectionRef.current = nextSelection;
@@ -670,12 +541,12 @@ export default function ChatApp() {
     setCurrentSessionId(session.id);
     resetAttachmentSession(session.id);
     rolesRef.current.clear();
+    messageParentsRef.current.clear();
     messagePersonasRef.current.clear();
     setMessages([]);
     if (!preserveComposer) setInput("");
     setView("chat");
     setStatus("ready");
-    broadcastMood("idle");
     return true;
   }, [cleanupAttachmentSession, resetAttachmentSession, petActivity]);
 
@@ -750,14 +621,12 @@ export default function ChatApp() {
         await resetSession();
         if (closed) return;
         setStatus("ready");
-        broadcastMood("idle");
       } catch (error: unknown) {
         if (closed) return;
         console.error(
           error instanceof Error ? error : new Error(String(error)),
         );
         setStatus("error");
-        broadcastMood("error");
       }
     })();
 
@@ -782,6 +651,7 @@ export default function ChatApp() {
         };
         if (info.sessionID === sessionRef.current) {
           rolesRef.current.set(info.id, info.role);
+          if (info.parentID) messageParentsRef.current.set(info.id, info.parentID);
           const personaId = info.parentID ? messagePersonasRef.current.get(info.parentID) : undefined;
           if (info.role === "assistant" && personaId) messagePersonasRef.current.set(info.id, personaId);
           petActivity.message(props.info);
@@ -798,15 +668,16 @@ export default function ChatApp() {
           tool?: string;
           state?: { title?: string; status?: string };
         };
-        if (part.sessionID !== sessionRef.current) return;
+        if (part.sessionID !== sessionRef.current || replyRequestRef.current === null) return;
+        const parentID = messageParentsRef.current.get(part.messageID);
+        if (parentID && replyRequestRef.current.requestId !== null && parentID !== replyRequestRef.current.requestId) return;
         petActivity.part(props.part);
         // Parts of the user's own message echo back over SSE; skip them.
         if (rolesRef.current.get(part.messageID) === "user") return;
 
         if (part.type === "text") {
           setIsPersonaTyping(true);
-          broadcastMood("talking");
-          queueAssistantText(part.messageID, part.text ?? "");
+          updateAssistantText(part.messageID, part.text ?? "");
         } else if (part.type === "tool") {
           if (WORKLOG_TOOLS.some((tool) => tool === part.tool)) {
             worklog.acceptTool(part);
@@ -815,51 +686,46 @@ export default function ChatApp() {
           }
           const toolPart = toOpenCodeToolPart(part);
           if (!toolPart) {
-            broadcastMood("working");
-            queueAssistantTool(part.messageID, part.state?.title || part.tool || "tool");
+            updateAssistantTool(part.messageID, part.state?.title || part.tool || "tool");
             return;
           }
           if (toolPart.tool === "websearch") {
             const running =
               toolPart.state.status === "pending" || toolPart.state.status === "running";
-            if (running) broadcastMood("working");
-            queueAssistantTool(toolPart.messageID, {
+            updateAssistantTool(toolPart.messageID, {
               kind: "websearch",
               running,
               sites: webSearchSites(toolPart),
             });
             return;
           }
-          broadcastMood("working");
-          queueAssistantTool(toolPart.messageID, toolPart.state.title ?? toolPart.tool);
+          updateAssistantTool(toolPart.messageID, toolPart.state.title ?? toolPart.tool);
         }
         break;
       }
       case "session.status": {
-        if (props.sessionID !== sessionRef.current) return;
+        if (props.sessionID !== sessionRef.current || replyRequestRef.current === null) return;
         const s = (props.status as { type: string } | undefined)?.type;
         if (s === "busy") {
           setStatus("busy");
-          broadcastMood("thinking");
         }
         break;
       }
       case "session.idle": {
-        if (props.sessionID !== sessionRef.current) return;
+        if (props.sessionID !== sessionRef.current || replyRequestRef.current === null) return;
         petActivity.idle(props.sessionID);
         if (typeof props.sessionID === "string") {
           void worklog.recover(props.sessionID);
         }
-        completeReplyPacing();
+        completeReplyPresentation();
         break;
       }
       case "session.error": {
-        if (props.sessionID && props.sessionID !== sessionRef.current) return;
+        if (replyRequestRef.current === null || (props.sessionID && props.sessionID !== sessionRef.current)) return;
         petActivity.sessionError(props.sessionID);
-        clearReplyPacing();
+        cancelReplyPresentation();
         setIsPersonaTyping(false);
         setStatus("ready");
-        broadcastMood("error");
         const err = props.error as
           { name?: string; data?: { message?: string } } | undefined;
         const detail = err?.data?.message || err?.name || "unknown error";
@@ -1113,10 +979,10 @@ export default function ChatApp() {
     ]);
     if (!promptText) return false;
     const petScope = { sessionId: sessionID, requestId: userMessageId };
+    cancelReplyPresentation();
     petActivity.start(petScope);
     setStatus("busy");
     setIsPersonaTyping(false);
-    broadcastMood("thinking");
     const fixedReplySequence = fixedReplySequenceRef.current + 1;
     fixedReplySequenceRef.current = fixedReplySequence;
     if (
@@ -1129,7 +995,7 @@ export default function ChatApp() {
         for (const [index, line] of XIAOZHU_NAME_ORIGIN_LINES.entries()) {
           if (index > 0) {
             setIsPersonaTyping(true);
-            broadcastMood("thinking");
+            petActivity.mood("thinking");
             await new Promise<void>((resolve) => {
               globalThis.setTimeout(resolve, 2000);
             });
@@ -1145,12 +1011,10 @@ export default function ChatApp() {
               text: line, localOnly: true, time: Date.now(),
             },
           ]);
-          broadcastMood("talking");
           petActivity.mood("talking");
         }
         setIsPersonaTyping(false);
         setStatus("ready");
-        broadcastMood("idle");
         petActivity.success(petScope);
         return true;
       }
@@ -1167,14 +1031,12 @@ export default function ChatApp() {
             text: XIAOZHU_IDENTITY_REPLY, localOnly: true, time: Date.now(),
           },
         ]);
-        broadcastMood("talking");
         setStatus("ready");
-        broadcastMood("idle");
         petActivity.success(petScope);
         return true;
       }
     }
-    startReplyPacing();
+    replyRequestRef.current = { requestId: userMessageId };
     let promptStarted = false;
     try {
       const s = settingsRef.current;
@@ -1216,7 +1078,7 @@ export default function ChatApp() {
         if (generation === viewGenerationRef.current) {
           catalogEntryRef.current = finalAccess;
           setCatalogEntry(finalAccess);
-          clearReplyPacing();
+          cancelReplyPresentation();
           setStatus("ready");
         }
         return false;
@@ -1242,7 +1104,7 @@ export default function ChatApp() {
         if (submission === "confirmed") return true;
         if (submission === "unknown") {
           setMemoryNotice(tRef.current.chatSubmissionUnknown);
-          broadcastMood("thinking");
+          petActivity.mood("thinking");
           return true;
         }
       }
@@ -1250,10 +1112,9 @@ export default function ChatApp() {
       console.error(
         error instanceof Error ? error : new Error(String(error)),
       );
-      clearReplyPacing();
+      cancelReplyPresentation();
       setIsPersonaTyping(false);
       setStatus("ready");
-      broadcastMood("error");
       if (prepared.fileParts.length > 0 || resources.length > 0) {
         setAttachmentError(tRef.current.chatAttachmentSendFailed);
       }
@@ -1365,14 +1226,12 @@ export default function ChatApp() {
       await abortSession(sessionID, sessionDirectory());
       petActivity.cancel();
       fixedReplySequenceRef.current += 1;
-      clearReplyPacing();
+      cancelReplyPresentation();
       setIsPersonaTyping(false);
       setStatus("ready");
-      broadcastMood("idle");
     } catch (error: unknown) {
       const unknown = error instanceof SessionAbortError && error.code === "UNKNOWN";
       setMemoryNotice(unknown ? t.chatStopUnknown : t.chatStopFailed);
-      broadcastMood("error");
     } finally {
       setIsCancelling(false);
     }
@@ -1384,7 +1243,7 @@ export default function ChatApp() {
     setHistoryLoading(true);
     petActivity.cancel();
     fixedReplySequenceRef.current += 1;
-    clearReplyPacing();
+    cancelReplyPresentation();
     setIsPersonaTyping(false);
     try {
       const [loaded, restoredSelection] = await Promise.all([loadSharedConversation(row), getConversationModel(row.key)]);
@@ -1416,11 +1275,14 @@ export default function ChatApp() {
       if (previousSession && previousSession !== id) await cleanupAttachmentSession(previousSession);
       if (generation !== viewGenerationRef.current) return;
       sessionRef.current = id;
+      // Opening native history observes that selected session; it does not confirm its run was cancelled.
+      replyRequestRef.current = id ? { requestId: null } : null;
       catalogEntryRef.current = entry;
       setCatalogEntry(entry);
       setCurrentSessionId(id);
       if (id) resetAttachmentSession(id);
       rolesRef.current.clear();
+      messageParentsRef.current.clear();
       messagePersonasRef.current.clear();
       for (const message of loaded.messages) {
         if (message.messageId && message.personaId) messagePersonasRef.current.set(message.messageId, message.personaId);
@@ -1435,7 +1297,6 @@ export default function ChatApp() {
       setMemoryNotice(null);
       setView("chat");
       setStatus("ready");
-      broadcastMood("idle");
     } catch (error: unknown) {
       if (generation !== viewGenerationRef.current) return;
       setMemoryNotice(tRef.current.historyLoadFailed);
@@ -1457,7 +1318,6 @@ export default function ChatApp() {
       );
       const unknown = error instanceof SessionAbortError && error.code === "UNKNOWN";
       setMemoryNotice(unknown ? tRef.current.chatStopUnknown : tRef.current.chatStopFailed);
-      broadcastMood("error");
     }
   }, [agent, leaveAgentHistory, resetSession]);
 

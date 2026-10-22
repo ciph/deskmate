@@ -47,7 +47,7 @@ export function useAgentRun(language: string) {
       }
       if (latest && ownedRun.current === latest.runId) {
         ownedRun.current = null;
-        if (latest.sessionId) broadcastPetActivity({ sessionId: latest.sessionId, requestId: latest.runId, eventId: crypto.randomUUID(), type: latest.outcome === "completed" ? "success" : "cancel" });
+        if (latest.sessionId) broadcastPetActivity({ sessionId: latest.sessionId, requestId: latest.runId, type: latest.outcome === "completed" ? "success" : "cancel" });
       }
     } catch (caught) {
       if (token === generation.current) setReadUnavailable(true);
@@ -85,7 +85,7 @@ export function useAgentRun(language: string) {
       const run = await startAgentRun(historyId ? null : workspace, input.trim(), historyId, catalogKey, modelSelection, expectedModel, resourceIds);
       ownedRun.current = run.runId;
       setProjection((current) => ({ ...current, active: run }));
-      if (run.sessionId) broadcastPetActivity({ sessionId: run.sessionId, requestId: run.runId, eventId: crypto.randomUUID(), type: "start" });
+      if (run.sessionId) broadcastPetActivity({ sessionId: run.sessionId, requestId: run.runId, type: "start" });
       await refresh();
       return run;
     } catch (caught) {

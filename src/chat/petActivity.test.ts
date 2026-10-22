@@ -1,9 +1,9 @@
 import { expect, test } from "bun:test";
 import { createChatPetActivity } from "./petActivity";
-import type { PetActivityEvent } from "../lib/petState";
+import type { PetActivityInput } from "../lib/petState";
 
 function fixture() {
-  const events: PetActivityEvent[] = [];
+  const events: PetActivityInput[] = [];
   const activity = createChatPetActivity((event) => events.push(event));
   activity.start({ sessionId: "session", requestId: "request" });
   return { activity, events };
@@ -100,4 +100,21 @@ test("duplicate old completion cannot restore a cleared compaction candidate", (
   activity.message(completed);
   activity.idle("session");
   expect(events.some((event) => event.type === "success")).toBe(false);
+});
+
+test("ten thousand text parts broadcast one talking transition", () => {
+  const { activity, events } = fixture();
+  activity.message({ ...completed, time: { created: 1 }, finish: undefined });
+  for (let index = 0; index < 10_000; index++) {
+    activity.part({ sessionID: "session", messageID: "assistant", type: "text", text: String(index) });
+  }
+  expect(events.map(event => event.type)).toEqual(["start", "mood"]);
+  expect(events[1]).toMatchObject({ type: "mood", mood: "talking" });
+  activity.part({ sessionID: "session", messageID: "assistant", type: "tool" });
+  activity.part({ sessionID: "session", messageID: "assistant", type: "tool" });
+  activity.part({ sessionID: "session", messageID: "assistant", type: "text" });
+  expect(events.filter(event => event.type === "mood").map(event => event.mood)).toEqual(["talking", "working", "talking"]);
+  activity.cancel();
+  activity.mood("talking");
+  expect(events.at(-1)?.type).toBe("cancel");
 });

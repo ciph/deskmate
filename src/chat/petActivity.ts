@@ -1,11 +1,12 @@
-import type { PetActivityEvent, PetActivityScope, PetMood } from "../lib/petState";
+import type { PetActivityInput, PetActivityScope, PetMood } from "../lib/petState";
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-export function createChatPetActivity(emit: (event: PetActivityEvent) => void) {
+export function createChatPetActivity(emit: (event: PetActivityInput) => void) {
   let current: PetActivityScope | null = null;
+  let currentMood: PetMood | null = null;
   const messages = new Set<string>();
   const toolMessages = new Set<string>();
   let candidate: string | null = null;
@@ -14,8 +15,9 @@ export function createChatPetActivity(emit: (event: PetActivityEvent) => void) {
   const matches = (scope: PetActivityScope) => current?.sessionId === scope.sessionId && current.requestId === scope.requestId;
   const terminal = (type: "success" | "error" | "cancel", scope: PetActivityScope | null = current) => {
     if (!scope || !matches(scope)) return;
-    emit({ ...scope, type, eventId: crypto.randomUUID() });
+    emit({ ...scope, type });
     current = null;
+    currentMood = null;
     messages.clear();
     toolMessages.clear();
     candidate = null;
@@ -26,7 +28,8 @@ export function createChatPetActivity(emit: (event: PetActivityEvent) => void) {
     start(scope: PetActivityScope) {
       terminal("cancel");
       current = scope;
-      emit({ ...scope, type: "start", eventId: crypto.randomUUID() });
+      currentMood = "thinking";
+      emit({ ...scope, type: "start" });
     },
     isCurrent: matches,
     cancel: () => terminal("cancel"),
@@ -41,7 +44,9 @@ export function createChatPetActivity(emit: (event: PetActivityEvent) => void) {
       if (candidate) terminal("success");
     },
     mood(mood: PetMood) {
-      if (current) emit({ ...current, type: "mood", mood, eventId: crypto.randomUUID() });
+      if (!current || mood === currentMood) return;
+      currentMood = mood;
+      emit({ ...current, type: "mood", mood });
     },
     message(value: unknown) {
       if (!record(value) || !current || value.sessionID !== current.sessionId || value.parentID !== current.requestId || value.role !== "assistant") return;

@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { isTauri } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getAppVersion } from "../lib/settings";
 import {
   cancelUpdate,
@@ -12,7 +14,12 @@ import type { Dict } from "../lib/i18n";
 import { updateErrorMessage } from "./updateErrors";
 import { initialUpdateState, reduceUpdateState, type UpdateAction } from "./updateState";
 
-const defaultServices = { getAppVersion, checkUpdate, updateApp, getUpdateStatus, cancelUpdate };
+const defaultServices = {
+  getAppVersion, checkUpdate, updateApp, getUpdateStatus, cancelUpdate,
+  getWindowVisible: async (): Promise<boolean> => isTauri() ? getCurrentWindow().isVisible() : !document.hidden,
+  onWindowFocusChanged: async (listener: () => void): Promise<() => void> => isTauri()
+    ? getCurrentWindow().onFocusChanged(listener) : () => undefined,
+};
 const CHECK_INTERVAL_MS = 15 * 60 * 1000;
 const FOCUS_CHECK_INTERVAL_MS = 60 * 1000;
 const busyStatuses = ["checking", "downloading", "verifying", "waitingForIdle", "installing", "restarting"];
@@ -24,19 +31,34 @@ export function UpdateFooter({ repo, t, services = defaultServices }: {
 }) {
   const [version, setVersion] = useState("");
   const [state, setState] = useState(initialUpdateState);
+  const stateRef = useRef(initialUpdateState);
   const [available, setAvailable] = useState<{ repo: string; version: string } | null>(null);
   const [attempted, setAttempted] = useState(false);
   const updateInFlight = useRef(false);
   const backendBusy = useRef(false);
   const attempt = useRef(0);
+  const lifecycle = useRef(0);
+  const latestDict = useRef(t);
+  // Publish the committed locale before IPC callbacks resume; abandoned renders must not change it.
+  useLayoutEffect(() => { latestDict.current = t; }, [t]);
+  const visible = useRef(false);
+  const probeRunning = useRef(false);
+  const pendingProbe = useRef<{ checkManifest: boolean; forceManifest: boolean } | null>(null);
+  const refreshStatus = useRef<(checkManifest?: boolean, forceManifest?: boolean) => void>(() => undefined);
+  const scheduleStatus = useRef<() => void>(() => undefined);
+  const checkManifest = useRef<(force: boolean) => void>(() => undefined);
 
   const dispatch = (action: UpdateAction): void => {
-    setState((current) => reduceUpdateState(current, action));
+    const next = reduceUpdateState(stateRef.current, action);
+    if (next === stateRef.current) return;
+    stateRef.current = next;
+    setState(next);
   };
 
   const applyStatus = (status: UpdateStatus): void => {
+    const wasBusy = backendBusy.current;
     backendBusy.current = busyStatuses.includes(status.status);
-    if (backendBusy.current) setAttempted(true);
+    if (backendBusy.current && !wasBusy) setAttempted(true);
     switch (status.status) {
       case "idle": dispatch({ type: "idle" }); return;
       case "checking": dispatch({ type: "check" }); return;
@@ -57,23 +79,76 @@ export function UpdateFooter({ repo, t, services = defaultServices }: {
   };
 
   useEffect(() => {
+    lifecycle.current += 1;
+    updateInFlight.current = false;
+    backendBusy.current = false;
+    return () => { lifecycle.current += 1; };
+  }, [services]);
+
+  useEffect(() => {
     let disposed = false;
+    let timer: number | undefined;
     void services.getAppVersion().then((loaded) => { if (!disposed) setVersion(loaded); }, () => undefined);
-    const refresh = (): void => {
-      if (updateInFlight.current) return;
-      const requestedAttempt = attempt.current;
-      void services.getUpdateStatus().then((status) => {
-        // Older test doubles and partially upgraded IPC hosts can resolve an
-        // unknown command without a payload. Keep the footer idle instead of
-        // letting background polling disrupt the rest of Settings.
-        if (!disposed && status && !updateInFlight.current && requestedAttempt === attempt.current) {
-          applyStatus(status);
-        }
-      }, () => undefined);
+    const schedule = (): void => {
+      window.clearTimeout(timer);
+      const delay = visible.current
+        ? (backendBusy.current ? 1000 : 5000)
+        : (backendBusy.current ? 5000 : 30000);
+      timer = window.setTimeout(() => refresh(), delay);
     };
-    refresh();
-    const timer = window.setInterval(refresh, 500);
-    return () => { disposed = true; window.clearInterval(timer); };
+    const refresh = (shouldCheckManifest = false, forceManifest = false): void => {
+      if (disposed) return;
+      window.clearTimeout(timer);
+      if (probeRunning.current) {
+        pendingProbe.current = {
+          checkManifest: shouldCheckManifest || Boolean(pendingProbe.current?.checkManifest),
+          forceManifest: forceManifest || Boolean(pendingProbe.current?.forceManifest),
+        };
+        return;
+      }
+      probeRunning.current = true;
+      const requestedAttempt = attempt.current;
+      void (async () => {
+        // Native hide does not reliably change document.hidden in every webview.
+        const nativeVisible = await services.getWindowVisible().catch(() => !document.hidden);
+        if (disposed) return;
+        const nextVisible = nativeVisible && !document.hidden;
+        const becameVisible = !visible.current && nextVisible;
+        visible.current = nextVisible;
+        if (nextVisible && (shouldCheckManifest || becameVisible)) checkManifest.current(forceManifest);
+        // This window already receives the active operation's progress Channel.
+        if (updateInFlight.current) return;
+        const status = await services.getUpdateStatus();
+        // Ignore stale hosts/locale effects, pre-click reads and missing payloads.
+        if (!disposed && status && !updateInFlight.current && requestedAttempt === attempt.current) applyStatus(status);
+      })().catch(() => undefined).finally(() => {
+        probeRunning.current = false;
+        const pending = pendingProbe.current;
+        pendingProbe.current = null;
+        if (pending) refreshStatus.current(pending.checkManifest, pending.forceManifest);
+        else if (!disposed) schedule();
+      });
+    };
+    refreshStatus.current = refresh;
+    scheduleStatus.current = schedule;
+    const onVisibility = (): void => refresh(true);
+    const onOnline = (): void => refresh(true, true);
+    const unlisten = services.onWindowFocusChanged(onVisibility);
+    void unlisten.catch(() => undefined);
+    window.addEventListener("focus", onVisibility);
+    window.addEventListener("blur", onVisibility);
+    window.addEventListener("online", onOnline);
+    document.addEventListener("visibilitychange", onVisibility);
+    refresh(true, true);
+    return () => {
+      disposed = true;
+      window.clearTimeout(timer);
+      window.removeEventListener("focus", onVisibility);
+      window.removeEventListener("blur", onVisibility);
+      window.removeEventListener("online", onOnline);
+      document.removeEventListener("visibilitychange", onVisibility);
+      void unlisten.then((stop) => stop()).catch(() => undefined);
+    };
   }, [services, t]);
 
   useEffect(() => {
@@ -82,7 +157,7 @@ export function UpdateFooter({ repo, t, services = defaultServices }: {
     let lastCheck = 0;
     setAvailable(null);
     const check = async (force = false): Promise<void> => {
-      if (!repo.trim() || checking || updateInFlight.current || backendBusy.current || document.hidden) return;
+      if (!repo.trim() || checking || updateInFlight.current || backendBusy.current || !visible.current || document.hidden) return;
       if (!force && Date.now() - lastCheck < FOCUS_CHECK_INTERVAL_MS) return;
       checking = true;
       lastCheck = Date.now();
@@ -90,29 +165,19 @@ export function UpdateFooter({ repo, t, services = defaultServices }: {
       try {
         const nextVersion = await services.checkUpdate(repo);
         if (!disposed && requestedAttempt === attempt.current) {
-          setAvailable(nextVersion ? { repo, version: nextVersion } : null);
+          setAvailable((current) => current?.repo === repo && current.version === nextVersion
+            ? current : nextVersion ? { repo, version: nextVersion } : null);
         }
       } catch {
-        // Background failures stay quiet. A later focus, reconnect or timer retries.
         if (!disposed && requestedAttempt === attempt.current) setAvailable(null);
       } finally {
         checking = false;
       }
     };
-    const onFocus = (): void => { void check(); };
-    const onOnline = (): void => { void check(true); };
+    checkManifest.current = (force) => { void check(force); };
     void check(true);
-    const timer = window.setInterval(() => { void check(true); }, CHECK_INTERVAL_MS);
-    window.addEventListener("focus", onFocus);
-    window.addEventListener("online", onOnline);
-    document.addEventListener("visibilitychange", onFocus);
-    return () => {
-      disposed = true;
-      window.clearInterval(timer);
-      window.removeEventListener("focus", onFocus);
-      window.removeEventListener("online", onOnline);
-      document.removeEventListener("visibilitychange", onFocus);
-    };
+    const timer = window.setInterval(() => refreshStatus.current(true, true), CHECK_INTERVAL_MS);
+    return () => { disposed = true; window.clearInterval(timer); };
   }, [repo, services]);
 
   const onEvent = (event: UpdateEvent): void => {
@@ -140,36 +205,51 @@ export function UpdateFooter({ repo, t, services = defaultServices }: {
       return;
     }
     updateInFlight.current = true;
-    attempt.current += 1;
+    backendBusy.current = true;
+    const operation = ++attempt.current;
+    const generation = lifecycle.current;
+    const isCurrent = (): boolean => generation === lifecycle.current && operation === attempt.current;
+    let refreshAfter = false;
     setAttempted(true);
     dispatch({ type: "check" });
     try {
-      const outcome = await services.updateApp(repo, onEvent);
+      const outcome = await services.updateApp(repo, (event) => { if (isCurrent()) onEvent(event); });
+      if (!isCurrent()) return;
       if (outcome.status === "upToDate") {
+        backendBusy.current = false;
         setAvailable(null);
         setAttempted(false);
         dispatch({ type: "uptodate" });
       }
       else dispatch({ type: "restart", version: outcome.version });
     } catch (error: unknown) {
+      if (!isCurrent()) return;
       const raw = error instanceof Error ? error.message : error;
       if (raw === "in_progress") {
-        try { applyStatus(await services.getUpdateStatus()); } catch { /* polling will retry */ }
+        refreshAfter = true;
       } else {
-        dispatch({ type: "fail", message: updateErrorMessage(t, error) });
+        backendBusy.current = false;
+        dispatch({ type: "fail", message: updateErrorMessage(latestDict.current, error) });
       }
     } finally {
-      updateInFlight.current = false;
+      if (isCurrent()) {
+        updateInFlight.current = false;
+        if (refreshAfter) refreshStatus.current();
+        else scheduleStatus.current();
+      }
     }
   };
 
   const onCancelWait = async (): Promise<void> => {
     if (state.kind !== "waitingForIdle" || state.canceling) return;
     dispatch({ type: "cancelWait" });
+    const generation = lifecycle.current;
     try {
       await services.cancelUpdate();
+      if (generation === lifecycle.current) refreshStatus.current();
     } catch (error: unknown) {
-      dispatch({ type: "fail", message: updateErrorMessage(t, error) });
+      if (generation !== lifecycle.current) return;
+      dispatch({ type: "fail", message: updateErrorMessage(latestDict.current, error) });
     }
   };
 

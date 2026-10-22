@@ -32,3 +32,23 @@ describe("one-click update state", () => {
     expect(reduceUpdateState(failed, { type: "check" })).toEqual({ kind: "checking" });
   });
 });
+
+
+test("equal updater snapshots preserve state identity, including rounded progress", () => {
+  for (const action of [
+    { type: "idle" }, { type: "check" },
+    { type: "download", version: "0.4.4", downloaded: 50, contentLength: 100 },
+    { type: "verify", version: "0.4.4" }, { type: "wait", version: "0.4.4" },
+    { type: "install", version: "0.4.4" }, { type: "restart", version: "0.4.4" },
+    { type: "uptodate" }, { type: "fail", message: "failed" },
+  ] as const) {
+    const state = reduceUpdateState(initialUpdateState, action);
+    expect(reduceUpdateState(state, action)).toBe(state);
+  }
+  const download = reduceUpdateState(initialUpdateState, { type: "download", version: "v", downloaded: 1000, contentLength: 10000 });
+  expect(reduceUpdateState(download, { type: "download", version: "v", downloaded: 1001, contentLength: 10000 })).toBe(download);
+  const waiting = reduceUpdateState(initialUpdateState, { type: "wait", version: "v" });
+  const canceling = reduceUpdateState(waiting, { type: "cancelWait" });
+  expect(reduceUpdateState(canceling, { type: "wait", version: "v" })).toBe(canceling);
+  expect(reduceUpdateState(canceling, { type: "cancelWait" })).toBe(canceling);
+});

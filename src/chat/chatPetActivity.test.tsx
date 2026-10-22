@@ -298,3 +298,60 @@ test("real SSE tool stop cannot celebrate before the tool follow-up response", a
   ]);
   expect(activityEvents.filter((event) => event.type === "success")).toHaveLength(1);
 });
+
+test("stop isolates late text, busy and error events for the cancelled request", async () => {
+  const info = await sendPrompt();
+  fireEvent.click(screen.getByRole("button", { name: "停" }));
+  await waitFor(() => expect(activityEvents.some(event => event.type === "cancel")).toBe(true));
+  await deliverEvents([
+    { type: "message.updated", properties: { info } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "stale cancelled text" } } },
+    { type: "session.status", properties: { sessionID: info.sessionID, status: { type: "busy" } } },
+    { type: "session.error", properties: { sessionID: info.sessionID, error: { name: "stale cancelled failure" } } },
+  ]);
+  expect(screen.queryByText("stale cancelled text")).toBeNull();
+  expect(screen.queryByText(/stale cancelled failure/)).toBeNull();
+  expect(screen.queryByRole("button", { name: "停" })).toBeNull();
+});
+
+test("a request with an error before its first chunk rejects later text", async () => {
+  const info = await sendPrompt();
+  await deliverEvents([
+    { type: "session.error", properties: { sessionID: info.sessionID, error: { name: "first chunk failure" } } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "text after error" } } },
+  ]);
+  expect(screen.getByText(/first chunk failure/)).toBeDefined();
+  expect(screen.queryByText("text after error")).toBeNull();
+  expect(screen.queryByRole("button", { name: "停" })).toBeNull();
+});
+
+test("unmount cancels the scoped request and ignores late streamed content", async () => {
+  const info = await sendPrompt();
+  cleanup();
+  await deliverEvents([
+    { type: "message.updated", properties: { info } },
+    { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "text after unmount" } } },
+  ]);
+  expect(activityEvents.filter(event => event.type === "cancel")).toHaveLength(1);
+  expect(activityEvents.filter(event => event.type === "success")).toHaveLength(0);
+  expect(screen.queryByText("text after unmount")).toBeNull();
+});
+
+test("a new request in the same session rejects text from a known old parent", async () => {
+  const old = await sendPrompt();
+  fireEvent.click(screen.getByRole("button", { name: "停" }));
+  await waitFor(() => expect(activityEvents.some(event => event.type === "cancel")).toBe(true));
+  fireEvent.change(screen.getByPlaceholderText("输入消息,Enter 发送"), { target: { value: "第二个普通问题" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(activityEvents.filter(event => event.type === "start")).toHaveLength(2));
+  const current = activityEvents.filter(event => event.type === "start")[1]!;
+  await deliverEvents([
+    { type: "message.updated", properties: { info: old } },
+    { type: "message.part.updated", properties: { part: { sessionID: old.sessionID, messageID: old.id, type: "text", text: "old parent text" } } },
+    { type: "message.updated", properties: { info: { ...old, id: "current", parentID: current.requestId, time: { created: 3 }, finish: undefined } } },
+    { type: "message.part.updated", properties: { part: { sessionID: old.sessionID, messageID: "current", type: "text", text: "current reply text" } } },
+  ]);
+  expect(screen.queryByText("old parent text")).toBeNull();
+  expect(screen.getByText("current reply text")).toBeDefined();
+  expect(activityEvents.filter(event => event.type === "success")).toHaveLength(0);
+});

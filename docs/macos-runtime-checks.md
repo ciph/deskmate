@@ -49,12 +49,23 @@ settings just to make a build appear to pass.
 ## Update footer behavior
 
 Opening Settings starts a manifest check. Checks recur every 15 minutes while the
-window remains open, on return to the window after at least one minute, and after
+window is visible, on return to the window after at least one minute, and after
 network recovery. A background check has a 30-second timeout and never downloads
 or installs. Its timeout does not limit a user-triggered download. Late responses
 for an old repository or an earlier check cannot replace current update progress.
 The active operation displays progress, errors and retry; a Mac task waiting for
 idle retains the cancel-wait action.
+
+Status reads are separate from manifest checks. They use native window visibility,
+with focus and visibility events for immediate refresh and a low-frequency fallback
+for activity started in another window. After an idle probe finishes, the next
+scheduled probe waits 5 seconds while visible or 30 seconds while hidden; active
+operations use 1 and 5 seconds respectively. Events can trigger an earlier probe.
+This window's own update uses its progress Channel.
+Visibility and status reads share one in-flight probe; repeated snapshots do not
+re-render the footer. Reopening, reconnecting, or changing locale cannot apply an
+obsolete status response; a locale change keeps the current download progress live.
+These are implemented scheduling rules, not evidence of packaged macOS acceptance.
 
 The dated UI validation is retained in the [historical footer record](archive/updater/conditional-update-footer.md).
 

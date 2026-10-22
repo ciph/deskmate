@@ -26,22 +26,23 @@ export const initialUpdateState: UpdateState = { kind: "idle" };
 
 export function reduceUpdateState(state: UpdateState, action: UpdateAction): UpdateState {
   switch (action.type) {
-    case "idle": return { kind: "idle" };
-    case "check": return { kind: "checking" };
+    case "idle": return state.kind === "idle" ? state : { kind: "idle" };
+    case "check": return state.kind === "checking" ? state : { kind: "checking" };
     case "download": {
       const percent = action.contentLength === null || action.contentLength <= 0
         ? null
         : Math.min(100, Math.max(0, Math.round((action.downloaded / action.contentLength) * 100)));
-      return { kind: "downloading", version: action.version, percent };
+      return state.kind === "downloading" && state.version === action.version && state.percent === percent
+        ? state : { kind: "downloading", version: action.version, percent };
     }
-    case "verify": return { kind: "verifying", version: action.version };
-    case "wait": return { kind: "waitingForIdle", version: action.version, canceling: false };
+    case "verify": return state.kind === "verifying" && state.version === action.version ? state : { kind: "verifying", version: action.version };
+    case "wait": return state.kind === "waitingForIdle" && state.version === action.version ? state : { kind: "waitingForIdle", version: action.version, canceling: false };
     case "cancelWait":
-      return state.kind === "waitingForIdle" ? { ...state, canceling: true } : state;
-    case "install": return { kind: "installing", version: action.version };
-    case "restart": return { kind: "restarting", version: action.version };
-    case "uptodate": return { kind: "uptodate" };
-    case "fail": return { kind: "error", message: action.message };
+      return state.kind === "waitingForIdle" && !state.canceling ? { ...state, canceling: true } : state;
+    case "install": return state.kind === "installing" && state.version === action.version ? state : { kind: "installing", version: action.version };
+    case "restart": return state.kind === "restarting" && state.version === action.version ? state : { kind: "restarting", version: action.version };
+    case "uptodate": return state.kind === "uptodate" ? state : { kind: "uptodate" };
+    case "fail": return state.kind === "error" && state.message === action.message ? state : { kind: "error", message: action.message };
     default: {
       const exhaustive: never = action;
       return exhaustive;

@@ -19,8 +19,8 @@ test("startup-hidden completion is suppressed when shown", async () => {
   const view = render(<Harness />);
   await act(async () => {});
   await act(async () => {
-    await emit("deskmate://pet-activity", { type: "start", sessionId: "s", requestId: "r", eventId: "1" });
-    await emit("deskmate://pet-activity", { type: "success", sessionId: "s", requestId: "r", eventId: "2" });
+    await emit("deskmate://pet-activity", { type: "start", sessionId: "s", requestId: "r", producerEpoch: 1, sequence: 1, eventId: "1:1" });
+    await emit("deskmate://pet-activity", { type: "success", sessionId: "s", requestId: "r", producerEpoch: 1, sequence: 2, eventId: "1:2" });
   });
   await act(async () => { await emit("deskmate://pet-visibility", { phase: "reset", token: 2 }); });
   expect(view.container.querySelector("output")?.textContent).toBe("idle");

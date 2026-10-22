@@ -35,7 +35,9 @@ export function usePetActivityState(
       if (disposed) return;
       const timestamp = clock.now();
       const input = inputs.current;
-      current.current = applyGifEvent(current.current, event, timestamp, input.visible, input.timing, input.random);
+      const next = applyGifEvent(current.current, event, timestamp, input.visible, input.timing, input.random);
+      if (next === current.current) return;
+      current.current = next;
       setNow(timestamp);
       setState(current.current);
     });
@@ -54,7 +56,7 @@ export function usePetActivityState(
     return () => clock.cancel(timer);
   }, [state, timing, now, clock]);
   const timestamp = Math.max(now, clock.now());
-  return { display: gifDisplayState(state, timestamp, timing), idle: gifIdleEligible(state, timestamp),
+  return { mood: state.terminal === "error" ? "error" as const : state.base, display: gifDisplayState(state, timestamp, timing), idle: gifIdleEligible(state, timestamp),
     activityKey: state.request === null ? "" : JSON.stringify([state.request.sessionId, state.request.requestId]) };
 }
 

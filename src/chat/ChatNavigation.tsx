@@ -55,37 +55,78 @@ export function ChatNavigation({ messages, listRef, lang, onNavigate }: ChatNavi
   const tooltipId = useId();
   const copy = lang.startsWith("zh") ? COPY.zh : lang.startsWith("ja") ? COPY.ja : lang.startsWith("ko") ? COPY.ko : COPY.en;
 
+  const navigable = turns.length >= 2;
+  const turnIdsRef = useRef<{ ids: readonly string[]; membership: ReadonlySet<string> }>({ ids: [], membership: new Set() });
+  const scheduleRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    const previous = turnIdsRef.current.ids;
+    if (previous.length === turns.length && turns.every((turn, index) => turn.id === previous[index])) return;
+    const ids = turns.map((turn) => turn.id);
+    turnIdsRef.current = { ids, membership: new Set(ids) };
+    scheduleRef.current?.();
+  }, [turns]);
+
   useEffect(() => {
     const list = listRef.current;
-    if (!list || turns.length < 2) return;
-    let frame = 0;
+    if (!list || !navigable) {
+      setActive("");
+      setPreview(null);
+      return;
+    }
+    let frame: number | null = null;
     function update() {
       if (!list) return;
+      const { ids, membership } = turnIdsRef.current;
       const boundary = list.getBoundingClientRect().top + 40;
-      let current = turns[0]?.id ?? "";
-      const ids = new Set(turns.map((turn) => turn.id));
+      let current = ids[0] ?? "";
       for (const element of list.querySelectorAll<HTMLElement>("[data-message-id]")) {
         const id = element.dataset.messageId;
-        if (id && ids.has(id) && element.getBoundingClientRect().top <= boundary) current = id;
+        if (id && membership.has(id) && element.getBoundingClientRect().top <= boundary) current = id;
       }
-      if (list.scrollHeight > list.clientHeight && list.scrollHeight - list.clientHeight - list.scrollTop < 4) current = turns.at(-1)?.id ?? current;
+      if (list.scrollHeight > list.clientHeight && list.scrollHeight - list.clientHeight - list.scrollTop < 4) current = ids.at(-1) ?? current;
       setActive(current);
     }
     function schedule() {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(update);
+      if (frame !== null) return;
+      frame = requestAnimationFrame(() => {
+        frame = null;
+        update();
+      });
     }
+    scheduleRef.current = schedule;
     update();
     list.addEventListener("scroll", schedule, { passive: true });
     const observer = new ResizeObserver(schedule);
     observer.observe(list);
-    for (const child of list.children) observer.observe(child);
+    const observed = new Set<Element>(list.children);
+    for (const child of observed) observer.observe(child);
+    // Body changes resize their row; only direct row additions/removals change subscriptions.
+    const mutations = new MutationObserver((records) => {
+      const changed = new Set<Element>();
+      for (const record of records) {
+        for (const node of record.addedNodes) if (node instanceof Element) changed.add(node);
+        for (const node of record.removedNodes) if (node instanceof Element) changed.add(node);
+      }
+      for (const child of changed) {
+        if (child.parentElement === list) {
+          if (!observed.has(child)) {
+            observed.add(child);
+            observer.observe(child);
+          }
+        } else if (observed.delete(child)) observer.unobserve(child);
+      }
+      if (changed.size > 0) schedule();
+    });
+    mutations.observe(list, { childList: true });
     return () => {
+      scheduleRef.current = null;
       list.removeEventListener("scroll", schedule);
+      mutations.disconnect();
       observer.disconnect();
-      cancelAnimationFrame(frame);
+      if (frame !== null) cancelAnimationFrame(frame);
     };
-  }, [turns, listRef]);
+  }, [navigable, listRef]);
 
   useEffect(() => {
     const rail = railRef.current;
