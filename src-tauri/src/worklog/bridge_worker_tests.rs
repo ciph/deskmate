@@ -343,6 +343,9 @@ fn scan_rejects_a_linked_launch_directory_before_expired_cleanup() {
     ))
     .is_err());
     assert!(sentinel.exists());
+    #[cfg(unix)]
+    fs::remove_file(&linked).unwrap();
+    #[cfg(windows)]
     fs::remove_dir(&linked).unwrap();
 }
 
