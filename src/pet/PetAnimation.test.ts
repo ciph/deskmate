@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it, spyOn } from "bun:test";
 import * as THREE from "three";
 import { PetAnimation, pickWeightedClip, variantAnimationBounds } from "./PetAnimation";
 
@@ -117,10 +117,26 @@ it("recomputes animated skin bounds and restores the original rig", () => {
   variant.add(mesh);
   model.add(variant);
   const clip = new THREE.AnimationClip("dance", 1, [new THREE.NumberKeyframeTrack("bone.position[x]", [0, 1], [0, 10])]);
+  mesh.computeBoundingBox();
+  const originalBox = mesh.boundingBox;
+  const originalBounds = originalBox?.clone();
   // When
   const bounds = variantAnimationBounds(model, [clip], { dance: "variant" });
   // Then
   expect(bounds.min.x).toBeCloseTo(-0.5);
   expect(bounds.max.x).toBeCloseTo(10.5);
   expect(bone.position.x).toBe(0);
+  expect(mesh.boundingBox).toBe(originalBox);
+  expect(mesh.boundingBox?.equals(originalBounds!)).toBe(true);
+  bone.position.x = 3;
+  const computeOriginal = mesh.computeBoundingBox.bind(mesh);
+  const compute = spyOn(mesh, "computeBoundingBox");
+  let calls = 0;
+  compute.mockImplementation(() => { if (++calls === 2) throw new Error("skin failure"); computeOriginal(); });
+  try {
+    expect(() => variantAnimationBounds(model, [clip], { dance: "variant" })).toThrow("skin failure");
+    expect(bone.position.x).toBe(3);
+    expect(mesh.boundingBox).toBe(originalBox);
+    expect(mesh.boundingBox?.equals(originalBounds!)).toBe(true);
+  } finally { compute.mockRestore(); }
 });

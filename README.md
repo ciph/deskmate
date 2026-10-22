@@ -392,6 +392,12 @@ verification and runtime upgrade checks before publishing the draft with its
 cross-platform updater manifest and verified downloads. Then confirm the public
 latest feed serves the target version.
 
+Pet rendering and attachment transport follow the current [runtime lifecycle](docs/runtime-lifecycle.md)
+and [local attachment](docs/local-resource-attachments.md) contracts. Hidden rig2d and GLB pets
+stop their render loops; cursor polling also stops. Rig2d keeps a 60 fps default. Built-in variant models can use
+hash-checked animation bounds. Texture candidates and the 30 fps idle budget remain experiments
+pending native visual acceptance; the production character assets are retained.
+
 ### GIF character packs
 
 Schema v1 GIF packs require YUME 0.3.4 or newer with schema v1 support.

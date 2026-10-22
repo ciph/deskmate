@@ -115,7 +115,7 @@ pub(super) fn respond_url(
 pub(crate) fn endpoint(app: &tauri::AppHandle) -> String {
     format!("http://127.0.0.1:{}", app.state::<Sidecar>().port)
 }
-pub(crate) fn require_chat(window: &tauri::WebviewWindow) -> Result<(), String> {
+pub(crate) fn require_chat<R: tauri::Runtime>(window: &tauri::WebviewWindow<R>) -> Result<(), String> {
     if window.label() == "chat" {
         Ok(())
     } else {

@@ -436,3 +436,151 @@ fn mainstream_media_and_ncm_are_classified_without_audio_video_confusion() {
         (ResourceKind::File, "application/x-ncm")
     );
 }
+
+#[test]
+fn uploaded_media_is_owned_at_registration_and_late_discard_only_removes_copy() {
+    let f = Fixture::new();
+    let original = f.file("original.mp3");
+    let upload = f
+        .store
+        .stage_upload("音频.mp3", "audio/mpeg", b"media")
+        .unwrap();
+    let path = f.store.get(&upload.id).unwrap().checked_path().unwrap();
+    assert_eq!(std::fs::read(&path).unwrap(), b"media");
+    assert_eq!(upload.mime, "audio/mpeg");
+    f.store.discard_unbound(&[upload.id.clone()]).unwrap();
+    f.store.discard_unbound(&[upload.id.clone()]).unwrap();
+    assert!(!path.exists());
+    assert!(original.exists());
+    assert!(f.store.get(&upload.id).is_err());
+    let committed = f
+        .store
+        .stage_upload("sent.wav", "audio/x-wav", b"media")
+        .unwrap();
+    let path = f.store.get(&committed.id).unwrap().checked_path().unwrap();
+    f.store
+        .bind(
+            "/workspace",
+            "session-a",
+            &[committed.id.clone()],
+            Some("message-a"),
+        )
+        .unwrap();
+    f.store.discard_unbound(&[committed.id.clone()]).unwrap();
+    assert!(path.exists());
+    assert!(f.store.get(&committed.id).is_ok());
+    f.store.revoke_session("/workspace", "session-a").unwrap();
+    assert!(!path.exists());
+    assert!(original.exists());
+}
+
+#[test]
+fn media_upload_registration_failure_rolls_back_only_its_new_copy() {
+    let f = Fixture::new();
+    let original = f.file("original.mp3");
+    let existing = f
+        .store
+        .stage_upload("existing.mp3", "audio/mpeg", b"existing")
+        .unwrap();
+    let existing_path = f.store.get(&existing.id).unwrap().checked_path().unwrap();
+    let db = rusqlite::Connection::open(f.root.join("registry.db")).unwrap();
+    db.execute_batch("CREATE TRIGGER fail_upload BEFORE INSERT ON resources BEGIN SELECT RAISE(ABORT,'fixture'); END;").unwrap();
+    assert!(f
+        .store
+        .stage_upload("failed.mp3", "audio/mpeg", b"failed")
+        .is_err());
+    assert_eq!(
+        std::fs::read_dir(f.root.join("chat-resource-uploads"))
+            .unwrap()
+            .count(),
+        1
+    );
+    assert!(original.exists());
+    assert!(existing_path.exists());
+    assert!(f.store.get(&existing.id).is_ok());
+    let count: i64 = db
+        .query_row("SELECT count(*) FROM resources", [], |row| row.get(0))
+        .unwrap();
+    assert_eq!(count, 1);
+}
+
+#[test]
+fn media_upload_validates_name_mime_and_exact_64_mib_limit_before_writing() {
+    let f = Fixture::new();
+    for name in [
+        "../clip.mp3",
+        "CON.mp3",
+        "trailing.mp3.",
+        "trailing.mp3 ",
+        " ",
+    ] {
+        assert!(f.store.stage_upload(name, "audio/mpeg", b"media").is_err());
+    }
+    for mime in ["audio/evil", "video/mp4", "text/plain"] {
+        assert!(f.store.stage_upload("clip.mp3", mime, b"media").is_err());
+    }
+    assert!(f.store.stage_upload("clip.mp3", "audio/mpeg", b"").is_err());
+    assert!(!f.root.join("chat-resource-uploads").exists());
+    let bytes = vec![1; 64 * 1024 * 1024];
+    let uploaded = f.store.stage_upload("clip.mp3", "", &bytes).unwrap();
+    assert_eq!(uploaded.size, Some(bytes.len() as u64));
+    assert!(f
+        .store
+        .stage_upload("large.mp3", "", &vec![1; bytes.len() + 1])
+        .is_err());
+    f.store.discard_unbound(&[uploaded.id]).unwrap();
+    assert_eq!(
+        std::fs::read_dir(f.root.join("chat-resource-uploads"))
+            .unwrap()
+            .count(),
+        0
+    );
+}
+
+#[test]
+fn concurrent_draft_cleanup_cannot_delete_a_new_upload_or_an_original() {
+    let f = Fixture::new();
+    let original = f.file("original.mp3");
+    let old = f
+        .store
+        .stage_upload("old.mp3", "audio/mpeg", b"old")
+        .unwrap();
+    let barrier = std::sync::Barrier::new(2);
+    let upload = std::thread::scope(|scope| {
+        let pending = scope.spawn(|| {
+            barrier.wait();
+            f.store
+                .stage_upload("new.mp3", "audio/mpeg", &vec![1; 1024 * 1024])
+                .unwrap()
+        });
+        barrier.wait();
+        f.store.discard_unbound(&[old.id]).unwrap();
+        pending.join().unwrap()
+    });
+    let path = f.store.get(&upload.id).unwrap().checked_path().unwrap();
+    assert!(path.exists());
+    assert!(original.exists());
+    f.store.discard_unbound(&[upload.id]).unwrap();
+    assert!(!path.exists());
+    assert!(original.exists());
+}
+
+#[test]
+fn media_upload_accepts_audio_only_webm_and_mp4_container_mimes() {
+    let f = Fixture::new();
+    for (name, mime) in [
+        ("recording.webm", "audio/webm"),
+        ("recording.webm", "audio/webm;codecs=opus"),
+        ("recording.mp4", "audio/mp4"),
+    ] {
+        let upload = f.store.stage_upload(name, mime, b"container").unwrap();
+        assert!(f
+            .store
+            .get(&upload.id)
+            .unwrap()
+            .checked_path()
+            .unwrap()
+            .exists());
+        f.store.discard_unbound(&[upload.id]).unwrap();
+    }
+}

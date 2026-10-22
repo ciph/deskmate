@@ -41,6 +41,7 @@ class GpuBoundary {
   }
   async load(id: string) { this.canvas.dataset.persona = id; await loadModel(id); }
   setMood(mood: PetMood) { this.canvas.dataset.mood = mood; }
+  setVisible(visible: boolean) { this.canvas.dataset.visible = String(visible); }
   setRenderTuning() {}
   setMouseFollowEnabled() {}
   dispose() { this.disposed = true; }
@@ -52,7 +53,7 @@ beforeEach(() => {
   mockIPC(command => {
     commands.push(command);
     if (command === "get_settings") return initialSettings;
-    if (command === "get_pet_visibility") return true;
+    if (command === "get_pet_visibility" || command === "plugin:window|is_visible") return true;
     if (command === "plugin:window|cursor_position") return { x: -100, y: -100 };
     if (command === "plugin:window|outer_position") return { x: 0, y: 0 };
     if (command === "plugin:window|scale_factor") return 1;
@@ -189,4 +190,21 @@ test("rapid 3D to 2D to 3D ignores the first module result and reuses only a suc
   expect(previous?.disposed).toBe(true);
   expect(view.container.querySelector("canvas")?.dataset.persona).toBe("xiaozhu-sandaime");
   expect(view.queryByRole("status")).toBeNull();
+});
+
+
+test("physical visibility suspends and restores the loaded GLB without reloading assets", async () => {
+  initialSettings = glbSettings;
+  const view = render(<PetApp glbLoad={async () => glbModule} />);
+  await act(async () => {});
+  const canvas = view.getByLabelText("3D desktop pet");
+  const instance = instances[0];
+  expect(canvas.getAttribute("data-visible")).toBe("true");
+  await act(async () => { await emit("deskmate://pet-native-visibility", false); });
+  expect(canvas.getAttribute("data-visible")).toBe("false");
+  await act(async () => { await emit("deskmate://pet-native-visibility", true); });
+  expect(canvas.getAttribute("data-visible")).toBe("true");
+  expect(instances).toHaveLength(1);
+  expect(instances[0]).toBe(instance);
+  expect(view.getByLabelText("3D desktop pet")).toBe(canvas);
 });

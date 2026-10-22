@@ -1661,12 +1661,12 @@ pub fn run() {
             chat_attachments::picker::pick_chat_attachment_files,
             chat_attachments::resources::pick_chat_resources,
             chat_attachments::resources::read_chat_resource_attachment,
-            chat_attachments::resources::stage_chat_resource_upload,
+            chat_attachments::resources::stage_chat_resource_upload_binary,
             chat_attachments::resources::discard_chat_resources,
             chat_attachments::resources::list_chat_resource_directory,
             chat_attachments::resources::prepare_chat_resources,
             chat_attachments::resources::get_chat_message_resources,
-            chat_attachments::stage_chat_attachment,
+            chat_attachments::stage_chat_attachment_binary,
             chat_attachments::read_chat_attachment,
             chat_attachments::discard_chat_attachment,
             chat_attachments::convert_staged_ncm,
@@ -1775,11 +1775,7 @@ pub fn run() {
                         settings::persist_pet_position(&window_event_handle, *position);
                     }
                 });
-                if !loaded.pet_visible {
-                    let _ = pet.hide();
-                } else {
-                    let _ = pet.show();
-                }
+                let _ = pet_visibility::set_native_visible(&pet, loaded.pet_visible);
                 if !loaded.always_on_top {
                     let _ = pet.set_always_on_top(false);
                 }

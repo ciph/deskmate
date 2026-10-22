@@ -14,9 +14,13 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
   const onArtifact = options.onArtifact ?? ignoreArtifact;
   const onBackgroundError = options.onBackgroundError ?? ignoreBackgroundError;
   const sessionIdRef = useRef(options.sessionId);
+  const mountedRef = useRef(true);
+  const generationRef = useRef(0);
+  const previewUrlsRef = useRef(new Map<string, string>());
   const itemsRef = useRef<readonly AttachmentLifecycleState[]>([]);
   const artifactsRef = useRef<readonly ArtifactState[]>([]);
   const retryUploadsRef = useRef(new Map<string, RetryUpload>());
+  const fileReadersRef = useRef(new Map<string, () => ReturnType<typeof planStageUpload>>());
   const preparationRef = useRef<{ controller: AbortController; localIds: Set<string> } | null>(null);
   const [items, setItems] = useState<readonly AttachmentLifecycleState[]>([]);
   const [artifacts, setArtifacts] = useState<readonly ArtifactState[]>([]);
@@ -31,6 +35,17 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
     setArtifacts(next);
   }, []);
 
+  const releasePreview = useCallback((localId: string) => {
+    const url = previewUrlsRef.current.get(localId);
+    if (!url) return;
+    URL.revokeObjectURL(url);
+    previewUrlsRef.current.delete(localId);
+  }, []);
+
+  const releaseAllPreviews = useCallback(() => {
+    for (const localId of previewUrlsRef.current.keys()) releasePreview(localId);
+  }, [releasePreview]);
+
   const discardBackend = useCallback((sessionId: string, attachmentId: string) => {
     discardChatAttachment({ sessionId, attachmentId }, host)
       .catch((error: unknown) => onBackgroundError(errorMessage(error)));
@@ -42,32 +57,63 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
     )));
   }, [setComposerItems]);
 
-  const runUpload = useCallback((localId: string, retry: RetryUpload, token: number) => {
+  const runUpload = useCallback((localId: string, retry: RetryUpload, token: number, generation: number) => {
+    const isCurrent = () => mountedRef.current && generationRef.current === generation
+      && findItem(itemsRef.current, localId)?.kind === "staging"
+      && findItem(itemsRef.current, localId)?.operationToken === token;
+    if (!isCurrent()) return;
     if (retry.plan.kind === "reject") {
       dispatchItem(localId, { type: "stageFailed", operationToken: token, message: retry.plan.message });
       return;
     }
     const request = retry.plan.request;
-    stageChatAttachment(request, host)
+    stageChatAttachment(request, host, { uploadId: crypto.randomUUID(), scopeKey: retry.sessionId })
       .then((staged) => {
-        const current = findItem(itemsRef.current, localId);
-        if (current?.kind !== "staging" || current.operationToken !== token) {
+        if (!isCurrent()) {
           discardBackend(retry.sessionId, staged.id);
           return;
         }
+        let previewUrl: string | undefined;
+        try {
+          if (/^image\/(gif|jpeg|png|webp)$/.test(staged.mime)) {
+            previewUrl = URL.createObjectURL(new Blob([request.bytes], { type: staged.mime }));
+            previewUrlsRef.current.set(localId, previewUrl);
+          }
+        } catch (error: unknown) {
+          discardBackend(retry.sessionId, staged.id);
+          throw error;
+        }
         retryUploadsRef.current.delete(localId);
         dispatchItem(localId, {
-          type: "stageSucceeded",
-          operationToken: token,
-          source: toStagedSource(staged, retry.sourceKind, request.bytes),
+          type: "stageSucceeded", operationToken: token,
+          source: toStagedSource(staged, retry.sourceKind, previewUrl),
         });
       })
       .catch((error: unknown) => {
-        dispatchItem(localId, { type: "stageFailed", operationToken: token, message: errorMessage(error) });
+        if (isCurrent()) dispatchItem(localId, { type: "stageFailed", operationToken: token, message: errorMessage(error) });
       });
   }, [discardBackend, dispatchItem, host]);
 
+  const readAndUpload = useCallback((localId: string, sourceKind: RetryUpload["sourceKind"], sessionId: string, token: number, generation: number) => {
+    const read = fileReadersRef.current.get(localId);
+    if (!read) return;
+    read().then((plan) => {
+      const current = findItem(itemsRef.current, localId);
+      if (!mountedRef.current || generationRef.current !== generation
+        || current?.kind !== "staging" || current.operationToken !== token) return;
+      fileReadersRef.current.delete(localId);
+      const retry = { sessionId, sourceKind, plan } satisfies RetryUpload;
+      retryUploadsRef.current.set(localId, retry);
+      runUpload(localId, retry, token, generation);
+    }).catch((error: unknown) => {
+      if (!mountedRef.current || generationRef.current !== generation) return;
+      dispatchItem(localId, { type: "stageFailed", operationToken: token, message: errorMessage(error) });
+    });
+  }, [dispatchItem, runUpload]);
+
   const stageFiles = useCallback((files: ArrayLike<File> | null) => {
+    if (!mountedRef.current) return;
+    const generation = generationRef.current;
     for (const file of Array.from(files ?? [])) {
       const localId = makeLocalId();
       const draft = inferDraft(file, localId);
@@ -75,17 +121,10 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
       const sessionId = sessionIdRef.current;
       const committed = committedAttachmentBudget(itemsRef.current, artifactsRef.current);
       setComposerItems([...itemsRef.current, staging]);
-      planStageUpload(file, sessionId, committed)
-        .then((plan) => {
-          const retry = { sessionId, sourceKind: draft.sourceKind, plan } satisfies RetryUpload;
-          retryUploadsRef.current.set(localId, retry);
-          runUpload(localId, retry, staging.operationToken);
-        })
-        .catch((error: unknown) => {
-          dispatchItem(localId, { type: "stageFailed", operationToken: staging.operationToken, message: errorMessage(error) });
-        });
+      fileReadersRef.current.set(localId, () => planStageUpload(file, sessionId, committed));
+      readAndUpload(localId, draft.sourceKind, sessionId, staging.operationToken, generation);
     }
-  }, [dispatchItem, makeLocalId, runUpload, setComposerItems]);
+  }, [makeLocalId, readAndUpload, setComposerItems]);
 
   const stageFromEvent = useCallback((event: AttachmentFileEvent) => {
     event.preventDefault?.();
@@ -93,11 +132,12 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
   }, [stageFiles]);
 
   const runConvert = useCallback((localId: string, token: number, sourceId: string, sessionId: string) => {
+    const generation = generationRef.current;
     convertStagedNcm({ sessionId, attachmentId: sourceId, personaId: options.personaId }, host)
       .then((ready) => {
         const current = findItem(itemsRef.current, localId);
         const artifact = toGeneratedArtifact(ready, sourceId);
-        if (current?.kind !== "processing" || current.operationToken !== token) {
+        if (!mountedRef.current || generationRef.current !== generation || current?.kind !== "processing" || current.operationToken !== token) {
           discardBackend(sessionId, artifact.id);
           return;
         }
@@ -108,6 +148,7 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
         onArtifact({ state: next });
       })
       .catch((error: unknown) => {
+        if (!mountedRef.current || generationRef.current !== generation) return;
         dispatchItem(localId, { type: "conversionFailed", operationToken: token, message: errorMessage(error) });
       });
   }, [discardBackend, dispatchItem, host, onArtifact, options.personaId, setArtifactItems, setComposerItems]);
@@ -125,19 +166,25 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
     if (preparationRef.current?.localIds.has(localId)) preparationRef.current.controller.abort();
     discardCurrentSource(findItem(itemsRef.current, localId), sessionIdRef.current, discardBackend);
     retryUploadsRef.current.delete(localId);
+    fileReadersRef.current.delete(localId);
+    releasePreview(localId);
     dispatchItem(localId, { type: "cancel" });
-  }, [discardBackend, dispatchItem]);
+  }, [discardBackend, dispatchItem, releasePreview]);
 
   const remove = useCallback((localId: string) => {
     if (preparationRef.current?.localIds.has(localId)) preparationRef.current.controller.abort();
     discardCurrentSource(findItem(itemsRef.current, localId), sessionIdRef.current, discardBackend);
     retryUploadsRef.current.delete(localId);
+    fileReadersRef.current.delete(localId);
+    releasePreview(localId);
     dispatchItem(localId, { type: "remove" });
-  }, [discardBackend, dispatchItem]);
+  }, [discardBackend, dispatchItem, releasePreview]);
 
   const runExport = useCallback((artifactId: string, token: number) => {
+    const generation = generationRef.current;
     exportChatArtifact({ sessionId: sessionIdRef.current, artifactId }, host)
       .then((receipt) => {
+        if (!mountedRef.current || generationRef.current !== generation) return;
         setArtifactItems(artifactsRef.current.map((item) => (
           item.artifact.id === artifactId
             ? reduceArtifact(item, { type: "exportSucceeded", operationToken: token, destinationName: receipt.fileName })
@@ -145,6 +192,7 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
         )));
       })
       .catch((error: unknown) => {
+        if (!mountedRef.current || generationRef.current !== generation) return;
         setArtifactItems(artifactsRef.current.map((item) => (
           item.artifact.id === artifactId
             ? reduceArtifact(item, { type: "exportFailed", operationToken: token, message: errorMessage(error) })
@@ -161,7 +209,8 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
     switch (current.phase) {
       case "staging": {
         const retryUpload = retryUploadsRef.current.get(localId);
-        if (retryUpload) runUpload(localId, retryUpload, token);
+        if (retryUpload) runUpload(localId, retryUpload, token, generationRef.current);
+        else readAndUpload(localId, current.draft.sourceKind, sessionIdRef.current, token, generationRef.current);
         return;
       }
       case "conversion":
@@ -175,7 +224,7 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
         return exhaustive;
       }
     }
-  }, [dispatchItem, runConvert, runExport, runUpload]);
+  }, [dispatchItem, readAndUpload, runConvert, runExport, runUpload]);
 
   const download = useCallback((artifactId: string) => {
     const current = findArtifact(artifactsRef.current, artifactId);
@@ -208,12 +257,15 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
 
   const resetSession = useCallback((sessionId: string) => {
     if (sessionIdRef.current === sessionId) return;
+    generationRef.current += 1;
+    releaseAllPreviews();
     preparationRef.current?.controller.abort();
     sessionIdRef.current = sessionId;
     retryUploadsRef.current.clear();
+    fileReadersRef.current.clear();
     setComposerItems(itemsRef.current.map((item) => reduceAttachmentState(item, { type: "sessionReset" })));
     setArtifactItems([]);
-  }, [setArtifactItems, setComposerItems]);
+  }, [releaseAllPreviews, setArtifactItems, setComposerItems]);
 
   const discardSentSources = useCallback((localIds: readonly string[]) => {
     const sent = new Set(localIds);
@@ -223,15 +275,17 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
       if (item.kind === "ready" && sent.has(item.localId)) {
         discardBackend(currentSessionId, item.source.id);
         retryUploadsRef.current.delete(item.localId);
+        releasePreview(item.localId);
         continue;
       }
       remaining.push(item);
     }
     setComposerItems(remaining);
-  }, [discardBackend, setComposerItems]);
+  }, [discardBackend, releasePreview, setComposerItems]);
 
   const prepareModelAttachments = useCallback(async (message: string) => {
     preparationRef.current?.controller.abort();
+    const generation = generationRef.current;
     const readyItems = itemsRef.current.filter((item) => item.kind === "ready");
     const preparation = {
       controller: new AbortController(),
@@ -254,10 +308,28 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
       throw error;
     } finally {
       if (preparationRef.current === preparation) preparationRef.current = null;
+      if (mountedRef.current && generationRef.current === generation) {
+        for (const localId of preparation.localIds) releasePreview(localId);
+        setComposerItems(itemsRef.current.map((item) => {
+          if (item.kind !== "ready" || !preparation.localIds.has(item.localId) || !item.source.previewDataUrl) return item;
+          const { previewDataUrl: _preview, ...source } = item.source;
+          return { ...item, source };
+        }));
+      }
     }
-  }, [host]);
+  }, [host, releasePreview, setComposerItems]);
 
-  useEffect(() => () => { preparationRef.current?.controller.abort(); }, []);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      generationRef.current += 1;
+      preparationRef.current?.controller.abort();
+      retryUploadsRef.current.clear();
+      fileReadersRef.current.clear();
+      releaseAllPreviews();
+    };
+  }, [releaseAllPreviews]);
 
   useEffect(() => {
     if (options.sessionId !== sessionIdRef.current) resetSession(options.sessionId);
@@ -280,4 +352,4 @@ export function useChatAttachments(options: UseChatAttachmentsOptions): UseChatA
     discardSentSources,
     prepareModelAttachments,
   };
-	}
+}

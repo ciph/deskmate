@@ -78,6 +78,60 @@ impl ResourceStore {
         Ok(records.iter().map(ResourceRecord::metadata).collect())
     }
 
+    pub(super) fn stage_upload(
+        &self,
+        file_name: &str,
+        mime: &str,
+        bytes: &[u8],
+    ) -> Result<ChatResource, String> {
+        validate_media_upload(file_name, mime, bytes.len())?;
+        let id = uuid::Uuid::new_v4().to_string();
+        std::fs::create_dir_all(&self.owned_root).map_err(storage_error)?;
+        let root = self.owned_root.join(&id);
+        std::fs::create_dir(&root).map_err(storage_error)?;
+        let path = root.join(file_name);
+        let result = (|| {
+            use std::io::Write;
+            let mut file = std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&path)
+                .map_err(storage_error)?;
+            file.write_all(bytes).map_err(storage_error)?;
+            drop(file);
+            let (kind, mime) = classify(&path, false);
+            let record = ResourceRecord {
+                id,
+                path: path.canonicalize().map_err(storage_error)?,
+                name: file_name.to_owned(),
+                kind,
+                mime: mime.to_owned(),
+            };
+            // Ownership is committed with registration, so no observable unowned copy can leak.
+            self.connection
+                .lock()
+                .map_err(storage_error)?
+                .execute(
+                    "INSERT INTO resources(id,path,name,kind,mime,owned) VALUES(?1,?2,?3,?4,?5,1)",
+                    params![
+                        record.id,
+                        record.path.to_str().ok_or("resource_invalid_path")?,
+                        record.name,
+                        serde_json::to_string(&record.kind).map_err(storage_error)?,
+                        record.mime
+                    ],
+                )
+                .map_err(storage_error)?;
+            Ok(record.metadata())
+        })();
+        if result.is_err() {
+            // Only this call's new file and empty UUID directory are eligible for rollback.
+            let _ = std::fs::remove_file(&path);
+            let _ = std::fs::remove_dir(&root);
+        }
+        result
+    }
+
     pub(super) fn get(&self, id: &str) -> Result<ResourceRecord, String> {
         uuid::Uuid::parse_str(id).map_err(|_| "resource_invalid_id")?;
         let connection = self.connection.lock().map_err(storage_error)?;
@@ -193,6 +247,7 @@ impl ResourceStore {
         Ok(rows.into_iter().next())
     }
 
+    #[cfg(test)]
     pub(super) fn mark_owned(&self, id: &str) -> Result<(), String> {
         self.connection
             .lock()

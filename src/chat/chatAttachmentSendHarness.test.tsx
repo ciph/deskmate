@@ -1,3 +1,5 @@
+import type { InvokeOptions } from "@tauri-apps/api/core";
+import { requireBinaryUpload, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import type { AgentHistoryDetails, HistorySession } from "../lib/history";
 import { catalogPageFixture, historyArgument, nativeHistoryFixture, registeredHistoryFixture } from "../testing/historyCatalogFixtures";
 import type { UnifiedHistoryRow } from "../lib/unifiedHistory";
@@ -6,7 +8,7 @@ import * as tauriCore from "@tauri-apps/api/core";
 import { cleanup } from "@testing-library/react";
 import type { LocalResource } from "./localResources";
 
-export const invoke = mock<(command: string, args?: unknown) => Promise<unknown>>(
+export const invoke = mock<(command: string, args?: unknown, options?: InvokeOptions) => Promise<unknown>>(
   () => Promise.resolve(undefined),
 );
 const originalFetch = globalThis.fetch;
@@ -204,7 +206,7 @@ export function registerChatAttachmentHarness(): void {
   sessionCreateRequests = 0;
   agentStartError = null;
   activeEventSource = null;
-  invoke.mockImplementation((command: string, args?: unknown) => {
+  invoke.mockImplementation((command: string, args?: unknown, options?: InvokeOptions) => {
     switch (command) {
       case "chat_model_resolve":
         {
@@ -244,11 +246,11 @@ export function registerChatAttachmentHarness(): void {
         return attachmentPicker();
       case "read_chat_resource_attachment":
         return Promise.resolve(resourceBytes.get((args as { resourceId: string }).resourceId));
-      case "stage_chat_resource_upload": {
-        const request = args as { fileName: string; mime: string; bytes: number[] };
+      case "stage_chat_resource_upload_binary": {
+        const request = requireBinaryUpload(args, options);
         const id = `uploaded_${resourceMetadata.size + 1}`;
         const kind = request.mime.startsWith("video/") || /\.(mp4|mov|webm|mkv|avi)$/i.test(request.fileName) ? "video" : "audio";
-        return Promise.resolve(registerResource({ id, name: request.fileName, mime: request.mime || (kind === "audio" ? "audio/mpeg" : "video/mp4"), kind, size: request.bytes.length, previewUrl: `chat-resource://localhost/${id}` }));
+        return Promise.resolve(wrapUploadResponse(options, registerResource({ id, name: request.fileName, mime: request.mime || (kind === "audio" ? "audio/mpeg" : "video/mp4"), kind, size: request.bytes.byteLength, previewUrl: `chat-resource://localhost/${id}` })));
       }
       case "prepare_chat_resources": {
         if (resourcePreparationError) return Promise.reject(new Error(resourcePreparationError));
@@ -266,8 +268,8 @@ export function registerChatAttachmentHarness(): void {
         return Promise.resolve({ relativePath: "", entries: [{ name: "voice.wav", kind: "audio", size: 12 }], truncated: false });
       case "discard_chat_resources":
         return Promise.resolve();
-      case "stage_chat_attachment":
-        return Promise.resolve(stageResponse(args));
+      case "stage_chat_attachment_binary":
+        return Promise.resolve(wrapUploadResponse(options, stageResponse(args, options)));
       case "read_chat_attachment":
         return Promise.resolve({
           id: "stage-notes",
@@ -389,8 +391,8 @@ afterEach(() => {
   globalThis.EventSource = OriginalEventSource;
 });
 }
-function stageResponse(args: unknown): unknown {
-  const request = payloadRequest(args);
+function stageResponse(args: unknown, options?: InvokeOptions): unknown {
+  const request = requireBinaryUpload(args, options);
   const fileName = typeof request.fileName === "string" ? request.fileName : "file.bin";
   const isNcm = fileName.endsWith(".ncm");
   return {
@@ -404,14 +406,6 @@ function stageResponse(args: unknown): unknown {
   };
 }
 
-function payloadRequest(args: unknown): Readonly<Record<string, unknown>> {
-  if (typeof args !== "object" || args === null || !("request" in args)) {
-    throw new Error("request payload missing");
-  }
-  const request = args.request;
-  if (typeof request !== "object" || request === null) throw new Error("request missing");
-  return Object.fromEntries(Object.entries(request));
-}
 export function selectWorkspace(path: string | null): void { selectedWorkspace = path; }
 export function deferAgentStart(): void { holdAgentStart = true; }
 export function finishAgentStart(): void { releaseAgentStart?.(); }

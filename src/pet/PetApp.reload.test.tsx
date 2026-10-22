@@ -24,7 +24,7 @@ beforeEach(() => {
     commands.push(command);
     if (command === "import_pack") throw new Error("invalid archive");
     if (command === "get_settings") return settings;
-    if (command === "get_pet_visibility") return true;
+    if (command === "get_pet_visibility" || command === "plugin:window|is_visible") return true;
     if (command === "plugin:window|cursor_position") return { x: -100, y: -100 };
     if (command === "plugin:window|outer_position") return { x: 0, y: 0 };
     if (command === "plugin:window|scale_factor") return 1;

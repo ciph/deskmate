@@ -23,7 +23,7 @@ export function Rig2dPetView({personaId,revision='',state,width,leaving,visible=
       const fail = (message: string) => { if (!abort.signal.aborted) { setReady(false); setPolygons([]); onError(message); } };
       const instance = new Rig2dRenderer(canvas.current,data,setPolygons,fail); renderer.current=instance;
       instance.setState(latest.current.state === 'success' || latest.current.state === 'leaving' ? 'idle' : latest.current.state);
-      instance.setVisible(latest.current.visible); setReady(true); onLoaded?.(data);
+      instance.setVisible(latest.current.visible && !latest.current.leaving); setReady(true); onLoaded?.(data);
     }).catch((error: unknown) => { if (!abort.signal.aborted) onError(error instanceof Error ? error.message : String(error)); });
     return () => { abort.abort(); renderer.current?.destroy(); renderer.current=null; };
   },[personaId,revision,load,onError,onLoaded]);

@@ -35,6 +35,36 @@ fn emit_request(app: &tauri::AppHandle, request: Request) {
     }
 }
 
+/// Publish actual native visibility, independently of the animated desired state.
+/// A GIF leaving transition stays active until its window is physically hidden.
+pub fn set_native_visible(window: &tauri::WebviewWindow, visible: bool) -> tauri::Result<()> {
+    change_native_visibility(
+        visible,
+        || {
+            if visible {
+                window.show()
+            } else {
+                window.hide()
+            }
+        },
+        |visible| {
+            if let Err(error) = window.emit_to("pet", "deskmate://pet-native-visibility", visible) {
+                eprintln!("pet native visibility event failed: {error}");
+            }
+        },
+    )
+}
+
+fn change_native_visibility<E>(
+    visible: bool,
+    change: impl FnOnce() -> Result<(), E>,
+    publish: impl FnOnce(bool),
+) -> Result<(), E> {
+    change()?;
+    publish(visible);
+    Ok(())
+}
+
 pub fn initialize(app: &tauri::AppHandle, visible: bool) {
     if let Ok(mut state) = app.state::<PetVisibility>().0.lock() {
         *state = Lifecycle::new(visible);
@@ -87,7 +117,7 @@ fn request_on_main_thread(app: &tauri::AppHandle, visible: Option<bool>, animate
         Some(request) => {
             if desired {
                 // The webview resets its last faded frame while the native window is hidden.
-                let _ = pet.hide();
+                let _ = set_native_visible(&pet, false);
             }
             emit_request(app, request);
             schedule_fallback(app.clone(), request.token);
@@ -96,7 +126,7 @@ fn request_on_main_thread(app: &tauri::AppHandle, visible: Option<bool>, animate
             let result = if desired {
                 crate::pet_visibility_recovery::show(&pet)
             } else {
-                pet.hide()
+                set_native_visible(&pet, false)
             };
             if let Err(error) = result {
                 eprintln!("pet visibility failed: {error}");
@@ -116,7 +146,7 @@ fn schedule_fallback(app: tauri::AppHandle, token: u64) {
             };
             if state.fallback(token) {
                 if let Some(pet) = handle.get_webview_window("pet") {
-                    let _ = pet.hide();
+                    let _ = set_native_visible(&pet, false);
                 }
             } else if state.reset_timed_out(token) {
                 crate::pet_visibility_recovery::recover(&handle);
@@ -139,7 +169,7 @@ pub fn acknowledge_pet_visibility(window: tauri::WebviewWindow, token: u64) -> R
             };
             match state.acknowledge(token) {
                 Some(Phase::Leaving) => {
-                    let _ = window.hide();
+                    let _ = set_native_visible(&window, false);
                 }
                 Some(Phase::Reset) => {
                     let _ = crate::pet_visibility_recovery::show(&window);
@@ -194,7 +224,7 @@ pub fn register_pet_visibility(
                     let result = if visible {
                         crate::pet_visibility_recovery::show(&window)
                     } else {
-                        window.hide()
+                        set_native_visible(&window, false)
                     };
                     if let Err(error) = result {
                         eprintln!("pet visibility registration failed: {error}");
@@ -214,4 +244,39 @@ pub fn get_pet_visibility(window: tauri::WebviewWindow) -> Result<bool, String> 
     let visibility = window.app_handle().state::<PetVisibility>();
     let state = visibility.0.lock().map_err(|error| error.to_string())?;
     Ok(state.feedback_visible(native_visible))
+}
+
+#[cfg(test)]
+mod native_visibility_tests {
+    use super::change_native_visibility;
+    use std::cell::RefCell;
+
+    #[test]
+    fn publishes_actual_visibility_only_after_native_change_succeeds() {
+        for visible in [false, true] {
+            let events = RefCell::new(Vec::new());
+            let result = change_native_visibility(
+                visible,
+                || {
+                    events.borrow_mut().push(("native", visible));
+                    Ok::<_, &str>(())
+                },
+                |published| events.borrow_mut().push(("event", published)),
+            );
+            assert_eq!(result, Ok(()));
+            assert_eq!(*events.borrow(), [("native", visible), ("event", visible)]);
+        }
+    }
+
+    #[test]
+    fn failed_native_change_does_not_claim_visibility_or_hide_the_error() {
+        for visible in [false, true] {
+            let result = change_native_visibility(
+                visible,
+                || Err("native window unavailable"),
+                |_| panic!("a failed visibility change must not be published"),
+            );
+            assert_eq!(result, Err("native window unavailable"));
+        }
+    }
 }

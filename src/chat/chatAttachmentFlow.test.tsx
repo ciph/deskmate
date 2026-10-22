@@ -19,7 +19,7 @@ describe("ChatApp staged attachment flow", () => {
 
     dropFiles([new File(["ncm"], "locked.ncm", { type: "application/octet-stream" })]);
 
-    await waitFor(() => expect(commands("stage_chat_attachment")).toHaveLength(1));
+    await waitFor(() => expect(commands("stage_chat_attachment_binary")).toHaveLength(1));
     expect(commands("convert_staged_ncm")).toHaveLength(0);
     expect(screen.getByRole("alertdialog", { name: "转换 NCM 音乐" })).toBeDefined();
 
@@ -61,7 +61,7 @@ describe("ChatApp staged attachment flow", () => {
       new File(["# 计划"], "notes.md", { type: "text/markdown" }),
       new File(["ncm"], "locked.ncm", { type: "application/octet-stream" }),
     ]);
-    await waitFor(() => expect(commands("stage_chat_attachment")).toHaveLength(2));
+    await waitFor(() => expect(commands("stage_chat_attachment_binary")).toHaveLength(2));
     await screen.findByRole("alertdialog", { name: "转换 NCM 音乐" });
 
     fireEvent.change(input, { target: { value: "请整理这份笔记" } });

@@ -85,28 +85,46 @@ export class PetAnimation {
 export function variantAnimationBounds(model: THREE.Object3D, clips: readonly THREE.AnimationClip[], roots: Readonly<Record<string, string>>): THREE.Box3 {
   const bounds = new THREE.Box3();
   const mixer = new THREE.AnimationMixer(model);
-  for (const clip of clips) {
-    const name = roots[clip.name];
-    const root = name === undefined ? undefined : model.getObjectByName(name);
-    if (root === undefined) continue;
-    const action = mixer.clipAction(clip).reset().setLoop(THREE.LoopOnce, 1).play();
-    action.clampWhenFinished = true;
-    const times = new Set<number>([0, clip.duration]);
-    for (let index = 1; index < 24; index += 1) times.add(clip.duration * index / 24);
-    for (const time of [...times].sort((a, b) => a - b)) {
-      mixer.setTime(time);
-      model.updateMatrixWorld(true);
-      root.traverse((node) => {
-        if (node instanceof THREE.SkinnedMesh) {
-          node.skeleton.update();
-          node.computeBoundingBox();
-        }
-      });
-      bounds.union(new THREE.Box3().setFromObject(root));
+  // The sampler mutates skin bounds as well as mixer-bound transforms. Restore
+  // both on success and failure so computing an envelope has no pose side effects.
+  const skins: { mesh: THREE.SkinnedMesh; box: THREE.Box3; sphere: THREE.Sphere }[] = [];
+  model.traverse((node) => {
+    if (node instanceof THREE.SkinnedMesh) skins.push({ mesh: node, box: node.boundingBox, sphere: node.boundingSphere });
+  });
+  try {
+    // Separate scratch boxes preserve the original references (which Three.js
+    // may initialize to null) without allocating one for every sampled frame.
+    for (const { mesh } of skins) mesh.boundingBox = new THREE.Box3();
+    for (const clip of clips) {
+      const name = roots[clip.name];
+      const root = name === undefined ? undefined : model.getObjectByName(name);
+      if (root === undefined) continue;
+      const action = mixer.clipAction(clip).reset().setLoop(THREE.LoopOnce, 1).play();
+      action.clampWhenFinished = true;
+      const times = new Set<number>([0, clip.duration]);
+      for (let index = 1; index < 24; index += 1) times.add(clip.duration * index / 24);
+      for (const time of [...times].sort((a, b) => a - b)) {
+        mixer.setTime(time);
+        model.updateMatrixWorld(true);
+        root.traverse((node) => {
+          if (node instanceof THREE.SkinnedMesh) {
+            node.skeleton.update();
+            node.computeBoundingBox();
+          }
+        });
+        bounds.union(new THREE.Box3().setFromObject(root));
+      }
+      mixer.stopAllAction();
     }
+    return bounds;
+  } finally {
     mixer.stopAllAction();
+    mixer.uncacheRoot(model);
+    model.updateMatrixWorld(true);
+    for (const { mesh, box, sphere } of skins) {
+      mesh.skeleton.update();
+      mesh.boundingBox = box;
+      mesh.boundingSphere = sphere;
+    }
   }
-  mixer.uncacheRoot(model);
-  model.updateMatrixWorld(true);
-  return bounds;
 }

@@ -56,14 +56,14 @@ export default function PetApp({ gifLoad, glbLoad = loadGlbView, clock }: { read
   const twoDimensional = gif || rig;
   const gifData = readyGif?.identity === personaIdentity && loadError === null ? readyGif.data : null;
   const timing = useMemo(() => gifData === null ? defaultGifTiming : gifData.config.schemaVersion === 2 ? { ...gifData.config.feedback, thinkingSelection: gifData.config.thinkingSelection } : { ...gifData.config.feedback, thinkingEscalationMs: gifData.config.thinkingEscalationMs }, [gifData]);
-  const { leaving, visible } = useGifVisibility(personaId, twoDimensional, gifData?.config.leaving.durationMs ?? 910);
+  const { leaving, visible, nativeVisible } = useGifVisibility(personaId, twoDimensional, gifData?.config.leaving.durationMs ?? 910);
   const activity = usePetActivityState(visible, timing, runtimeId, undefined, clock);
   const ready = loadError === null && (gif ? gifData !== null : rig ? readyRig === personaIdentity : readyGlb === personaIdentity);
   const sleep = usePetSleep({ visible: visible && !leaving, ready, identity: runtimeId, idle: activity.idle, activityKey: activity.activityKey }, clock);
   const state = sleep.state === "sleep" && activity.idle ? "sleep" : activity.display;
   const layout = petLayout(petScale);
   const envelope = useMemo(() => rig ? rig2dEnvelope() : gifData?.config.schemaVersion === 2 ? gifEnvelope(gifData.config) : null, [gifData, rig]);
-  const setLocked = useGifPassthrough(twoDimensional, rootRef);
+  const setLocked = useGifPassthrough(twoDimensional && nativeVisible, rootRef);
   const interaction = usePetInteraction({ gif: twoDimensional, active: visible && !leaving && ready, identity: runtimeId, root: rootRef, onInteract: sleep.interact, onHeldChange: sleep.setHeld }, setLocked);
   const loaded = useCallback((data: LoadedGifPersona) => setReadyGif({ identity: personaIdentity, data }), [personaIdentity]);
   useEffect(() => {
@@ -127,8 +127,8 @@ export default function PetApp({ gifLoad, glbLoad = loadGlbView, clock }: { read
       {gif ? <GifPetView key={runtimeId} personaId={personaId} revision={revision} state={leaving ? "leaving" : state} width={layout.width}
         leaving={leaving} visible={visible} onError={setLoadError} onLoaded={loaded} load={gifLoad} />
         : rig ? <Rig2dPetView key={runtimeId} personaId={personaId} revision={revision} state={state} width={layout.width}
-          leaving={leaving} visible={visible} onError={setLoadError} onLoaded={loadedRig} />
-        : GlbView !== null ? <GlbView key={`${runtimeId}:${glbAttempt}`} mood={activity.mood} settings={settings} width={layout.width} height={layout.height} rendererRef={rendererRef} onError={setLoadError} onReady={loadedGlb} /> : null}
+          leaving={leaving} visible={nativeVisible} onError={setLoadError} onLoaded={loadedRig} />
+        : GlbView !== null ? <GlbView key={`${runtimeId}:${glbAttempt}`} mood={activity.mood} visible={nativeVisible} settings={settings} width={layout.width} height={layout.height} rendererRef={rendererRef} onError={setLoadError} onReady={loadedGlb} /> : null}
     </button>}
     <PetPomodoro language={settings?.language ?? "zh-CN"} scale={petScale} />
     {glbLoading && <div role="status" className="pet-load-status">正在加载 3D 桌宠…</div>}

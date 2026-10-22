@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import { binaryUploadOptions, binaryUploadValue, type BinaryUploadIdentity } from "./binaryUpload";
 import type { OpenCodeFilePart } from "./attachments";
 
 export type LocalResourceKind = "file" | "directory" | "audio" | "video";
@@ -65,13 +66,29 @@ export async function readLegacyResource(resourceId: string): Promise<File> {
   return new File([Uint8Array.from(atob(file.base64), char => char.charCodeAt(0))], file.fileName);
 }
 
-export async function stageMediaResource(file: File): Promise<LocalResource> {
-  // Native drops pass references. Bytes are only needed for clipboard/browser File objects.
+export async function stageMediaResource(
+  file: File,
+  identity: BinaryUploadIdentity = { uploadId: crypto.randomUUID(), scopeKey: crypto.randomUUID() },
+  signal?: AbortSignal,
+): Promise<LocalResource> {
+  // Native drops pass references. Only browser Files need an app-owned copy.
   if (file.size > 64 * 1024 * 1024) throw new Error("resource_upload_size_limit");
-  const value = await invoke("stage_chat_resource_upload", {
-    fileName: file.name, mime: file.type, bytes: Array.from(new Uint8Array(await file.arrayBuffer())),
-  });
-  return parseLocalResources([value])[0];
+  if (file.size === 0) throw new Error("resource_upload_empty");
+  const metadata = { fileName: file.name, mime: file.type, size: file.size, uploadId: identity.uploadId, scopeKey: identity.scopeKey };
+  signal?.throwIfAborted();
+  const bytes = await file.arrayBuffer();
+  signal?.throwIfAborted();
+  if (bytes.byteLength !== metadata.size) throw new Error("resource_upload_size_mismatch");
+  const value = await invoke("stage_chat_resource_upload_binary", bytes, binaryUploadOptions(metadata));
+  try {
+    return parseLocalResources([binaryUploadValue(value, metadata)])[0];
+  } catch (error) {
+    const resource = value && typeof value === "object" && "value" in value ? value.value : null;
+    if (resource && typeof resource === "object" && "id" in resource && typeof resource.id === "string" && /^[a-zA-Z0-9_-]+$/.test(resource.id)) {
+      try { await discardChatResources([resource.id]); } catch { /* Preserve the invalid receipt error. */ }
+    }
+    throw error;
+  }
 }
 
 export function prepareChatResources(directory: string, sessionId: string, messageId: string, resourceIds: readonly string[]): Promise<PreparedLocalResources> {

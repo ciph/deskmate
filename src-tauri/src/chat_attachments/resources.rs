@@ -194,56 +194,67 @@ pub(crate) async fn read_chat_resource_attachment(
 }
 
 #[tauri::command]
-pub(crate) async fn stage_chat_resource_upload(
-    window: tauri::WebviewWindow,
-    app: tauri::AppHandle,
-    file_name: String,
-    mime: String,
-    bytes: Vec<u8>,
-) -> Result<ChatResource, String> {
+pub(crate) async fn stage_chat_resource_upload_binary<R: tauri::Runtime>(
+    window: tauri::WebviewWindow<R>,
+    app: tauri::AppHandle<R>,
+    request: tauri::ipc::Request<'_>,
+) -> Result<super::binary_upload::BinaryUploadReceipt<ChatResource>, String> {
     crate::tool_permissions::runtime::require_chat(&window)?;
-    if bytes.is_empty() || bytes.len() > 64 * 1024 * 1024 {
-        return Err("resource_upload_size_limit".into());
-    }
-    if file_name.is_empty()
-        || file_name.chars().any(|c| {
-            c.is_control() || matches!(c, '/' | '\\' | ':' | '*' | '?' | '"' | '<' | '>' | '|')
-        })
-        || file_name == "."
-        || file_name == ".."
-    {
-        return Err("resource_invalid_name".into());
-    }
-    let (kind, expected_mime) = classify(Path::new(&file_name), false);
-    if !matches!(kind, ResourceKind::Audio | ResourceKind::Video)
-        || (!mime.is_empty()
-            && mime != expected_mime
-            && !mime.starts_with("audio/")
-            && !mime.starts_with("video/"))
-    {
-        return Err("resource_upload_unsupported".into());
-    }
+    let (metadata, bytes) = super::binary_upload::parse(
+        request.body(),
+        request.headers(),
+        super::binary_upload::UploadKind::Media,
+    )?;
+    let bytes = bytes.to_vec();
     tauri::async_runtime::spawn_blocking(move || {
-        let root = app
-            .path()
-            .app_data_dir()
-            .map_err(|_| "resource_storage_unavailable")?
-            .join("chat-resource-uploads")
-            .join(uuid::Uuid::new_v4().to_string());
-        std::fs::create_dir_all(&root).map_err(|_| "resource_storage_unavailable")?;
-        let path = root.join(file_name);
-        std::fs::write(&path, bytes).map_err(|_| "resource_storage_unavailable")?;
-        let resource = app
-            .state::<ResourceStore>()
-            .register_paths(vec![path])?
-            .into_iter()
-            .next()
-            .ok_or("resource_registration_failed")?;
-        app.state::<ResourceStore>().mark_owned(&resource.id)?;
-        Ok(resource)
+        let value = app.state::<ResourceStore>().stage_upload(
+            &metadata.file_name,
+            &metadata.mime,
+            &bytes,
+        )?;
+        Ok(metadata.receipt(value))
     })
     .await
     .map_err(|_| "resource_registration_failed".to_owned())?
+}
+
+pub(super) fn validate_media_upload(
+    file_name: &str,
+    mime: &str,
+    size: usize,
+) -> Result<(), String> {
+    if size == 0 || size > 64 * 1024 * 1024 {
+        return Err("resource_upload_size_limit".into());
+    }
+    if file_name.chars().count() > 255 || super::validation::sanitize_filename(file_name).is_err() {
+        return Err("resource_invalid_name".into());
+    }
+    let declared_mime = mime;
+    let mime = mime.split(';').next().unwrap_or(mime).trim();
+    if mime.is_empty() && !declared_mime.is_empty() {
+        return Err("resource_upload_unsupported".into());
+    }
+    let (kind, expected) = classify(Path::new(file_name), false);
+    let alias = matches!(
+        (expected, mime),
+        ("audio/mpeg", "audio/mp3" | "audio/x-mp3")
+            | ("audio/wav", "audio/x-wav" | "audio/wave" | "audio/vnd.wave")
+            | ("audio/mp4", "audio/x-m4a")
+            | ("audio/flac", "audio/x-flac")
+            | ("audio/aac", "audio/x-aac")
+            | ("audio/ogg" | "audio/opus" | "video/ogg", "application/ogg")
+            | ("audio/opus", "audio/ogg")
+            | ("audio/aiff", "audio/x-aiff")
+            | ("video/x-msvideo", "video/avi")
+            | ("video/webm", "audio/webm")
+            | ("video/mp4", "audio/mp4")
+    );
+    if !matches!(kind, ResourceKind::Audio | ResourceKind::Video)
+        || (!mime.is_empty() && mime != expected && !alias)
+    {
+        return Err("resource_upload_unsupported".into());
+    }
+    Ok(())
 }
 
 #[tauri::command]

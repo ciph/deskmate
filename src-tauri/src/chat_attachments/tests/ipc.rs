@@ -5,8 +5,8 @@ use crate::chat_attachments::{
 use super::{stage_request, AttachmentStore, TempAttachmentRoot};
 
 #[test]
-fn ipc_stage_contract_uses_frontend_field_names_and_opaque_metadata() {
-    // Given: the exact camelCase payload emitted by the frontend boundary.
+fn internal_stage_fixture_returns_opaque_metadata() {
+    // Given: an internal store fixture; production uploads use binary_upload::tests.
     let request = serde_json::from_value::<StageChatAttachmentRequest>(serde_json::json!({
         "sessionId": "session-a",
         "fileName": "notes.txt",
@@ -14,7 +14,7 @@ fn ipc_stage_contract_uses_frontend_field_names_and_opaque_metadata() {
         "size": 4,
         "bytes": [110, 111, 116, 101]
     }))
-    .expect("deserialize frontend stage request");
+    .expect("deserialize internal stage fixture");
     let root = TempAttachmentRoot::new("ipc-stage");
     let store = AttachmentStore::default();
 

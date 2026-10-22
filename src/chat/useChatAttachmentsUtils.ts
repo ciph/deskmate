@@ -1,4 +1,4 @@
-import { prepareModelReadyAttachment, toOpenCodeFilePart, type OpenCodeFilePart } from "./attachments";
+import { prepareModelReadyAttachment, prepareModelReadyImage, toOpenCodeFilePart, type OpenCodeFilePart } from "./attachments";
 import {
   itemLimitForSource,
   MAX_SESSION_ATTACHMENT_BYTES,
@@ -62,6 +62,7 @@ export async function planStageUpload(
   const mimeValue = mime.value;
   const sourceKind = sourceKindOf(file.name);
   const itemLimit = itemLimitForSource(sourceKind);
+  if (file.size === 0) return { kind: "reject", message: `${file.name} 是空文件` };
   if (file.size > itemLimit) {
     return { kind: "reject", message: `${file.name} 超过 ${mib(itemLimit)} MB 限制` };
   }
@@ -75,7 +76,7 @@ export async function planStageUpload(
   if (mimeValue.startsWith("audio/") && sourceKind !== "ncm") {
     return { kind: "reject", message: `${file.name} 暂不支持作为模型附件读取` };
   }
-  const bytes = Array.from(new Uint8Array(await file.arrayBuffer()));
+  const bytes = await file.arrayBuffer();
   return {
     kind: "upload",
     request: { sessionId, fileName: file.name, mime: mimeValue, size: file.size, bytes },
@@ -85,11 +86,8 @@ export async function planStageUpload(
 export function toStagedSource(
   attachment: StagedChatAttachment,
   sourceKind: StagedSourceKind,
-  bytes?: readonly number[],
+  previewDataUrl?: string,
 ): StagedSource {
-  const previewDataUrl = bytes && /^(image\/(gif|jpeg|png|webp))$/.test(attachment.mime)
-    ? imagePreviewDataUrl(attachment.mime, bytes)
-    : undefined;
   return {
     id: attachment.id,
     name: attachment.fileName,
@@ -98,14 +96,6 @@ export function toStagedSource(
     kind: sourceKind,
     ...(previewDataUrl ? { previewDataUrl } : {}),
   };
-}
-
-function imagePreviewDataUrl(mime: string, bytes: readonly number[]): string {
-  const chunks: string[] = [];
-  for (let offset = 0; offset < bytes.length; offset += 0x8000) {
-    chunks.push(String.fromCharCode(...bytes.slice(offset, offset + 0x8000)));
-  }
-  return `data:${mime};base64,${btoa(chunks.join(""))}`;
 }
 
 export function toGeneratedArtifact(
@@ -126,6 +116,13 @@ export async function prepareOpenCodeFilePart(
   attachment: ReadyChatAttachment,
   signal?: AbortSignal,
 ): Promise<OpenCodeFilePart> {
+  signal?.throwIfAborted();
+  if (attachment.kind === "image" || attachment.mime.startsWith("image/")) {
+    if (attachment.kind !== "image") throw new AttachmentControllerError("invalid staged image kind");
+    return toOpenCodeFilePart(prepareModelReadyImage({
+      id: attachment.id, name: attachment.fileName, mime: attachment.mime, size: attachment.size,
+    }, attachment.dataUrl));
+  }
   const modelReady = await prepareModelReadyAttachment({
     metadata: {
       id: attachment.id,

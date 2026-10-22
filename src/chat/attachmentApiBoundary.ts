@@ -17,7 +17,7 @@ export type SupportedAttachmentMime =
   | "audio/wav"
   | "audio/webm";
 
-export type StageChatAttachmentRequest = { readonly sessionId: string; readonly fileName: string; readonly mime: SupportedAttachmentMime; readonly size: number; readonly bytes: readonly number[] };
+export type StageChatAttachmentRequest = { readonly sessionId: string; readonly fileName: string; readonly mime: SupportedAttachmentMime; readonly size: number; readonly bytes: ArrayBuffer };
 export type AttachmentIdRequest = { readonly sessionId: string; readonly attachmentId: string };
 export type ConvertStagedNcmRequest = AttachmentIdRequest & { readonly personaId: string };
 export type ExportChatArtifactRequest = { readonly sessionId: string; readonly artifactId: string };
@@ -56,6 +56,10 @@ export function normalizeStageRequest(value: StageChatAttachmentRequest): StageC
   const mime = parseMime(readField(source, "mime"));
   const size = parseSize(readField(source, "size"));
   const bytes = parseBytes(readField(source, "bytes"));
+  if (size === 0 || bytes.byteLength === 0) throw new AttachmentApiError("attachment data must not be empty");
+  if (size !== bytes.byteLength) throw new AttachmentApiError("attachment size does not match data");
+  const limit = mime === "application/x-ncm" ? 64 * 1024 * 1024 : 20 * 1024 * 1024;
+  if (size > limit) throw new AttachmentApiError("attachment item size limit");
   return { sessionId, fileName, mime, size, bytes };
 }
 
@@ -114,11 +118,8 @@ export function parseSize(value: unknown): number {
   return value;
 }
 
-export function parseBytes(value: unknown): readonly number[] {
-  if (!Array.isArray(value)) throw new AttachmentApiError("invalid attachment bytes");
-  for (const byte of value) {
-    if (typeof byte !== "number" || !Number.isInteger(byte) || byte < 0 || byte > 255) throw new AttachmentApiError("invalid attachment bytes");
-  }
+export function parseBytes(value: unknown): ArrayBuffer {
+  if (!(value instanceof ArrayBuffer)) throw new AttachmentApiError("invalid attachment bytes");
   return value;
 }
 
@@ -142,16 +143,15 @@ export function parseBoolean(value: unknown, field: string): boolean {
   return value;
 }
 
-export function assertNoNativePathLeak(value: unknown, context: string, trustedOpaqueBytes?: readonly number[]): void {
+export function assertNoNativePathLeak(value: unknown, context: string): void {
   if (Array.isArray(value)) {
-    if (trustedOpaqueBytes !== undefined && value === trustedOpaqueBytes) return;
-    for (const item of value) assertNoNativePathLeak(item, context, trustedOpaqueBytes);
+    for (const item of value) assertNoNativePathLeak(item, context);
   } else if (typeof value === "string") {
     assertNoNativePathString(value, context);
   } else if (typeof value === "object" && value !== null) {
     for (const [key, child] of Object.entries(value)) {
       if (key === "path" || key === "sourcePath" || key === "destinationPath") throw new AttachmentApiError("native path field leaked");
-      assertNoNativePathLeak(child, key, trustedOpaqueBytes);
+      assertNoNativePathLeak(child, key);
     }
   }
 }

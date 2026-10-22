@@ -1,3 +1,4 @@
+import { requireBinaryUpload } from "./binaryUploadTestHelpers.test";
 import { describe, expect, test } from "bun:test";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { LocalResource } from "./localResources";
@@ -22,7 +23,7 @@ describe("native audio video and folder integration", () => {
       expect(preview.getAttribute("preload")).toBe("metadata");
       expect(preview.hasAttribute("controls")).toBe(true);
     }
-    expect(invoke.mock.calls.filter(([command]) => ["stage_chat_attachment", "read_chat_attachment", "stage_chat_resource_upload", "read_chat_resource_attachment"].includes(command))).toHaveLength(0);
+    expect(invoke.mock.calls.filter(([command]) => ["stage_chat_attachment_binary", "read_chat_attachment", "stage_chat_resource_upload_binary", "read_chat_resource_attachment"].includes(command))).toHaveLength(0);
   });
 
   test("folder drop lists entries and sends a directory reference without changing workspace", async () => {
@@ -138,8 +139,13 @@ describe("native audio video and folder integration", () => {
     if (!root) throw new Error("chat root missing");
     fireEvent.drop(root, { dataTransfer: { files: [new File(["RIFF"], "recording.wav", { type: "audio/wav" })], types: ["Files"] } });
     await screen.findByLabelText("预览 recording.wav");
-    expect(invoke.mock.calls.filter(([command]) => command === "stage_chat_resource_upload")).toHaveLength(1);
-    expect(invoke.mock.calls.filter(([command]) => command === "stage_chat_attachment")).toHaveLength(0);
+    const uploads = invoke.mock.calls.filter(([command]) => command === "stage_chat_resource_upload_binary");
+    expect(uploads).toHaveLength(1);
+    const upload = requireBinaryUpload(uploads[0]?.[1], uploads[0]?.[2]);
+    expect(upload.fileName).toBe("recording.wav");
+    expect(upload.bytes.byteLength).toBe(4);
+    expect(new Uint8Array(upload.bytes)).toEqual(new TextEncoder().encode("RIFF"));
+    expect(invoke.mock.calls.filter(([command]) => command === "stage_chat_attachment_binary")).toHaveLength(0);
   });
 
   test("reopened workspace history looks up audio by native message ID when its text part ID differs", async () => {

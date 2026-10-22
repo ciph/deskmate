@@ -4,6 +4,49 @@
 
 ## 当前验证入口
 
+### 2026-10-22 性能整改 B4
+
+基线为 B3 本地提交 `6f97c93b984ced6e7c36e2e1d15b9b84c8dc3994`，0.4.20，
+开发入口及 `codex/yume-performance-remediation` 分支不变。按用户“下一步”授权继续实施；
+B1–B3 原生待验保留，旧 0.4.3 主仓未实施功能或构建。
+
+- F17：普通/NCM 与媒体 File 以顶层 ArrayBuffer 走 raw Tauri IPC，元数据头受大小限制；
+  Rust 检查窗口、类型、长度和业务上限，旧 JSON 上传入口移除，写盘进入 blocking worker。
+  uploadId/scopeKey 只关联生命周期，不替代目录授权；切换、移除、卸载和迟到响应均有隔离与清理。
+  图片 data URL 复用严格校验结果，Blob 预览在成功/失败/取消/移除时释放。Rust 仍有一次字节复制。
+  安装的 Tauri 2.11.5 serializer 确认 ArrayBuffer 身份保留；20 MiB 周期字节样本旧 JSON body
+  74,874,991 B → raw body 20,971,520 B，元数据头另计。旧完整字节量为已验证的精确推算，
+  不是原生 wire、峰值堆/RSS 或端到端耗时实测。
+- P11：rig2d 默认保留 60 fps，deadline 余数避免高刷新率降成 48 fps；无睡眠叠加/过渡时少一次画布复制。
+  确定性 5 秒 RAF 模拟中，144/240 Hz 渲染从 721/1201 次降至 301 次，动画时间仍为 5 秒。
+  30 fps idle/sleep 仅为显式测试候选，未进入默认路径；上述次数不是实际 CPU/GPU/耗电收益。
+- P12：位置/DPI 单次在途读取并缓存，move/resize/scale 失效，旧请求不可覆盖新几何；
+  原生成功 show/hide 广播物理可见性，隐藏时停止 rig2d/GLB 渲染循环及三种宠物的光标轮询，恢复时刷新几何。
+  真实产品 PetApp 的 Chromium 夹具使用模拟 Tauri 事件：三种宠物隐藏约 2 秒时光标/几何读取为 0，
+  rig2d Canvas2D 与 GLB WebGL draw 调用为 0；恢复和移动后重新读取。番茄钟仍查询，GIF 解码未测，
+  不声称所有 IPC 或整个宿主后台工作为零。
+- P13：受信任的生成包络按实际模型 SHA、算法/Three 版本、scale 和 clipRoots 匹配；命中省去 175 次扫描，
+  未知/变更模型按原生产算法回退，16 项 session LRU 仅保存数值记录。采样异常也恢复姿势及原边界引用。
+  显式 `bun scripts/prepare-personas.ts --envelopes-only` 重建包络，普通 fetch 流程不变。
+  同机暖 Bun CPU、3 次预热/30 次样本：旧扫描 p50/p95 1476.973/1569.177 ms；新 lookup/framing
+  0.168/1.604 ms。75 MB 身份 SHA/JSON 验证另计 p50 45.01 ms，暖文件读取 p50 22.27 ms；
+  不包含 GLTF 解析、纹理解码、GPU 首帧或原生冷启动。698 个 authored keytime 的镜头检查通过，
+  不替代连续极值和鼠标跟随的原生视觉验收。
+- P14a：隔离 1024/512 贴图候选为 46,729,848 / 39,181,072 B，较原版减少 38.22% / 48.20%；
+  979 个非图片 bufferView 字节与动画/网格等结构保持。浏览器 3 模型 × 2 尺寸 × 7 动作共 42 组采样通过。
+  P14b 决策仍为保留原版 75,641,656 B 模型；候选不进入生产资源，未引入 KTX2 或新依赖。
+
+整批检查、源码 SHA、失败与复验记录及最终本地提交见本机
+`E:/Codex/工作伙伴/reports/yume-performance-b4-20261022` 的 `verification-summary.json`、
+`browser-validation.json`、`source-snapshot.json`、`b4-checkpoint.json`、`review.json` 与 HTML 报告。
+工作台输入/产物沿用 B3 并逐文件比对，不称本批重新构建上游工作台。正常 Windows debug 构建仅证明编译链接，
+不代表可分发包、原生 GUI 或已安装程序验收。未安装、推送或发布。
+
+待验：Windows WebView2 原生 raw IPC 与真实文件选择/拖入/发送/历史恢复、取消/迟到清理及媒体编解码；
+多 DPI 移屏、托盘/快捷键隐藏恢复、睡眠/拖动锁、60/144/240 Hz 连续动作、原生默认/最大尺寸视觉，
+真实峰值堆/RSS、GPU 内存/功耗及 macOS。30 fps 与候选模型只有相应验收通过后才采纳。
+B5 的 R06c 投影移出控制锁、R06d SSE、C16 流式合批及 D20 删除扫描尚未实施。
+
 ### 2026-10-22 性能整改 B3
 
 基线为 B2 本地提交 `19630b6a69d5944c53156bf666879cf3afd7cf0c`，0.4.20，
@@ -45,7 +88,7 @@ B1/B2 原生待验继续保留。未在旧 0.4.3 主仓实施功能或构建。
 仍待验：Tauri/WebView2 生产冷启动和首次工作台窗口/会话所有权、真实模型用量与引擎故障配置、睡眠恢复、
 在途退出与任务连续性、Windows 本地 PDF 协议/堆收敛、macOS 通知与 WebKit、整机 10 分钟 CPU/GPU/功耗。
 collector/补偿 worker 在 sleep 前后检查退出，在途 HTTP 不主动取消；退出标记至连接撤销之间仍可完成有效提交。
-R06c 的投影移锁、R06d 的 SSE 及 B4 资产/附件/桌宠优化尚未实施；未安装、推送或发布。
+B3 收尾时 R06c 的投影移锁、R06d 的 SSE 及 B4 资产/附件/桌宠优化尚未实施；后续 B4 见上节。未安装、推送或发布。
 
 证据：`E:/Codex/工作伙伴/reports/yume-performance-b3-20261022`，包括 `verification-summary.json`、
 `source-snapshot.json`、`b3-checkpoint.json`、`review.json`、逐项 RED/GREEN、浏览器截图和 `yume-b3-progress.html`。

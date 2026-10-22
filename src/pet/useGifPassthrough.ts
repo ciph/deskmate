@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, type RefObject } from "react";
 import { cursorPosition, getCurrentWindow } from "@tauri-apps/api/window";
 import { pointInPetContent } from "./gifGeometry";
+import { createPetWindowGeometry } from "./petWindowGeometry";
 export { pointInPetContent } from "./gifGeometry";
 
 const report = (error: unknown) => console.error("pet mouse passthrough unavailable", error instanceof Error ? error.message : String(error));
@@ -38,6 +39,7 @@ export function useGifPassthrough(enabled: boolean, root: RefObject<HTMLDivEleme
     const setIgnored = writer.current;
     version.current += 1;
     if (!enabled) { setIgnored(false); return; }
+    const geometry = createPetWindowGeometry(petWindow, report);
     let disposed = false;
     let busy = false;
     const poll = async () => {
@@ -45,21 +47,20 @@ export function useGifPassthrough(enabled: boolean, root: RefObject<HTMLDivEleme
       if (locked.current) { setIgnored(false); return; }
       busy = true;
       const generation = version.current;
-      const current = () => !disposed && generation === version.current && !locked.current;
+      const geometryGeneration = geometry.generation;
+      const current = () => !disposed && generation === version.current && geometryGeneration === geometry.generation && !locked.current;
       try {
         const cursor = await cursorPosition();
         if (!current()) return;
-        const origin = await petWindow.outerPosition();
-        if (!current()) return;
-        const ratio = await petWindow.scaleFactor();
-        if (!current() || root.current === null) return;
-        setIgnored(!pointInPetContent(root.current, (cursor.x - origin.x) / ratio, (cursor.y - origin.y) / ratio));
+        const origin = await geometry.read();
+        if (!current() || origin === null || root.current === null) return;
+        setIgnored(!pointInPetContent(root.current, (cursor.x - origin.x) / origin.ratio, (cursor.y - origin.y) / origin.ratio));
       } catch (error: unknown) { report(error); } // no-excuse-ok: catch -- native polling boundary reports failures and retries next tick
       finally { busy = false; }
     };
     void poll();
     const timer = window.setInterval(() => { void poll(); }, 40);
-    return () => { disposed = true; version.current += 1; window.clearInterval(timer); setIgnored(false); };
+    return () => { disposed = true; version.current += 1; geometry.dispose(); window.clearInterval(timer); setIgnored(false); };
   }, [enabled, root]);
   return setLocked;
 }

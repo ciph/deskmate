@@ -183,7 +183,7 @@ describe("PDF preparation cancellation from the composer", () => {
     const host = createFakeHost();
     const read = deferred<ReturnType<typeof ready>>();
     const originalInvoke = host.invoke;
-    host.invoke = (command, payload) => command === "read_chat_attachment" ? read.promise : originalInvoke(command, payload);
+    host.invoke = (command, payload, options) => command === "read_chat_attachment" ? read.promise : originalInvoke(command, payload, options);
     render(createElement(Harness, { host }));
     await stagePdf(host);
     const result = controller!.prepareModelAttachments("summarize").catch((error: unknown) => error);
@@ -231,8 +231,8 @@ describe("PDF preparation cancellation from the composer", () => {
     host.readResponses.set("batch-pdf", ready("batch-pdf", "sample.pdf", "application/pdf", "text"));
     const brokenRead = deferred<ReturnType<typeof ready>>();
     const originalInvoke = host.invoke;
-    host.invoke = (command, payload) => command === "read_chat_attachment" && "attachmentId" in payload.request && payload.request.attachmentId === "batch-broken"
-      ? brokenRead.promise : originalInvoke(command, payload);
+    host.invoke = (command, payload, options) => command === "read_chat_attachment" && !(payload instanceof ArrayBuffer) && "attachmentId" in payload.request && payload.request.attachmentId === "batch-broken"
+      ? brokenRead.promise : originalInvoke(command, payload, options);
     const result = controller!.prepareModelAttachments("summarize").catch((error: unknown) => error);
     await waitFor(() => expect(getDocument).toHaveBeenCalledTimes(1));
     brokenRead.reject(new Error("attachment missing"));

@@ -1,0 +1,26 @@
+{
+  "xiaozhu-sandaime": {
+    "algorithm": "variant-bounds-v1-three-182-samples-24",
+    "modelSha256": "5d06149a7a6c8c9fe89a395e127fd44104814e55057bd6d88d0cfa0597722d4c",
+    "scale": 1,
+    "clipRoots": {
+      "等待": "Sandaime_等待",
+      "思考": "Sandaime_思考",
+      "打招呼": "Sandaime_打招呼",
+      "跳舞": "Sandaime_跳舞",
+      "哭": "Sandaime_哭",
+      "开心": "Sandaime_开心",
+      "争辩": "Sandaime_争辩"
+    },
+    "min": [
+      -0.5234883809069926,
+      -0.03772239556951262,
+      -0.32112787057177367
+    ],
+    "max": [
+      0.3931915979573246,
+      1.1772801337917005,
+      0.46198586796847096
+    ]
+  }
+}

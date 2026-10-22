@@ -5,7 +5,8 @@ import type { PetMood } from "../lib/petState";
 import { personaAssets } from "./personaAssets";
 import { personaById } from "./personaCatalog";
 import { ToonShading } from "./toonShader";
-import { PetAnimation, pickWeightedClip, variantAnimationBounds } from "./PetAnimation";
+import { PetAnimation, pickWeightedClip } from "./PetAnimation";
+import { variantEnvelopeCache, variantModelSha256 } from "./variantEnvelope";
 import { PetRendererView, gateFrame, findRootMotionNode, type PetRenderTuning, type PetMouseTarget } from "./PetRendererView";
 import { applyPersonaTextures, disposeObject, errorMessage, isVrm, poseArms, updateVrm } from "./PetRendererResources";
 export { gateFrame, smoothTowards, mouseFollowPitchTarget, findRootMotionNode, IDLE_FPS_CAP } from "./PetRendererView";
@@ -61,6 +62,8 @@ export class PetRenderer {
   private renderTuning: PetRenderTuning = { outlineWidth: 0.0008, rimWidth: 0.1, rimIntensity: 0.3, specularIntensity: 0.05 };
   private rootMotionNode: THREE.Object3D | null = null;
   private pendingDelta = 0;
+  private activeElapsed = 0;
+  private visible = true;
   private personaId = "xiaozhu";
   private loadToken = 0;
   private disposed = false;
@@ -79,8 +82,20 @@ export class PetRenderer {
     const assets = await personaAssets(persona.id);
     if (assets.renderType !== "glb") throw new Error("GIF personas require the GIF view");
     let gltf: Awaited<ReturnType<GLTFLoader["loadAsync"]>>;
+    let modelSha256: string | null = null;
     try {
-      gltf = await this.loader.loadAsync(assets.modelUrl);
+      if (persona.clipRoots === undefined) {
+        gltf = await this.loader.loadAsync(assets.modelUrl);
+      } else {
+        // One read binds the identity to the bytes actually parsed; hashing the
+        // URL or fetching it twice could reuse bounds from a replaced import.
+        const bytes = await new THREE.FileLoader(this.loader.manager).setResponseType("arraybuffer").loadAsync(assets.modelUrl);
+        if (!(bytes instanceof ArrayBuffer)) throw new Error("Expected binary GLB data");
+        [gltf, modelSha256] = await Promise.all([
+          this.loader.parseAsync(bytes, THREE.LoaderUtils.extractUrlBase(assets.modelUrl)),
+          variantModelSha256(bytes),
+        ]);
+      }
     } catch (error: unknown) {
       throw new Error(`模型 ${persona.id} 加载失败: ${errorMessage(error)}`);
     }
@@ -134,19 +149,38 @@ export class PetRenderer {
     this.vrm = vrm;
     this.toon = toon;
     this.view.scene.add(model);
-    const bounds = persona.clipRoots === undefined ? null : variantAnimationBounds(model, gltf.animations, persona.clipRoots);
+    const bounds = persona.clipRoots === undefined ? null : variantEnvelopeCache.resolve(
+      model, gltf.animations, { id: persona.id, scale: persona.scale, clipRoots: persona.clipRoots }, vrm === null ? modelSha256 : null,
+    ).bounds;
     this.animation = vrm === null ? new PetAnimation(model, gltf.animations, persona) : null;
     this.animation?.setMood(this.mood);
     this.rootMotionNode?.position.set(0, 0, 0);
     poseArms(vrm);
     this.view.frameCamera(bounds ?? new THREE.Box3().setFromObject(model));
     try {
-      this.view.renderer.setAnimationLoop(this.tick);
-      this.tick();
+      if (this.visible) {
+        this.clock.start();
+        this.view.renderer.setAnimationLoop(this.tick);
+        this.tick();
+      }
     } catch (error: unknown) {
       throw new Error(
         `角色 ${persona.id} 首次渲染失败: ${errorMessage(error)}`,
       );
+    }
+  }
+
+  setVisible(visible: boolean): void {
+    if (this.disposed || this.visible === visible) return;
+    this.visible = visible;
+    this.pendingDelta = 0;
+    if (!visible) {
+      this.view.renderer.setAnimationLoop(null);
+      this.clock.stop();
+    } else if (this.model !== null) {
+      // Hidden wall time is not animation time: resume from the displayed pose.
+      this.clock.start();
+      this.view.renderer.setAnimationLoop(this.tick);
     }
   }
 
@@ -194,7 +228,7 @@ export class PetRenderer {
   };
 
   private readonly tick = (): void => {
-    if (this.disposed) return;
+    if (this.disposed || !this.visible) return;
     // Accumulate real elapsed time so gated frames carry their time forward
     // instead of discarding it.
     this.pendingDelta += this.clock.getDelta();
@@ -203,8 +237,9 @@ export class PetRenderer {
     const delta = gateFrame(this.pendingDelta, this.animation?.nudging ?? false);
     if (delta === null) return;
     this.pendingDelta = 0;
+    this.activeElapsed += delta;
     if (this.vrm !== null) {
-      updateVrm(this.vrm, delta, this.clock.elapsedTime);
+      updateVrm(this.vrm, delta, this.activeElapsed);
     } else {
       this.animation?.update(delta);
       this.rootMotionNode?.position.set(0, 0, 0);

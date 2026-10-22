@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import type { InvokeOptions } from "@tauri-apps/api/core";
+import { decodeUploadOptions, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import {
   cleanupChatSession,
   convertStagedNcm,
@@ -13,15 +15,16 @@ class FakeAttachmentHost implements AttachmentHost {
   readonly calls: Array<{
     readonly command: string;
     readonly payload: unknown;
+    readonly options?: InvokeOptions;
   }> = [];
 
   constructor(private readonly responses: readonly unknown[]) {}
 
-  async invoke(command: string, payload: unknown): Promise<unknown> {
-    this.calls.push({ command, payload });
+  async invoke(command: string, payload: unknown, options?: InvokeOptions): Promise<unknown> {
+    this.calls.push({ command, payload, ...(options ? { options } : {}) });
     const response = this.responses[this.calls.length - 1];
     if (response instanceof Error) throw response;
-    return response;
+    return command === "stage_chat_attachment_binary" ? wrapUploadResponse(options, response) : response;
   }
 }
 
@@ -34,7 +37,7 @@ describe("attachment api", () => {
         sessionId: "ses-1",
         fileName: "note.txt",
         mime: "text/plain",
-        size: 12,
+        size: 5,
         kind: "text",
         status: "staged",
       },
@@ -46,33 +49,24 @@ describe("attachment api", () => {
         sessionId: "ses-1",
         fileName: "note.txt",
         mime: "text/plain",
-        size: 12,
-        bytes: [104, 101, 108, 108, 111],
+        size: 5,
+        bytes: new Uint8Array([104, 101, 108, 108, 111]).buffer,
       },
       host,
     );
 
     // Then: the command and payload are exact and no native path is exposed.
-    expect(host.calls).toEqual([
-      {
-        command: "stage_chat_attachment",
-        payload: {
-          request: {
-            sessionId: "ses-1",
-            fileName: "note.txt",
-            mime: "text/plain",
-            size: 12,
-            bytes: [104, 101, 108, 108, 111],
-          },
-        },
-      },
-    ]);
+    expect(host.calls).toHaveLength(1);
+    expect(host.calls[0]?.command).toBe("stage_chat_attachment_binary");
+    expect(host.calls[0]?.payload).toBeInstanceOf(ArrayBuffer);
+    expect([...new Uint8Array(host.calls[0]?.payload as ArrayBuffer)]).toEqual([104, 101, 108, 108, 111]);
+    expect(decodeUploadOptions(host.calls[0]?.options)).toMatchObject({ sessionId: "ses-1", scopeKey: "ses-1", fileName: "note.txt", mime: "text/plain", size: 5 });
     expect(result).toEqual({
       id: "att-1",
       sessionId: "ses-1",
       fileName: "note.txt",
       mime: "text/plain",
-      size: 12,
+      size: 5,
       kind: "text",
       status: "staged",
     });
@@ -240,7 +234,7 @@ describe("attachment api", () => {
           fileName: "note.txt",
           mime: "text/plain",
           size: -1,
-          bytes: [1],
+          bytes: new Uint8Array([1]).buffer,
         },
         new FakeAttachmentHost([]),
       ),

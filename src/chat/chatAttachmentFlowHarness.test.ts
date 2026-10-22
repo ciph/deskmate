@@ -1,10 +1,12 @@
+import type { InvokeOptions } from "@tauri-apps/api/core";
+import { requireBinaryUpload, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import { catalogPageFixture, historyArgument, nativeHistoryFixture, registeredHistoryFixture } from "../testing/historyCatalogFixtures";
 import type { UnifiedHistoryRow } from "../lib/unifiedHistory";
 import { afterEach, beforeEach, expect, mock } from "bun:test";
 import * as tauriCore from "@tauri-apps/api/core";
 import { cleanup, fireEvent, screen } from "@testing-library/react";
 
-const invoke = mock<(command: string, args?: unknown) => Promise<unknown>>(
+const invoke = mock<(command: string, args?: unknown, options?: InvokeOptions) => Promise<unknown>>(
   () => Promise.resolve(undefined),
 );
 const originalFetch = globalThis.fetch;
@@ -106,7 +108,7 @@ export function discardedIds(): readonly string[] {
   return commands("discard_chat_attachment").map((args) => stringField(payloadRequest(args), "attachmentId"));
 }
 
-function handleInvoke(command: string, args?: unknown): Promise<unknown> {
+function handleInvoke(command: string, args?: unknown, options?: InvokeOptions): Promise<unknown> {
   switch (command) {
     case "chat_model_resolve":
       return Promise.resolve({ configuredProviderId: "test-entry", sidecarId: "yume-2", modelId: "claude-sonnet-4.5", modelName: "Claude Sonnet 4.5" });
@@ -139,8 +141,8 @@ function handleInvoke(command: string, args?: unknown): Promise<unknown> {
       return Promise.resolve([]);
     case "agent_run_read":
       return Promise.resolve({ active: null, recent: [], artifacts: [] });
-    case "stage_chat_attachment":
-      return Promise.resolve(stageResponse(args));
+    case "stage_chat_attachment_binary":
+      return Promise.resolve(wrapUploadResponse(options, stageResponse(args, options)));
     case "read_chat_attachment":
       return Promise.resolve(readyAttachment("stage-notes", "notes.md", "text/plain", "text", payloadSessionId(args)));
     case "convert_staged_ncm":
@@ -164,8 +166,8 @@ function convertResponse(args: unknown): Promise<unknown> {
   return Promise.resolve(readyAttachment("artifact-song", "song.mp3", "audio/mpeg", "audio", payloadSessionId(args)));
 }
 
-function stageResponse(args: unknown): unknown {
-  const request = payloadRequest(args);
+function stageResponse(args: unknown, options?: InvokeOptions): unknown {
+  const request = requireBinaryUpload(args, options);
   const fileName = stringField(request, "fileName");
   const isNcm = fileName.endsWith(".ncm");
   return { id: isNcm ? "stage-ncm" : "stage-notes", sessionId: stringField(request, "sessionId"), fileName, mime: isNcm ? "application/x-ncm" : "text/plain", size: numberField(request, "size"), kind: isNcm ? "audio" : "text", status: "staged" };

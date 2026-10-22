@@ -1,3 +1,4 @@
+import { decodeUploadOptions, requireBinaryUpload } from "./binaryUploadTestHelpers.test";
 import { describe, expect, test } from "bun:test";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "../testing/chatAgentHistoryCases";
@@ -289,9 +290,11 @@ describe("native attachment picker", () => {
     expect(tray.closest(".chat-input-wrap")).toBeNull();
     expect(tray.parentElement).toBe(input.closest(".chat-input-row"));
     expect(tray.nextElementSibling?.contains(input)).toBe(true);
-    const staged = invoke.mock.calls.filter(([name]) => name === "stage_chat_attachment");
-    expect(staged.map(([, args]) => (args as { request: { fileName: string } }).request.fileName)).toEqual(["notes.md", "second.txt"]);
-    expect(staged[0]?.[1]).toMatchObject({ request: { bytes: Array.from(new TextEncoder().encode("# selected")) } });
+    const staged = invoke.mock.calls.filter(([name]) => name === "stage_chat_attachment_binary");
+    expect(staged.map(([, , options]) => decodeUploadOptions(options).fileName)).toEqual(["notes.md", "second.txt"]);
+    const firstUpload = requireBinaryUpload(staged[0]?.[1], staged[0]?.[2]);
+    expect(firstUpload.bytes.byteLength).toBe(10);
+    expect(new Uint8Array(firstUpload.bytes)).toEqual(new TextEncoder().encode("# selected"));
     fireEvent.change(input, { target: { value: "读取附件" } });
     await waitFor(() => expect((screen.getByRole("button", { name: "发送" }) as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(screen.getByRole("button", { name: "发送" }));
@@ -310,7 +313,7 @@ describe("native attachment picker", () => {
     await waitFor(() => expect(plus.disabled).toBe(false));
     expect((input as HTMLTextAreaElement).value).toBe("保留草稿");
     expect(screen.getByText("notes.md")).toBeDefined();
-    expect(invoke.mock.calls.filter(([name]) => name === "stage_chat_attachment")).toHaveLength(1);
+    expect(invoke.mock.calls.filter(([name]) => name === "stage_chat_attachment_binary")).toHaveLength(1);
   });
 
   test("picker failure is visible and can be retried", async () => {
@@ -323,7 +326,7 @@ describe("native attachment picker", () => {
     expect((await screen.findByRole("alert")).textContent).toContain("暂时无法读取附件");
     expect(document.body.textContent).not.toContain("/Users/private");
     expect(plus.disabled).toBe(false);
-    expect(invoke.mock.calls.filter(([name]) => name === "stage_chat_attachment")).toHaveLength(0);
+    expect(invoke.mock.calls.filter(([name]) => name === "stage_chat_attachment_binary")).toHaveLength(0);
     setAttachmentPicker(async () => [registerResource({ id: "retry_audio", name: "retry.mp3", kind: "audio", mime: "audio/mpeg", size: 8, previewUrl: "chat-resource://localhost/retry_audio" })]);
     fireEvent.click(plus);
     await screen.findByLabelText("预览 retry.mp3");
@@ -344,7 +347,7 @@ describe("native attachment picker", () => {
     fireEvent.click(screen.getByRole("button", { name: "文件夹" }));
     await screen.findByText("workspace");
     await act(async () => resolve([registerResource({ id: "late_resource", name: "late.txt", kind: "file", mime: "text/plain", size: 4, previewUrl: null }, "late")]));
-    expect(invoke.mock.calls.filter(([name]) => name === "stage_chat_attachment")).toHaveLength(0);
+    expect(invoke.mock.calls.filter(([name]) => name === "stage_chat_attachment_binary")).toHaveLength(0);
     expect(screen.queryByText("late.txt")).toBeNull();
   });
 });

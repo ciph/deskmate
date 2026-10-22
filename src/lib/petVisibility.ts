@@ -10,6 +10,10 @@ export function onPetVisibility(callback: (event: PetVisibilityEvent) => void): 
   return listen<PetVisibilityEvent>("deskmate://pet-visibility", ({ payload }) => callback(payload));
 }
 
+export function onPetNativeVisibility(callback: (visible: boolean) => void): Promise<UnlistenFn> {
+  return listen<boolean>("deskmate://pet-native-visibility", ({ payload }) => callback(payload));
+}
+
 export function acknowledgePetVisibility(token: number): Promise<void> {
   return invoke("acknowledge_pet_visibility", { token });
 }

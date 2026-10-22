@@ -18,6 +18,9 @@
     "scripts/agent-qa/p5-mcp-inventory.ts",
     "scripts/agent-qa/p5-windows-e2e.ts",
     "scripts/pack-personas.ts",
+    "scripts/prepare-personas.ts",
+    "scripts/prepare-persona-envelopes.ts",
+    "scripts/prepare-persona-envelopes.test.ts",
     "scripts/persona-asset-policy.ts",
     "scripts/persona-asset-policy.test.ts",
     "scripts/automation-qa/verify-semantics.ts"

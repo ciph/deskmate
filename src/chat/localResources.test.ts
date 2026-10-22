@@ -1,14 +1,22 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
 import * as tauriCore from "@tauri-apps/api/core";
+import type { InvokeOptions } from "@tauri-apps/api/core";
+import { requireBinaryUpload, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import { isMediaFile, parseLocalResources, pickChatResources, prepareChatResources, readLegacyResource, stageMediaResource, stripLocalResourceContext, usesLegacyAttachment } from "./localResources";
 
-const invoke = mock<(command: string, args?: unknown) => Promise<unknown>>(() => Promise.resolve([]));
+const invoke = mock<(command: string, args?: unknown, options?: InvokeOptions) => Promise<unknown>>(() => Promise.resolve([]));
+async function nativeInvoke(command: string, args?: unknown, options?: InvokeOptions): Promise<unknown> {
+  const result = options ? await invoke(command, args, options) : await invoke(command, args);
+  if (command !== "stage_chat_resource_upload_binary") return result;
+  requireBinaryUpload(args, options);
+  return result && typeof result === "object" && "uploadId" in result ? result : wrapUploadResponse(options, result);
+}
 let previousInvoke = tauriCore.invoke;
 
 beforeEach(() => {
   invoke.mockReset();
   previousInvoke = tauriCore.invoke;
-  mock.module("@tauri-apps/api/core", () => ({ ...tauriCore, invoke }));
+  mock.module("@tauri-apps/api/core", () => ({ ...tauriCore, invoke: nativeInvoke }));
 });
 afterEach(() => { mock.module("@tauri-apps/api/core", () => ({ ...tauriCore, invoke: previousInvoke })); });
 
@@ -54,11 +62,34 @@ describe("local resource boundaries", () => {
     invoke.mockResolvedValue(audio);
     const file = new File([new Uint8Array([82, 73, 70, 70])], "voice.wav", { type: "audio/wav" });
     expect(await stageMediaResource(file)).toEqual(audio);
-    expect(invoke.mock.calls[0]).toEqual(["stage_chat_resource_upload", { fileName: "voice.wav", mime: "audio/wav", bytes: [82, 73, 70, 70] }]);
+    const [command, bytes, options] = invoke.mock.calls[0];
+    expect(command).toBe("stage_chat_resource_upload_binary");
+    expect(requireBinaryUpload(bytes, options)).toMatchObject({ fileName: "voice.wav", mime: "audio/wav", size: 4 });
+    expect([...new Uint8Array(bytes as ArrayBuffer)]).toEqual([82, 73, 70, 70]);
     const oversized = { name: "big.wav", size: 64 * 1024 * 1024 + 1, arrayBuffer: mock(() => Promise.resolve(new ArrayBuffer(0))) };
     await expect(stageMediaResource(oversized as unknown as File)).rejects.toThrow("resource_upload_size_limit");
     expect(oversized.arrayBuffer).not.toHaveBeenCalled();
     expect(invoke).toHaveBeenCalledTimes(1);
+  });
+
+  test("64 MiB media uses the exact raw body and empty or mismatched files never invoke", async () => {
+    const bytes = new ArrayBuffer(64 * 1024 * 1024);
+    const file = { name: "clip.mp4", type: "video/mp4", size: bytes.byteLength, arrayBuffer: mock(() => Promise.resolve(bytes)) };
+    invoke.mockResolvedValue({ ...audio, name: file.name, kind: "video", mime: file.type, size: file.size });
+    await stageMediaResource(file as unknown as File);
+    expect(invoke.mock.calls[0]?.[1]).toBe(bytes);
+    expect(requireBinaryUpload(bytes, invoke.mock.calls[0]?.[2]).size).toBe(bytes.byteLength);
+    const empty = { ...file, size: 0, arrayBuffer: mock(() => Promise.resolve(bytes)) };
+    await expect(stageMediaResource(empty as unknown as File)).rejects.toThrow("resource_upload_empty");
+    expect(empty.arrayBuffer).not.toHaveBeenCalled();
+    await expect(stageMediaResource({ ...file, size: 3 } as unknown as File)).rejects.toThrow("resource_upload_size_mismatch");
+    expect(invoke).toHaveBeenCalledTimes(1);
+  });
+
+  test("an invalid identity receipt discards only its returned unbound opaque resource", async () => {
+    invoke.mockResolvedValueOnce({ uploadId: "wrong", scopeKey: "scope", value: audio }).mockResolvedValueOnce(undefined);
+    await expect(stageMediaResource(new File(["one"], "voice.mp3"), { uploadId: "current", scopeKey: "scope" })).rejects.toThrow("upload response identity mismatch");
+    expect(invoke.mock.calls[1]).toEqual(["discard_chat_resources", { resourceIds: [audio.id] }]);
   });
 
   test("legacy documents read separately and resource preparation sends IDs only", async () => {

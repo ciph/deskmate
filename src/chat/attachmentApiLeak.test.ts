@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import type { InvokeOptions } from "@tauri-apps/api/core";
+import { decodeUploadOptions, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import {
   cleanupChatSession,
   convertStagedNcm,
@@ -12,20 +14,19 @@ import {
   type StageChatAttachmentRequest,
 } from "./attachmentApi";
 
-const MIB = 1024 * 1024;
 const STAGE_REQUEST = {
   sessionId: "ses-1",
   fileName: "large.ncm",
   mime: "application/x-ncm",
-  size: 64 * MIB,
-  bytes: [1, 2, 3],
+  size: 3,
+  bytes: new Uint8Array([1, 2, 3]).buffer,
 } satisfies StageChatAttachmentRequest;
 const STAGED_RESPONSE = {
   id: "att-1",
   sessionId: "ses-1",
   fileName: "large.ncm",
   mime: "application/x-ncm",
-  size: 64 * MIB,
+  size: 3,
   kind: "audio",
   status: "staged",
 };
@@ -48,39 +49,26 @@ const EXPORT_RESPONSE = {
   exportedAt: "2026-09-01T10:00:00.000Z",
 };
 
-class SinglePassBytes extends Array<number> {
-  private iteratorReads = 0;
-
-  get iterations(): number {
-    return this.iteratorReads;
-  }
-
-  override [Symbol.iterator](): ArrayIterator<number> {
-    this.iteratorReads += 1;
-    if (this.iteratorReads > 1) throw new Error("bytes walked twice");
-    return super[Symbol.iterator]();
-  }
-}
-
 class FakeAttachmentHost implements AttachmentHost {
   readonly calls: Array<{
     readonly command: AttachmentCommandName;
-    readonly payload: AttachmentCommandPayload;
+    readonly payload: AttachmentCommandPayload | ArrayBuffer;
+    readonly options?: InvokeOptions;
   }> = [];
 
   constructor(private readonly responses: readonly unknown[]) {}
 
-  async invoke(command: AttachmentCommandName, payload: AttachmentCommandPayload): Promise<unknown> {
-    this.calls.push({ command, payload });
+  async invoke(command: AttachmentCommandName, payload: AttachmentCommandPayload | ArrayBuffer, options?: InvokeOptions): Promise<unknown> {
+    this.calls.push({ command, payload, ...(options ? { options } : {}) });
     const response = this.responses[this.calls.length - 1];
     if (response instanceof Error) throw response;
-    return response;
+    return command === "stage_chat_attachment_binary" ? wrapUploadResponse(options, response) : response;
   }
 }
 
 describe("attachment api native path leak boundaries", () => {
   test("sends captured stage bytes when request bytes accessor swaps later", async () => {
-    const firstBytes = [7, 8, 9];
+    const firstBytes = new Uint8Array([7, 8, 9]).buffer;
     const swappedBytes: number[] = [];
     Object.defineProperty(swappedBytes, "0", {
       configurable: true,
@@ -90,9 +78,9 @@ describe("attachment api native path leak boundaries", () => {
     let bytesReads = 0;
     const request: StageChatAttachmentRequest = {
       ...STAGE_REQUEST,
-      get bytes(): readonly number[] {
+      get bytes(): ArrayBuffer {
         bytesReads += 1;
-        return bytesReads === 1 ? firstBytes : swappedBytes;
+        return bytesReads === 1 ? firstBytes : swappedBytes as unknown as ArrayBuffer;
       },
     };
     const host = new FakeAttachmentHost([STAGED_RESPONSE]);
@@ -100,10 +88,8 @@ describe("attachment api native path leak boundaries", () => {
     await expect(stageChatAttachment(request, host)).resolves.toMatchObject({ fileName: "large.ncm" });
 
     expect(bytesReads).toBe(1);
-    expect(firstStageRequest(host).bytes).toBe(firstBytes);
-    expect(host.calls).toEqual([
-      { command: "stage_chat_attachment", payload: { request: { ...STAGE_REQUEST, bytes: firstBytes } } },
-    ]);
+    expect(host.calls[0]?.payload).toBe(firstBytes);
+    expect(decodeUploadOptions(host.calls[0]?.options)).toMatchObject({ sessionId: "ses-1", fileName: "large.ncm", size: 3 });
   });
 
   test("drops nested request extra fields and accessors before host invocation", async () => {
@@ -117,7 +103,8 @@ describe("attachment api native path leak boundaries", () => {
 
     await expect(stageChatAttachment(request, host)).resolves.toMatchObject({ id: "att-1" });
 
-    expect(host.calls).toEqual([{ command: "stage_chat_attachment", payload: { request: STAGE_REQUEST } }]);
+    expect(host.calls[0]?.payload).toBe(STAGE_REQUEST.bytes);
+    expect(decodeUploadOptions(host.calls[0]?.options)).not.toHaveProperty("audit");
   });
 
   test("normalizes accessor-backed ids before invoking every command", async () => {
@@ -160,22 +147,14 @@ describe("attachment api native path leak boundaries", () => {
     await expect(exportChatArtifact({ sessionId: "ses-1", artifactId: "art-1" }, new FakeAttachmentHost([{ ...EXPORT_RESPONSE, bytes: pathBytes("song.mp3") }]))).rejects.toThrow("native path value leaked");
   });
 
-  test("iterates validated stage byte arrays exactly once", async () => {
-    const bytes = new SinglePassBytes(7, 8, 9);
+  test("forwards the same ArrayBuffer without traversing byte values or attached fields", async () => {
+    const bytes = new Uint8Array([7, 8, 9]).buffer;
+    Object.defineProperty(bytes, "audit", { enumerable: true, get() { throw new Error("bytes walked"); } });
     const host = new FakeAttachmentHost([STAGED_RESPONSE]);
-
     await expect(stageChatAttachment({ ...STAGE_REQUEST, bytes }, host)).resolves.toMatchObject({ fileName: "large.ncm" });
-
-    expect(bytes.iterations).toBe(1);
-    expect(firstStageRequest(host).bytes).toBe(bytes);
+    expect(host.calls[0]?.payload).toBe(bytes);
   });
 });
-
-function firstStageRequest(host: FakeAttachmentHost): StageChatAttachmentRequest {
-  const request = host.calls[0]?.payload.request;
-  if (request === undefined || !("bytes" in request)) throw new Error("stage request not captured");
-  return request;
-}
 
 function pathBytes(fileName: string): readonly string[] {
   return [`C:\\Users\\secret\\${fileName}`];

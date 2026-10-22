@@ -188,13 +188,13 @@ describe("useChatAttachments gate regressions", () => {
     const cleanupRequests: string[] = [];
     const diagnostics: string[] = [];
     const failingHost: AttachmentHost = {
-      invoke(command, payload) {
-        if (command === "cleanup_chat_session") {
+      invoke(command, payload, options) {
+        if (command === "cleanup_chat_session" && !(payload instanceof ArrayBuffer)) {
           const request = payload.request;
           if ("sessionId" in request) cleanupRequests.push(request.sessionId);
           return Promise.reject(new Error("cleanup denied"));
         }
-        return createFakeHost().invoke(command, payload);
+        return createFakeHost().invoke(command, payload, options);
       },
     };
     render(createElement(Harness, {

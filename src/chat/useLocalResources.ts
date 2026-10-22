@@ -19,6 +19,7 @@ export function useLocalResources(options: Options) {
   const latest = useRef(options);
   latest.current = options;
   const generation = useRef(0);
+  const uploadScope = useRef<{ controller: AbortController; key: string } | null>(null);
   const resourcesRef = useRef<readonly LocalResource[]>([]);
   const [resources, setResources] = useState<readonly LocalResource[]>([]);
   const [pending, setPending] = useState(false);
@@ -30,10 +31,17 @@ export function useLocalResources(options: Options) {
   }, []);
   useLayoutEffect(() => {
     generation.current += 1;
+    const scope = { controller: new AbortController(), key: crypto.randomUUID() };
+    uploadScope.current = scope;
     update([]);
     pendingCount.current = 0;
     setPending(false);
-    return () => { generation.current += 1; discard(resourcesRef.current); };
+    return () => {
+      generation.current += 1;
+      scope.controller.abort();
+      uploadScope.current = null;
+      discard(resourcesRef.current);
+    };
   }, [options.scopeKey, update]);
 
   const receive = useCallback(async (load: () => Promise<readonly LocalResource[]>) => {
@@ -97,11 +105,15 @@ export function useLocalResources(options: Options) {
   const pick = useCallback((title: string, directory = false) => pendingCount.current > 0 ? Promise.resolve() : receive(() => pickChatResources(title, directory)), [receive]);
   const addMediaFiles = useCallback((files: readonly File[]) => {
     const token = generation.current;
+    const scope = uploadScope.current;
+    if (!scope) return Promise.resolve();
+    const signal = scope.controller.signal;
+    const scopeKey = scope.key;
     return receive(async () => {
       const values: LocalResource[] = [];
       for (const file of files) {
         if (token !== generation.current || !latest.current.active) break;
-        try { values.push(await stageMediaResource(file)); }
+        try { values.push(await stageMediaResource(file, { uploadId: `${token}:${crypto.randomUUID()}`, scopeKey }, signal)); }
         catch (cause) {
           if (token === generation.current && latest.current.active) latest.current.onError(cause instanceof Error ? cause.message : String(cause));
         }

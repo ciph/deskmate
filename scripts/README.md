@@ -12,6 +12,7 @@
 | `bun scripts/check-package-resources.ts` | Tauri `beforeBundleCommand` 发布资源检查 | 拒绝 frontend/OpenCode 的 `.map`、`.pdb` 及 Windows MCP 随包配置 |
 | `bun run prepare:workbench` | [固定上游 UI 与本仓 overlay](../docs/workbench-build.md) | `public/workbench/`，含 terminal WASM；上游输入与 W1/W2 限制见构建契约 |
 | `bun run fetch:persona-assets` | pinned 私有角色归档；显式资产下载凭据 | 忽略的 GLB/PNG；固定文件数与哈希校验，过滤旧 `figure3d.json`/provenance，marker 命中也清理 |
+| `bun scripts/prepare-personas.ts --envelopes-only` | 已存在的内置变体 GLB、当前动作包络算法及角色配置；不下载 | 生成 `src/pet/variantEnvelopes.generated.json`，实际模型 hash/算法版本/scale/clipRoots 校验；无变化不重写，缺模型报错。替换模型后必须重生成并视觉回归；普通资产 fetch 不生成包络 |
 | `scripts/prepare-xiaozhu-sandaime.ps1` | Windows 模型生成器及现有二代模型 | 三代 GLB 与 `docs/assets/` 溯源；PowerShell、Python，需模型结构/动作测试 |
 | `bun scripts/pack-personas.ts` | 现有作者 pack CLI 参数、当前 persona/skill 及封面 | `.dmpack`；按渲染器校验必需文件，只接收允许的作者元数据；参数见文件顶部 |
 | `scripts/pack-archive.ps1` / `scripts/pack-inspect.ps1` | Windows 作者 archive/检查 CLI | 保留作者操作职责；不作为自动产品启动入口 |

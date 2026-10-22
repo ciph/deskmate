@@ -200,4 +200,11 @@ async function totalSize(dir: string): Promise<number> {
   return total;
 }
 
-await main();
+if (process.argv.includes("--envelopes-only")) {
+  // Explicit authoring step after changing a bundled GLB. Downloading optional
+  // archive assets must neither require all built-ins nor rewrite source data.
+  const { prepareBuiltinVariantEnvelopes } = await import("./prepare-persona-envelopes");
+  await prepareBuiltinVariantEnvelopes(projectRoot);
+} else {
+  await main();
+}

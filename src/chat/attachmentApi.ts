@@ -1,4 +1,5 @@
-import { invoke as tauriInvoke } from "@tauri-apps/api/core";
+import { binaryUploadOptions, binaryUploadValue, type BinaryUploadIdentity } from "./binaryUpload";
+import { invoke as tauriInvoke, type InvokeOptions } from "@tauri-apps/api/core";
 import {
   AttachmentApiError,
   assertNoNativePathLeak,
@@ -43,7 +44,7 @@ export type {
 } from "./attachmentApiBoundary";
 
 export type AttachmentCommandName =
-  | "stage_chat_attachment"
+  | "stage_chat_attachment_binary"
   | "read_chat_attachment"
   | "discard_chat_attachment"
   | "convert_staged_ncm"
@@ -63,7 +64,7 @@ export type AttachmentCommandPayload =
   | { readonly request: CleanupChatSessionRequest };
 
 export interface AttachmentHost {
-  invoke(command: AttachmentCommandName, payload: AttachmentCommandPayload): Promise<unknown>;
+  invoke(command: AttachmentCommandName, payload: AttachmentCommandPayload | ArrayBuffer, options?: InvokeOptions): Promise<unknown>;
 }
 
 type InvokeRequest<T> = {
@@ -71,19 +72,40 @@ type InvokeRequest<T> = {
   readonly command: AttachmentCommandName;
   readonly request: AttachmentCommandPayload["request"];
   readonly parse: (response: unknown) => T;
-  readonly trustedOpaqueBytes?: readonly number[];
 };
 type AttachmentBase = { readonly id: string; readonly sessionId: string; readonly fileName: string; readonly mime: SupportedAttachmentMime; readonly size: number; readonly kind: ChatAttachmentKind };
 
 export const tauriAttachmentHost: AttachmentHost = {
-  invoke(command, payload) {
-    return tauriInvoke(command, payload);
+  invoke(command, payload, options) {
+    return options ? tauriInvoke(command, payload, options) : tauriInvoke(command, payload);
   },
 };
 
-export async function stageChatAttachment(request: StageChatAttachmentRequest, host: AttachmentHost = tauriAttachmentHost): Promise<StagedChatAttachment> {
-  const normalized = normalizeStageRequest(request);
-  return invokeAndParse({ host, command: "stage_chat_attachment", request: normalized, parse: parseStagedAttachment, trustedOpaqueBytes: normalized.bytes });
+export async function stageChatAttachment(
+  request: StageChatAttachmentRequest,
+  host: AttachmentHost = tauriAttachmentHost,
+  identity?: BinaryUploadIdentity,
+): Promise<StagedChatAttachment> {
+  const { bytes, ...metadata } = normalizeStageRequest(request);
+  assertNoNativePathLeak(metadata, "request");
+  const boundIdentity = identity ? { uploadId: identity.uploadId, scopeKey: identity.scopeKey } : { uploadId: crypto.randomUUID(), scopeKey: metadata.sessionId };
+  const response = await host.invoke("stage_chat_attachment_binary", bytes, binaryUploadOptions({ ...metadata, ...boundIdentity }));
+  try {
+    assertNoNativePathLeak(response, "response");
+    const attachment = parseStagedAttachment(binaryUploadValue(response, boundIdentity));
+    if (attachment.sessionId !== metadata.sessionId || attachment.fileName !== metadata.fileName
+      || attachment.mime !== metadata.mime || attachment.size !== metadata.size) {
+      throw new AttachmentApiError("staged attachment metadata mismatch");
+    }
+    return attachment;
+  } catch (error) {
+    // An invalid receipt must not orphan a record created for this original session.
+    const value = response && typeof response === "object" && "value" in response ? response.value : null;
+    if (value && typeof value === "object" && "id" in value && typeof value.id === "string") {
+      try { await discardChatAttachment({ sessionId: metadata.sessionId, attachmentId: value.id }, host); } catch { /* Preserve the invalid receipt error. */ }
+    }
+    throw error;
+  }
 }
 
 export async function readChatAttachment(request: AttachmentIdRequest, host: AttachmentHost = tauriAttachmentHost): Promise<ReadyChatAttachment> {
@@ -109,7 +131,7 @@ export async function cleanupChatSession(request: CleanupChatSessionRequest, hos
 }
 
 async function invokeAndParse<T>(input: InvokeRequest<T>): Promise<T> {
-  assertNoNativePathLeak(input.request, "request", input.trustedOpaqueBytes);
+  assertNoNativePathLeak(input.request, "request");
   const response = await input.host.invoke(input.command, { request: input.request });
   assertNoNativePathLeak(response, "response");
   return input.parse(response);

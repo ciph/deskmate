@@ -1,3 +1,5 @@
+import type { InvokeOptions } from "@tauri-apps/api/core";
+import { requireBinaryUpload, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import { act } from "@testing-library/react";
 import type {
   AttachmentCommandName,
@@ -42,10 +44,15 @@ export function createFakeHost(): FakeHost {
     convertQueue: [],
     exportQueue: [],
     readResponses: new Map<string, ReadyChatAttachment>(),
-    invoke(command: AttachmentCommandName, payload: AttachmentCommandPayload): Promise<unknown> {
+    invoke(command: AttachmentCommandName, payload: AttachmentCommandPayload | ArrayBuffer, options?: InvokeOptions): Promise<unknown> {
+      if (command === "stage_chat_attachment_binary") {
+        const upload = requireBinaryUpload(payload, options);
+        if (!upload.sessionId) throw new Error("attachment upload sessionId missing");
+        const request = { ...upload, sessionId: upload.sessionId } as StageChatAttachmentRequest;
+        return enqueue(fake.stageRequests, fake.stageQueue, request).then(value => wrapUploadResponse(options, value));
+      }
+      if (payload instanceof ArrayBuffer) throw new Error("JSON command request expected");
       switch (command) {
-        case "stage_chat_attachment":
-          return enqueue(fake.stageRequests, fake.stageQueue, requireStageRequest(payload.request));
         case "convert_staged_ncm":
           return enqueue(fake.convertRequests, fake.convertQueue, requireAttachmentRequest(payload.request));
         case "export_chat_artifact":
@@ -186,11 +193,6 @@ function deferred<T>(): Deferred<T> {
       rejectValue(error);
     },
   };
-}
-
-function requireStageRequest(request: AttachmentCommandPayload["request"]): StageChatAttachmentRequest {
-  if ("fileName" in request && "bytes" in request) return request;
-  throw new Error("stage request expected");
 }
 
 function requireAttachmentRequest(request: AttachmentCommandPayload["request"]): AttachmentIdRequest {

@@ -53,7 +53,7 @@ describe("useChatAttachments staged controller", () => {
     await waitFor(() => expect(host.stageRequests).toHaveLength(1));
     await resolveStage(host, 0, "stage-gif", "image");
     await waitFor(() => expect(getController().items[0]?.kind).toBe("ready"));
-    expect(getController().items[0]).toMatchObject({ source: { mime: "image/gif", previewDataUrl: dataUrl } });
+    expect(getController().items[0]).toMatchObject({ source: { mime: "image/gif", previewDataUrl: expect.stringMatching(/^blob:/) } });
     expect(host.readRequests).toHaveLength(0);
     host.readResponses.set("stage-gif", {
       id: "stage-gif", sessionId: "ses-1", fileName: "cat.GIF", mime: "image/gif",

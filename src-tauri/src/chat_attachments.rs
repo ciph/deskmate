@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use tauri::{Manager, State};
 
+mod binary_upload;
 mod cleanup;
 mod conversion;
 mod export;
@@ -26,7 +27,7 @@ pub use types::{
     StageChatAttachmentRequest, StagedChatAttachment,
 };
 
-fn cache_root(app: &tauri::AppHandle) -> Result<PathBuf, AttachmentError> {
+fn cache_root<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<PathBuf, AttachmentError> {
     Ok(app
         .path()
         .app_cache_dir()
@@ -35,17 +36,31 @@ fn cache_root(app: &tauri::AppHandle) -> Result<PathBuf, AttachmentError> {
 }
 
 #[tauri::command]
-pub fn stage_chat_attachment(
-    app: tauri::AppHandle,
-    store: State<AttachmentStore>,
-    request: StageChatAttachmentRequest,
-) -> Result<StagedChatAttachment, String> {
-    store
-        .stage(
-            &cache_root(&app).map_err(|error| error.to_string())?,
-            request,
-        )
-        .map_err(|error| error.to_string())
+pub(crate) async fn stage_chat_attachment_binary<R: tauri::Runtime>(
+    window: tauri::WebviewWindow<R>,
+    app: tauri::AppHandle<R>,
+    request: tauri::ipc::Request<'_>,
+) -> Result<binary_upload::BinaryUploadReceipt<StagedChatAttachment>, String> {
+    crate::tool_permissions::runtime::require_chat(&window)?;
+    let (metadata, bytes) = binary_upload::parse(
+        request.body(),
+        request.headers(),
+        binary_upload::UploadKind::Attachment,
+    )?;
+    // Tauri lends the raw body; own it once before moving disk IO off the IPC thread.
+    let bytes = bytes.to_vec();
+    tauri::async_runtime::spawn_blocking(move || {
+        let value = app
+            .state::<AttachmentStore>()
+            .stage(
+                &cache_root(&app).map_err(|e| e.to_string())?,
+                metadata.stage_request(bytes),
+            )
+            .map_err(|e| e.to_string())?;
+        Ok(metadata.receipt(value))
+    })
+    .await
+    .map_err(|_| "attachment staging task failed".to_owned())?
 }
 
 #[tauri::command]

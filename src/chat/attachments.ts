@@ -44,6 +44,32 @@ export type ImageModelReadyAttachment = {
 
 export type ModelReadyAttachment = TextModelReadyAttachment | ImageModelReadyAttachment;
 
+/** Staged image bytes passed backend MIME/signature checks; keep their encoded representation. */
+export function prepareModelReadyImage(
+  metadata: StagedAttachmentMetadata,
+  dataUrl: string,
+): ImageModelReadyAttachment {
+  const { mime, size } = metadata;
+  if (!isSupportedImageMime(mime) || !Number.isSafeInteger(size) || size <= 0 || size > MAX_ATTACHMENT_BYTES) {
+    throw new Error("Invalid staged image metadata");
+  }
+  const prefix = `data:${mime};base64,`;
+  if (!dataUrl.startsWith(prefix)) throw new Error("Invalid staged image data URL");
+  const encoded = dataUrl.slice(prefix.length);
+  const padding = (3 - size % 3) % 3;
+  if (encoded.length !== Math.ceil(size / 3) * 4
+    || !encoded.endsWith("=".repeat(padding))
+    || /[^A-Za-z0-9+/]/.test(encoded.slice(0, encoded.length - padding))) {
+    throw new Error("Invalid staged image encoding or size");
+  }
+  // Reject noncanonical padding without decoding and allocating another full image.
+  if (padding > 0) {
+    const last = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".indexOf(encoded[encoded.length - padding - 1]!);
+    if ((last & ((1 << (padding * 2)) - 1)) !== 0) throw new Error("Invalid staged image padding");
+  }
+  return { ...metadata, mime, kind: "image", status: "ready", dataUrl };
+}
+
 export async function prepareModelReadyAttachment(
   source: StagedAttachmentSource,
   signal?: AbortSignal,

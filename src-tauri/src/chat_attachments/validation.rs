@@ -84,7 +84,7 @@ pub(super) fn has_windows_reserved_stem(value: &str) -> bool {
     WINDOWS_RESERVED_NAMES.contains(&normalized.as_str())
 }
 
-fn sanitize_filename(value: &str) -> Result<String, AttachmentError> {
+pub(super) fn sanitize_filename(value: &str) -> Result<String, AttachmentError> {
     const RESERVED_CHARS: [char; 9] = ['<', '>', ':', '"', '/', '\\', '|', '?', '*'];
 
     if value.trim().is_empty()
@@ -103,7 +103,7 @@ fn sanitize_filename(value: &str) -> Result<String, AttachmentError> {
     Ok(value.to_string())
 }
 
-fn parse_mime(value: &str) -> Result<(String, AttachmentKind), AttachmentError> {
+pub(super) fn parse_mime(value: &str) -> Result<(String, AttachmentKind), AttachmentError> {
     let kind = match value {
         "image/gif" | "image/jpeg" | "image/png" | "image/webp" => AttachmentKind::Image,
         "audio/flac" | "audio/mpeg" | "audio/mp4" | "audio/ogg" | "audio/wav" | "audio/webm"

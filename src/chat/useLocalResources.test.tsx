@@ -1,15 +1,23 @@
-import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test";
 import { act, cleanup, render, waitFor } from "@testing-library/react";
 import * as tauriCore from "@tauri-apps/api/core";
+import type { InvokeOptions } from "@tauri-apps/api/core";
+import { requireBinaryUpload, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import * as tauriEvent from "@tauri-apps/api/event";
 import type { LocalResource } from "./localResources";
 import { useLocalResources } from "./useLocalResources";
 
-const invoke = mock<(command: string, args?: unknown) => Promise<unknown>>(() => Promise.resolve([]));
+const invoke = mock<(command: string, args?: unknown, options?: InvokeOptions) => Promise<unknown>>(() => Promise.resolve([]));
 const listeners = new Map<string, (event: { payload: unknown }) => void>();
 const onLegacyFiles = mock<(files: readonly File[]) => void>(() => {});
 const onError = mock<(error: string) => void>(() => {});
 let controller: ReturnType<typeof useLocalResources>;
+async function nativeInvoke(command: string, args?: unknown, options?: InvokeOptions): Promise<unknown> {
+  const result = options ? await invoke(command, args, options) : await invoke(command, args);
+  if (command !== "stage_chat_resource_upload_binary") return result;
+  requireBinaryUpload(args, options);
+  return wrapUploadResponse(options, result);
+}
 let previousInvoke = tauriCore.invoke;
 let previousListen = tauriEvent.listen;
 let previousEmit = tauriEvent.emit;
@@ -32,7 +40,7 @@ beforeEach(() => {
   previousInvoke = tauriCore.invoke;
   previousListen = tauriEvent.listen;
   previousEmit = tauriEvent.emit;
-  mock.module("@tauri-apps/api/core", () => ({ ...tauriCore, invoke }));
+  mock.module("@tauri-apps/api/core", () => ({ ...tauriCore, invoke: nativeInvoke }));
   mock.module("@tauri-apps/api/event", () => ({
     ...tauriEvent,
     emit: () => Promise.resolve(),
@@ -58,6 +66,21 @@ function discardedIds(): string[] {
 }
 
 describe("local resource acquisition", () => {
+  test("allocates upload identity only when its conversation scope changes", () => {
+    const newId = spyOn(crypto, "randomUUID");
+    try {
+      const view = render(<Harness scopeKey="conversation-a" />);
+      expect(newId).toHaveBeenCalledTimes(1);
+      view.rerender(<Harness scopeKey="conversation-a" active={false} />);
+      view.rerender(<Harness scopeKey="conversation-a" />);
+      expect(newId).toHaveBeenCalledTimes(1);
+      view.rerender(<Harness scopeKey="conversation-b" />);
+      expect(newId).toHaveBeenCalledTimes(2);
+      view.unmount();
+      expect(newId).toHaveBeenCalledTimes(2);
+    } finally { newId.mockRestore(); }
+  });
+
   test("native drops retain media and folders as references without loading their bytes", async () => {
     render(<Harness />);
     const resources = [audio, resource("res_wav", "recording.wav", "audio"), resource("res_m4a", "recording.m4a", "audio"), resource("res_video", "clip.mp4", "video"), folder];
@@ -201,6 +224,44 @@ describe("local resource acquisition", () => {
     await act(async () => { resolve(audio); await pending; });
     expect(controller.resources).toEqual([]);
     expect(discardedIds()).toEqual([audio.id]);
+  });
+
+  test("scope changes abort a pending File read before raw IPC without leaking the workspace path", async () => {
+    const file = new File(["one"], "voice.mp3");
+    let finish!: (bytes: ArrayBuffer) => void;
+    const read = spyOn(file, "arrayBuffer").mockImplementation(() => new Promise(done => { finish = done; }));
+    try {
+      const view = render(<Harness scopeKey="ses-1:C:\\private\\workspace" />);
+      let pending!: Promise<void>;
+      await act(async () => { pending = controller.addMediaFiles([file]); });
+      expect(read).toHaveBeenCalledTimes(1);
+      view.rerender(<Harness scopeKey="ses-2:C:\\other" />);
+      await act(async () => { finish(new ArrayBuffer(3)); await pending; });
+      expect(invoke).not.toHaveBeenCalled();
+      expect(onError).not.toHaveBeenCalled();
+      expect(controller.pending).toBe(false);
+      invoke.mockResolvedValueOnce(audio);
+      await act(async () => { await controller.addMediaFiles([new File(["one"], "voice.mp3")]); });
+      const metadata = requireBinaryUpload(invoke.mock.calls[0]?.[1], invoke.mock.calls[0]?.[2]);
+      expect(metadata.scopeKey).toMatch(/^[0-9a-f-]{36}$/);
+      expect(JSON.stringify(metadata)).not.toContain("other");
+    } finally { read.mockRestore(); }
+  });
+
+  test("unmount discards an already invoked late upload and does not start the next File", async () => {
+    let finish!: (value: unknown) => void;
+    invoke.mockImplementation(command => command === "discard_chat_resources" ? Promise.resolve() : new Promise(done => { finish = done; }));
+    const second = new File(["two"], "second.mp3");
+    const read = spyOn(second, "arrayBuffer");
+    try {
+      const view = render(<Harness />);
+      let pending!: Promise<void>;
+      await act(async () => { pending = controller.addMediaFiles([new File(["one"], "one.mp3"), second]); });
+      view.unmount();
+      await act(async () => { finish(audio); await pending; });
+      expect(discardedIds()).toEqual([audio.id]);
+      expect(read).not.toHaveBeenCalled();
+    } finally { read.mockRestore(); }
   });
 
   test("resource count overflow keeps the first 32 and discards only excess references", async () => {

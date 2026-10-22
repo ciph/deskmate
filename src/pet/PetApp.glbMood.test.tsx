@@ -14,6 +14,7 @@ class GpuBoundary {
   constructor(private readonly canvas: HTMLCanvasElement) { canvas.dataset.mood = "idle"; }
   async load(id: string) { this.canvas.dataset.persona = id; }
   setMood(mood: PetMood) { this.canvas.dataset.mood = mood; }
+  setVisible(visible: boolean) { this.canvas.dataset.visible = String(visible); }
   setRenderTuning() {}
   setMouseFollowEnabled() {}
   dispose() {}
@@ -24,7 +25,7 @@ beforeEach(() => {
   mock.module("./PetRenderer", () => ({ PetRenderer: GpuBoundary }));
   mockIPC(command => {
     if (command === "get_settings") return settings;
-    if (command === "get_pet_visibility") return true;
+    if (command === "get_pet_visibility" || command === "plugin:window|is_visible") return true;
     return null;
   }, { shouldMockEvents: true });
 });

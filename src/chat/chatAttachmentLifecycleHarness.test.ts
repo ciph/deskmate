@@ -1,10 +1,12 @@
+import type { InvokeOptions } from "@tauri-apps/api/core";
+import { requireBinaryUpload, wrapUploadResponse, decodeUploadOptions } from "./binaryUploadTestHelpers.test";
 import { catalogPageFixture, historyArgument, nativeHistoryFixture, registeredHistoryFixture } from "../testing/historyCatalogFixtures";
 import type { UnifiedHistoryRow } from "../lib/unifiedHistory";
 import { afterEach, beforeEach, mock } from "bun:test";
 import * as tauriCore from "@tauri-apps/api/core";
 import { cleanup, fireEvent, screen } from "@testing-library/react";
 
-const invoke = mock<(command: string, args?: unknown) => Promise<unknown>>(
+const invoke = mock<(command: string, args?: unknown, options?: InvokeOptions) => Promise<unknown>>(
   () => Promise.resolve(undefined),
 );
 const originalConsoleError = console.error;
@@ -117,7 +119,11 @@ export function cleanupSessions(): readonly string[] {
 }
 
 export function stageSessionIds(): readonly string[] {
-  return commands("stage_chat_attachment").map((args) => payloadSessionId(args));
+  return invoke.mock.calls.filter(([command]) => command === "stage_chat_attachment_binary").map(([, , options]) => {
+    const sessionId = decodeUploadOptions(options).sessionId;
+    if (!sessionId) throw new Error("attachment upload sessionId missing");
+    return sessionId;
+  });
 }
 
 export function discardedIds(): readonly string[] {
@@ -130,8 +136,8 @@ export function orderedEvents(): readonly string[] {
     .filter((event) => event.startsWith("history_catalog_load:hist-") || event.startsWith("cleanup:") || event.startsWith("stage:") || event.startsWith("abort:"));
 }
 
-function handleInvoke(command: string, args?: unknown): Promise<unknown> {
-  transportEvents.push(`${command}:${commandSessionId(command, args) ?? ""}`);
+function handleInvoke(command: string, args?: unknown, options?: InvokeOptions): Promise<unknown> {
+  transportEvents.push(`${command}:${commandSessionId(command, args, options) ?? ""}`);
   switch (command) {
     case "chat_model_resolve":
       return Promise.resolve({ configuredProviderId: "test-entry", sidecarId: "yume-2", modelId: "claude-sonnet-4.5", modelName: "Claude Sonnet 4.5" });
@@ -181,8 +187,8 @@ function handleInvoke(command: string, args?: unknown): Promise<unknown> {
     case "memory_forget_conversation":
     case "hide_chat":
       return Promise.resolve(undefined);
-    case "stage_chat_attachment":
-      return Promise.resolve(stageResponse(args));
+    case "stage_chat_attachment_binary":
+      return Promise.resolve(wrapUploadResponse(options, stageResponse(args, options)));
     case "read_chat_attachment":
       return Promise.resolve(readResponse(args));
     case "convert_staged_ncm":
@@ -210,8 +216,8 @@ function exportReceipt(args: unknown): unknown {
   return { artifactId: "artifact-song", sessionId: payloadSessionId(args), fileName: "song.mp3", mime: "audio/mpeg", size: 3, exportedAt: "2026-08-28T00:00:00Z" };
 }
 
-function stageResponse(args: unknown): unknown {
-  const request = payloadRequest(args);
+function stageResponse(args: unknown, options?: InvokeOptions): unknown {
+  const request = requireBinaryUpload(args, options);
   const fileName = stringField(request, "fileName");
   const isNcm = fileName.endsWith(".ncm");
   transportEvents.push(`stage:${stringField(request, "sessionId")}`);
@@ -290,7 +296,8 @@ function payloadAttachmentId(args: unknown): string {
   return stringField(payloadRequest(args), "attachmentId");
 }
 
-function commandSessionId(command: string, args: unknown): string | null {
+function commandSessionId(command: string, args: unknown, options?: InvokeOptions): string | null {
+  if (command === "stage_chat_attachment_binary") return decodeUploadOptions(options).sessionId ?? null;
   if (command === "history_catalog_load") {
     const key = historyArgument(args, "key");
     return Array.from(historySessions.keys()).find(id => nativeHistoryFixture(id).key === key) ?? null;
