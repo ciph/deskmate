@@ -14,7 +14,11 @@ pub(crate) struct NativeSessionMetadata {
 }
 
 #[derive(Default)]
-pub(crate) struct NativeSessionIndex(pub(crate) Mutex<Vec<NativeSessionMetadata>>);
+pub(crate) struct NativeSessionIndex(pub(crate) Mutex<Vec<NativeSessionMetadata>>, super::catalog_cache::Revision);
+
+impl NativeSessionIndex {
+    pub(super) fn revision(&self) -> u64 { self.1.get() }
+}
 
 fn load(path: &Path) -> Result<Vec<NativeSessionMetadata>, String> {
     match fs::read(path) {
@@ -27,10 +31,15 @@ fn load(path: &Path) -> Result<Vec<NativeSessionMetadata>, String> {
 }
 
 pub(crate) fn load_into(path: &Path, state: &NativeSessionIndex) -> Result<(), String> {
-    *state
+    let mut entries = state
         .0
         .lock()
-        .map_err(|_| "native_session_index_unavailable")? = load(path)?;
+        .map_err(|_| "native_session_index_unavailable")?;
+    let loaded = load(path)?;
+    if *entries != loaded {
+        *entries = loaded;
+        state.1.committed();
+    }
     Ok(())
 }
 
@@ -61,8 +70,15 @@ mod tests {
         assert_eq!(records[0].updated_at, 2);
         assert_eq!(records[1].source, "workbench");
         assert_eq!(records[1].workspace_path, "C:/fixture/workspace");
+        assert_eq!(state.revision(), 1);
         assert_eq!(std::fs::read(&path).unwrap(), legacy);
         drop(records);
+        load_into(&path, &state).unwrap();
+        assert_eq!(state.revision(), 1);
+        std::fs::write(&path, b"broken external replacement").unwrap();
+        assert!(load_into(&path, &state).is_err());
+        assert_eq!(state.revision(), 1);
+        assert_eq!(state.0.lock().unwrap().len(), 2);
         std::fs::remove_dir_all(root).unwrap();
     }
 

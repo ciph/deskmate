@@ -144,7 +144,7 @@ fn unrelated_snapshot_is_skipped_while_scoped_native_run_completes() {
         system: None, id: "msg_answer".into(), role: Some("assistant".into()), created: Some(2), parent_id: Some("msg_other".into()), completed: true, finish: Some("stop".into()), error: None, parts: vec![] }];
     // When the compatibility write sees a different trusted directory, native lifecycle continues independently.
     let disposition = super::save_scoped_snapshot(&path, &mut sessions, &records, &workspace, super::AgentHistorySnapshot { session_id: "ses_same", messages: &messages }).unwrap();
-    assert_eq!(disposition, super::recovery::SnapshotWrite::UnrelatedIdentity);
+    assert_eq!(disposition, (super::recovery::SnapshotWrite::UnrelatedIdentity, false));
     runs.reconcile("msg_other", &messages).unwrap();
     // Then B completes and scoped catalog recovery selects B, while A remains byte-for-byte untouched.
     assert_eq!(std::fs::read(&path).unwrap(), original);

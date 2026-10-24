@@ -19,6 +19,7 @@ pub(crate) struct AgentRunState {
     pub(super) usage_retries: Mutex<super::usage_retry::UsageRetries>,
     archive_failure: Mutex<Option<(String, String)>>,
     pub(super) collection_failure: Mutex<Option<(String, std::time::Instant)>>,
+    catalog_revision: crate::history::catalog_cache::Revision,
 }
 
 impl AgentRunState {
@@ -36,6 +37,7 @@ impl AgentRunState {
             usage_retries: Mutex::new(super::usage_retry::UsageRetries::default()),
             archive_failure: Mutex::new(None),
             collection_failure: Mutex::new(None),
+            catalog_revision: crate::history::catalog_cache::Revision::default(),
         }
     }
 
@@ -62,6 +64,7 @@ impl AgentRunState {
             usage_retries: Mutex::new(usage_retries),
             archive_failure: Mutex::new(None),
             collection_failure: Mutex::new(None),
+            catalog_revision: crate::history::catalog_cache::Revision::default(),
         })
     }
 
@@ -75,6 +78,20 @@ impl AgentRunState {
                 *last = next;
             }
         }
+    }
+
+    pub(crate) fn catalog_revision(&self) -> u64 { self.catalog_revision.get() }
+
+    /// The catalog uses identity and active/terminal evidence, not streaming
+    /// part IDs, pending usage, error text or tool outcomes. Publish invalidation
+    /// only after the same durable write that gates the in-memory RunRecord.
+    pub(super) fn persist_record(&self, previous: Option<&RunRecord>, next: &RunRecord) -> Result<(), String> {
+        let changed = previous.is_none_or(|old| old.run_id != next.run_id
+            || old.session_id != next.session_id || old.workspace_path != next.workspace_path
+            || old.outcome.is_none() != next.outcome.is_none());
+        self.store.write(next)?;
+        if changed { self.catalog_revision.committed(); }
+        Ok(())
     }
 
     pub(crate) fn lock_operation(&self) -> Result<MutexGuard<'_, ()>, String> {
@@ -131,7 +148,7 @@ impl AgentRunState {
             call_ids: Vec::new(),
             initial_input: Some(input.into()),
         };
-        self.store.write(&record)?;
+        self.persist_record(None, &record)?;
         data.active = Some(record);
         Ok(())
     }
@@ -159,7 +176,7 @@ impl AgentRunState {
         if next == *record {
             return Ok(());
         }
-        self.store.write(&next)?;
+        self.persist_record(Some(record), &next)?;
         data.active = Some(next);
         Ok(())
     }
@@ -293,7 +310,7 @@ impl AgentRunState {
         if next == *record {
             return Ok(());
         }
-        self.store.write(&next)?;
+        self.persist_record(Some(record), &next)?;
         data.active = Some(next);
         Ok(())
     }

@@ -55,7 +55,35 @@ fn persistence_failure_never_leaves_running_state() -> TestResult<()> {
     let state = AgentRunState::new(RunStore::new(blocked));
     assert!(state.begin("msg_run", &workspace, "input").is_err());
     assert!(state.read().checked("read state")?.active.is_none());
+    assert_eq!(state.catalog_revision(), 0);
     fs::remove_dir_all(root).checked("remove fixture")?;
+    Ok(())
+}
+
+#[test]
+fn catalog_revision_ignores_streaming_usage_and_pending_finish_but_tracks_binding_and_terminal_commit() -> TestResult<()> {
+    let (root, workspace) = fixture()?;
+    let store = RunStore::new(root.join("agent-runs"));
+    let state = AgentRunState::new(store.clone());
+    state.begin("msg_revision", &workspace, "input")?;
+    assert_eq!(state.catalog_revision(), 1);
+    state.bind_session("msg_revision", "ses_revision")?;
+    assert_eq!(state.catalog_revision(), 2);
+    state.bind_session("msg_revision", "ses_revision")?;
+    state.confirm_submission("msg_revision")?;
+    state.reconcile("msg_revision", &[NativeMessage {
+        usage: None, system: None, id: "msg_stream".into(), role: Some("assistant".into()), created: Some(1),
+        parent_id: Some("msg_revision".into()), completed: false, finish: None, error: None, parts: vec![],
+    }])?;
+    state.set_usage_pending(&state.active_record("msg_revision")?, vec!["msg_stream".into()])?;
+    state.request_finish("msg_revision", RunOutcome::Cancelled, None)?;
+    assert_eq!(state.catalog_revision(), 2);
+    state.finish("msg_revision", RunOutcome::Cancelled, None)?;
+    assert_eq!(state.catalog_revision(), 3);
+    let restarted = AgentRunState::load(store)?;
+    assert_eq!(restarted.catalog_revision(), 0);
+    assert_eq!(restarted.all_records()?[0].outcome, Some(RunOutcome::Cancelled));
+    fs::remove_dir_all(root).checked("remove revision fixture")?;
     Ok(())
 }
 
@@ -70,6 +98,7 @@ fn every_failed_commit_preserves_ram_disk_and_restart_then_can_retry() -> TestRe
             state.bind_session("msg_run", "ses_run")?;
         }
         let before = serde_json::to_value(state.active_record("msg_run")?).checked("before")?;
+        let revision = state.catalog_revision();
         let messages = [NativeMessage {
             usage: None,
             system: None,
@@ -102,6 +131,7 @@ fn every_failed_commit_preserves_ram_disk_and_restart_then_can_retry() -> TestRe
             Err("agent_storage_unavailable".into()),
             "{operation}"
         );
+        assert_eq!(state.catalog_revision(), revision, "failed {operation}");
         assert_eq!(
             serde_json::to_value(state.active_record("msg_run")?).checked("ram")?,
             before,
@@ -123,6 +153,7 @@ fn every_failed_commit_preserves_ram_disk_and_restart_then_can_retry() -> TestRe
         }
         store.inject_write_failure(false);
         commit()?;
+        assert_eq!(state.catalog_revision(), revision + u64::from(matches!(operation, "bind" | "finish")), "committed {operation}");
         let listing = state.read()?;
         let after = listing
             .active

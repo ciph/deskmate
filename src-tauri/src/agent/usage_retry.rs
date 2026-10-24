@@ -66,7 +66,7 @@ impl AgentRunState {
         let was_pending = !current.pending_usage_message_ids.is_empty();
         let mut next = current.clone();
         next.pending_usage_message_ids = ids;
-        self.store.write(&next)?;
+        self.persist_record(Some(current), &next)?;
         let is_pending = !next.pending_usage_message_ids.is_empty();
         if data.active.as_ref().is_some_and(|run| run.run_id == next.run_id) {
             data.active = Some(next);

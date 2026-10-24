@@ -128,7 +128,10 @@ impl PreparedAgentSnapshot {
             std::sync::TryLockError::WouldBlock => "history_state_busy",
             std::sync::TryLockError::Poisoned(_) => "history_state_unavailable",
         })?;
-        self.commit_into(&mut list, PreparedHistoryFile::commit)
+        let changed = self.scoped && self.change.is_some();
+        self.commit_into(&mut list, PreparedHistoryFile::commit)?;
+        if changed { state.committed(); }
+        Ok(())
     }
 
     fn commit_into(

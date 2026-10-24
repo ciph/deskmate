@@ -5,7 +5,8 @@ use super::{catalog_model::*, commands, HistoryState};
 
 #[derive(Default)]
 pub(crate) struct HistoryMaintenance {
-    pub(super) initialized: Mutex<Option<String>>,
+    pub(super) initialized: Mutex<super::catalog_cache::ImportCache>,
+    pub(super) associations: std::sync::Arc<super::catalog_cache::Revision>,
     pub(super) errors: Mutex<Vec<String>>,
     refreshing: AtomicBool,
     refresh_requested: AtomicBool,
@@ -111,6 +112,7 @@ pub(super) fn prune_empty(app: &tauri::AppHandle) -> Result<Vec<String>, String>
             let local = app.state::<HistoryState>();
             let mut sessions = local.0.lock().map_err(|_| "history_state_unavailable")?;
             if delete_empty_legacy(&super::history_path(app)?, &mut sessions, history_id, row.updated)? {
+                local.committed();
                 mark_removed(&store, &row)?;
                 changed = true;
             }

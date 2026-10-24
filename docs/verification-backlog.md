@@ -4,6 +4,21 @@
 
 ## 当前验证入口
 
+### 2026-10-24 Mac B6 H18a
+
+起点 `fcb4635`，本地分支 `codex/yume-performance-b6`，产品版本仍为 0.4.21。本批只完成 H18a，H18b/H18c/M19/B7 未实施。
+
+- Mac ARM64、macOS 26.5.2（25F84）、Command Line Tools SDK 26.5；项目内固定 Bun 1.3.14、Cargo/Rust 1.94.1、Node 24.12.0。`bun install --frozen-lockfile`、`bun run prepare:sidecar` 成功；本仓锁文件未修改。
+- 基线：`RUST_TEST_THREADS=4 bun run check` 退出 0，三套 TypeScript、前端 171/171 文件（1347 pass / 0 fail / 0 skip / 0 unfinished）、Rust 895 pass / 0 fail / 18 ignored、生产前端构建通过。该次检查发生在 H18a 修改之前；本轮没有修改前端源码。
+- 工作台：官方 codeload 固定 commit 源码归档，冻结安装依赖，再 `bun run prepare:workbench` 退出 0；安装前后上游原始锁文件哈希一致。Git 克隆曾两次 TLS 失败，源码归档不等同于 Git checkout。保留既有大 chunk 警告。
+- H18a：成功提交后递增来源 revision；历史/index/run 缓存命中不全量复制/读取/序列化/哈希。新 native 身份或来源关联触发重导入；pin、归档、墓碑与实时工作台租约不借用来源缓存做授权。Agent 流式 ID、用量回执及 pending finish 不触发无关全量导入。
+- 新增/扩展回归覆盖正文十倍增长下的 100 次命中、导入失败重试、导入期间并发提交、外部源恢复/重启、关联事务回滚、删除墓碑、实际历史文件替换失败、不变快照及迟到投影拒绝、Agent 写失败及终态失效、旧 index 损坏保留内存。最终完整 Rust：`cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4`，901 pass / 0 fail / 18 ignored，退出 0。
+- H18a 生产配置 `cargo check --locked --manifest-path src-tauri/Cargo.toml` 退出 0；首次沙箱执行因未缓存 crate 的 DNS 下载失败，保留日志，授权下载后重跑成功。不是签名包或 GUI 启动验收。
+- 失败回执保留：第一次 history 定向回归因沙箱禁止回环端口而失败；授权复跑后剩一个新增夹具的 `/var` 与 `/private/var` 路径规范化断言失败，改用产品规范化入口后完整 Rust 回归通过。未放松身份或删除断言。
+- 来源恢复校验在首次读取以及 30 秒间隔到期后的下一次读取发生，完整来源导入本身仍是全量工作。列表 `store.all()`、单条 mutation 的全表解码尚未优化，留给 H18b/H18c；不能声称历史列表完全 O(1) 或已经原生流畅。
+
+本机证据：`output/performance-b6-preflight-20261024/` 中 `baseline-check.log`、`workbench-build.log`、`h18a-history*.log`、`h18a-rust-full.log` 及汇总。仍待：Mac WebKit/真实 IPC/窗口所有权实机、Windows 回归、显示器 Hz/DPI 与 GPU/耗电测量。没有执行日常安装、迁移真实用户数据库或发布。
+
 ### 2026-10-24 性能整改 Mac 交接
 
 [完整施工计划](performance-remediation-plan.md) 与 [Mac 接续说明](performance-remediation-handoff.md) 已纳入仓库，原 Windows 外部计划冻结。B1–B5 代码已进入远端 main，最终发布源码 `fee4d707804f76e5c608ceef33c622e71d17b175` / 0.4.21；B6 的 H18/M19 迁移和 B7 联合验收未开工。接手从最新 main 核对后开始 H18a，不从旧审计版本重做。

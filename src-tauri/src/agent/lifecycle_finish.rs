@@ -71,7 +71,7 @@ impl AgentRunState {
         record.pending_outcome = None;
         record.pending_error_summary = None;
         record.ended_at = Some(chrono::Utc::now().to_rfc3339());
-        self.store.write(&record)?;
+        self.persist_record(data.active.as_ref(), &record)?;
         data.active = None;
         data.recent.insert(0, record);
         Ok(())

@@ -12,6 +12,7 @@ pub(crate) mod maintenance;
 pub(crate) mod native_api;
 pub(crate) mod catalog_model;
 mod catalog;
+pub(crate) mod catalog_cache;
 mod catalog_content;
 mod catalog_query;
 pub(crate) mod catalog_preview;
@@ -91,7 +92,27 @@ pub struct HistorySummary {
     pub native: bool,
 }
 
-pub struct HistoryState(pub Mutex<Vec<HistorySession>>);
+pub struct HistoryState(pub Mutex<Vec<HistorySession>>, catalog_cache::Revision);
+
+impl HistoryState {
+    pub(crate) fn new(sessions: Mutex<Vec<HistorySession>>) -> Self {
+        Self(sessions, catalog_cache::Revision::default())
+    }
+    pub(super) fn revision(&self) -> u64 { self.1.get() }
+    pub(super) fn committed(&self) { self.1.committed(); }
+
+    /// Only the low-frequency recovery pass rereads externally changed files.
+    /// Holding the same lock as writers prevents a reload replacing a new save.
+    pub(super) fn reload(&self, path: &Path) -> Result<(), String> {
+        let mut sessions = self.0.lock().map_err(|_| "history_state_unavailable")?;
+        let loaded = load_path(path)?;
+        if *sessions != loaded {
+            *sessions = loaded;
+            self.committed();
+        }
+        Ok(())
+    }
+}
 
 fn history_path(app: &tauri::AppHandle) -> Result<PathBuf, String> {
     app.path()
@@ -135,7 +156,8 @@ pub(crate) fn index_agent_records(
     records: &[crate::agent::RunRecord],
 ) -> Result<(), String> {
     let mut list = state.0.lock().map_err(|_| "history_state_unavailable")?;
-    recovery::index_agent_records(&history_path(app)?, &mut list, records)
+    if recovery::index_agent_records(&history_path(app)?, &mut list, records)? { state.committed(); }
+    Ok(())
 }
 
 pub(super) struct RendererHistorySave<'a> {
@@ -196,7 +218,9 @@ pub fn history_save(
             session,
             trusted_origin_run_id: trusted_origin.as_deref(),
         },
-    )
+    )?;
+    state.committed();
+    Ok(())
 }
 
 #[tauri::command]
@@ -209,6 +233,7 @@ pub fn history_delete(
     let active_session = runs.read()?.active.and_then(|record| record.session_id);
     let trusted_origin = runs.origin_run_for_session(&id)?;
     let mut list = state.0.lock().map_err(|_| "history_state_unavailable")?;
+    let existed = list.iter().any(|session| session.id == id);
     delete_from_path(
         &history_path(&app)?,
         &mut list,
@@ -217,7 +242,9 @@ pub fn history_delete(
             trusted_origin_run_id: trusted_origin.as_deref(),
             active: active_session.as_deref() == Some(&id),
         },
-    )
+    )?;
+    if existed { state.committed(); }
+    Ok(())
 }
 
 struct DeleteHistory<'a> {
@@ -274,7 +301,7 @@ pub(crate) fn archive_snapshot_for_test(
     list: &mut Vec<HistorySession>,
     snapshot: AgentHistorySnapshot<'_>,
 ) -> Result<(), String> {
-    upsert_agent_snapshot(path, list, snapshot)
+    upsert_agent_snapshot(path, list, snapshot).map(|_| ())
 }
 
 pub(crate) fn save_agent_input(
@@ -318,7 +345,9 @@ pub(crate) fn save_agent_input(
         },
     );
     session.updated = session.updated.max(input.created);
-    save_to_path(&history_path(app)?, &mut list, session)
+    save_to_path(&history_path(app)?, &mut list, session)?;
+    state.committed();
+    Ok(())
 }
 
 pub(crate) fn save_agent_snapshot(
@@ -328,23 +357,22 @@ pub(crate) fn save_agent_snapshot(
 ) -> Result<(), String> {
     let state = app.state::<HistoryState>();
     let mut list = state.0.lock().map_err(|_| "history_state_unavailable")?;
-    save_snapshot_from_run_store(&history_path(app)?, &mut list,
-        &app.state::<crate::agent::AgentRunState>(), workspace, snapshot)
+    if save_snapshot_from_run_store(&history_path(app)?, &mut list,
+        &app.state::<crate::agent::AgentRunState>(), workspace, snapshot)? { state.committed(); }
+    Ok(())
 }
 
-fn save_snapshot_from_run_store(path: &Path, list: &mut Vec<HistorySession>, runs: &crate::agent::AgentRunState, workspace: &Path, snapshot: AgentHistorySnapshot<'_>) -> Result<(), String> {
+fn save_snapshot_from_run_store(path: &Path, list: &mut Vec<HistorySession>, runs: &crate::agent::AgentRunState, workspace: &Path, snapshot: AgentHistorySnapshot<'_>) -> Result<bool, String> {
     let session = list.iter().find(|session| session.id == snapshot.session_id).ok_or("history_not_found")?;
     let records = session.origin_run_id.as_deref().map(|id| runs.record(id)).transpose()?.flatten().into_iter().collect::<Vec<_>>();
-    save_scoped_snapshot(path, list, &records, workspace, snapshot).map(|_| ())
+    save_scoped_snapshot(path, list, &records, workspace, snapshot).map(|(_, changed)| changed)
 }
 
-fn save_scoped_snapshot(path: &Path, list: &mut Vec<HistorySession>, records: &[crate::agent::RunRecord], workspace: &Path, snapshot: AgentHistorySnapshot<'_>) -> Result<recovery::SnapshotWrite, String> {
+fn save_scoped_snapshot(path: &Path, list: &mut Vec<HistorySession>, records: &[crate::agent::RunRecord], workspace: &Path, snapshot: AgentHistorySnapshot<'_>) -> Result<(recovery::SnapshotWrite, bool), String> {
     let session = list.iter().find(|session| session.id == snapshot.session_id).ok_or("history_not_found")?;
     let disposition = recovery::snapshot_write(session, records, workspace)?;
-    if disposition == recovery::SnapshotWrite::Allowed {
-        upsert_agent_snapshot(path, list, snapshot)?;
-    }
-    Ok(disposition)
+    let changed = disposition == recovery::SnapshotWrite::Allowed && upsert_agent_snapshot(path, list, snapshot)?;
+    Ok((disposition, changed))
 }
 
 

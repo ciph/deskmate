@@ -2,7 +2,7 @@
 
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前：B1–B5 代码已保存并进入远端 `main`；Windows v0.4.21 已发布；B6、B7 尚未开工，B1–B5 原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，再执行本计划第 10 节 H18a。不要从原始 0.4.20 基线重新施工。
+**当前：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a 代码与自动回归通过，H18b/H18c、M19 和 B7 待做；原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 H18b。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
@@ -265,6 +265,10 @@ QA：10000 无关版本、1 个来源、20 个相关版本、链式/重复引用
 本批只能使用合成数据库或经过一致性备份的隔离副本；不得直接拿日常用户库试迁移。复制活跃 WAL 库必须用 SQLite 在线备份或关闭连接后的完整一致性复制，不只拷贝 .db。源副本先哈希并只读保留；迁移测试库与原库分开。每个实际 schema 变更独立升级版本，事务失败原版本可重开，未来版本拒绝行为保留。
 
 ### H18a｜成功写入驱动 revision/generation（#18 第一步，中；依赖 R06 相关接口稳定）
+
+状态（2026-10-24 Mac）：**代码与自动测试通过但原生待验**。历史文件、旧 native index、Agent 目录证据及 native 关联分别跟踪 revision；命中时不读/克隆/编码全量来源。历史文件替换、Agent 持久化、catalog 事务成功后才发布相应失效。流式 part/call ID、用量重试和 pending outcome 不触发无关来源重导入；组织操作与墓碑仍从数据库读取，工作台所有权仍实时派生。导入失败/并发变更不确认完成代际，变更请求后续刷新。首次及距上次成功恢复校验 30 秒后的下一次读取会重读历史/index/run 来源，异常保留原内存并允许重试；这不是无条件每 30 秒唤醒，也不是外部变化 30 秒内必然可见的 SLA。
+
+本机固定 Bun 1.3.14 / Rust 1.94.1，基线完整 `bun run check` 通过；H18a 后完整 Rust 901 pass / 0 fail / 18 ignored。正文 10k/100k 字符各 100 次命中：新增 RunStore 文件读取与 catalog 导入均为 0；没有把该操作计数当原生耗时收益。完整工作台从固定 commit 的官方源码归档重建，原锁文件哈希保持不变。实际命令、失败与复验及本地证据位置见 [当前验收记录](verification-backlog.md#2026-10-24-mac-b6-h18a)。未改 schema、版本或发布资产。
 
 文件：history/commands.rs、maintenance.rs、storage.rs、native_index.rs、catalog_local.rs、catalog_import.rs；agent/record_store.rs、lifecycle.rs 的已稳定持久化边界；history/catalog_local/content/migration/reconcile 和 recovery 测试。
 

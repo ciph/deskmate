@@ -2,7 +2,8 @@ use tauri::{Emitter, Manager};
 use super::{catalog::CatalogStore, catalog_import, catalog_model::*, catalog_query::*, native_api::{authorize_history_window, NativeHistoryClient}, HistoryState};
 
 pub(crate) fn store(app: &tauri::AppHandle) -> Result<CatalogStore, String> {
-    CatalogStore::open(&app.path().app_data_dir().map_err(|_| "history_catalog_unavailable")?.join("history-catalog.sqlite"))
+    Ok(CatalogStore::open(&app.path().app_data_dir().map_err(|_| "history_catalog_unavailable")?.join("history-catalog.sqlite"))?
+        .track_associations(app.state::<super::maintenance::HistoryMaintenance>().associations.clone()))
 }
 pub(crate) fn client(app: &tauri::AppHandle) -> Result<NativeHistoryClient, String> {
     NativeHistoryClient::new(&crate::sidecar_url(app), &crate::sidecar_auth_header(app)).map_err(|error| error.to_string())
@@ -99,21 +100,18 @@ pub(crate) fn apply_ownership(app: &tauri::AppHandle, rows: &mut [CatalogEntry])
     Ok(())
 }
 pub(crate) fn initialize(app: &tauri::AppHandle) -> Result<(), String> {
-    let store = store(app)?;
-    let workspace = workspace(app)?;
-    let sessions = app.state::<HistoryState>().0.lock().map_err(|_| "history_state_unavailable")?.clone();
-    let index = app.state::<super::NativeSessionIndex>().0.lock().map_err(|_| "native_session_index_unavailable")?.clone();
-    let records = app.state::<crate::agent::AgentRunState>().all_records()?;
-    use sha2::{Digest, Sha256};
-    let fingerprint = format!("{:x}", Sha256::digest(serde_json::to_vec(&(&sessions, &index, &records)).map_err(|_| "history_catalog_invalid")?));
     let state = app.state::<super::maintenance::HistoryMaintenance>();
+    let history = app.state::<HistoryState>();
+    let index = app.state::<super::NativeSessionIndex>();
+    let runs = app.state::<crate::agent::AgentRunState>();
     let mut initialized = state.initialized.lock().map_err(|_| "history_state_unavailable")?;
-    if initialized.as_ref() == Some(&fingerprint) { return Ok(()); }
-    store.register_directory(&workspace)?;
-    for row in &index { store.register_directory(&catalog_import::canonical_directory(&row.workspace_path))?; }
-    for record in &records { store.register_directory(&catalog_import::canonical_directory(&record.workspace_path.to_string_lossy()))?; }
-    catalog_import::register_sources(&store, &sessions, &index, &workspace, &records)?;
-    *initialized = Some(fingerprint);
+    let retry = super::catalog_cache::ImportInputs {
+        history: &history, index: &index, runs: &runs, associations: &state.associations,
+        history_path: &super::history_path(app)?, index_path: &super::native_index_path(app)?,
+        workspace: &workspace(app)?,
+    }.synchronize(&mut initialized, std::time::Instant::now(), || store(app))?;
+    drop(initialized);
+    if retry { super::maintenance::schedule_refresh(app.clone()); }
     Ok(())
 }
 

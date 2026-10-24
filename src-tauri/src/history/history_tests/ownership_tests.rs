@@ -59,7 +59,7 @@ fn renderer_cannot_create_history_for_persisted_agent_session() {
 
 #[test]
 fn continuation_requires_trusted_live_agent_history() {
-    let state = HistoryState(Mutex::new(vec![
+    let state = HistoryState::new(Mutex::new(vec![
         agent("ses-agent"),
         ordinary("ordinary"),
         {

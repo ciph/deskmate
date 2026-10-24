@@ -124,6 +124,30 @@ fn message() -> NativeMessage {
 }
 
 #[test]
+fn revision_follows_successful_replacement_and_rejects_failed_noop_and_late_projection() {
+    let fixture = Fixture::new();
+    let state = HistoryState::new(std::sync::Mutex::new(vec![agent("ses_agent")]));
+    let baseline = state.0.lock().unwrap().clone();
+    let messages = [message()];
+    // A directory at the exact destination makes the real replacement fail.
+    fs::create_dir(&fixture.path).unwrap();
+    assert!(fixture.prepare(&baseline, &messages).commit_to_state(&state).is_err());
+    assert_eq!(state.revision(), 0);
+    assert_eq!(*state.0.lock().unwrap(), baseline);
+    fs::remove_dir(&fixture.path).unwrap();
+    let first = fixture.prepare(&baseline, &messages);
+    let late = fixture.prepare(&baseline, &messages);
+    first.commit_to_state(&state).unwrap();
+    assert_eq!(state.revision(), 1);
+    assert_eq!(late.commit_to_state(&state), Err("history_snapshot_superseded".into()));
+    assert_eq!(state.revision(), 1);
+    let current = state.0.lock().unwrap().clone();
+    fixture.prepare(&current, &messages).commit_to_state(&state).unwrap();
+    assert_eq!(state.revision(), 1);
+    assert_eq!(load_path(&fixture.path).unwrap(), current);
+}
+
+#[test]
 fn prepare_does_not_publish_and_commit_keeps_title_and_first_origin() {
     let fixture = Fixture::new();
     let mut list = vec![agent("ses_agent"), ordinary("untouched")];
@@ -557,7 +581,7 @@ fn malformed_catalog_metadata_fails_closed_without_becoming_a_tombstone() {
 #[test]
 fn busy_history_writer_does_not_block_control_or_publish_prepared_snapshot() {
     let fixture = Fixture::new();
-    let state = HistoryState(std::sync::Mutex::new(vec![agent("ses_agent")]));
+    let state = HistoryState::new(std::sync::Mutex::new(vec![agent("ses_agent")]));
     let staged = fixture.prepare(&state.0.lock().unwrap(), &[message()]);
     let busy_writer = state.0.lock().unwrap();
     assert_eq!(

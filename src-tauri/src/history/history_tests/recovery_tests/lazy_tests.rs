@@ -111,7 +111,7 @@ fn lazy_success_fills_native_text_and_first_question_title() -> Result<(), Strin
         text_message("msg_reply", "assistant", "Recovered answer", 20),
     ];
 
-    let loaded = apply_lazy_snapshot(
+    let (loaded, changed) = apply_lazy_snapshot(
         &path,
         &mut list,
         LazySnapshot {
@@ -120,6 +120,7 @@ fn lazy_success_fills_native_text_and_first_question_title() -> Result<(), Strin
         },
     )?;
 
+    assert!(changed);
     assert_eq!(loaded.title, "Original request");
     assert_eq!(loaded.messages.len(), 2);
     assert_eq!(loaded.messages[1].text, "Recovered answer");

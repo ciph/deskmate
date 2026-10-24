@@ -3,13 +3,16 @@ use rusqlite::{Connection, TransactionBehavior};
 use super::catalog_model::CatalogEntry;
 use crate::settings::ConversationModelSelection;
 
-pub(crate) struct CatalogStore { path: PathBuf }
+pub(crate) struct CatalogStore {
+    path: PathBuf,
+    associations: Option<std::sync::Arc<super::catalog_cache::Revision>>,
+}
 
 impl CatalogStore {
     pub(crate) fn open(path: &Path) -> Result<Self, String> {
         let parent = path.parent().ok_or("history_catalog_unavailable")?;
         std::fs::create_dir_all(parent).map_err(|_| "history_catalog_unavailable")?;
-        let store = Self { path: path.to_owned() };
+        let store = Self { path: path.to_owned(), associations: None };
         let mut connection = store.connection()?;
         let version: u32 = connection.query_row("PRAGMA user_version", [], |row| row.get(0)).map_err(db_error)?;
         if version == 2 { return Ok(store); }
@@ -21,6 +24,11 @@ impl CatalogStore {
         transaction.execute_batch("CREATE TABLE IF NOT EXISTS entries (key TEXT PRIMARY KEY NOT NULL, metadata TEXT NOT NULL); CREATE TABLE IF NOT EXISTS directories (directory TEXT PRIMARY KEY NOT NULL); CREATE TABLE IF NOT EXISTS model_selections (key TEXT PRIMARY KEY NOT NULL, selection TEXT NOT NULL); CREATE TABLE IF NOT EXISTS recent_workspaces (directory TEXT PRIMARY KEY NOT NULL, selected_at INTEGER NOT NULL); PRAGMA user_version = 2;").map_err(db_error)?;
         transaction.commit().map_err(db_error)?;
         Ok(store)
+    }
+
+    pub(super) fn track_associations(mut self, revision: std::sync::Arc<super::catalog_cache::Revision>) -> Self {
+        self.associations = Some(revision);
+        self
     }
 
     fn connection(&self) -> Result<Connection, String> {
@@ -127,6 +135,13 @@ impl CatalogStore {
             }
             if !keys.insert(entry.key()) { return Err("history_catalog_duplicate".into()); }
         }
+        // New/removed native identities can coalesce an existing legacy row.
+        // Pins, tombstones, runtime and leases are read directly from the catalog
+        // or their live owner; they do not require another full source import.
+        let associations_changed = before.iter().any(|(key, row)| !keys.contains(key)
+            && matches!(row.identity, super::catalog_model::CatalogIdentity::Native { .. }))
+            || rows.iter().any(|row| matches!(row.identity, super::catalog_model::CatalogIdentity::Native { .. })
+                && before.get(&row.key()).is_none_or(|old| old.source != row.source));
         for key in before.keys().filter(|key| !keys.contains(*key)) {
             transaction.execute("DELETE FROM entries WHERE key = ?1", [key]).map_err(db_error)?;
             transaction.execute("DELETE FROM model_selections WHERE key = ?1", [key]).map_err(db_error)?;
@@ -138,6 +153,9 @@ impl CatalogStore {
             transaction.execute("INSERT INTO entries(key, metadata) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET metadata=excluded.metadata", [key, metadata]).map_err(db_error)?;
         }
         transaction.commit().map_err(db_error)?;
+        if associations_changed {
+            if let Some(revision) = &self.associations { revision.committed(); }
+        }
         Ok(result)
     }
 }
