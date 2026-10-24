@@ -2,6 +2,8 @@
 
 当前规则和历史证据分别维护。功能或操作入口发生变化时，更新下表对应的现行文档；阶段记录保留原基线、结果和未验边界。最近核对：2026-09-30，YUME 0.4.16 / OpenCode 1.18.21。
 
+2026-10-24 性能整改交接更新：B1–B5 已随 Windows 0.4.21 保存发布；Mac 从 [接续说明](performance-remediation-handoff.md) 进入 B6/B7。下方其余文档保留各自核对日期。
+
 ## 当前产品与维护契约
 
 | 入口 | 职责 |
@@ -27,6 +29,7 @@
 
 | 入口 | 当前责任 |
 | --- | --- |
+| [性能整改施工计划](performance-remediation-plan.md) / [Mac 接续说明](performance-remediation-handoff.md) / [便携证据](performance-evidence/README.md) | 2026-10-22 性能审计；B1–B5 已保存、B6/B7 待做，平台待验和交接入口 |
 | [仓库审计](../AUDIT.md) | 2026-09-30 基线 findings；历史基线不等于当前缺陷均仍存在 |
 | [审计整改方案](audit-remediation-construction-plan.md) / [施工进度](audit-remediation-progress.md) | 运行、记忆库、UI、工作台和历史简化的实施依赖与真实结果 |
 | [文件清理方案](repository-cleanup-plan.md) / [执行进度](repository-cleanup-progress.md) | 文件全集、用途判定、实际处理与条件项 |
@@ -37,4 +40,4 @@
 
 [历史记录索引](archive/README.md) 保留旧设计、基线、阶段回执与独有证据。旧记录中的“当前 / 下一步 / 未发布”和凭据阻塞不作为今天的状态或操作指令；未完成事项已列入当前验收入口。
 
-发行说明按原版本保留：[0.4.10](release-v0.4.10.md)、[0.4.11](release-v0.4.11.md)、[0.4.12](release-v0.4.12.md)、[0.4.13](release-v0.4.13.md)、[0.4.14](release-v0.4.14.md)、[0.4.15](release-v0.4.15.md)、[0.4.16](release-v0.4.16.md)、[0.4.17](release-v0.4.17.md)、[0.4.18](release-v0.4.18.md)、[0.4.19](release-v0.4.19.md)、[0.4.20](release-v0.4.20.md)。其中的测试数和待发布说明对应该次准备时点；公开状态与安装资产须按发布指南重新核验。
+发行说明按原版本保留：[0.4.10](release-v0.4.10.md)、[0.4.11](release-v0.4.11.md)、[0.4.12](release-v0.4.12.md)、[0.4.13](release-v0.4.13.md)、[0.4.14](release-v0.4.14.md)、[0.4.15](release-v0.4.15.md)、[0.4.16](release-v0.4.16.md)、[0.4.17](release-v0.4.17.md)、[0.4.18](release-v0.4.18.md)、[0.4.19](release-v0.4.19.md)、[0.4.20](release-v0.4.20.md)、[0.4.21](release-v0.4.21.md)。其中的测试数和待发布说明对应该次准备时点；公开状态与安装资产须按发布指南重新核验。

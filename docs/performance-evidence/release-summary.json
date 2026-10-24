@@ -1,0 +1,18 @@
+{
+  "version": "0.4.21",
+  "commit": "fee4d707804f76e5c608ceef33c622e71d17b175",
+  "releaseUrl": "https://github.com/ciph/deskmate/releases/tag/v0.4.21",
+  "latest": true,
+  "sourceClean": true,
+  "allReleaseCiJobsPassed": true,
+  "packageVerified": true,
+  "publicAnonymousDownloadVerified": true,
+  "installerBytes": 117648173,
+  "installerSha256": "3a2b6a0d2ac97729c5efc53bebc52a4b874acd6e49e635826ef747b771a2a187",
+  "authenticodeStatus": "NotSigned",
+  "installedOrGuiUpgradeTested": false,
+  "macosPublished": false,
+  "existingV0420StillDraft": true,
+  "verificationCompletedAt": "2026-10-22T17:06:12.094Z",
+  "recordedAt": "2026-10-22T17:07:39.282986+00:00"
+}

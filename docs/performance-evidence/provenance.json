@@ -1,0 +1,36 @@
+{
+  "copiedAtDate": "2026-10-24 Asia/Shanghai",
+  "releaseSourceCommit": "fee4d707804f76e5c608ceef33c622e71d17b175",
+  "files": [
+    {
+      "file": "audit-findings.json",
+      "originalWindowsPath": "E:/Codex/工作伙伴/reports/yume-performance-audit-20261022/evidence/findings.json",
+      "bytes": 29350,
+      "sha256": "3e59ff26271e21f4780e6fb251a9e61b19d0b2d8fadb2058a95bd3357d56a7ca"
+    },
+    {
+      "file": "audit-verification-notes.json",
+      "originalWindowsPath": "E:/Codex/工作伙伴/reports/yume-performance-audit-20261022/evidence/verification-notes.json",
+      "bytes": 1874,
+      "sha256": "5a4ffdd45f5792f5a8939f541d553dfd216c868fb6734c4a34027e8efab4567a"
+    },
+    {
+      "file": "release-summary.json",
+      "originalWindowsPath": "E:/Codex/工作伙伴/release-artifacts/v0.4.21-windows-release/release-summary.json",
+      "bytes": 686,
+      "sha256": "d672c426604d4459af506a12a25b0f710fb7f1e7e10f0ae2412ded360c81ca98"
+    },
+    {
+      "file": "ci-verification.json",
+      "originalWindowsPath": "E:/Codex/工作伙伴/release-artifacts/v0.4.21-windows-release/ci-verification.json",
+      "bytes": 1210,
+      "sha256": "612e25b3cd4540624dba19072575f45a269ede54921d5566c6bd6aa6122d9550"
+    },
+    {
+      "file": "public-verification.json",
+      "originalWindowsPath": "E:/Codex/工作伙伴/release-artifacts/v0.4.21-windows-release/public-verification.json",
+      "bytes": 633,
+      "sha256": "53932d77eb3a52f08c49fe500d4efa73f9633aeb2b761db623d93da78d37e3e3"
+    }
+  ]
+}

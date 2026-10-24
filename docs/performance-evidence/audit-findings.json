@@ -1,0 +1,598 @@
+[
+  {
+    "id": 1,
+    "title": "二次启动前的“孤儿清理”可能杀掉正在工作的引擎",
+    "priority": "P1",
+    "domain": "运行与启动",
+    "evidence": "Windows 的 run() 先执行 cleanup_orphan_sidecars，再注册单实例插件。清理仅匹配 opencode.exe 命令行中的 tauri.localhost，没有证明宿主已经退出。",
+    "problem": "首实例正在执行任务时再次双击 YUME，第二进程会先强杀匹配的 sidecar，然后才被单实例保护拦截；任务可能中断。",
+    "fix": "先完成单实例归属判定，仅由胜出实例清理已确认失去宿主的旧进程。结合记录的 PID、出生时间及应用身份验证归属。",
+    "tradeoff": "保留崩溃后的孤儿回收；不能扩大进程名匹配范围，也不能把仍活跃的首实例当孤儿。",
+    "accept": "隔离任务执行中反复二次启动，sidecar PID、任务和子进程均持续；真正孤儿仍能回收。现有测试没有覆盖此启动顺序；未进行原生误杀复现。",
+    "refs": [
+      [
+        "src-tauri/src/lib.rs",
+        692
+      ],
+      [
+        "src-tauri/src/lib.rs",
+        1316
+      ],
+      [
+        "src-tauri/src/lib.rs",
+        1332
+      ]
+    ],
+    "effort": "中",
+    "kind": "源码确认"
+  },
+  {
+    "id": 2,
+    "title": "显式工作日志工具的父消息回查遗漏认证",
+    "priority": "P1",
+    "domain": "正确性与数据",
+    "evidence": "宿主为每次 sidecar 启动设置 OPENCODE_SERVER_PASSWORD；bridge_worker::parent 的 HTTP GET 没有 Authorization。这条文件桥仍由五个 worklog 工具使用。",
+    "problem": "显式查询、记录或生成报告时，受保护的消息接口会拒绝匿名请求，桥将其转换为 BRIDGE_UNAVAILABLE，并在真正操作之前结束。",
+    "fix": "复用宿主已有的受管认证请求构造，同时用正确工作目录限定消息身份；认证值只留在宿主。",
+    "tradeoff": "父消息、工具 call ID 和权限校验必须保留，不能靠关闭 sidecar 认证“修复”。",
+    "accept": "加入强制 Basic auth 的合成服务，覆盖正确／缺失／错误凭据，再覆盖工具→文件请求→宿主校验→回执。现有身份与回执测试没有覆盖这条认证 HTTP 链。",
+    "refs": [
+      [
+        "src-tauri/src/lib.rs",
+        1006
+      ],
+      [
+        "src-tauri/src/worklog/bridge_worker.rs",
+        52
+      ],
+      [
+        "src-tauri/src/worklog/bridge.rs",
+        103
+      ]
+    ],
+    "effort": "小",
+    "kind": "源码确认"
+  },
+  {
+    "id": 3,
+    "title": "PDF 浏览器提取缺少 worker 配置",
+    "priority": "P1",
+    "domain": "附件",
+    "evidence": "attachments.ts 动态导入 pdfjs 后直接 getDocument；全仓没有 workerSrc／workerPort 配置。实际安装的 pdfjs 6.2.108 仅在 Node 分支设置默认 workerSrc。",
+    "problem": "模拟真实依赖的浏览器判定分支已复现：workerSrc 为空，getDocument 抛出 No \"GlobalWorkerOptions.workerSrc\" specified。Bun 小 PDF 测试会被 Node 默认行为掩盖。",
+    "fix": "通过构建工具生成本地 worker URL 并显式配置，验证发行资源包含 worker。保存 loadingTask，在成功、截断与异常的 finally 中销毁它。",
+    "tradeoff": "该版本 PDFDocumentProxy 没有 destroy()，应销毁 loadingTask。不能把当前阻断之后尚未发生的资源泄漏宣称为已复现。",
+    "accept": "在生产构建与 WebView2 中测试真实 PDF；循环 20 次成功／损坏／160k 字符截断输入，核对文本一致、worker 数回落、内存收敛。",
+    "refs": [
+      [
+        "src/chat/attachments.ts",
+        181
+      ],
+      [
+        "src/chat/attachments.test.ts",
+        53
+      ],
+      [
+        "src/chat/useChatAttachments.test.ts",
+        129
+      ]
+    ],
+    "effort": "小",
+    "kind": "依赖分支复现"
+  },
+  {
+    "id": 4,
+    "title": "大规模记忆导出会超过 SQLite 参数上限",
+    "priority": "P2",
+    "domain": "正确性与数据",
+    "evidence": "export_records 的来源和任务关系已按 400 条分批，但 applicability 查询把全部 ID 放入一个 IN 语句。bundled SQLite 的默认变量上限为 32,766。",
+    "problem": "导出包含 active／expired／superseded 累计 32,767 条时，即使 applicability 为空也会在准备 SQL 时失败。原查询在设置相同上限的隔离 SQLite 中已复现。",
+    "fix": "applicability 查询复用现有 400 条分批逻辑，合并结果并维持稳定排序。",
+    "tradeoff": "32k 是长期或极端规模，不代表当前用户数据量。导出完整性、来源和上下文不能裁剪。",
+    "accept": "32,767 条及更大导出成功，所有 context 归属正确；每条 SQL 参数量有界。现有 540／450 条测试尚未达到此边界。",
+    "refs": [
+      [
+        "src-tauri/src/memory/repository.rs",
+        212
+      ],
+      [
+        "src-tauri/src/memory/export.rs",
+        39
+      ]
+    ],
+    "effort": "小",
+    "kind": "隔离 SQL 复现"
+  },
+  {
+    "id": 5,
+    "title": "普通回复被固定的 2 秒展示门槛延迟",
+    "priority": "P2",
+    "domain": "聊天交互",
+    "evidence": "MIN_REPLY_PRESENTATION_MS 为 2,000；普通发送路径也启用该闸门，收到的文本要等计时器释放才展示。现有测试明确保护这个行为。",
+    "problem": "即使模型 100 ms 出首字、300 ms 完成，普通聊天仍须等待接近 2 秒才看到回复。这是陪伴节奏设计，与本次极致响应速度目标有取舍。",
+    "fix": "普通 AI 回复收到首字即展示；固定人格台词如需表演节奏，独立保留其延迟。",
+    "tradeoff": "这是产品决策，不能当成误写 bug。收益只等于剩余门槛时间，慢请求不会一律缩短 2 秒。",
+    "accept": "合成 100 ms 首字、300 ms 完成的回复不再等满 2 秒；Stop、切会话和迟到响应隔离仍正确。同步调整既有节奏测试。",
+    "refs": [
+      [
+        "src/chat/ChatApp.tsx",
+        140
+      ],
+      [
+        "src/chat/ChatApp.tsx",
+        503
+      ],
+      [
+        "src/chat/ChatApp.tsx",
+        1176
+      ],
+      [
+        "src/chat/chatFixedReply.test.tsx",
+        432
+      ]
+    ],
+    "effort": "小",
+    "kind": "已测试的产品取舍"
+  },
+  {
+    "id": 6,
+    "title": "活动任务的每秒全量采集与持久化占用控制锁",
+    "priority": "P2",
+    "domain": "运行与启动",
+    "evidence": "collector 每轮等待 1 秒后拉取无 limit 的整段会话；更新 RunRecord 不判断变化就序列化、sync_all、rename。archive 还扫描全部运行 JSON，首次观察到完成消息时再次 HTTP 拉全文统计用量。",
+    "problem": "长会话和大量旧任务增加每 tick 成本；archive／用量回查处于 operation 锁内，8 秒 HTTP 超时期间取消操作要等待同一把锁。已修复的“归档失败隔离”并未消除延迟与工作量。",
+    "fix": "先跳过不变记录写入、按当前 run/session 查询，将用量和旧投影工作移出控制锁；随后以现有 SSE 驱动增量刷新，低频全量校验用于恢复丢事件。",
+    "tradeoff": "保留关键状态落盘先于 RAM 发布、权限来源校验、陈旧快照保护和崩溃恢复。无 active 时 collector 已不发 HTTP，不应误报为空闲网络轮询。",
+    "accept": "1,000 条消息＋10,000 个 run，60 次相同快照不新增记录写入；挂起用量接口时取消仍可及时取得控制权。记录读取文件数、网络字节数及锁持有 p95。",
+    "refs": [
+      [
+        "src-tauri/src/agent/collector.rs",
+        57
+      ],
+      [
+        "src-tauri/src/agent/collector.rs",
+        310
+      ],
+      [
+        "src-tauri/src/agent/opencode.rs",
+        178
+      ],
+      [
+        "src-tauri/src/agent/lifecycle.rs",
+        252
+      ],
+      [
+        "src-tauri/src/agent/record_store.rs",
+        118
+      ],
+      [
+        "src-tauri/src/ai_usage/local.rs",
+        239
+      ]
+    ],
+    "effort": "大",
+    "kind": "源码确认"
+  },
+  {
+    "id": 7,
+    "title": "空闲驻留仍有目录、数据库和隐藏设置轮询",
+    "priority": "P2",
+    "domain": "常驻与功耗",
+    "evidence": "工作日志桥每 100 ms 扫目录；调度器约每秒读启用规则、更新 next_due_at 并尝试领取任务。隐藏设置的 UpdateFooter 每 500 ms 查询状态，缺少可见性和单飞判断，相同状态还产生新对象。",
+    "problem": "只让宠物待机时仍有无效工作。10 Hz／1 Hz／2 Hz 是代码名义频率，实际唤醒、CPU 和隐藏节流须在原生宿主测量。",
+    "fix": "文件通知＋低频补扫；按最近到期时间等待，新请求或配置变化主动唤醒。无变化不写 SQL；设置打开时立即读取，活动更新期间才高频刷新，并保持单飞。",
+    "tradeoff": "休眠恢复、时钟调整、漏通知和其他窗口启动更新都要重新校验，不能只加 document.hidden 后丢掉恢复事件。",
+    "accept": "记录 10 分钟空闲目录枚举、SQL 和 IPC 次数；隐藏／idle 设置不高频查询。到期任务仅执行一次、恢复补跑正确、慢 IPC 最大并发为 1。",
+    "refs": [
+      [
+        "src-tauri/src/worklog/bridge_worker.rs",
+        185
+      ],
+      [
+        "src-tauri/src/worklog/runner.rs",
+        31
+      ],
+      [
+        "src-tauri/src/worklog/scheduler.rs",
+        10
+      ],
+      [
+        "src/settings/UpdateFooter.tsx",
+        59
+      ],
+      [
+        "src/settings/SettingsApp.tsx",
+        263
+      ]
+    ],
+    "effort": "中",
+    "kind": "源码确认"
+  },
+  {
+    "id": 8,
+    "title": "启动时加载未使用的工作台与 3D 模块",
+    "priority": "P2",
+    "domain": "运行与启动",
+    "evidence": "lib.rs 无条件创建隐藏工作台 WebView；其入口会启动 bootstrap 和完整 AppInterface。PetApp 又静态导入 GlbPetView→PetRenderer→Three／VRM，2D 角色也进入同一静态模块图。",
+    "problem": "从未打开工作台或仅用 GIF／rig2d 的用户，仍承担相关初始化、解析及常驻成本。本次宠物入口 chunk 为 813,039 bytes，包含实际静态依赖；这不是全部启动 JS 总量。",
+    "fix": "首次 workbench_show 才创建工作台，之后沿用隐藏保留状态；GLB 视图改动态导入，确定角色类型后加载。",
+    "tradeoff": "首次打开／2D→3D 切换会增加异步等待，需要加载及失败提示。自动记忆和后台报告依赖 sidecar，不能无条件懒启动整个引擎。",
+    "accept": "2D 冷启动没有 Three／VRM 请求，也没有 workbench 窗口；首次 handoff、ready 顺序、二次打开和所有权交接保持正确。分别测首帧、首开与常驻内存。",
+    "refs": [
+      [
+        "src-tauri/src/lib.rs",
+        1616
+      ],
+      [
+        "src-tauri/src/workbench.rs",
+        168
+      ],
+      [
+        "scripts/workbench-overlay/workbench/entry.tsx",
+        139
+      ],
+      [
+        "src/pet/PetApp.tsx",
+        12
+      ],
+      [
+        "src/pet/PetRenderer.ts",
+        1
+      ]
+    ],
+    "effort": "中",
+    "kind": "源码确认"
+  },
+  {
+    "id": 9,
+    "title": "引擎持续崩溃时无重启退避且会覆盖故障日志",
+    "priority": "P2",
+    "domain": "运行与启动",
+    "evidence": "supervisor 每 500 ms 检查；spawn 成功即报告 restarted，未等待健康稳定；创建失败按 1 秒固定重试。每次 spawn 又同步资源、写插件与上下文，并 File::create 截断日志。",
+    "problem": "持久配置错误或进程立即退出可形成重复启动与 I/O 风暴；spawn 失败重试循环还一直持有 recovery 锁。故障越久，重复工作越多，原始证据可能丢失。",
+    "fix": "连续失败指数退避并设置预算；健康稳定后清零。等待期间释放恢复锁，保留最后故障日志并提供显式重试入口。",
+    "tradeoff": "瞬时故障仍需自动恢复；退出不能被退避等待卡住。避免把进程创建成功当作服务可用。",
+    "accept": "注入启动器和时钟覆盖 spawn 失败、立即退出和稳定恢复；重启频率有界、退避可重置、退出及时、日志保留。现有测试没有覆盖节奏及故障日志。",
+    "refs": [
+      [
+        "src-tauri/src/lib.rs",
+        1050
+      ],
+      [
+        "src-tauri/src/lib.rs",
+        1105
+      ],
+      [
+        "src-tauri/src/lib.rs",
+        1146
+      ]
+    ],
+    "effort": "中",
+    "kind": "源码确认"
+  },
+  {
+    "id": 10,
+    "title": "重复情绪事件让桌宠去重集合出现平方级复制",
+    "priority": "P2",
+    "domain": "桌宠渲染",
+    "evidence": "每个 text part 为相同 talking 情绪生成新 UUID，又有旧 mood 通道广播。gifState 每事件复制全部 eventIds；该 activity hook 用于三类角色，startedRequests 也随组件生命周期累积。",
+    "problem": "生产 reducer 的隔离 burst 回放：1k／5k／10k 事件为 14.16／414.69／2182.12 ms。10k 事件累计复制 50,005,000 个旧条目。真实事件分散到时间轴，不能等同于连续卡顿 2.18 秒。",
+    "fix": "发送端仅广播 mood 变化，并清理重复旧通道；将去重账本与触发 UI 更新的状态分离，避免每次拷贝整个 Set，设计有界的请求生命周期。",
+    "tradeoff": "不能简单清空旧请求记录，否则迟到事件可能错误唤醒宠物。保留请求身份、首次状态和终止事件语义。",
+    "accept": "单请求 10k 个连续 talking 只需一次状态广播；旧／重复事件仍被拒绝；回放增长接近线性且账本有清理边界。现有重复与陈旧事件测试保留。",
+    "refs": [
+      [
+        "src/chat/petActivity.ts",
+        43
+      ],
+      [
+        "src/chat/petActivity.ts",
+        66
+      ],
+      [
+        "src/chat/ChatApp.tsx",
+        808
+      ],
+      [
+        "src/pet/gifState.ts",
+        38
+      ],
+      [
+        "src/pet/useGifState.ts",
+        38
+      ]
+    ],
+    "effort": "中",
+    "kind": "生产函数微测"
+  },
+  {
+    "id": 11,
+    "title": "rig2d 随显示器刷新率绘制，稳态也双重合成",
+    "priority": "P2",
+    "domain": "桌宠渲染",
+    "evidence": "rig2d 每个 requestAnimationFrame 都做 WebGL 绘制及 source→frame→output 两级 Canvas 合成；休眠状态仍继续绘制。它没有复用 GLB 已有帧率门控。",
+    "problem": "144／240 Hz 的提交上限分别是 60 Hz 的 2.4／4 倍，即使动画并不需要如此高频。该比例是调度推导，尚未测到真实 GPU 增幅。",
+    "fix": "按状态门控：活跃动画先限制到 60 fps，idle／sleep 评估 30 fps；按真实时间推进动画。无过渡与睡眠覆盖时直接 source→output。",
+    "tradeoff": "30 fps 是视觉质量取舍；保留 120 ms 过渡、命中区域和动画周期。隐藏时已有取消 RAF，不应重报未实现。",
+    "accept": "240 Hz 合成调度下活跃提交≤60 次／秒、睡眠目标≤30 次／秒；真实高刷屏检查过渡、动作周期和功耗。现有 renderer 生命周期测试不足以验证此预算。",
+    "refs": [
+      [
+        "src/pet/rig2d/renderer.ts",
+        51
+      ],
+      [
+        "src/pet/rig2d/renderer.ts",
+        59
+      ],
+      [
+        "src/pet/rig2d/renderer.test.ts",
+        21
+      ]
+    ],
+    "effort": "中",
+    "kind": "源码确认"
+  },
+  {
+    "id": 12,
+    "title": "2D 穿透检测重复读几何信息，隐藏状态未统一停机",
+    "priority": "P2",
+    "domain": "常驻与功耗",
+    "evidence": "2D 每 40 ms 顺序请求鼠标位置、窗口位置、DPI；启用条件只看角色类型，没有 visible。GLB 也未明确接收隐藏／休眠状态，部分原生 hide 分支不广播可见性。",
+    "problem": "静止可见窗口在调用足够快时约 75 次 IPC／秒，其中几何大多不变；隐藏后应用没有主动清除这些轮询。系统可能自动节流 RAF，因此不能断言隐藏 GLB 满帧运行。",
+    "fix": "缓存窗口几何并通过移动／DPI 事件失效，平时只查询鼠标；统一原生可见性通知，隐藏时停止轮询与主动渲染，恢复刷新几何并重置时间差。",
+    "tradeoff": "跨屏 DPI、拖动锁、命中边缘和动画恢复不能回退；复用已有单飞与过期响应保护。",
+    "accept": "静止 2D 原生读取预算由约 75 降至约 25 次／秒，隐藏后新增轮询为 0；两平台记录隐藏前后 60 秒 CPU／GPU／IPC，确认恢复无跳变。",
+    "refs": [
+      [
+        "src/pet/useGifPassthrough.ts",
+        50
+      ],
+      [
+        "src/pet/PetApp.tsx",
+        71
+      ],
+      [
+        "src/pet/GlbPetView.tsx",
+        63
+      ],
+      [
+        "src-tauri/src/pet_visibility.rs",
+        95
+      ]
+    ],
+    "effort": "中",
+    "kind": "源码确认"
+  },
+  {
+    "id": 13,
+    "title": "三代目首帧前同步采样 175 次动画包络",
+    "priority": "P2",
+    "domain": "桌宠渲染",
+    "evidence": "PetRenderer.load 在启动循环前同步计算包络；7 个动作各 25 个样本，反复求蒙皮边界。真实 GLB 共 335,088 顶点，至少 8,377,200 次顶点访问。",
+    "problem": "调用生产函数三轮耗时 1234.4／1326.9／1202.1 ms；模型解析另为约 70.5 ms。实验使用真实几何与空纹理 fixture，不含纹理解码、WebView 或 GPU，不是整机首帧。",
+    "fix": "为内置模型在资产构建阶段生成联合包络并按资源版本保存；导入资产按 hash 缓存，未知模型保留计算兜底。",
+    "tradeoff": "不能直接删采样或只取静态姿态，否则动作极值会被裁切。缓存键必须覆盖模型与包络算法版本。",
+    "accept": "已知模型不再执行顶点采样，包络读取＋相机初始化 CPU 建议目标<10 ms；所有动作极值和最大缩放不裁切，保留姿态恢复测试。",
+    "refs": [
+      [
+        "src/pet/PetRenderer.ts",
+        137
+      ],
+      [
+        "src/pet/PetAnimation.ts",
+        94
+      ],
+      [
+        "src/pet/PetAnimation.test.ts",
+        96
+      ]
+    ],
+    "effort": "中",
+    "kind": "真实资产 CPU 微测"
+  },
+  {
+    "id": 14,
+    "title": "72 MiB 三代目模型应先做贴图和结构对照优化",
+    "priority": "P2",
+    "domain": "资源与包体",
+    "evidence": "figure.glb 为 75,641,656 bytes（72.137 MiB）：7 meshes、7 animations、10 张 2024×2024 PNG。PNG 合计 40,059,626 bytes，占 52.96%；SHA 均不同，未证明重复。",
+    "problem": "资产同时影响安装体积、解析与 GPU 上传。按十张 RGBA8 估算为 156.3 MiB，含完整 mipmap 约 208.4 MiB；这只是格式理论值，不是实际 GPU 驻留。",
+    "fix": "先做 1024／512 贴图档位与原图 A/B，对网格、骨骼和图像做差异验证后再共享。若仍超预算，再评估 KTX2 GPU 压缩与配套加载器。",
+    "tradeoff": "保留三代角色离线可切换；不把删除角色当优化。降采样影响放大细节，结构共享可能影响动画根可见性，压缩解码器也有首开成本。",
+    "accept": "默认及最大显示尺寸截图对照、7 段动画全验；记录资产 bytes、解码／首帧 p95、纹理数和真实显存。达到视觉等价后才替换正式资产。",
+    "refs": [
+      [
+        "src/pet/personaCatalog.ts",
+        82
+      ],
+      [
+        "src/pet/personaCatalog.ts",
+        109
+      ],
+      [
+        "public/personas/xiaozhu-sandaime/figure.glb",
+        null
+      ]
+    ],
+    "effort": "大",
+    "kind": "资产结构实测"
+  },
+  {
+    "id": 15,
+    "title": "流式文本每次重建对话导航观察器并测量所有轮次",
+    "priority": "P2",
+    "domain": "聊天交互",
+    "evidence": "ChatNavigation 的 turns 依赖整个 messages；每次正文变更重新运行 effect，创建 ResizeObserver、观察全部节点并读取全部用户轮次位置。",
+    "problem": "实际组件在 happy-dom 的 500 轮／1,000 消息、50 次独立更新中，额外创建和销毁 50 个观察器、observe 50,050 次、消息位置读取 25,000 次。468 ms 仅是探针总时间。",
+    "fix": "将观察器生命周期绑定到消息 ID／用户轮次；正文只更新当前预览。用已观察节点或缓存位置判断活动轮次，避免每次全 DOM 扫描。",
+    "tradeoff": "图片晚加载仍可能改变高度，需要保留尺寸通知、准确跳转、键盘焦点与 Escape 行为。",
+    "accept": "相同探针的文本增量不应重建观察器或全量 observe；原生长会话测滚动长任务与 p95 帧耗时。现有导航 2 个测试验证行为，没有工作量断言。",
+    "refs": [
+      [
+        "src/chat/ChatNavigation.tsx",
+        51
+      ],
+      [
+        "src/chat/ChatNavigation.tsx",
+        58
+      ],
+      [
+        "src/chat/ChatApp.tsx",
+        521
+      ]
+    ],
+    "effort": "小",
+    "kind": "真实组件计数探针"
+  },
+  {
+    "id": 16,
+    "title": "高频文本增量逐次提交，活动 Markdown 反复解析全文",
+    "priority": "P2",
+    "domain": "聊天交互",
+    "evidence": "每个文本事件释放后立即 setMessages，findIndex＋map 更新数组，父组件遍历整个时间线；活动消息的 remend 与 Markdown 每次解析增长中的全文。",
+    "problem": "1,000 条历史消息＋长代码／表格尾消息，会同时放大 React 提交、活动正文解析、工作日志过滤与滚动读取。已完成 ChatText 有 memo，不能称旧消息每次都重新解析。",
+    "fix": "先按 message ID 合并增量，每帧或约 33–50 ms 发布一次，终态／切会话前 flush；提取 memo 消息行、稳定旧对象引用，按 ID 索引日志操作。再按 profile 决定活动 Markdown 分块或虚拟化。",
+    "tradeoff": "最多增加一帧／几十毫秒展示延迟；最终文本、工具状态、Stop 与自动滚动必须一致。不要先引入复杂虚拟列表再处理重复提交。",
+    "accept": "1,000 消息、50 次／秒、10–50k 字符尾消息，提交频率受预算限制；记录输入响应和滚动 p95。保留部分 Markdown、安全链接、复制与 DOM 不重挂载测试。",
+    "refs": [
+      [
+        "src/chat/ChatApp.tsx",
+        521
+      ],
+      [
+        "src/chat/ChatApp.tsx",
+        1635
+      ],
+      [
+        "src/chat/ChatApp.tsx",
+        1928
+      ],
+      [
+        "src/chat/ChatText.tsx",
+        120
+      ]
+    ],
+    "effort": "中",
+    "kind": "源码确认"
+  },
+  {
+    "id": 17,
+    "title": "浏览器附件经 number[] JSON 传输，放大内存与主线程工作",
+    "priority": "P2",
+    "domain": "附件",
+    "evidence": "File→ArrayBuffer→number[]→JSON IPC，边界再逐字节校验；图片还存在 native dataURL 解码后再编码及单独预览编码。原生 picker/drop 的引用 ID 路径不属于此问题。",
+    "problem": "20 MiB 合成输入：数组转换 545.4 ms，JSON 264.1 ms，JSON 体积 71.41 MiB；转换阶段 heapUsed 增约 219.1 MiB，含 JSON 的 RSS 增约 272.8 MiB。均为 Node 合成观测。",
+    "fix": "图片直接复用已验证 dataURL；浏览器 File 走 Tauri 原始二进制请求体并独立验证元数据。预览使用 Blob URL 并及时 revoke。",
+    "tradeoff": "把对象里的 number[] 换成 Uint8Array 不会自动绕过 JSON。保留尺寸、opaque ID、取消、重试和授权边界，TS／Rust 双端联动。",
+    "accept": "1／8／20 MiB 输入及 64 MiB 媒体场景测 WebView2 长任务、堆／RSS、IPC 字节，确认无重复图像编解码。现有几字节 fixture 不能验证资源预算。",
+    "refs": [
+      [
+        "src/chat/useChatAttachmentsUtils.ts",
+        78
+      ],
+      [
+        "src/chat/localResources.ts",
+        68
+      ],
+      [
+        "src/chat/attachmentApiBoundary.ts",
+        117
+      ],
+      [
+        "src/chat/attachments.ts",
+        165
+      ]
+    ],
+    "effort": "中",
+    "kind": "数据转换微测"
+  },
+  {
+    "id": 18,
+    "title": "历史分页与缓存命中仍读取／序列化全量数据",
+    "priority": "P2",
+    "domain": "数据库",
+    "evidence": "initialize 先克隆本地 HistorySession 正文、native index 和所有 Agent records，序列化并 SHA-256 后才判断 fingerprint 未变；catalog 列表先全量解码／排序再分页。单条修改也在 IMMEDIATE 事务内读取、clone 和校验所有条目。",
+    "problem": "返回 50 行仍可能承担 N 个会话和 B 字节正文的成本；单条置顶／重命名也随目录规模增长。已实现按 key get 和只写变化行，剩余是读放大与事务内 CPU。",
+    "fix": "先用成功写入路径的 revision／generation 做廉价失效；单条事务按 key 更新，内容验证集中提交。再把筛选／排序字段投影为索引列，让分页落到 SQL。",
+    "tradeoff": "逐一覆盖 local reply、删除、Agent outcome 和所有权等失效入口；失败写入不能推进 revision。保留墓碑、来源身份与稳定排序。",
+    "accept": "1k／10k／100k 会话测首页、深分页与单条修改 p95；同会话数增加正文不应拖慢未变化列表。单条修改解码量为常数，50 行查询不解码全 N 行。",
+    "refs": [
+      [
+        "src-tauri/src/history/commands.rs",
+        101
+      ],
+      [
+        "src-tauri/src/history/commands.rs",
+        128
+      ],
+      [
+        "src-tauri/src/history/catalog.rs",
+        92
+      ],
+      [
+        "src-tauri/src/history/catalog_query.rs",
+        45
+      ]
+    ],
+    "effort": "大",
+    "kind": "源码确认"
+  },
+  {
+    "id": 19,
+    "title": "记忆读取先全表过期扫描，FTS 维护再按 UUID 扫表",
+    "priority": "P2",
+    "domain": "数据库",
+    "evidence": "retrieve/list 先 BEGIN IMMEDIATE 并执行无匹配索引的过期 UPDATE；每个 memories UPDATE/DELETE 的触发器又按 FTS5 UNINDEXED 的 memory_id 删除搜索记录，查询计划确认扫描。",
+    "problem": "无过期项也取得写锁并扫描；集中到期／批量遗忘会对每条记录再扫描搜索表，产生额外放大。隔离内存 SQL 在 100k 行的无到期 UPDATE p95=11.617 ms、无命中 FTS DELETE p95=14.788 ms。",
+    "fix": "先为 active 且 expires_at 非空的数据建立部分过期索引；只读查询实时排除过期项，把物化维护独立调度。FTS 用稳定 rowid 映射精确删除，仅检索字段变化时重建。",
+    "tradeoff": "不要直接依赖 VACUUM 后可能变化的隐式 rowid；保留 active-only 语义、真正擦除、secure_delete、checkpoint 与事务回滚。",
+    "accept": "EXPLAIN QUERY PLAN 不再全扫；大量无关角色、无过期和集中到期均测试。固定批次的单条 FTS 维护成本不随全库线性增长；保留现有 10k 检索预算测试。",
+    "refs": [
+      [
+        "src-tauri/src/memory/repository.rs",
+        425
+      ],
+      [
+        "src-tauri/src/memory/repository.rs",
+        546
+      ],
+      [
+        "src-tauri/src/memory/storage.rs",
+        105
+      ],
+      [
+        "src-tauri/src/memory/migrations/001_initial.sql",
+        126
+      ]
+    ],
+    "effort": "大",
+    "kind": "查询计划及 SQL 微测"
+  },
+  {
+    "id": 20,
+    "title": "删除工作记录会递归扫描并重写无关报告快照",
+    "priority": "P2",
+    "domain": "数据库",
+    "evidence": "erase_source 按日报版本递归，每层都加载全部 report_versions／report_runs 并解析 JSON；版本快照即使过滤前后不变也执行 UPDATE。",
+    "problem": "一条被多个日报版本引用的记录，会使全库快照多次被解析和写入；持有工作日志事务及连接锁期间，其他操作等待。",
+    "fix": "先跳过无变化 version UPDATE；收集本轮需擦除的 source ID 集合，再集中扫描和清理一次，避免每个版本递归全扫。",
+    "tradeoff": "快照可能脱离 report_sources 独立存在，不能只查关系表漏掉未完成 run。保留传递擦除、取消生成、stale/source_deleted 和用户是否删除报告的选择。",
+    "accept": "10k 无关版本＋1 个来源＋20 个相关版本，无关版本零写入；扫描次数不随相关版本数量乘增。保留既有传递删除与生成取消测试。",
+    "refs": [
+      [
+        "src-tauri/src/worklog/repository_sources.rs",
+        25
+      ],
+      [
+        "src-tauri/src/worklog/repository_sources.rs",
+        50
+      ],
+      [
+        "src-tauri/src/worklog/repository_sources.rs",
+        102
+      ]
+    ],
+    "effort": "中",
+    "kind": "源码确认"
+  }
+]

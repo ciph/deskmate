@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "releaseCommit": "fee4d707804f76e5c608ceef33c622e71d17b175",
+  "releaseRunId": 39813641175,
+  "sourceChecksRunId": 39813642512,
+  "checks": {
+    "windows": {
+      "jobId": 119946276304,
+      "frontendFiles": 171,
+      "frontendPassed": 1341,
+      "frontendFailed": 0,
+      "frontendSkipped": 8,
+      "unfinished": 0,
+      "rustPassed": 904,
+      "rustFailed": 0,
+      "rustIgnored": 19,
+      "log": "final-windows-source.log",
+      "logSha256": "546f12fd3df4d217b77f83aa48895eec9935a1c950b41382aa9b01478c6a0cf5"
+    },
+    "macos": {
+      "jobId": 119946276788,
+      "frontendFiles": 171,
+      "frontendPassed": 1347,
+      "frontendFailed": 0,
+      "frontendSkipped": 0,
+      "unfinished": 0,
+      "rustPassed": 895,
+      "rustFailed": 0,
+      "rustIgnored": 18,
+      "log": "final-macos-source.log",
+      "logSha256": "7a8ed03c4730ef2790582be3603969c0d2b81397785c8767d573a0ccf1d13254"
+    }
+  },
+  "workbenchRebuiltFromPinnedSource": true,
+  "windowsPackageBuilt": true,
+  "macosCandidateBuildOnly": true,
+  "macosReleased": false,
+  "installedOrGuiUpgradeTested": false,
+  "checkedAt": "2026-10-22T17:03:12.294378+00:00"
+}

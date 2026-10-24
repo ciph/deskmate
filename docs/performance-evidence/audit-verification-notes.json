@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-22 Asia/Shanghai",
+  "commit": "d92a9c872b01300a27d90a675cfa9247bfd2fd2b",
+  "typecheck": {
+    "command": "bun run typecheck",
+    "exitCode": 0
+  },
+  "frontend": {
+    "command": "bun run test:frontend",
+    "filesPassed": 154,
+    "filesTotal": 154,
+    "pass": 1117,
+    "fail": 0,
+    "skip": 8,
+    "unfinished": 0,
+    "childExitCodes": "All 154 file results have code 0 and status passed, see frontend-summary.json.",
+    "wrapperExitCode": null,
+    "wrapperNote": "The runner wrote the complete summary and its Bun process exited. The surrounding audit PowerShell stayed pending during postprocessing; only its conhost console child remained, no test child. Its precise PID and command were verified before stopping that audit-only shell. No successful wrapper exit code is claimed.",
+    "initialAttempt": "Sandbox EPERM prevented Bun from reading the development worktree. Initial script-discovery/help output was not counted as validation; the full suite was then run in the approved readable context."
+  },
+  "rust": {
+    "command": "cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4",
+    "exitCode": 0,
+    "pass": 728,
+    "fail": 0,
+    "ignored": 15,
+    "measured": 0,
+    "filtered": 0,
+    "testSeconds": 30.44
+  },
+  "build": {
+    "command": "bun run build",
+    "exitCode": 0,
+    "viteVersion": "7.3.6",
+    "viteBuildSeconds": 10.15,
+    "warning": "chunks above 500 kB",
+    "scope": "Main frontend build; pre-existing public/workbench was copied, not rebuilt from upstream source. No native installer build."
+  },
+  "notMeasured": [
+    "Native GUI performance",
+    "Installed application startup",
+    "Native GPU memory",
+    "Power consumption",
+    "Real model behavior",
+    "Production user data"
+  ],
+  "productSourceChanges": false
+}

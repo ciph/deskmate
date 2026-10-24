@@ -1,5 +1,9 @@
 # YUME 仓库 AI 工作入口
 
+## 性能整改接续（2026-10-24）
+
+继续性能整改时，先读 [Mac 接续说明](docs/performance-remediation-handoff.md)、[完整施工计划](docs/performance-remediation-plan.md) 和 [验收待办](docs/verification-backlog.md)。B1–B5 已保存并随 Windows 0.4.21 发布，B6/B7 尚未开工；本机路径、分支、工作区和版本须重新核对，从实际最新 `origin/main` 接续，不按历史盘符或原审计基线回退。后续实施及时更新这些入口，保留平台待验边界。
+
 ## 保存、提交、push、发布新版本
 
 用户要求“全部保存提交 push，发布新版本”或同义操作时，先读并执行

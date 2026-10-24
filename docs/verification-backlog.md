@@ -4,6 +4,15 @@
 
 ## 当前验证入口
 
+### 2026-10-24 性能整改 Mac 交接
+
+[完整施工计划](performance-remediation-plan.md) 与 [Mac 接续说明](performance-remediation-handoff.md) 已纳入仓库，原 Windows 外部计划冻结。B1–B5 代码已进入远端 main，最终发布源码 `fee4d707804f76e5c608ceef33c622e71d17b175` / 0.4.21；B6 的 H18/M19 迁移和 B7 联合验收未开工。接手从最新 main 核对后开始 H18a，不从旧审计版本重做。
+
+- 2026-10-23 最终发布 CI 六个 job 及 main Source checks 通过，固定上游工作台已完整重建。Windows 前端 1341 pass / 8 skip、Rust 904 pass / 19 ignored；Mac 前端 1347 pass / 0 skip、Rust 895 pass / 18 ignored；两平台均 0 fail、前端 0 unfinished。逐项回执见 [便携证据](performance-evidence/README.md)。这补充下方 B5 本地阶段“复用工作台”的历史记录，不改写原阶段覆盖范围。
+- Windows 0.4.21 已公开并完成包内容、Tauri 签名和匿名下载核验；未安装、未跑 GUI 跨版本升级，Authenticode 未签名。Mac 仅构建 unsigned 候选，未公开新包。所有 Windows/Mac 原生缺口继续保留。
+- 待独立处理的时钟边界：automatic worker 初始化 `now - 10s`；workbench archive guard 测试 `now - 6.001s`；仅 ignored 权限夹具 `checked_sub(300s)`。来源、文件和所需回归见接续说明，交接未修复这些代码。
+- C16 长聊天仍需原生输入/滚动尾延迟测量；R06c 仍有锁内关键落盘/结算 HTTP；D20 仍单次全库读取。B6 要在一致性备份的隔离库上完成迁移、失败恢复、并发、墓碑与真实隐私擦除，Mac 通过不能关闭 Windows 待验。
+
 ### 2026-10-22 性能整改 B5
 
 基线为 B4 本地提交 `5ef42d8e69c002fc1446e7a1ed943c658bd139a5`，基线版本 0.4.20；
