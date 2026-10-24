@@ -2,7 +2,7 @@
 
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a 代码与自动回归通过，H18b/H18c、M19 和 B7 待做；原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 H18b。不要切回旧 main 重做已有修改。
+**当前：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b 代码与自动回归通过，H18c、M19 和 B7 待做；原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 H18c。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
@@ -278,6 +278,10 @@ QA：缓存命中不 clone/hash 完整 HistorySession/records；固定会话数�
 
 ### H18b｜单条目录事务按 key 修改（#18 第二步，中；依赖 H18a）
 
+状态（2026-10-24 Mac）：**代码与自动测试通过但原生待验**。`update_entry` 在 IMMEDIATE 事务内按完整主键读取、验证并更新目标行，禁止换 key；未改变不写入。注册、组织操作、内容证据、删除回执及空会话清理已接入。批量导入/目录发现保留全量原子路径；来源关联 revision 仍仅在提交成功后推进。物理移除条目及偏好删除同事务，偏好写入也在同一事务检查目标存在。迟到操作重新验证当前墓碑、可用性和运行状态，保留较新的组织、所有权和内容证据。
+
+1k/10k/100k 合成库各执行 100 次单条修改，解码均为 100、UPDATE 均为 100，EXPLAIN 使用主键索引；这是存储操作计数，不是完整端点或 GUI 性能保证。无关损坏行保持原字节，单条路径沿用 `get` 的隔离策略；目标损坏拒绝，`all`/批量事务继续全量验证并报错，未引入静默修复。完整 Rust 916 pass / 0 fail / 19 ignored，其中新增手工规模测试已单独执行通过。命令与覆盖见 [H18b 验收记录](verification-backlog.md#2026-10-24-mac-b6-h18b)。schema 仍为 2，产品仍为 0.4.21；H18c 未开始。
+
 文件：history/catalog.rs、catalog_mutation.rs、catalog_content.rs、commands.rs、maintenance.rs；catalog_tests.rs、catalog_local_tests.rs、catalog_model_tests.rs、catalog_content_tests.rs、ownership/migration_rollback 测试。
 
 步骤：为确实单条的重命名/置顶/归档/内容证据更新复用按 key 查询，事务内只读/验证/写目标行；批量导入仍有自己的原子路径。保留完整身份验证、目录规范化、当前 runtime/ownership guard、删除 model selection 与墓碑逻辑，不把 UI capability 当授权。
@@ -376,7 +380,7 @@ macOS 单独待验：单实例/恢复语义、WebKit PDF worker/CSP、媒体/二
 | #19 到期扫描/FTS 扫描 | M19a/b/c | B6 | 大，三步 | 部分索引→读过滤/维护→显式稳定 rowid |
 | #20 删除递归全扫 | D20a/b | B5 | 中，两步 | 不变不写→闭包一次处理；独立快照不漏擦除 |
 
-历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5。当前接续先复核 G0，再从 B6 H18a 开始；原生缺口仍按 V1/V2 补验，不重做已保存的 B1–B5。
+历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5；Mac 已完成 B6 H18a/H18b 的代码与自动回归。当前接续核对本地检查点后从 H18c 开始；原生缺口仍按 V1/V2 补验，不重做已保存步骤。
 
 
 ## 历史回执：B1 开工（2026-10-22）

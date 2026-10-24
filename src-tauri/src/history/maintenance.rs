@@ -146,9 +146,10 @@ pub(super) fn prune_empty(app: &tauri::AppHandle) -> Result<Vec<String>, String>
 }
 
 fn mark_removed(store: &super::catalog::CatalogStore, row: &CatalogEntry) -> Result<(), String> {
-    store.update(|rows| {
-        if let Some(current) = rows.iter_mut().find(|entry| entry.key() == row.key()) {
-            current.tombstone = Some(DeletionTombstone { requested_at: commands::now()?, remote_deleted: true });
+    store.update_entry(&row.key(), |entry| {
+        if let Some(current) = entry {
+            if let Some(tombstone) = &mut current.tombstone { tombstone.remote_deleted = true; }
+            else { current.tombstone = Some(DeletionTombstone { requested_at: commands::now()?, remote_deleted: true }); }
         }
         Ok(())
     })?;
@@ -191,6 +192,27 @@ mod tests {
     fn row() -> CatalogEntry {
         let mut row = super::super::catalog_import::new_entry(CatalogIdentity::Native { sidecar_id: SIDECAR_ID.into(), directory: "c:/a".into(), session_id: "ses_old".into() }, "Draft".into(), ConversationSource::LightChat, 1, 2);
         row.has_records = Some(false); row.runtime = RuntimeState::Idle; row.availability = Availability::Available; row
+    }
+    #[test]
+    fn cleanup_receipt_preserves_current_organization_and_existing_deletion_time() {
+        let root = tempfile::tempdir().unwrap();
+        let store = super::super::catalog::CatalogStore::open(&root.path().join("catalog.sqlite")).unwrap();
+        let snapshot = row();
+        let mut current = snapshot.clone();
+        current.pinned = true;
+        current.tombstone = Some(DeletionTombstone { requested_at: 7, remote_deleted: false });
+        let mut other = snapshot.clone();
+        if let CatalogIdentity::Native { directory, .. } = &mut other.identity { *directory = "c:/b".into(); }
+        store.update(|rows| { rows.extend([current.clone(), other.clone()]); Ok(()) }).unwrap();
+        mark_removed(&store, &snapshot).unwrap();
+        current.tombstone.as_mut().unwrap().remote_deleted = true;
+        assert_eq!(store.get(&snapshot.key()).unwrap(), current);
+        assert_eq!(store.get(&other.key()).unwrap(), other);
+        mark_removed(&store, &other).unwrap();
+        assert!(store.get(&other.key()).unwrap().tombstone.unwrap().remote_deleted);
+        store.update_entry(&snapshot.key(), |row| { *row = None; Ok(()) }).unwrap();
+        mark_removed(&store, &snapshot).unwrap();
+        assert_eq!(store.get(&snapshot.key()).unwrap_err(), "history_not_found");
     }
     #[test]
     fn cleanup_excludes_live_unknown_recent_and_used_scopes() {

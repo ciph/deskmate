@@ -47,22 +47,27 @@ pub(super) fn refresh(store: &CatalogStore, client: &NativeHistoryClient) -> Res
         }
         let CatalogIdentity::Native { directory, session_id, .. } = &snapshot.identity else { continue; };
         match client.has_messages(directory, session_id) {
-            Ok(has_records) => store.update(|rows| {
-                if let Some(row) = rows.iter_mut().find(|row| row.key() == snapshot.key()) {
-                    // A concurrent local save or running task takes precedence.
-                    if row.has_records != Some(true) && row.updated == snapshot.updated
-                        && row.runtime == RuntimeState::Idle && row.ownership != Ownership::Agent {
-                        row.has_records = Some(has_records);
-                    }
-                }
-                Ok(())
-            })?,
+            Ok(has_records) => commit_evidence(store, &snapshot, has_records)?,
             Err(error) => errors.push(error.to_string()),
         }
     }
     errors.sort();
     errors.dedup();
     Ok(errors)
+}
+
+fn commit_evidence(store: &CatalogStore, snapshot: &CatalogEntry, has_records: bool) -> Result<(), String> {
+    store.update_entry(&snapshot.key(), |entry| {
+        if let Some(row) = entry {
+            // Concurrent content, deletion, discovery and running tasks win.
+            if row.tombstone.is_none() && row.availability == Availability::Available
+                && row.has_records != Some(true) && row.updated == snapshot.updated
+                && row.runtime == RuntimeState::Idle && row.ownership != Ownership::Agent {
+                row.has_records = Some(has_records);
+            }
+        }
+        Ok(())
+    })
 }
 
 #[cfg(test)]

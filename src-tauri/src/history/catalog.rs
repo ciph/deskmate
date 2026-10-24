@@ -1,5 +1,5 @@
 use std::{path::{Path, PathBuf}, time::Duration};
-use rusqlite::{Connection, TransactionBehavior};
+use rusqlite::{Connection, OptionalExtension, TransactionBehavior};
 use super::catalog_model::CatalogEntry;
 use crate::settings::ConversationModelSelection;
 
@@ -68,12 +68,16 @@ impl CatalogStore {
     }
 
     pub(crate) fn set_model_selection(&self, key: &str, selection: &ConversationModelSelection) -> Result<(), String> {
-        self.get(key)?;
         let json = serde_json::to_string(selection).map_err(|_| "history_model_selection_invalid")?;
-        self.connection()?.execute(
+        let mut connection = self.connection()?;
+        let transaction = connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(db_error)?;
+        // Existence validation and the preference write must not race entry removal.
+        read_entry(&transaction, key)?.ok_or("history_not_found")?;
+        transaction.execute(
             "INSERT INTO model_selections(key, selection) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET selection=excluded.selection",
             (key, json),
         ).map_err(db_error)?;
+        transaction.commit().map_err(db_error)?;
         Ok(())
     }
 
@@ -95,10 +99,7 @@ impl CatalogStore {
     }
 
     pub(crate) fn get(&self, key: &str) -> Result<CatalogEntry, String> {
-        let connection = self.connection()?;
-        let raw: String = connection.query_row("SELECT metadata FROM entries WHERE key = ?1", [key], |row| row.get(0))
-            .map_err(|error| if matches!(error, rusqlite::Error::QueryReturnedNoRows) { "history_not_found".to_owned() } else { db_error(error) })?;
-        decode_row(key, &raw)
+        read_entry(&self.connection()?, key)?.ok_or_else(|| "history_not_found".into())
     }
 
     pub(super) fn with_snapshot_entries<T>(
@@ -107,18 +108,44 @@ impl CatalogStore {
         legacy_key: &str,
         apply: impl FnOnce(Option<CatalogEntry>, Option<CatalogEntry>) -> Result<T, String>,
     ) -> Result<T, String> {
-        use rusqlite::OptionalExtension;
         // Archiving is best effort; even connection pragmas must not wait under the run lock.
         let mut connection = self.connection_with_timeout(Duration::ZERO)?;
         let transaction = connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(db_error)?;
-        let read = |key: &str| -> Result<Option<CatalogEntry>, String> {
-            let raw: Option<String> = transaction.query_row(
-                "SELECT metadata FROM entries WHERE key = ?1", [key], |row| row.get(0),
-            ).optional().map_err(db_error)?;
-            raw.map(|json| decode_row(key, &json)).transpose()
-        };
         // Reserve against writers through replacement, including tombstone migration and WAL mode.
-        apply(read(native_key)?, read(legacy_key)?)
+        apply(read_entry(&transaction, native_key)?, read_entry(&transaction, legacy_key)?)
+    }
+
+    /// Edit one complete identity under the write reservation. Rekeying and
+    /// cross-row validation belong to the bulk transaction, never this path.
+    /// Like get(), unrelated malformed rows are left untouched; all()/update()
+    /// remain the full-catalog validation boundary.
+    pub(crate) fn update_entry<T>(&self, key: &str, edit: impl FnOnce(&mut Option<CatalogEntry>) -> Result<T, String>) -> Result<T, String> {
+        let mut connection = self.connection()?;
+        let transaction = connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(db_error)?;
+        let before = read_entry(&transaction, key)?;
+        let mut entry = before.clone();
+        let result = edit(&mut entry)?;
+        if let Some(row) = &mut entry {
+            validate_entry(row)?;
+            if row.key() != key { return Err("history_identity_invalid".into()); }
+        }
+        if entry != before {
+            if let Some(row) = &entry {
+                let metadata = serde_json::to_string(row).map_err(|_| "history_catalog_invalid")?;
+                transaction.execute("INSERT INTO entries(key, metadata) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET metadata=excluded.metadata", (key, metadata)).map_err(db_error)?;
+            } else {
+                transaction.execute("DELETE FROM entries WHERE key = ?1", [key]).map_err(db_error)?;
+                transaction.execute("DELETE FROM model_selections WHERE key = ?1", [key]).map_err(db_error)?;
+            }
+        }
+        let associations_changed = before.as_ref().or(entry.as_ref()).is_some_and(|row|
+            matches!(row.identity, super::catalog_model::CatalogIdentity::Native { .. }))
+            && before.as_ref().map(|row| row.source) != entry.as_ref().map(|row| row.source);
+        transaction.commit().map_err(db_error)?;
+        if associations_changed {
+            if let Some(revision) = &self.associations { revision.committed(); }
+        }
+        Ok(result)
     }
 
     pub(crate) fn update<T>(&self, edit: impl FnOnce(&mut Vec<CatalogEntry>) -> Result<T, String>) -> Result<T, String> {
@@ -129,10 +156,7 @@ impl CatalogStore {
         let result = edit(&mut rows)?;
         let mut keys = std::collections::HashSet::new();
         for entry in &mut rows {
-            entry.identity.validate().map_err(|_| "history_identity_invalid")?;
-            if let super::catalog_model::CatalogIdentity::Native { directory, .. } = &mut entry.identity {
-                *directory = super::catalog_model::canonical_directory(directory).map_err(|_| "history_identity_invalid")?;
-            }
+            validate_entry(entry)?;
             if !keys.insert(entry.key()) { return Err("history_catalog_duplicate".into()); }
         }
         // New/removed native identities can coalesce an existing legacy row.
@@ -160,6 +184,21 @@ impl CatalogStore {
     }
 }
 
+fn validate_entry(entry: &mut CatalogEntry) -> Result<(), String> {
+    entry.identity.validate().map_err(|_| "history_identity_invalid")?;
+    if let super::catalog_model::CatalogIdentity::Native { directory, .. } = &mut entry.identity {
+        *directory = super::catalog_model::canonical_directory(directory).map_err(|_| "history_identity_invalid")?;
+    }
+    Ok(())
+}
+
+fn read_entry(connection: &Connection, key: &str) -> Result<Option<CatalogEntry>, String> {
+    let raw: Option<String> = connection.query_row(
+        "SELECT metadata FROM entries WHERE key = ?1", [key], |row| row.get(0),
+    ).optional().map_err(db_error)?;
+    raw.map(|json| decode_row(key, &json)).transpose()
+}
+
 fn read_rows(connection: &Connection) -> Result<Vec<CatalogEntry>, String> {
     let mut statement = connection.prepare("SELECT key, metadata FROM entries ORDER BY key").map_err(db_error)?;
     let raw = statement.query_map([], |row| Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))).map_err(db_error)?;
@@ -170,10 +209,19 @@ fn read_rows(connection: &Connection) -> Result<Vec<CatalogEntry>, String> {
 }
 
 fn decode_row(key: &str, metadata: &str) -> Result<CatalogEntry, String> {
+    #[cfg(test)]
+    DECODED_ROWS.with(|count| count.set(count.get() + 1));
     let entry: CatalogEntry = serde_json::from_str(metadata).map_err(|_| "history_catalog_invalid")?;
     entry.identity.validate().map_err(|_| "history_identity_invalid")?;
     if key != entry.key() { return Err("history_catalog_invalid".into()); }
     Ok(entry)
 }
+
+#[cfg(test)]
+thread_local! { pub(super) static DECODED_ROWS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) }; }
+
+#[cfg(test)]
+#[path = "catalog_entry_tests.rs"]
+mod tests;
 
 fn db_error(_: rusqlite::Error) -> String { "history_catalog_unavailable".into() }

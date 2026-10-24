@@ -137,13 +137,13 @@ pub(crate) fn register_native(app: &tauri::AppHandle, session_id: &str, source: 
     let store = store(app)?;
     store.register_directory(&directory)?;
     let identity = CatalogIdentity::Native { sidecar_id: SIDECAR_ID.into(), directory, session_id: session_id.into() };
-    let result = store.update(|rows| {
-        if let Some(row) = rows.iter().find(|row| row.key() == identity.key()) { return Ok(row.clone()); }
+    let result = store.update_entry(&identity.key(), |entry| {
+        if let Some(row) = entry { return Ok(row.clone()); }
         let mut row = catalog_import::new_entry(identity, native.title, source, native.time.created, native.time.updated);
         row.availability = Availability::Available;
         row.has_records = has_records;
         row.runtime = RuntimeState::Unknown;
-        rows.push(row.clone()); Ok(row)
+        *entry = Some(row.clone()); Ok(row)
     })?;
     if source == ConversationSource::LightChat { super::maintenance::protect(app, "chat", &result.key())?; }
     app.emit("history-catalog-changed", ()).map_err(|_| "history_event_unavailable")?;

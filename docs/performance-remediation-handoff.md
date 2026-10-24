@@ -1,16 +1,17 @@
 # YUME 性能整改：Mac 接续说明
 
-核对日期：2026-10-24（Asia/Shanghai）。原始交接提交只保存施工计划、证据与待办；下节记录随后在 Mac 上完成的 H18a，后面的原发布回执仍保留其历史范围。
+核对日期：2026-10-24（Asia/Shanghai）。原始交接提交只保存施工计划、证据与待办；下节记录随后在 Mac 上完成的 H18a/H18b，后面的原发布回执仍保留其历史范围。
 
-## Mac 接续进度：H18a
+## Mac 接续进度：H18a/H18b
 
 - 当前工作区 `/Users/xmaczone/Documents/Codex/deskmate`，分支 `codex/yume-performance-b6`，起点 `fcb463516bdde3f8bd0e3f8aa2ab287f0d355356`。先检查此分支和本地检查点；尚未推送时不能仅凭远端 main 判断 B6 未施工。
 - 固定 Bun 1.3.14 / Rust 1.94.1 已放在本工作区 `output/toolchains/`。命令环境入口 `output/performance-b6-preflight-20261024/context.sh`，只设置当前 shell 的工具链、缓存与 `DEVELOPER_DIR`。这些忽略目录是本机生成物，新机器须重新准备。
 - 已安装冻结依赖、准备 OpenCode 1.18.21 与 ncmdump 1.5.1，并完整重建工作台。Git 克隆上游两次 TLS 失败后，使用 GitHub 官方 codeload 的固定 commit `826d9ad46a22bef0294998e08daa3c4904fea28f` 源码归档；目录为 `output/upstream/opencode-v1.18.21`，不冒称 Git clone。安装前后上游锁文件 SHA-256 均为下文要求的 `55cde1…ae5c`。
 - Mac ARM64 / macOS 26.5.2 / SDK 26.5：基线完整检查通过；H18a 后完整 Rust 901 pass / 0 fail / 18 ignored。具体覆盖及边界见 [验收记录](verification-backlog.md#2026-10-24-mac-b6-h18a)。H18a 未修改 SQLite schema、产品版本或公开资产。
-- 下一步 **H18b**：按完整 key 处理单条目录事务，再 H18c；M19a/b/c 与 B7 尚未实施。下方三个时钟边界待办仍未改，本轮的自动回归不关闭 Windows/macOS 实机缺口。
+- H18b 从本地 H18a 检查点 `d877ba5` 接续：单条目录事务按完整 key 读/改，批量路径保留；并发状态重验、模型偏好原子删除/写入、提交后 revision、墓碑和损坏边界均有回归。1k/10k/100k 行各 100 次修改均解码 100 行、写 100 行，EXPLAIN 命中主键索引。完整 Rust 916 pass / 0 fail / 19 ignored，新增 ignored 规模测试单独通过；生产 `cargo check` 通过。见 [H18b 验收记录](verification-backlog.md#2026-10-24-mac-b6-h18b)。schema 仍为 2，版本仍为 0.4.21。
+- 下一步 **H18c**：筛选/排序投影列及 SQL 分页，先在隔离合成库验证迁移与旧实现查询等价；M19a/b/c 与 B7 尚未实施。下方三个时钟边界待办仍未改，本轮的自动回归不关闭 Windows/macOS 实机缺口。
 
-本机日志、源码校验与工作台生成物清单集中在 `output/performance-b6-preflight-20261024/`；该目录忽略于 Git。源代码与现行契约以当前 B6 分支为准，历史发布证据仍在 `docs/performance-evidence/`。
+本机基线/H18a 日志、源码校验与工作台生成物清单集中在 `output/performance-b6-preflight-20261024/`；H18b 日志与汇总在 `output/performance-b6-h18b-20261024/`，两目录均忽略于 Git。源代码与现行契约以当前 B6 分支为准，历史发布证据仍在 `docs/performance-evidence/`。
 
 ## 从哪里继续
 

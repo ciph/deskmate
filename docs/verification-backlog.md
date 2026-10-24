@@ -4,6 +4,20 @@
 
 ## 当前验证入口
 
+### 2026-10-24 Mac B6 H18b
+
+起点为 H18a 本地检查点 `d877ba5`，分支 `codex/yume-performance-b6`。本批完成 H18b；schema 保持 2，产品版本保持 0.4.21。下一步 H18c，M19/B7 未实施。
+
+- 单条目录编辑使用完整主键和 IMMEDIATE 事务，只解码目标行；注册、重命名、置顶、归档、内容证据、删除回执、自动清理已接入。批量来源导入与目录发现保留原子全量路径。未改变的条目不执行 SQL 写入。
+- 事务内验证规范化身份且禁止换 key，保留跨目录/sidecar 同 session ID 隔离。提交时重验当前墓碑/可用性/runtime，旧检查结果不覆盖较新的运行/所有权证据；内容证据响应保护并发保存、删除、运行、不可用状态。空会话清理与删除回执保留已有 requested_at，不复活缺失条目。
+- 物理移除条目及 model selection 删除同事务，偏好写入的存在性检查也纳入写事务，避免与条目移除交错留下孤立偏好。来源关联 revision 仅在成功提交的 native 新增/移除/来源变化后递增。回归注入闭包错误和 SQLite 触发器写失败，验证条目、偏好与 revision 不发生部分提交。
+- 损坏边界明确：单条路径沿用既有 `get` 策略，目标损坏拒绝，无关损坏行原字节保留；`all()` 和批量 `update()` 仍执行完整验证并报错。全局身份唯一性仍由批量重复检查和 SQLite 主键约束保障，不跳过损坏或静默修复。
+- 历史专项：`RUST_TEST_THREADS=4 cargo test --locked --manifest-path src-tauri/Cargo.toml history::`，145 pass / 0 fail / 2 ignored；此后补充的空会话回执及较新活动时间下的运行状态保护测试纳入完整套件。最终 `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4`：916 pass / 0 fail / 19 ignored，退出 0。包含既有 ownership、staged snapshot、WAL、migration/rollback、native unavailable 及跨窗口 guard 回归；未运行 ignored 原生用例。
+- 规模测量：`cargo test --locked --manifest-path src-tauri/Cargo.toml single_entry_scaling_benchmark -- --ignored --nocapture`，退出 0。在 1k/10k/100k 合成库各执行 100 次置顶切换，分别均为解码 100 / UPDATE 100，计划均为 `SEARCH entries USING INDEX sqlite_autoindex_entries_1 (key=?)`。三次总耗时 75.5265 / 156.539458 / 51.47075 ms，仅为同机 debug 合成单样本，不作为稳定延迟预算或原生加速比。
+- `cargo check --locked --manifest-path src-tauri/Cargo.toml` 退出 0，保留既有 13 条 production warnings。本轮没有改前端/工作台、锁文件或依赖，前端检查与固定工作台输入复用上一节 H18a 基线记录，未声称重新执行。测试和测量串行，所有数据库均为临时合成库。
+
+证据目录：`output/performance-b6-h18b-20261024/`，含 `history-tests.log`、`scaling.log`、`rust-full-final.log`、`cargo-check-final.log`、`summary.json`，并保留收尾前的 `rust-full.log` 与 `cargo-check.log`。仍有全量列表、候选枚举、批量导入和低频来源恢复；单条存储优化不等于整个端点恒定耗时。Mac WebKit/真实 IPC/工作台争用实机、Windows 回归、Hz/DPI/GPU/耗电仍待验。未安装日常应用、迁移用户库、推送或发布。
+
 ### 2026-10-24 Mac B6 H18a
 
 起点 `fcb4635`，本地分支 `codex/yume-performance-b6`，产品版本仍为 0.4.21。本批只完成 H18a，H18b/H18c/M19/B7 未实施。
