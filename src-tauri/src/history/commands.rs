@@ -123,8 +123,14 @@ pub(crate) async fn history_catalog_list(window: tauri::WebviewWindow, app: taur
         let store = store(&app)?;
         if refresh.unwrap_or(false) { super::maintenance::schedule_refresh(app.clone()); }
         let errors = app.state::<super::maintenance::HistoryMaintenance>().errors.lock().map_err(|_| "history_state_unavailable")?.clone();
-        let mut rows = store.all()?; apply_ownership(&app, &mut rows)?;
-        Ok(page(rows, query, store.directories()?, errors))
+        let mut page = store.page(query, errors)?;
+        // Workbench leases only switch Workbench/Unowned, never Agent visibility.
+        // Derive current capabilities for returned rows without persisting leases.
+        for row in &mut page.items {
+            apply_ownership(&app, std::slice::from_mut(&mut row.entry))?;
+            row.capabilities = row.entry.capabilities();
+        }
+        Ok(page)
     }).await.map_err(|_| "history_catalog_unavailable".to_owned())?
 }
 

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use super::catalog_model::*;
 
-#[derive(Default, Deserialize)]
+#[derive(Clone, Default, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct CatalogQuery {
     pub search: Option<String>, pub source: Option<ConversationSource>,
@@ -42,6 +42,7 @@ pub(crate) struct CatalogLoaded {
     pub origin_run_id: Option<String>,
 }
 
+#[cfg(test)]
 pub(crate) fn page(mut rows: Vec<CatalogEntry>, query: CatalogQuery, directories: Vec<String>, errors: Vec<String>) -> CatalogPage {
     rows.retain(CatalogEntry::visible_in_history);
     let offline = rows.iter().any(|row| row.tombstone.is_none() && matches!(row.identity, CatalogIdentity::Native { .. }) && row.availability != Availability::Available);

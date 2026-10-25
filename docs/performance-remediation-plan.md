@@ -2,7 +2,7 @@
 
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b 代码与自动回归通过，H18c、M19 和 B7 待做；原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 H18c。不要切回旧 main 重做已有修改。
+**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 代码与自动回归通过，历史目录 schema 3；M19 和 B7 待做，原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 M19a。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
@@ -290,7 +290,11 @@ QA：1k/10k/100k 行中单条修改解码数量恒定；无关损坏数据如何
 
 ### H18c｜筛选排序投影列与 SQL 分页（#18 第三步，大；依赖 H18b）
 
-文件：history/catalog.rs、catalog_query.rs、catalog_model.rs、commands.rs；catalog_migration_tests.rs、catalog_tests.rs、catalog_model_tests.rs、history 迁移/回退测试。当前 catalog schema 为 2，新增迁移不能改旧基线含义。
+状态（2026-10-25 Mac）：**代码与自动测试通过但原生待验**。独立 schema 2→3 迁移增加查询投影表、分页/目录/来源/离线索引；不重写旧 metadata，偏好与目录注册表保留。单条/批量 metadata 与投影同事务更新，直接 SQL metadata 写入会标记未验证投影，列表拒绝返回旧结果。列表/count/离线/目录读取共用 DEFERRED 快照，只解码返回页；工作台实时租约在页内重算能力，旧全量查询仅保留为测试 oracle。
+
+1k/10k/100k 数据各 97 组查询矩阵及首页/深页/搜索/目录/来源样本与旧 oracle 等价；50 行页均仅解码 50 行，对应索引均命中。保留 Rust Unicode 小写与字面子串、全部 u64 时间戳、空记录/墓碑、默认归档、置顶及 key 排序。中断注入、SQLite 容量上限、损坏、未来 schema、重复/并发打开、WAL 读写、物理删除及投影写失败均覆盖。完整 Rust 926 pass / 0 fail / 20 ignored；新增 ignored 规模测试单独通过，生产 `cargo check` 通过。预热后的 30 样本分布、扫描工作量及边界见 [H18c 验收记录](verification-backlog.md#2026-10-25-mac-b6-h18c)。count、搜索、深 offset 和来源恢复仍可能随数据增长；不宣称整个端点 O(1)。
+
+文件：history/catalog.rs、catalog_schema.rs、catalog_sql.rs、catalog_query.rs、commands.rs；catalog_schema_tests.rs、catalog_sql_tests.rs 及既有 history/ownership/迁移回退测试。起点 catalog schema 为 2；新增版本 3 保留旧基线含义，旧版拒绝写入新库。
 
 步骤：把实际查询需要的稳定字段投影为列/索引，metadata 与投影同事务更新；保留当前搜索大小写/substring、空会话排除、tombstone、pinned 优先、时间排序和 key tie-break。不凭 SQL 默认排序替换既有语义。列表/count 在 SQL 执行，最多解码返回页；全局目录与错误元数据单独读取。搜索与深 offset 的代价分别记录，不能声称任意深页恒定成本；先不改外部分页 API。
 
@@ -380,7 +384,7 @@ macOS 单独待验：单实例/恢复语义、WebKit PDF worker/CSP、媒体/二
 | #19 到期扫描/FTS 扫描 | M19a/b/c | B6 | 大，三步 | 部分索引→读过滤/维护→显式稳定 rowid |
 | #20 删除递归全扫 | D20a/b | B5 | 中，两步 | 不变不写→闭包一次处理；独立快照不漏擦除 |
 
-历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5；Mac 已完成 B6 H18a/H18b 的代码与自动回归。当前接续核对本地检查点后从 H18c 开始；原生缺口仍按 V1/V2 补验，不重做已保存步骤。
+历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5；Mac 已完成 B6 H18a/H18b/H18c 的代码与自动回归。当前接续核对本地检查点后从 M19a 开始；原生缺口仍按 V1/V2 补验，不重做已保存步骤。
 
 
 ## 历史回执：B1 开工（2026-10-22）

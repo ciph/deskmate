@@ -4,6 +4,30 @@
 
 ## 当前验证入口
 
+### 2026-10-25 Mac B6 H18c
+
+起点 `62ae45d`，本地分支 `codex/yume-performance-b6`。本批完成 H18c，历史目录 schema 2→3；产品仍为 0.4.21。下一步 M19a，M19b/c 和 B7 未实施。
+
+- 新增独立 `entry_projection` 和分页/目录/来源/离线索引。迁移逐行校验旧 metadata 并回填，原 JSON 字节、模型偏好、目录和最近工作区保留；DDL、回填与版本同事务提交。单条/批量变更同步维护投影，物理移除同步清理。直接 SQL 写 metadata 留下未验证标记，列表明确报错，避免使用旧投影或跳过损坏数据。
+- SQL count、分页、全局 offline 和目录在同一 DEFERRED 读快照内；只为返回页解码 metadata。Unicode 小写由 Rust 生成，SQL `instr` 保留字面子串，含中文、希腊 sigma、İ、%/_、反斜线和 NUL；8 字节大端时间戳保留全部 u64 顺序。默认归档/空记录/墓碑/置顶/完整 key 排序和大 offset 边界与旧 oracle 相同。工作台租约仅在返回页派生能力，不写入投影；窗口授权及操作时 live guard 保留。
+- schema 回归：保留关闭连接后的独立 schema 2 只读副本及 SHA-256；重复打开、四线程并发打开、未来版本拒绝；第 50 行注入中断、SQLite `max_page_count` 模拟容量不足、非法 JSON/错 key 均回滚；投影写失败不提交 metadata；WAL 读快照期间另一连接归档、墓碑、物理删除和注册目录后，旧快照仍一致，新请求读取新状态。中断是确定性错误注入，不冒称真实进程崩溃或磁盘拔出。
+- 自动回归：历史专项 `cargo test --locked --manifest-path src-tauri/Cargo.toml history:: -- --test-threads=4` 为 157 pass / 0 fail / 3 ignored。随后完善 WAL 删除用例后，完整 `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4` 为 **926 pass / 0 fail / 20 ignored**，退出 0。生产 `cargo check --locked --manifest-path src-tauri/Cargo.toml` 退出 0，保留既有 13 warnings。首次编译因 rusqlite 不支持直接读取 `usize` 失败，改为有检查的 i64→usize 转换后通过；日志保留。
+- 规模专项 `cargo test --locked --manifest-path src-tauri/Cargo.toml sql_paging_scaling_benchmark -- --ignored --nocapture` 退出 0；1k/10k/100k 各 97 组过滤/搜索/时间/分页查询与旧全量 Rust oracle 完全一致，另测首页、深页、搜索、目录、来源五种形态。正常套件还逐页遍历 1007 行夹具。50 行页均只解码 50 行；EXPLAIN 分别命中 `catalog_page_order`、`catalog_directory_order`、`catalog_source_order` 和 metadata 主键。旧全量算法只编译到测试中。
+
+规模测量串行，在固定 Rust 1.94.1、同一 Mac ARM64 的 debug 构建中每种形态预热 3 次、采样 30 次，p50/p95 使用 nearest-rank；计时包含连接、计数、离线/目录查询和页读取，不含来源恢复或真实 IPC。10万行结果：
+
+| 形态 | 解码行数 | page VM steps | count VM steps | p50 / p95（ms） |
+| --- | ---: | ---: | ---: | ---: |
+| 首页 50 行 | 50 | 869 | 196935 | 6.752 / 8.444 |
+| offset 50000 | 50 | 150869 | 196935 | 10.010 / 10.758 |
+| 子串「标题」 | 50 | 3782 | 572029 | 103.987 / 157.866 |
+| 目录过滤 | 50 | 871 | 67148 | 3.775 / 4.184 |
+| 来源过滤 | 50 | 871 | 73862 | 3.736 / 4.656 |
+
+首页 page VM steps 在三种规模均为 869，但 count 从 1980 增至 196935；深 offset 的 page steps 从 2369 增至 150869。搜索仍扫描投影以计算完整匹配数；这些数据不支持整个请求恒定工作量、稳定原生 p95 或 GUI 已流畅的结论。保留首次单样本测量 `scaling.log`，最终 30 样本及查询计划见 `scaling-final.log`。
+
+证据目录 `output/performance-b6-h18c-20261025/` 包含首次失败/复跑 history 日志、`rust-full.log`、`cargo-check.log`、规模日志、`source-snapshot.json` 和 `summary.json`。没有改前端、工作台、锁文件或依赖，复用 H18a 的前端及固定工作台基线；未重复运行无关前端检查。数据库均为临时合成库；未触碰日常用户库、安装、推送或发布。schema 3 不通过改版本号降级；旧版本门禁拒绝新库。真实 Mac/Windows GUI、IPC、多窗口争用、显示器与 GPU/功耗门槛仍待 B7。
+
 ### 2026-10-24 Mac B6 H18b
 
 起点为 H18a 本地检查点 `d877ba5`，分支 `codex/yume-performance-b6`。本批完成 H18b；schema 保持 2，产品版本保持 0.4.21。下一步 H18c，M19/B7 未实施。

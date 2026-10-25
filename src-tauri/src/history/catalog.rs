@@ -15,13 +15,16 @@ impl CatalogStore {
         let store = Self { path: path.to_owned(), associations: None };
         let mut connection = store.connection()?;
         let version: u32 = connection.query_row("PRAGMA user_version", [], |row| row.get(0)).map_err(db_error)?;
-        if version == 2 { return Ok(store); }
-        if version > 2 { return Err("history_catalog_version_unsupported".into()); }
+        if version == 3 { return Ok(store); }
+        if version > 3 { return Err("history_catalog_version_unsupported".into()); }
 
         let transaction = connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(db_error)?;
         let version: u32 = transaction.query_row("PRAGMA user_version", [], |row| row.get(0)).map_err(db_error)?;
-        if version > 2 { return Err("history_catalog_version_unsupported".into()); }
-        transaction.execute_batch("CREATE TABLE IF NOT EXISTS entries (key TEXT PRIMARY KEY NOT NULL, metadata TEXT NOT NULL); CREATE TABLE IF NOT EXISTS directories (directory TEXT PRIMARY KEY NOT NULL); CREATE TABLE IF NOT EXISTS model_selections (key TEXT PRIMARY KEY NOT NULL, selection TEXT NOT NULL); CREATE TABLE IF NOT EXISTS recent_workspaces (directory TEXT PRIMARY KEY NOT NULL, selected_at INTEGER NOT NULL); PRAGMA user_version = 2;").map_err(db_error)?;
+        if version > 3 { return Err("history_catalog_version_unsupported".into()); }
+        if version < 2 {
+            transaction.execute_batch("CREATE TABLE IF NOT EXISTS entries (key TEXT PRIMARY KEY NOT NULL, metadata TEXT NOT NULL); CREATE TABLE IF NOT EXISTS directories (directory TEXT PRIMARY KEY NOT NULL); CREATE TABLE IF NOT EXISTS model_selections (key TEXT PRIMARY KEY NOT NULL, selection TEXT NOT NULL); CREATE TABLE IF NOT EXISTS recent_workspaces (directory TEXT PRIMARY KEY NOT NULL, selected_at INTEGER NOT NULL); PRAGMA user_version = 2;").map_err(db_error)?;
+        }
+        if version < 3 { super::catalog_schema::migrate_v3(&transaction)?; }
         transaction.commit().map_err(db_error)?;
         Ok(store)
     }
@@ -31,7 +34,7 @@ impl CatalogStore {
         self
     }
 
-    fn connection(&self) -> Result<Connection, String> {
+    pub(super) fn connection(&self) -> Result<Connection, String> {
         self.connection_with_timeout(Duration::from_secs(5))
     }
 
@@ -133,6 +136,7 @@ impl CatalogStore {
             if let Some(row) = &entry {
                 let metadata = serde_json::to_string(row).map_err(|_| "history_catalog_invalid")?;
                 transaction.execute("INSERT INTO entries(key, metadata) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET metadata=excluded.metadata", (key, metadata)).map_err(db_error)?;
+                super::catalog_schema::write_projection(&transaction, key, row)?;
             } else {
                 transaction.execute("DELETE FROM entries WHERE key = ?1", [key]).map_err(db_error)?;
                 transaction.execute("DELETE FROM model_selections WHERE key = ?1", [key]).map_err(db_error)?;
@@ -175,6 +179,7 @@ impl CatalogStore {
             if before.get(&key) == Some(&entry) { continue; }
             let metadata = serde_json::to_string(&entry).map_err(|_| "history_catalog_invalid")?;
             transaction.execute("INSERT INTO entries(key, metadata) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET metadata=excluded.metadata", [key, metadata]).map_err(db_error)?;
+            super::catalog_schema::write_projection(&transaction, &entry.key(), &entry)?;
         }
         transaction.commit().map_err(db_error)?;
         if associations_changed {
@@ -208,7 +213,7 @@ fn read_rows(connection: &Connection) -> Result<Vec<CatalogEntry>, String> {
     }).collect()
 }
 
-fn decode_row(key: &str, metadata: &str) -> Result<CatalogEntry, String> {
+pub(super) fn decode_row(key: &str, metadata: &str) -> Result<CatalogEntry, String> {
     #[cfg(test)]
     DECODED_ROWS.with(|count| count.set(count.get() + 1));
     let entry: CatalogEntry = serde_json::from_str(metadata).map_err(|_| "history_catalog_invalid")?;
@@ -224,4 +229,4 @@ thread_local! { pub(super) static DECODED_ROWS: std::cell::Cell<usize> = const {
 #[path = "catalog_entry_tests.rs"]
 mod tests;
 
-fn db_error(_: rusqlite::Error) -> String { "history_catalog_unavailable".into() }
+pub(super) fn db_error(_: rusqlite::Error) -> String { "history_catalog_unavailable".into() }

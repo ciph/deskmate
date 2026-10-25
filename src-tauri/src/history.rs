@@ -12,6 +12,8 @@ pub(crate) mod maintenance;
 pub(crate) mod native_api;
 pub(crate) mod catalog_model;
 mod catalog;
+mod catalog_schema;
+mod catalog_sql;
 pub(crate) mod catalog_cache;
 mod catalog_content;
 mod catalog_query;
