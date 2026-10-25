@@ -154,6 +154,25 @@ fn a_late_reply_cannot_approve_an_expired_request() -> TestResult<()> {
 }
 
 #[test]
+fn live_fixture_expires_pending_approvals_without_backdating_the_clock() -> TestResult<()> {
+    let state = AgentPermissionState::default();
+    state.register_run("run-a", "session-a", std::env::temp_dir())?;
+    assert_eq!(state.expire_current_for_test("run-a").err().as_deref(), Some("agent_test_no_approval"));
+    poll(&state, vec![request("permission-a")], Instant::now())?;
+    state.expire_current_for_test("run-a")?;
+    assert_eq!(state.take_reply("run-a", "permission-a").err().as_deref(), Some("agent_permission_expired"));
+    let decisions = state.sync_pending(
+        "run-a",
+        vec![request("permission-a")],
+        &["message-a".into()],
+        &["call-a".into()],
+    )?;
+    assert_eq!(decisions[0].1, PendingDecision::RejectWithReason(super::APPROVAL_EXPIRED));
+    assert!(state.waiting("run-a")?.is_empty());
+    Ok(())
+}
+
+#[test]
 fn timely_reply_is_consumed_only_once() -> TestResult<()> {
     // Given: an unexpired permission belongs to this run.
     let state = AgentPermissionState::default();

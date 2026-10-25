@@ -358,9 +358,15 @@ fn process(app: &tauri::AppHandle, mut job: Job) -> Result<(), String> {
     Ok(())
 }
 
+fn work_link_sync_due(last_completed: Option<std::time::Instant>, now: std::time::Instant) -> bool {
+    last_completed.is_none_or(|last| {
+        now.saturating_duration_since(last) >= std::time::Duration::from_secs(10)
+    })
+}
+
 pub(super) fn start(app: tauri::AppHandle) {
     std::thread::spawn(move || {
-        let mut last_sync = std::time::Instant::now() - std::time::Duration::from_secs(10);
+        let mut last_sync = None;
         loop {
             // At most one small expiry batch per pass. Never queue behind a
             // foreground command (especially forget) or a cross-process writer.
@@ -372,9 +378,9 @@ pub(super) fn start(app: tauri::AppHandle) {
                     }
                 };
             }
-            if last_sync.elapsed().as_secs() >= 10 {
+            if work_link_sync_due(last_sync, std::time::Instant::now()) {
                 synchronize_work_links(&app);
-                last_sync = std::time::Instant::now();
+                last_sync = Some(std::time::Instant::now());
             }
             if let Ok(Some(job)) = repository(&app, |repo| repo.next_automatic()) {
                 let id = job.id.clone();
@@ -397,4 +403,21 @@ pub(super) fn start(app: tauri::AppHandle) {
             std::thread::sleep(std::time::Duration::from_millis(800));
         }
     });
+}
+
+#[cfg(test)]
+mod clock_tests {
+    use super::work_link_sync_due;
+    use std::time::{Duration, Instant};
+
+    #[test]
+    fn first_sync_is_immediate_and_next_sync_waits_after_completion() {
+        let start = Instant::now();
+        assert!(work_link_sync_due(None, start));
+        // A slow first sync still gets ten seconds of rest after completion.
+        let completed = start + Duration::from_secs(5);
+        assert!(!work_link_sync_due(Some(completed), start));
+        assert!(!work_link_sync_due(Some(completed), completed + Duration::from_millis(9999)));
+        assert!(work_link_sync_due(Some(completed), completed + Duration::from_secs(10)));
+    }
 }
