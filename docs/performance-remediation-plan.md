@@ -2,7 +2,7 @@
 
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a 代码及自动回归通过，历史目录和记忆库各自 schema 3；M19b/c 和 B7 待做，原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 M19b。不要切回旧 main 重做已有修改。
+**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b 代码及自动回归通过，历史目录和记忆库各自 schema 3；M19c 和 B7 待做，原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 M19c。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
@@ -311,6 +311,10 @@ QA：迁移前后同一 1k/10k/100k fixture 的所有过滤/排序/分页结果�
 步骤/QA：只为 active 且 expires_at 非空建立适配谓词的部分索引，不顺手改变读语义；新建 migration，不修改已应用的 001_initial.sql。100k 行无到期、有少量到期、集中到期、无关 persona 下 EXPLAIN 不再全扫到期 UPDATE；保留 ISO 时间与时区比较语义，旧 schema 迁移原子成功，失败仍可打开旧副本。
 
 ### M19b｜读取实时过滤，物化过期独立维护（#19 第二步，中；依赖 M19a）
+
+状态（2026-10-25 Mac）：**代码与自动测试通过但原生待验**。列表/导出及关联查询使用同一 DEFERRED 只读快照；检索单条 SELECT 过滤逻辑过期。active/expired/superseded、全量导出、FTS 与短词 LIKE 在物化前后结果一致；普通写入保留 IMMEDIATE。后台以索引最近期限判断是否需要维护，每轮最多 8 条记忆和 32 条 pending 候选；记忆逐条执行并检查 10 ms 预算，忙时让出，失败整批回滚重试。新建同 key 只处理对应过期槽位，编辑/自动提议不会复活到期记录。物化保留 updated_at/revision，避免后台调度改变排序与导出，明确取代旧读时更新 timestamp 的副作用，详见[当前契约](memory-and-worklog.md#读取与到期维护2026-10-25-m19b)。
+
+完整 Rust 941 pass / 0 fail / 22 ignored，10k 检索 p50/p95 11/16 ms，未改 50 ms 预算；新增 100k 规模专项单独通过。最近期限查询 36–40 VM steps，读取写入次数为 0。初版固定 8 条维护耗时 254 ms，加入逐条时间预算后本机同场景处理 1 条、耗时 40.8 ms；这不是严格 10 ms 上限，单条旧 FTS 触发器仍可能超时，留给 M19c。100k 检索自身仍为约 102–117 ms 的 p50，不承诺整体恒定时间或原生体验。所有失败、调整及数字见 [M19b 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19b)。两库独立 schema 仍为 3，未变更迁移、前端、依赖或发布版本。
 
 文件：memory/repository.rs、retrieval.rs、commands.rs、automatic/worker.rs 或已有维护入口；retrieval_tests.rs、repository_tests.rs、perf_tests.rs、commands_forget_tests.rs、cross_process_tests.rs。
 

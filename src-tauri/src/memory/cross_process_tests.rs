@@ -209,3 +209,22 @@ fn simultaneous_first_launches_migrate_the_database_exactly_once() {
 
     std::fs::remove_dir_all(&dir).ok();
 }
+
+#[test]
+fn read_snapshot_allows_another_process_to_commit_and_stays_consistent() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join(DB_FILE_NAME);
+    let repository = MemoryRepository::new(MemoryStore::open(&path).unwrap(), SystemClock);
+    repository.create(&request(0)).unwrap();
+    repository.store().with_read_transaction(|tx| {
+        let count = |table: &str| -> i64 {
+            tx.query_row(&format!("SELECT count(*) FROM {table}"), [], |r| r.get(0)).unwrap()
+        };
+        assert_eq!(count("memories"), 1); // Pin the read snapshot before the child writes.
+        assert!(spawn_writer(&path, 3, 7000).wait().unwrap().success());
+        assert_eq!(count("memories"), 1);
+        assert_eq!(count("memory_sources"), 1); // Same snapshot for batched provenance.
+        Ok(())
+    }).unwrap();
+    assert_eq!(repository.list(&MemoryQuery::default()).unwrap().len(),4);
+}

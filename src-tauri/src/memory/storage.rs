@@ -124,6 +124,50 @@ impl MemoryStore {
         Ok(value)
     }
 
+    /// A consistent snapshot for multi-query reads. Never upgrade this to a write.
+    pub fn with_read_transaction<T>(
+        &self,
+        body: impl FnOnce(&rusqlite::Transaction<'_>) -> MemoryResult<T>,
+    ) -> MemoryResult<T> {
+        let mut guard = self.connection.lock()
+            .map_err(|_| MemoryError::storage_unavailable("memory connection poisoned"))?;
+        let transaction = guard.transaction_with_behavior(rusqlite::TransactionBehavior::Deferred)?;
+        let value = body(&transaction)?;
+        transaction.commit()?;
+        Ok(value)
+    }
+
+    /// Background maintenance yields to local callers and other processes.
+    /// Check the nearest deadline without reserving a writer; only due work
+    /// attempts IMMEDIATE, with no busy wait. Foreground writes keep their timeout.
+    pub(super) fn try_maintenance<T>(
+        &self,
+        due: impl FnOnce(&Connection) -> MemoryResult<bool>,
+        body: impl FnOnce(&rusqlite::Transaction<'_>) -> MemoryResult<T>,
+    ) -> MemoryResult<Option<T>> {
+        let mut guard = match self.connection.try_lock() {
+            Ok(guard) => guard,
+            Err(std::sync::TryLockError::WouldBlock) => return Ok(None),
+            Err(_) => return Err(MemoryError::storage_unavailable("memory connection poisoned")),
+        };
+        if !due(&guard)? { return Ok(None); }
+        guard.busy_timeout(std::time::Duration::ZERO)?;
+        let result = (|| {
+            let transaction = match guard.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate) {
+                Ok(transaction) => transaction,
+                Err(rusqlite::Error::SqliteFailure(error, _)) if matches!(error.code,
+                    rusqlite::ErrorCode::DatabaseBusy | rusqlite::ErrorCode::DatabaseLocked) => return Ok(None),
+                Err(error) => return Err(error.into()),
+            };
+            let value = body(&transaction)?;
+            transaction.commit()?;
+            Ok(Some(value))
+        })();
+        // Restore even when the batch rolls back or BEGIN found a competing writer.
+        guard.busy_timeout(std::time::Duration::from_secs(5))?;
+        result
+    }
+
     /// Flush the WAL into the main database file so deleted content cannot
     /// survive in the write-ahead log.
     pub fn checkpoint(&self) -> MemoryResult<()> {

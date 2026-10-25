@@ -16,7 +16,7 @@ fn ids(connection: &Connection, sql: &str) -> Vec<String> {
 
 fn update_plan(connection: &Connection) -> Vec<String> {
     connection.prepare(&format!("EXPLAIN QUERY PLAN {EXPIRE_MEMORIES_SQL}")).unwrap()
-        .query_map([NOW], |row| row.get(3)).unwrap().collect::<Result<_, _>>().unwrap()
+        .query_map(params![NOW, 1], |row| row.get(3)).unwrap().collect::<Result<_, _>>().unwrap()
 }
 
 fn seed_boundaries(store: &MemoryStore) {
@@ -62,11 +62,13 @@ fn expiry_index_preserves_boundaries_text_time_comparison_and_candidate_cleanup(
         assert_eq!(ids(connection, DUE_IDS), vec!["1-active", "2-active", "5-active", "6-active"]);
         Ok(())
     }).unwrap();
-    for store in [&indexed, &scan] { store.with_transaction(|tx| expire_due(tx, NOW)).unwrap(); }
+    for store in [&indexed, &scan] {
+        while store.with_transaction(|tx| expire_due(tx, NOW)).unwrap() != (0, 0) {}
+    }
     let actual = indexed.with_connection(|connection| Ok(state(connection))).unwrap();
     assert_eq!(actual, scan.with_connection(|connection| Ok(state(connection))).unwrap());
     assert_eq!(actual.2, vec!["accepted-due", "pending-future"]);
-    assert!(actual.0.iter().any(|(id, status, updated)| id == "2-active" && status == "expired" && updated == NOW));
+    assert!(actual.0.iter().any(|(id, status, updated)| id == "2-active" && status == "expired" && updated == "2026-01-01T00:00:00Z"));
     assert!(actual.0.iter().any(|(id, status, updated)| id == "2-superseded" && status == "superseded" && updated != NOW));
     assert!(!actual.1.contains(&"2-active".into()));
 }
@@ -80,7 +82,7 @@ fn failed_expiry_rolls_back_status_index_membership_fts_and_candidates() {
     assert!(store.with_transaction(|tx| expire_due(tx, NOW)).is_err());
     assert_eq!(store.with_connection(|connection| Ok((state(connection), ids(connection, DUE_IDS)))).unwrap(), before);
     store.with_connection(|connection| { connection.execute_batch("DROP TRIGGER reject_candidate_cleanup;")?; Ok(()) }).unwrap();
-    store.with_transaction(|tx| expire_due(tx, NOW)).unwrap();
+    while store.with_transaction(|tx| expire_due(tx, NOW)).unwrap() != (0, 0) {}
     assert!(store.with_connection(|connection| Ok(ids(connection, DUE_IDS))).unwrap().is_empty());
 }
 
@@ -97,6 +99,7 @@ fn persona_listing_keeps_global_expiry_and_does_not_expose_other_personas() {
     let repository = MemoryRepository::new(store, FixedClock);
     let visible = repository.list(&MemoryQuery { persona_id: Some("viewer".into()), ..Default::default() }).unwrap();
     assert!(visible.iter().all(|record| record.memory.scope == MemoryScope::Global));
+    while repository.maintain_expiry().unwrap().is_some() {}
     repository.store.with_connection(|connection| {
         let status: String = connection.query_row("SELECT status FROM memories WHERE id='2-active' AND persona_id='other'", [], |row| row.get(0))?;
         assert_eq!(status, "expired", "expiry remains global even when listing another persona");
@@ -153,10 +156,57 @@ fn expiry_index_scaling_benchmark() {
             }
             if expected == 0 {
                 let mut update = connection.prepare(EXPIRE_MEMORIES_SQL)?;
-                assert_eq!(update.execute([NOW])?, 0);
+                assert_eq!(update.execute(params![NOW, EXPIRY_MEMORY_BATCH])?, 0);
                 println!("M19a zero_due case={case} actual_update_vm_steps={}", update.get_status(StatementStatus::VmStep));
             }
             Ok(())
         }).unwrap();
+    }
+}
+
+#[test]
+#[ignore = "manual M19b 100k logical reads, indexed deadlines and bounded maintenance measurement"]
+fn logical_expiry_scaling_benchmark() {
+    for case in ["no_expiry", "future_only", "concentrated"] {
+        let root = tempfile::tempdir().unwrap();
+        let store = MemoryStore::open(&root.path().join("memory.db")).unwrap();
+        let expected = seed_scale(&store, 100_000, case);
+        let repository = MemoryRepository::new(store, FixedClock);
+        let changes = repository.store.with_connection(|db| Ok(db.total_changes())).unwrap();
+        let mut timings = Vec::new();
+        for _ in 0..30 {
+            let start = std::time::Instant::now();
+            let rows = repository.retrieve("viewer", &["synthetic".into()], &[], 24).unwrap();
+            assert_eq!(rows.len(),24);
+            assert!(rows.iter().all(|m| m.expires_at.as_deref().is_none_or(|expiry| expiry>NOW)));
+            timings.push(start.elapsed());
+        }
+        timings.sort();
+        assert_eq!(repository.store.with_connection(|db| Ok(db.total_changes())).unwrap(),changes);
+        repository.store.with_connection(|db| {
+            let mut statement = db.prepare(NEXT_EXPIRY_SQL)?;
+            let _: Option<String> = statement.query_row([], |r| r.get(0))?;
+            assert_eq!(statement.get_status(StatementStatus::FullscanStep),0);
+            assert!(statement.get_status(StatementStatus::VmStep)<200);
+            println!("M19b case={case} rows=100000 due={expected} read_writes=0 deadline_vm_steps={} retrieval_p50_ms={:.3} retrieval_p95_ms={:.3}",
+                statement.get_status(StatementStatus::VmStep),timings[14].as_secs_f64()*1000.0,timings[28].as_secs_f64()*1000.0);
+            let plan=update_plan(db);
+            assert!(plan.iter().any(|line|line.contains("INDEX idx_memories_active_expiry")),"{plan:?}");
+            assert!(!plan.iter().any(|line|line.contains("SCAN memories")),"{plan:?}");
+            Ok(())
+        }).unwrap();
+        let start=std::time::Instant::now();
+        let batch = repository.maintain_expiry().unwrap();
+        if expected==0 { assert_eq!(batch,None); }
+        else { assert!(batch.is_some_and(|(memories,candidates)| (1..=8).contains(&memories) && candidates==0)); }
+        println!("M19b case={case} maintenance_batch={batch:?} maintenance_batch_ms={:.3}",start.elapsed().as_secs_f64()*1000.0);
+        if expected>0 {
+            // Foreground deletion runs between batches; maintenance never drains
+            // the whole due queue under one writer lock.
+            let start=std::time::Instant::now();
+            repository.forget("fixture-019999").unwrap();
+            println!("M19b case={case} forget_between_batches_ms={:.3}",start.elapsed().as_secs_f64()*1000.0);
+            assert_eq!(repository.store.with_connection(|db| Ok(ids(db,DUE_IDS).len())).unwrap(),expected-batch.unwrap().0-1);
+        }
     }
 }

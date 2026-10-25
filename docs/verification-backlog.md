@@ -4,6 +4,30 @@
 
 ## 当前验证入口
 
+### 2026-10-25 Mac B6 M19b
+
+起点 `73b254b`，分支 `codex/yume-performance-b6`。本批完成读取逻辑过期与独立维护；历史目录、记忆库各自 schema 仍为 3，产品仍为 0.4.21。远端核对仍为 `fcb4635`，从本地 B6 接续；下一步 M19c，B7 与平台实机验收保留。
+
+- 列表/导出及分块关联使用 DEFERRED 只读快照，聊天检索单条 SELECT；复用已有连接，普通写事务仍为 IMMEDIATE。冻结时间下验证 active/expired/superseded、persona/global、NULL/边界/偏移量/小数 TEXT 比较、立即/远未来到期、重开恢复、FTS/短词 LIKE、来源/任务关联与完整导出；维护前后记录、顺序、updated_at/revision 一致。FTS 保持 active-only，显式 expired 的短词历史搜索保留；没有新增物理 status 计数 API。
+- 后台每轮通过两个索引的最近期限判断是否有到期项；最多 8 条记忆/32 条 pending 候选，记忆逐条处理后检查 10 ms 时间预算。状态/连接忙时跳过，跨进程写锁竞争零等待让出并恢复 5 秒普通超时；失败整批回滚重试。候选单独到期也会触发清理，accepted/dismissed/未来候选不变。新建同 key 只释放对应过期槽位；编辑已到期项不会复活；自动提议目标和日志关联拒绝逻辑过期记录。
+- 物化只改变 status，保留最后编辑时间与 revision，明确替代旧“首次读取时更新 updated_at”的副作用。读路径在 SQLite query_only 模式和另一连接持有 IMMEDIATE 写锁时成功，读取未提交写之前的一致内容；真正子进程在父进程持有只读快照时成功提交，父进程多表快照保持一致，结束后读到新数据。维护间隙的显式忘记、来源/FTS 删除和既有隐私、跨进程竞争、32767/50000 行导出测试均通过。
+- 首次专项编译失败于新增测试用 `usize` 读取 SQLite count（不支持 FromSql）；改为 i64 后到期专项 8 pass / 0 fail / 1 ignored。随后记忆模块 111 pass / 0 fail / 2 ignored，10k 检索 p50/p95 11/14 ms。这些专项发生在后续维护时间预算收紧之前；最终状态由完整回归覆盖。
+- 最终 `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4 --nocapture`：**941 pass / 0 fail / 22 ignored**，10k 检索 p50/p95 11/16 ms，保持原 50 ms 预算。首次完整回归同为 941 pass / 0 fail / 22 ignored（10/14 ms）；收尾恢复 superseded 状态参数复用枚举转换方法以消除新增闲置方法 warning 后再次完整通过。新增 1 项 ignored 规模测试已单独运行，其他 ignored 仍按原边界保留。M19a 的一次 95 ms 异常及当时复测记录保留，不用本轮通过宣称原生尾延迟稳定。
+- 生产 `cargo check --locked --manifest-path src-tauri/Cargo.toml` 最终退出 0，保留原有 13 warnings；迁移 001/002/003、前端与锁文件未修改。
+
+规模命令：`cargo test --locked --manifest-path src-tauri/Cargo.toml --lib memory::repository::expiry_index_tests::logical_expiry_scaling_benchmark -- --ignored --exact --test-threads=1 --nocapture`。固定 Rust 1.94.1 / Mac ARM64 debug，独立临时合成库，各 100k 行；每场景顺序采样 30 次检索，包含首次调用，无额外预热。下表 p50/p95 使用 nearest-rank；维护和忘记为单次测量，不是 p95 或 GUI 延迟。
+
+| 场景 | 逻辑到期数 | 读取写入次数 | 最近期限 VM steps | 检索 p50/p95（ms） | 单轮维护（ms / 条数） |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 无期限 | 0 | 0 | 36 | 105.490 / 151.506 | 0.062 / 0 |
+| 全未来 | 0 | 0 | 40 | 117.387 / 173.320 | 0.057 / 0 |
+| 集中到期 | 20000 | 0 | 40 | 101.833 / 172.820 | 40.800 / 1 |
+
+最近期限查询 FullscanStep 为 0，实际维护候选使用 `idx_memories_active_expiry`，无到期不进入写事务。初版 8 条固定批次在同规模集中到期场景耗时 254.388 ms；据此增加逐条 10 ms 让出预算，复测单批只处理 1 条，后续显式忘记单次 69.046 ms（含现有 FTS/检查点）。单条 FTS 触发器不能被时间预算打断，仍可能超过 10 ms；积压分多轮清理，worker 处理自动任务时会推迟下一次维护机会。M19c 继续处理 FTS 全扫描；100k 检索扫描、排序本身也仍随数据量增长。本轮不是旧二进制 A/B、严格时延上限或原生体验保证。
+
+本机证据：`output/performance-b6-m19b-20261025/` 下 `expiry-tests.log`（首次编译失败）、`expiry-tests-recheck.log`、`memory-tests.log`、`scaling.log`（初版固定批次）、`scaling-time-bounded.log`（最终专项）、`rust-full.log` / `rust-full-final.log`、`cargo-check.log` / `cargo-check-final.log`、源码哈希与汇总。普通检查未更改固定工具链；本机未装 rustfmt，格式化命令未执行成功，不作为通过项。前端/工作台/依赖未改变，复用 H18a 已记录基线；所有数据库为合成临时库。未迁移日常用户库、安装、推送、签名或发布；Mac WebKit/真实 IPC/窗口、Windows、原生 CPU/GPU/耗电与既有三个时钟边界仍待验。
+
+
 ### 2026-10-25 Mac B6 M19a
 
 起点 `c52379c`，分支 `codex/yume-performance-b6`。本批完成 M19a，记忆库 schema 2→3；历史目录仍为其独立 schema 3，产品仍为 0.4.21。下一步 M19b，M19c/B7 未实施。

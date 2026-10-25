@@ -89,7 +89,6 @@ impl<C: Clock> MemoryRepository<C> {
         let message_id = request.message_id.clone();
 
         self.store.with_transaction(|tx| {
-            expire_due(tx, &now)?;
             let superseded = supersede_previous(tx, &accepted, &now)?;
             let memory = insert_memory(tx, &accepted, source_kind, superseded.as_deref(), &now)?;
             insert_source(
@@ -157,6 +156,9 @@ impl<C: Clock> MemoryRepository<C> {
             tx.execute(
                 "UPDATE memories \
                  SET content = ?1, sensitivity = ?2, importance = ?3, expires_at = ?4, \
+                     status = CASE WHEN status = 'active' AND \
+                       ((expires_at IS NOT NULL AND expires_at <= ?5) OR ?4 <= ?5) \
+                       THEN 'expired' ELSE status END, \
                      updated_at = ?5, revision = revision + 1 \
                  WHERE id = ?6 AND revision = ?7",
                 params![
@@ -199,9 +201,8 @@ impl<C: Clock> MemoryRepository<C> {
         bound: RowBound,
     ) -> MemoryResult<Vec<MemoryRecord>> {
         let now = self.clock.now();
-        self.store.with_transaction(|tx| {
-            expire_due(tx, &now)?;
-            let memories = select_memories(tx, query, bound)?;
+        self.store.with_read_transaction(|tx| {
+            let memories = select_memories(tx, query, bound, &now)?;
             // Provenance is fetched in batches rather than per memory, so the
             // query count does not scale with the number of listed rows.
             let ids: Vec<String> = memories.iter().map(|memory| memory.id.clone()).collect();
@@ -258,7 +259,7 @@ impl<C: Clock> MemoryRepository<C> {
             tx.execute("DELETE FROM memories WHERE id = ?1", params![id])
                 .map_err(storage_error)?;
             record_event(tx, id, "forgotten", &now)?;
-            Ok(stored)
+            Ok(logical_memory(stored, &now))
         })?;
         self.store.checkpoint()?;
         Ok(memory)
@@ -414,8 +415,8 @@ impl<C: Clock> MemoryRepository<C> {
     /// Retrieve candidates for prompt injection.
     ///
     /// Deliberately not [`Self::list`]: a chat turn must not pay for per-record
-    /// provenance lookups or one expiry write per keyword. This runs a single
-    /// expiry pass and a single bounded query, and returns bare memories.
+    /// provenance lookups or expiry writes. A single bounded read filters due
+    /// rows at the captured time and returns bare memories.
     ///
     /// `keywords` are matched as substrings rather than through FTS because the
     /// caller's CJK bigrams are shorter than the trigram index can answer.
@@ -439,11 +440,9 @@ impl<C: Clock> MemoryRepository<C> {
         continuing: bool,
     ) -> MemoryResult<Vec<Memory>> {
         let now = self.clock.now();
-        self.store.with_transaction(|tx| {
-            expire_due(tx, &now)?;
-
+        self.store.with_connection(|tx| {
             // Build the relevance clause first, then assemble bind values in
-            // statement order: persona, relevance values, limit.
+            // statement order: now, persona, workspace, relevance values, limit.
             let mut relevance: Vec<String> = vec!["a.aliases LIKE '@communication %'".into()];
             if continuing { relevance.push("a.topic IS NOT NULL AND a.state='active'".into()); }
             let mut relevance_values: Vec<rusqlite::types::Value> = Vec::new();
@@ -467,7 +466,7 @@ impl<C: Clock> MemoryRepository<C> {
             // never another persona's.
             let sql = format!(
                 "SELECT m.* FROM memories m LEFT JOIN memory_applicability a ON a.memory_id=m.id \
-                 WHERE m.status = 'active' \
+                 WHERE m.status = 'active' AND (m.expires_at IS NULL OR m.expires_at > ?) \
                    AND (m.scope = 'global' OR (m.scope = 'persona' AND m.persona_id = ?)) \
                    AND (a.workspace IS NULL OR a.workspace = ?) \
                    AND ({}) \
@@ -475,7 +474,7 @@ impl<C: Clock> MemoryRepository<C> {
                 relevance.join(" OR ")
             );
 
-            let mut values: Vec<rusqlite::types::Value> = vec![persona_id.to_owned().into()];
+            let mut values: Vec<rusqlite::types::Value> = vec![now.into(), persona_id.to_owned().into()];
             values.push(workspace.map(str::to_owned).into());
             values.extend(relevance_values);
             values.push(limit.clamp(1, MAX_LIMIT).into());
@@ -559,28 +558,80 @@ fn storage_error(error: rusqlite::Error) -> MemoryError {
     MemoryError::storage_unavailable(error.to_string())
 }
 
-/// Flip anything past its expiry to `expired` so it drops out of retrieval.
+// Keep last-edit timestamps/revisions stable: background scheduling must not
+// change list order or exported metadata. Existing already-expired rows are unchanged.
+const EXPIRY_MEMORY_BATCH: i64 = 8;
+const EXPIRY_CANDIDATE_BATCH: i64 = 32;
+// A trigger cannot be interrupted mid-row. Check between rows so the legacy
+// FTS scan on a large database does not multiply its cost by the whole batch.
+const EXPIRY_BATCH_TIME: std::time::Duration = std::time::Duration::from_millis(10);
+const NEXT_EXPIRY_SQL: &str =
+    "SELECT min(deadline) FROM (\
+       SELECT min(expires_at) AS deadline FROM memories \
+         WHERE status='active' AND expires_at IS NOT NULL \
+       UNION ALL SELECT min(expires_at) FROM memory_candidates WHERE decision='pending')";
 const EXPIRE_MEMORIES_SQL: &str =
-    "UPDATE memories SET status = 'expired', updated_at = ?1 \
-     WHERE status = 'active' AND expires_at IS NOT NULL AND expires_at <= ?1";
+    "UPDATE memories SET status = 'expired' WHERE id IN (\
+       SELECT id FROM memories WHERE status = 'active' AND expires_at IS NOT NULL \
+       AND expires_at <= ?1 ORDER BY expires_at LIMIT ?2)";
 
-fn expire_due(tx: &Transaction<'_>, now: &str) -> MemoryResult<()> {
-    tx.execute(
-        EXPIRE_MEMORIES_SQL,
-        params![now],
-    )
-    .map_err(storage_error)?;
-    tx.execute(
-        "DELETE FROM memory_candidates WHERE decision = 'pending' AND expires_at <= ?1",
-        params![now],
-    )
-    .map_err(storage_error)?;
+fn expire_due(tx: &Transaction<'_>, now: &str) -> MemoryResult<(usize, usize)> {
+    let started = std::time::Instant::now();
+    let mut memories = 0;
+    for _ in 0..EXPIRY_MEMORY_BATCH {
+        let changed = tx.execute(EXPIRE_MEMORIES_SQL, params![now, 1])?;
+        memories += changed;
+        if changed == 0 || started.elapsed() >= EXPIRY_BATCH_TIME { break; }
+    }
+    let candidates = tx.execute(
+        "DELETE FROM memory_candidates WHERE id IN (SELECT id FROM memory_candidates \
+         WHERE decision = 'pending' AND expires_at <= ?1 ORDER BY expires_at LIMIT ?2)",
+        params![now, EXPIRY_CANDIDATE_BATCH],
+    )?;
+    Ok((memories, candidates))
+}
+
+impl<C: Clock> MemoryRepository<C> {
+    /// One bounded global batch per worker pass, independent of list/retrieve.
+    /// Re-read indexed deadlines on each pass, including after restart, so another
+    /// process's earlier expiry is noticed without a stale in-memory timer.
+    pub(crate) fn maintain_expiry(&self) -> MemoryResult<Option<(usize, usize)>> {
+        let now = self.clock.now();
+        self.store.try_maintenance(|connection| {
+            let next: Option<String> = connection.query_row(
+                NEXT_EXPIRY_SQL,
+                [], |row| row.get(0),
+            )?;
+            Ok(next.as_deref().is_some_and(|deadline| deadline <= now.as_str()))
+        }, |tx| expire_due(tx, &now))
+    }
+}
+
+/// Release only this key's unique active slot inside an existing write transaction.
+/// A new fact must not supersede an already logically expired predecessor.
+pub(super) fn expire_key(
+    tx: &Transaction<'_>, key: &str, scope: MemoryScope, persona: Option<&str>, now: &str,
+) -> MemoryResult<()> {
+    tx.execute("UPDATE memories SET status='expired' WHERE status='active' AND memory_key=?1 \
+        AND scope=?2 AND IFNULL(persona_id,'')=IFNULL(?3,'') AND expires_at IS NOT NULL AND expires_at<=?4",
+        params![key, scope.as_str(), persona, now])?;
     Ok(())
+}
+
+fn logical_memory(mut memory: Memory, now: &str) -> Memory {
+    if memory.status == MemoryStatus::Active && memory.expires_at.as_deref().is_some_and(|expiry| expiry <= now) {
+        memory.status = MemoryStatus::Expired;
+    }
+    memory
 }
 
 #[cfg(test)]
 #[path = "expiry_index_tests.rs"]
 mod expiry_index_tests;
+
+#[cfg(test)]
+#[path = "expiry_read_tests.rs"]
+mod expiry_read_tests;
 
 /// A changed stable fact supersedes the previous active value with the same key.
 fn supersede_previous(
@@ -591,6 +642,7 @@ fn supersede_previous(
     let Some(key) = accepted.memory_key.as_deref() else {
         return Ok(None);
     };
+    expire_key(tx, key, accepted.scope, accepted.persona_id.as_deref(), now)?;
     if !accepted.memory_type.is_stable_fact() {
         return Ok(None);
     }
@@ -632,7 +684,7 @@ pub(super) fn insert_memory(
         "INSERT INTO memories (id, scope, persona_id, type, memory_key, content, status, \
                                confidence, importance, sensitivity, source_kind, valid_from, \
                                expires_at, created_at, updated_at, revision, supersedes_id) \
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'active', ?7, ?8, ?9, ?10, ?11, ?12, ?11, ?11, 1, ?13)",
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, CASE WHEN ?12 <= ?11 THEN 'expired' ELSE 'active' END, ?7, ?8, ?9, ?10, ?11, ?12, ?11, ?11, 1, ?13)",
         params![
             id,
             accepted.scope.as_str(),
@@ -858,6 +910,7 @@ fn select_memories(
     connection: &Connection,
     query: &MemoryQuery,
     bound: RowBound,
+    now: &str,
 ) -> MemoryResult<Vec<Memory>> {
     let mut sql = String::from("SELECT m.* FROM memories m");
     let mut clauses: Vec<String> = Vec::new();
@@ -876,6 +929,9 @@ fn select_memories(
             sql.push_str(" JOIN memory_search s ON s.memory_id = m.id");
             clauses.push("memory_search MATCH ?".to_owned());
             values.push(fts_query(search).into());
+            // The FTS contract is active-only even while due rows await cleanup.
+            clauses.push("m.status='active' AND (m.expires_at IS NULL OR m.expires_at>?)".into());
+            values.push(now.to_owned().into());
         } else {
             clauses.push(
                 "(m.content LIKE ? ESCAPE '\\' OR IFNULL(m.memory_key, '') LIKE ? ESCAPE '\\')"
@@ -916,11 +972,24 @@ fn select_memories(
         .clone()
         .filter(|statuses| !statuses.is_empty())
         .unwrap_or_else(|| vec![MemoryStatus::Active]);
-    let placeholders = vec!["?"; statuses.len()].join(", ");
-    clauses.push(format!("m.status IN ({placeholders})"));
+    let mut status_clauses = Vec::new();
     for status in &statuses {
-        values.push(status.as_str().to_owned().into());
+        match status {
+            MemoryStatus::Active => {
+                status_clauses.push("(m.status='active' AND (m.expires_at IS NULL OR m.expires_at>?))");
+                values.push(now.to_owned().into());
+            }
+            MemoryStatus::Expired => {
+                status_clauses.push("(m.status='expired' OR (m.status='active' AND m.expires_at IS NOT NULL AND m.expires_at<=?))");
+                values.push(now.to_owned().into());
+            }
+            MemoryStatus::Superseded => {
+                status_clauses.push("m.status=?");
+                values.push(status.as_str().to_owned().into());
+            }
+        }
     }
+    clauses.push(format!("({})", status_clauses.join(" OR ")));
 
     if !clauses.is_empty() {
         sql.push_str(" WHERE ");
@@ -937,7 +1006,9 @@ fn select_memories(
 
     let mut statement = connection.prepare(&sql).map_err(storage_error)?;
     let rows = statement
-        .query_map(rusqlite::params_from_iter(values), row_to_memory)
+        .query_map(rusqlite::params_from_iter(values), |row| {
+            Ok(logical_memory(row_to_memory(row)?, now))
+        })
         .map_err(storage_error)?;
     rows.collect::<Result<_, _>>().map_err(storage_error)
 }

@@ -3,7 +3,7 @@ use crate::memory::{
     domain::*,
     error::{MemoryError, MemoryResult},
     policy,
-    repository::{insert_memory, insert_source, Clock, MemoryRepository},
+    repository::{expire_key, insert_memory, insert_source, Clock, MemoryRepository},
 };
 use rusqlite::{params, OptionalExtension};
 
@@ -67,7 +67,7 @@ impl<C: Clock> MemoryRepository<C> {
             "auto.{}",
             hash(&format!("{}|{}|{}|{}", f.scope, persona, workspace, f.key))
         );
-        self.store.with_connection(|db|{db.execute("INSERT OR IGNORE INTO memory_work_links SELECT c.memory_id,?3,?4 FROM memory_consumed c JOIN memories m ON m.id=c.memory_id WHERE c.job_id=?1 AND c.fact_key=?2 AND m.status='active'",params![job.id,key,entry,revision])?;Ok(())})
+        self.store.with_connection(|db|{db.execute("INSERT OR IGNORE INTO memory_work_links SELECT c.memory_id,?3,?4 FROM memory_consumed c JOIN memories m ON m.id=c.memory_id WHERE c.job_id=?1 AND c.fact_key=?2 AND m.status='active' AND (m.expires_at IS NULL OR m.expires_at>?5)",params![job.id,key,entry,revision,self.clock.now()])?;Ok(())})
     }
     pub(crate) fn pending_sources(
         &self,
@@ -174,10 +174,11 @@ impl<C: Clock> MemoryRepository<C> {
                 if consumed { continue; }
                 let suppressed: bool = db.query_row("SELECT EXISTS(SELECT 1 FROM memory_suppressed WHERE fact_key=?1 AND before_time>=?2)",params![semantic,r.received_at],|r| r.get(0))?;
                 if suppressed { continue; }
+                expire_key(db, &semantic, scope, persona.as_deref(), &now_text)?;
                 let mut previous: Option<(String,i64)> = db.query_row("SELECT m.id,COALESCE(a.source_time,0) FROM memories m LEFT JOIN memory_applicability a ON a.memory_id=m.id WHERE m.memory_key=?1 AND m.status='active'",[&semantic],|row| Ok((row.get(0)?,row.get(1)?))).optional()?;
                 if let Some(target)=&f.target_id {
                     // A target must be visible within this exact scope, never an arbitrary model ID.
-                    let target = db.query_row("SELECT m.id,COALESCE(a.source_time,0) FROM memories m LEFT JOIN memory_applicability a ON a.memory_id=m.id WHERE m.id=?1 AND m.status='active' AND m.scope=?2 AND COALESCE(m.persona_id,'')=?3 AND COALESCE(a.workspace,'')=?4",params![target,scope.as_str(),persona.as_deref().unwrap_or(""),workspace.unwrap_or("")],|row| Ok((row.get(0)?,row.get(1)?))).optional()?;
+                    let target = db.query_row("SELECT m.id,COALESCE(a.source_time,0) FROM memories m LEFT JOIN memory_applicability a ON a.memory_id=m.id WHERE m.id=?1 AND m.status='active' AND m.scope=?2 AND COALESCE(m.persona_id,'')=?3 AND COALESCE(a.workspace,'')=?4 AND (m.expires_at IS NULL OR m.expires_at>?5)",params![target,scope.as_str(),persona.as_deref().unwrap_or(""),workspace.unwrap_or(""),now_text],|row| Ok((row.get(0)?,row.get(1)?))).optional()?;
                     if target.is_none() { continue; }
                     previous=target;
                 }

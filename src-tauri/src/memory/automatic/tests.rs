@@ -26,6 +26,36 @@ fn registration(message: &str) -> Registration {
 fn repo() -> MemoryRepository<SystemClock> {
     MemoryRepository::new(MemoryStore::open_in_memory().unwrap(), SystemClock)
 }
+
+#[test]
+fn automatic_targets_and_work_links_respect_logical_expiry_before_maintenance() {
+    let repository = repo();
+    let first = job(&repository, registration("msg_expiry_first"));
+    let f = fact();
+    repository.apply_automatic_memories(&first, &[f.clone()]).unwrap();
+    let old = repository.list(&MemoryQuery::default()).unwrap()[0].memory.id.clone();
+    repository.store().with_connection(|db| {
+        db.execute("UPDATE memories SET expires_at='2000-01-01T00:00:00Z' WHERE id=?1", [&old])?;
+        Ok(())
+    }).unwrap();
+    repository.link_work(&first, &f, "expired-work", 1).unwrap();
+    repository.store().with_connection(|db| {
+        assert_eq!(db.query_row::<i64,_,_>("SELECT count(*) FROM memory_work_links", [], |r|r.get(0))?,0);
+        assert_eq!(db.query_row::<String,_,_>("SELECT status FROM memories WHERE id=?1", [&old], |r|r.get(0))?,"active");
+        Ok(())
+    }).unwrap();
+    let mut targeted=f.clone();
+    targeted.target_id=Some(old.clone());
+    let second=job(&repository, registration("msg_expiry_target"));
+    repository.apply_automatic_memories(&second, &[targeted]).unwrap();
+    assert!(repository.list(&MemoryQuery::default()).unwrap().is_empty());
+    let third=job(&repository, registration("msg_expiry_new"));
+    repository.apply_automatic_memories(&third, &[f]).unwrap();
+    let rows=repository.list(&MemoryQuery::default()).unwrap();
+    assert_eq!(rows.len(),1);
+    assert_ne!(rows[0].memory.id,old);
+    assert_eq!(rows[0].memory.supersedes_id,None);
+}
 fn job(repo: &MemoryRepository<SystemClock>, r: Registration) -> Job {
     let id = repo.register_automatic(&r).unwrap();
     let (memory_epoch, log_epoch) = repo.automation_epochs().unwrap();

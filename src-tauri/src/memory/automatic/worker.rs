@@ -362,6 +362,16 @@ pub(super) fn start(app: tauri::AppHandle) {
     std::thread::spawn(move || {
         let mut last_sync = std::time::Instant::now() - std::time::Duration::from_secs(10);
         loop {
+            // At most one small expiry batch per pass. Never queue behind a
+            // foreground command (especially forget) or a cross-process writer.
+            {
+                let state = app.state::<MemoryState>();
+                if let Ok(guard) = state.0.try_lock() {
+                    if let Some(repo) = guard.as_ref() {
+                        let _ = repo.maintain_expiry(); // A failed batch retries next pass.
+                    }
+                };
+            }
             if last_sync.elapsed().as_secs() >= 10 {
                 synchronize_work_links(&app);
                 last_sync = std::time::Instant::now();

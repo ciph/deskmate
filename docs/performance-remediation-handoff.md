@@ -1,8 +1,8 @@
 # YUME 性能整改：Mac 接续说明
 
-核对日期：2026-10-25（Asia/Shanghai）。原始交接提交只保存施工计划、证据与待办；下节记录随后在 Mac 上完成的 H18a/H18b/H18c 与 M19a，后面的原发布回执仍保留其历史范围。
+核对日期：2026-10-25（Asia/Shanghai）。原始交接提交只保存施工计划、证据与待办；下节记录随后在 Mac 上完成的 H18a/H18b/H18c 与 M19a/M19b，后面的原发布回执仍保留其历史范围。
 
-## Mac 接续进度：H18a/H18b/H18c 与 M19a
+## Mac 接续进度：H18a/H18b/H18c 与 M19a/M19b
 
 - 当前工作区 `/Users/xmaczone/Documents/Codex/deskmate`，分支 `codex/yume-performance-b6`，起点 `fcb463516bdde3f8bd0e3f8aa2ab287f0d355356`。先检查此分支和本地检查点；尚未推送时不能仅凭远端 main 判断 B6 未施工。
 - 固定 Bun 1.3.14 / Rust 1.94.1 已放在本工作区 `output/toolchains/`。命令环境入口 `output/performance-b6-preflight-20261024/context.sh`，只设置当前 shell 的工具链、缓存与 `DEVELOPER_DIR`。这些忽略目录是本机生成物，新机器须重新准备。
@@ -11,9 +11,10 @@
 - H18b 从本地 H18a 检查点 `d877ba5` 接续：单条目录事务按完整 key 读/改，批量路径保留；并发状态重验、模型偏好原子删除/写入、提交后 revision、墓碑和损坏边界均有回归。1k/10k/100k 行各 100 次修改均解码 100 行、写 100 行，EXPLAIN 命中主键索引。完整 Rust 916 pass / 0 fail / 19 ignored，新增 ignored 规模测试单独通过；生产 `cargo check` 通过。见 [H18b 验收记录](verification-backlog.md#2026-10-24-mac-b6-h18b)。schema 仍为 2，版本仍为 0.4.21。
 - H18c 从 H18b 检查点 `62ae45d` 接续：历史目录 schema 2→3，投影与 metadata 同事务更新，SQL count/筛选/排序/分页替代列表全量 JSON 解码。1k/10k/100k 查询矩阵与旧实现等价，50 行页只解码 50 行；完整 Rust 926 pass / 0 fail / 20 ignored，规模测试单独通过，生产 `cargo check` 通过。详见 [H18c 验收记录](verification-backlog.md#2026-10-25-mac-b6-h18c)。产品仍为 0.4.21，未迁移日常用户库或发布。schema 3 不能由旧版 catalog 写入，不通过改回版本号降级。
 - M19a 从 H18c 检查点 `c52379c` 接续：记忆库独立 schema 2→3，新增 active 且 expires_at 非空的部分索引；旧迁移、到期语义、候选清理和 FTS 触发器不变。100k 行五种场景命中范围索引；迁移/回滚/作用域/旧库保留验证通过。完整 Rust 复测 933 pass / 0 fail / 21 ignored，生产检查通过；首次检索预算超时及独立/全套复测见 [M19a 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19a)，未放宽 50 ms 预算。产品仍为 0.4.21，日常用户库未迁移。
-- 下一步 **M19b**：读取实时过滤、物化过期独立维护；保留 active/expired 管理、导出、检索及 pending 候选的即时语义与并发锁要求。M19c 与 B7 尚未实施。下方三个时钟边界待办仍未改，本轮的自动回归不关闭 Windows/macOS 实机缺口。
+- M19b 从 M19a 检查点 `73b254b` 接续：列表/导出使用只读快照，检索实时排除到期项；显式 expired 和历史查询即时包含逻辑过期记录。后台按最近期限维护，每轮最多 8 条记忆/32 条候选并在逐条处理后检查 10 ms 预算，忙时让出、失败重试；保留最近编辑时间和 revision。完整 Rust 941 pass / 0 fail / 22 ignored，10k 检索 p95 16 ms；100k 规模专项通过，单条 FTS 成本仍保留，详见 [M19b 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19b)。schema 与产品版本不变。
+- 下一步 **M19c**：FTS 稳定 rowid 精确维护及独立迁移；保留真正擦除、事务与历史数据边界。B7 尚未实施。下方三个时钟边界待办仍未改，本轮的自动回归不关闭 Windows/macOS 实机缺口。
 
-本机基线/H18a 日志、源码校验与工作台生成物清单集中在 `output/performance-b6-preflight-20261024/`；H18b 在 `output/performance-b6-h18b-20261024/`，H18c 在 `output/performance-b6-h18c-20261025/`，M19a 在 `output/performance-b6-m19a-20261025/`，均忽略于 Git。源代码与现行契约以当前 B6 分支为准，历史发布证据仍在 `docs/performance-evidence/`。
+本机基线/H18a 日志、源码校验与工作台生成物清单集中在 `output/performance-b6-preflight-20261024/`；H18b 在 `output/performance-b6-h18b-20261024/`，H18c 在 `output/performance-b6-h18c-20261025/`，M19a 在 `output/performance-b6-m19a-20261025/`，M19b 在 `output/performance-b6-m19b-20261025/`，均忽略于 Git。源代码与现行契约以当前 B6 分支为准，历史发布证据仍在 `docs/performance-evidence/`。
 
 ## 从哪里继续
 
