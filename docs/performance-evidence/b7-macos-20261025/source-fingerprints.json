@@ -1,0 +1,19 @@
+{
+  "baseCommit": "5170451832f73b03857a97c0ba81c7cae12a3a04",
+  "sourceFiles": 818,
+  "generatedFiles": 1941,
+  "rawSnapshotSha256": "3a61328e9a18e511e01b26c692370844b2e89d1e4d823b563db5083c3ac18a7a",
+  "files": {
+    "src-tauri/src/agent/permissions.rs": "a1ce461768ac8730ace6ffc89d012b34d290e72ca6658b70bd0ce24e2ef53a25",
+    "src-tauri/src/agent/permissions_deadline_tests.rs": "ecbbcbbfc99c037f3f7a915cc164f10a8f0af6a8dc6940de1531b1271c5093dc",
+    "src-tauri/src/workbench.rs": "1703a17f9c8fdc70869e6548e06f1c1ef6d849a2f686ce791c896313f1903f87",
+    "src-tauri/src/memory/automatic/worker.rs": "26d00d466c31a333eaebc0b5982a4218207d5c7afe543f2834ec5a6c0f1015fa",
+    "src-tauri/Cargo.lock": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8",
+    "bun.lock": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029",
+    "src/chat/attachments.ts": "70cf50f266ee4d3f2e6f2da5fdac14b03514864abcab545038fd56789f6ee03c",
+    "src/chat/attachments.test.ts": "d7a570966dcf831923008faed430e93900ae2e7df59b1dfd440945a1f80a17ae",
+    "src/chat/pdfPageText.ts": "fdc87e608e5843de691ed8f521403ef46ea3413851b0d5422f66204bb91ada83",
+    "src/chat/pdfPageText.test.ts": "c40d2bc472d6550dbdeddecb1d59a2eb99662a97697590832e287ba669d434a4"
+  },
+  "testedCodeCommit": "2026f8c"
+}

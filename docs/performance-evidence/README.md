@@ -1,5 +1,7 @@
 # 性能整改便携证据
 
+新增 [2026-10-25 Mac B7 结果 HTML](b7-macos-20261025/index.html)、[摘要与证据 SHA](b7-macos-20261025/summary.json) 和 [代码指纹](b7-macos-20261025/source-fingerprints.json)。B7 进行中：本机全套与部分原生 QA 通过，Windows/完整原生性能待验；下方 Windows 历史原件保持不变。
+
 2026-10-24 为 Mac 交接从 Windows 存档逐字节复制；没有重新执行这些测试或重新发布。当前状态及下一步见 [接续说明](../performance-remediation-handoff.md)，任务全文见 [施工计划](../performance-remediation-plan.md)。
 
 | 文件 | 时间与用途 |

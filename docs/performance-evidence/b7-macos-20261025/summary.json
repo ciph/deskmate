@@ -1,0 +1,778 @@
+{
+  "date": "2026-10-25",
+  "status": "进行中",
+  "baseCommit": "31e7724b699a6ce8191d9219d27d61019fe010d7",
+  "testedCodeCommit": "2026f8c",
+  "clockCommit": "5170451",
+  "verificationSnapshotBase": "5170451832f73b03857a97c0ba81c7cae12a3a04",
+  "branch": "codex/yume-performance-b6",
+  "productVersion": "0.4.21",
+  "catalogSchema": 3,
+  "memorySchema": 4,
+  "toolchains": {
+    "bun": "1.3.14",
+    "rust": "1.94.1",
+    "opencode": "1.18.21"
+  },
+  "scope": "Mac ARM64 本地自动回归、真实 OpenCode + 合成 provider、独立身份未签名 debug QA App；没有发布或安装到日常环境。",
+  "counts": {
+    "frontend": {
+      "files": 172,
+      "passed": 1352,
+      "failed": 0,
+      "skipped": 0
+    },
+    "rust": {
+      "passed": 953,
+      "failed": 0,
+      "ignored": 23
+    },
+    "liveEngine": {
+      "passed": 1,
+      "failed": 0,
+      "source": "explicit ignored live_audit_remediation; not all ignored tests"
+    }
+  },
+  "checks": [
+    {
+      "name": "typecheck",
+      "command": [
+        "bun",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "seconds": 9.536
+    },
+    {
+      "name": "frontend",
+      "command": [
+        "bun",
+        "run",
+        "test:frontend"
+      ],
+      "exitCode": 0,
+      "seconds": 72.916
+    },
+    {
+      "name": "rust-full",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--manifest-path",
+        "src-tauri/Cargo.toml",
+        "--lib",
+        "--",
+        "--test-threads=4"
+      ],
+      "exitCode": 0,
+      "seconds": 44.878
+    },
+    {
+      "name": "build",
+      "command": [
+        "bun",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "seconds": 8.812
+    },
+    {
+      "name": "cargo-check-production",
+      "command": [
+        "cargo",
+        "check",
+        "--locked",
+        "--manifest-path",
+        "src-tauri/Cargo.toml"
+      ],
+      "exitCode": 0,
+      "seconds": 3.836
+    },
+    {
+      "name": "native-engine",
+      "command": [
+        "bun",
+        "scripts/audit-remediation/verify-native.ts"
+      ],
+      "exitCode": 0,
+      "seconds": 43.275
+    },
+    {
+      "name": "qa-build",
+      "command": [
+        "bun",
+        "run",
+        "tauri",
+        "build",
+        "--debug",
+        "--features",
+        "worklog-qa",
+        "--bundles",
+        "app",
+        "--no-sign",
+        "--config",
+        "/Users/xmaczone/Documents/Codex/deskmate/output/performance-b7-20261025/tauri.qa.json"
+      ],
+      "exitCode": 0,
+      "seconds": 65.855
+    },
+    {
+      "name": "typecheck-final",
+      "command": [
+        "bun",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "seconds": 9.28
+    },
+    {
+      "name": "frontend-final",
+      "command": [
+        "bun",
+        "run",
+        "test:frontend"
+      ],
+      "exitCode": 0,
+      "seconds": 72.121
+    },
+    {
+      "name": "rust-full-final",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--manifest-path",
+        "src-tauri/Cargo.toml",
+        "--lib",
+        "--",
+        "--test-threads=4"
+      ],
+      "exitCode": 0,
+      "seconds": 61.275
+    },
+    {
+      "name": "build-final",
+      "command": [
+        "bun",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "seconds": 7.676
+    },
+    {
+      "name": "qa-build-final",
+      "command": [
+        "bun",
+        "run",
+        "tauri",
+        "build",
+        "--debug",
+        "--features",
+        "worklog-qa",
+        "--bundles",
+        "app",
+        "--no-sign",
+        "--config",
+        "/Users/xmaczone/Documents/Codex/deskmate/output/performance-b7-20261025/tauri.qa.json"
+      ],
+      "exitCode": 0,
+      "seconds": 38.811
+    }
+  ],
+  "workbenchReuse": {
+    "reference": "output/performance-b6-preflight-20261024/workbench-file-sha256.json",
+    "files": 955,
+    "exactMatch": true,
+    "added": [],
+    "missing": [],
+    "changed": []
+  },
+  "engineCleanup": {
+    "processGone": true,
+    "providerClosed": true,
+    "sidecarClosed": true,
+    "tempRootRemoved": true
+  },
+  "engineProvider": {
+    "requests": 5,
+    "initialRequests": 3,
+    "recoveryInitialRequests": 1
+  },
+  "clockFixes": [
+    "首次立即同步；完成后至少十秒再同步，不倒减 Instant",
+    "archive guard 真实锁内时钟注入；6 秒边界仍占用，6.001 秒过期",
+    "审批首次建立五分钟绝对期限，重复轮询不延长；测试 helper 令现有期限立即到期"
+  ],
+  "native": {
+    "identity": "com.deskmate.unifiedhistoryqa.b720261025a",
+    "profile": "debug",
+    "features": [
+      "worklog-qa"
+    ],
+    "signing": false,
+    "dailyDataTouched": false,
+    "modelRequests": true,
+    "observed": [
+      "默认 GIF 桌宠与本地 tauri:// 窗口实际可见",
+      "首次/二次工作台打开保持同一会话（PDF 修复前；宿主源码后续不变）",
+      "Mac 二次进程退出 0；原 primary 与 OpenCode 的 PID/出生时间不变",
+      "WebKit PDF 发送原失败已定位并修复；同一 601 B PDF 经本地 worker 提取到预期文本，经真实 OpenCode 到 loopback provider，再在 GUI 显示 B7_PDF_TEXT_CONFIRMED",
+      "20 秒延迟请求到达 provider 后点击 Stop；对应请求记录 aborted=true，GUI 结束等待；随后同一会话成功回复",
+      "原生历史目录显示 1 段会话，重开后恢复三轮文本与 b7-local 模型选择",
+      "最终退出后新鲜 QA 数据库 integrity_check 全部 ok；历史 schema 3、记忆 schema 4",
+      "两次 QA 宿主及各自 OpenCode 都随 GUI 正常退出，无需强制结束；provider/测试占位凭据/专属数据与缓存清理完成"
+    ],
+    "limitations": [
+      "未签名 debug worklog-qa 与生产 GUI 有差异；全局快捷键/自启被禁用",
+      "GUI 只使用 loopback 合成 provider，包含自动记忆后台尝试；未用真实模型/凭据，不据总请求数推断用户请求重放",
+      "初次 CUA getApp 工具阻塞约 1199 秒，不作为 App 启动耗时",
+      "原生 HTML select 菜单自动控制返回 AXError.failure；2D/3D 切换未完成，不认定为产品角色切换故障",
+      "system_profiler 未返回显示器明细，未假定实际 Hz/DPI；未切换系统显示器或执行睡眠",
+      "Stop 当下显示 出错了: Aborted，恢复正常；历史重开后 PDF 附件徽标未重现，仅文本与模型选择恢复已确认",
+      "未验证长会话、全部附件/媒体恢复、复杂 PDF、重复取消后的堆收敛、GUI 权限和引擎故障矩阵",
+      "QA 日志有启动瞬间 SSE 拒绝连接、配置重启时断流，以及 updater 无 darwin 目标/偶发网络错误；不把工作台可用扩大为恢复/升级验收"
+    ],
+    "realModelRequests": false,
+    "syntheticProviderOnly": true,
+    "pdfFix": {
+      "commit": "2026f8c",
+      "dependency": "pdfjs-dist 6.2.108",
+      "nativeError": "undefined is not a function (near '...i of e...')",
+      "stack": "getTextContent@tauri://localhost/assets/pdf-DlDyyR6N.js:47:101906",
+      "capabilities": {
+        "ReadableStreamAsyncIterator": "undefined",
+        "getReader": "function",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+      },
+      "change": "readPdfPageText uses a local reader only when async iteration is absent; preserves PDF.js XFA path, cancellation, loadingTask destruction, local worker and CSP. No global production prototype patch or dependency change.",
+      "targeted": {
+        "realPdf": 12,
+        "reader": 4,
+        "lifecycle": 17
+      },
+      "regressionLog": "pdf-regression-reproduced.log",
+      "fixtureAttempts": "Initial deletion could not remove Bun non-configurable method; a second fixture incorrectly tried to change configurability; corrected fixture temporarily replaces writable value, reproduces product failure before fix, and restores original descriptor."
+    }
+  },
+  "auditItems": [
+    {
+      "id": "01",
+      "task": "G1 / A01",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "Rust 生命周期全套；Mac QA 二次启动退出 0，原 primary 和引擎 PID/出生时间不变",
+      "remaining": "Windows primary/orphan/concurrent 矩阵；Mac 故障/并发；生产配置 GUI"
+    },
+    {
+      "id": "02",
+      "task": "A02",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "认证、可信目录、消息/call ID 自动回归通过",
+      "remaining": "Mac GUI 日志五工具、真实模型语义"
+    },
+    {
+      "id": "03",
+      "task": "A03",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "PDF WebKit 实测失败已修复（2026f8c）；本地 worker 提取预期文本、真实 OpenCode/合成 provider 与 GUI 回复全链路通过",
+      "remaining": "复杂/大 PDF、反复取消与堆收敛；生产配置与 Windows WebView2"
+    },
+    {
+      "id": "04",
+      "task": "A04",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "本轮 Rust 32767/50000 行完整导出回归通过",
+      "remaining": "原生管理页导出与文件回读"
+    },
+    {
+      "id": "05",
+      "task": "C05",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "普通首字即时与固定台词节奏前端测试通过",
+      "remaining": "原生真实流首字时间对照"
+    },
+    {
+      "id": "06",
+      "task": "R06a/b/c/d",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "不变落盘/目标读取/SSE 自动回归；真实 OpenCode 归档失败 31 秒期间批准/拒绝/取消/恢复通过",
+      "remaining": "Mac GUI Stop 后 provider aborted=true、随后恢复已确认；GUI 审批/SSE 故障、实际控制锁尾延迟；关键落盘及部分 HTTP 仍在锁内"
+    },
+    {
+      "id": "07",
+      "task": "I07a/b/c",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "通知/补扫/到期唤醒/设置轮询全套通过；本轮新增有限范围十分钟进程采样",
+      "remaining": "原生五工具/到期任务；整机 CPU/GPU/能耗前后对照"
+    },
+    {
+      "id": "08",
+      "task": "S08a/b",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "惰性创建/加载自动回归；Mac 工作台首次/二次打开保持同一会话",
+      "remaining": "真正冷启动/首帧与 2D/3D 加载对照；运行中所有权交接"
+    },
+    {
+      "id": "09",
+      "task": "S09",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "重试退避/代际/日志自动回归通过；QA 引擎运行并响应工作台",
+      "remaining": "GUI 故障注入与手动恢复、睡眠恢复"
+    },
+    {
+      "id": "10",
+      "task": "C10",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "mood 去重、有界账本与迟到拒绝前端回归通过",
+      "remaining": "原生长会话情绪动画/多窗口压力"
+    },
+    {
+      "id": "11",
+      "task": "P11",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "真实时间/60 fps 节流前端回归通过；保留默认 60 fps",
+      "remaining": "rig2d 实际动作、高刷、功耗；30 fps 未采纳"
+    },
+    {
+      "id": "12",
+      "task": "P12",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "几何失效与隐藏停机自动回归；Mac 默认 GIF 可见",
+      "remaining": "原生隐藏/恢复、跨屏 DPI、睡眠、全部角色 draw/IPC 计数"
+    },
+    {
+      "id": "13",
+      "task": "P13",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "包络身份/回退/缓存自动回归；原资源未替换",
+      "remaining": "GLB 原生首帧、最大尺寸动作/鼠标跟随裁切"
+    },
+    {
+      "id": "14",
+      "task": "P14a/b",
+      "status": "条件实验未采纳",
+      "evidence": "条件实验未采纳：保留原版模型，1024/512 候选仅保留历史证据",
+      "remaining": "未把缩图候选纳入生产；后续另需视觉/显存/功耗证据"
+    },
+    {
+      "id": "15",
+      "task": "C15",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "导航观察器稳定性自动回归通过",
+      "remaining": "1000 消息原生跳转与滚动"
+    },
+    {
+      "id": "16",
+      "task": "C16",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "流式合批/终态 flush/Markdown 回归通过",
+      "remaining": "1000 消息 WebKit 输入/滚动实测；历史浏览器 p95 113/436.2 ms 风险保留"
+    },
+    {
+      "id": "17",
+      "task": "F17",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "binary IPC/生命周期自动回归；原生选择器 PDF 导入/提取/发送/回复成功",
+      "remaining": "浏览器 raw IPC、大文件、拖入、媒体/Range、发送后恢复"
+    },
+    {
+      "id": "18",
+      "task": "H18a/b/c",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "本轮历史迁移/分页/所有权/墓碑全套通过；原生非空历史重开恢复文本与模型；schema 3、integrity ok",
+      "remaining": "原生删除/多窗口争用；PDF 徽标重开未重现；深 offset/count 仍可线性"
+    },
+    {
+      "id": "19",
+      "task": "M19a/b/c",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "本轮记忆迁移/逻辑过期/FTS/擦除全套通过；记忆 schema 4",
+      "remaining": "原生读取/编辑/忘记/迁移重开；完整删除仍有外键扫描，小库约 0.4 ms 变化需观测"
+    },
+    {
+      "id": "20",
+      "task": "D20a/b",
+      "status": "代码与自动测试通过但原生待验",
+      "evidence": "闭包删除、独立快照、失败回滚与迟到拒绝自动回归通过",
+      "remaining": "原生日志/报告传递擦除；仍一次全库加载，HTTP 取消由 heartbeat 感知"
+    }
+  ],
+  "historicalComparisons": [
+    {
+      "task": "R06a",
+      "before": "60 次序列化/sync/rename",
+      "after": "0 次（60 次不变快照）",
+      "source": "B3，Windows 合成工作量，2026-10-22"
+    },
+    {
+      "task": "I07a",
+      "before": "5959 次空目录枚举",
+      "after": "60 次（600.09 秒）",
+      "source": "B3，Windows 隔离目录；非整机能耗"
+    },
+    {
+      "task": "P13",
+      "before": "p50/p95 1476.973/1569.177 ms",
+      "after": "0.168/1.604 ms；身份校验另计",
+      "source": "B4，暖 Bun CPU；不含解析/GPU"
+    },
+    {
+      "task": "F17",
+      "before": "20 MiB 样本 JSON 74,874,991 B",
+      "after": "raw body 20,971,520 B + 元数据",
+      "source": "B4，序列化/精确字节推算；非原生 wire/RSS"
+    },
+    {
+      "task": "H18b",
+      "before": "单条修改全量解码",
+      "after": "1k/10k/100k 各 100 次修改仅解码 100 行",
+      "source": "B6，Mac 合成 SQLite；2026-10-24"
+    },
+    {
+      "task": "H18c",
+      "before": "列表全量 JSON 解码",
+      "after": "50 行页解码 50 行；深 offset/count 非常数",
+      "source": "B6，Mac 1k/10k/100k；2026-10-25"
+    },
+    {
+      "task": "M19c",
+      "before": "FTS 删除定位 3017/30017/300017 VM steps",
+      "after": "三个规模均 26；完整 DELETE 非 O(1)",
+      "source": "B6，Mac 1k/10k/100k；2026-10-25"
+    },
+    {
+      "task": "M19c",
+      "before": "100k metadata/content p95 32.143/33.070 ms",
+      "after": "0.006/1.389 ms；小库 content/delete 约增 0.4 ms",
+      "source": "B6，Mac 合成 SQLite；未重跑冒充 B7"
+    },
+    {
+      "task": "D20",
+      "before": "版本/运行扫描各 21；无关 UPDATE 210000",
+      "after": "各 1；无关 UPDATE 0",
+      "source": "B5，Windows 10k 无关+20 相关合成库"
+    }
+  ],
+  "rawEvidence": "output/performance-b7-20261025/",
+  "nativeHarnessEvidence": "output/audit-remediation/self-acceptance/",
+  "releaseActions": [],
+  "idle": {
+    "startedAt": 1792919346.493879,
+    "elapsedSeconds": 600.003,
+    "samples": 120,
+    "intervalSeconds": 5,
+    "scope": "Owned QA host and descendants only; excludes unattributable WebKit/GPU processes and system energy. ps %cpu is an OS estimate, not interval CPU accounting.",
+    "condition": "debug worklog-qa; default GIF pet visible, empty chat visible, settings/workbench hidden; no active model requests; other user apps remain running; no concurrent build/test",
+    "cpuPercent": {
+      "p50": 9.1,
+      "p95": 12.3,
+      "min": 7.2,
+      "max": 15.0,
+      "first": 9.200000000000001,
+      "last": 9.1
+    },
+    "rssKiB": {
+      "p50": 1043824.0,
+      "p95": 1051424,
+      "min": 1043584,
+      "max": 1051520,
+      "first": 1051472,
+      "last": 1043632
+    },
+    "changedFiles": [],
+    "buildBoundary": "Measured before the PDF compatibility fix; source snapshot and first app binary hash retained. Not final-package energy acceptance."
+  },
+  "appCleanup": {
+    "appProcesses": [
+      {
+        "pid": 9589,
+        "birth": "Sun Oct 25 17:33:29 2026",
+        "gone": true,
+        "neededTermination": false
+      },
+      {
+        "pid": 9633,
+        "birth": "Sun Oct 25 17:33:42 2026",
+        "gone": true,
+        "neededTermination": false
+      },
+      {
+        "pid": 4869,
+        "birth": "Sun Oct 25 16:45:16 2026",
+        "gone": true,
+        "neededTermination": false
+      },
+      {
+        "pid": 4876,
+        "birth": "Sun Oct 25 16:45:19 2026",
+        "gone": true,
+        "neededTermination": false
+      }
+    ],
+    "providerPid": 6701,
+    "providerGone": true,
+    "providerPortClosed": true,
+    "credentialCleanup": [
+      {
+        "service": "com.deskmate.unifiedhistoryqa.b720261025a",
+        "account": "ai-api-key.f2a35018-10c3-407f-9a75-6f37242d0572",
+        "removedOrAbsent": true
+      }
+    ],
+    "removedOwnedRoots": [
+      "/Users/xmaczone/Library/Application Support/com.deskmate.unifiedhistoryqa.b720261025a",
+      "/Users/xmaczone/Library/Caches/com.deskmate.unifiedhistoryqa.b720261025a",
+      "/Users/xmaczone/Library/WebKit/com.deskmate.unifiedhistoryqa.b720261025a"
+    ],
+    "retainedRoots": [],
+    "dataRootRemoved": true,
+    "sourcePdfSha256": "8a61a0bf953e41171a4e0d63b7e64ecd37137e804ef8b210a94f2ae0123a7360",
+    "scope": "Only receipt-owned QA processes, synthetic credential and newly created identity roots; daily YUME untouched."
+  },
+  "evidenceFiles": {
+    "output/performance-b7-20261025/native-session.py": {
+      "bytes": 1981,
+      "sha256": "bf864b59dbde3d24589273b2a5e87fbfbd9dd08a212c3a77308b4b05713a6fea"
+    },
+    "output/performance-b7-20261025/recovery.png": {
+      "bytes": 46954,
+      "sha256": "d7c1040c8c7e04141a5e7ff7d891bf09cd6f84c83c27460abd2ec325cb96b278"
+    },
+    "output/performance-b7-20261025/native-checks.json": {
+      "bytes": 757,
+      "sha256": "d1d8c5e2954137975204844563b4927ad7ffb54f648925f94dd44d7b74f8303e"
+    },
+    "output/performance-b7-20261025/idle-samples.jsonl": {
+      "bytes": 69442,
+      "sha256": "506d95e985ddccc3027385cf3ed6a4cf6b2df8842174108ede7a3f1ffbe81035"
+    },
+    "output/performance-b7-20261025/finalize-report.py": {
+      "bytes": 6136,
+      "sha256": "b5e1fdc80b380a23524c2870908f659ea9a9dbe8348ba1da93429be3a52de7da"
+    },
+    "output/performance-b7-20261025/typecheck-final.log": {
+      "bytes": 93,
+      "sha256": "6b3496f4b4228dbe6b3021c71a9cfdcbac077e758ec51376b311de635de0d964"
+    },
+    "output/performance-b7-20261025/gui-provider-receipt.json": {
+      "bytes": 266,
+      "sha256": "c7839f2bae47abba217f6918211e77bab00f21dab9cb181bff95ad7d736e721b"
+    },
+    "output/performance-b7-20261025/frontend.log": {
+      "bytes": 13026,
+      "sha256": "828deebb1771cad10b5b763b1502e04716f8c05d7c9679b26bdf59d84d2f40c6"
+    },
+    "output/performance-b7-20261025/pdf-regression-reproduced.log": {
+      "bytes": 1212,
+      "sha256": "70cca0e31b5a7860f8e39060f7a13a27e944f9317455627f1b9be631c075da2e"
+    },
+    "output/performance-b7-20261025/qa-build.log": {
+      "bytes": 5799,
+      "sha256": "134d7930a06ffc59eb0187cb09a6cfc66033c10f669008f75a19873732c1dddc"
+    },
+    "output/performance-b7-20261025/app-owned-processes-final.json": {
+      "bytes": 457,
+      "sha256": "c3bcec0de07542b5b20e7193c928a54116b040ee0a89d7c09d52160016b79b3e"
+    },
+    "output/performance-b7-20261025/native-observations.json": {
+      "bytes": 3210,
+      "sha256": "0c6f49b653548b168e8f9f486c8b8dd73cea99903d5cafd4a22136dcd7183e3f"
+    },
+    "output/performance-b7-20261025/gui-provider-cleanup.json": {
+      "bytes": 1588,
+      "sha256": "d189e129c7eca552aa69d66d9bf076e619fa71981455b8fff8fe98a5ea7c555c"
+    },
+    "output/performance-b7-20261025/app-cleanup.json": {
+      "bytes": 1363,
+      "sha256": "e417ad59fc933882e3bca0c6f7ba57b0bfead361016763b8f0b9bb71baa4d0c0"
+    },
+    "output/performance-b7-20261025/typecheck.log": {
+      "bytes": 93,
+      "sha256": "6b3496f4b4228dbe6b3021c71a9cfdcbac077e758ec51376b311de635de0d964"
+    },
+    "output/performance-b7-20261025/idle-sample.py": {
+      "bytes": 3531,
+      "sha256": "1cda547b8629825e3d6e96f0778cf919bc6edaa5f15564ecd255d2c8a88c9696"
+    },
+    "output/performance-b7-20261025/source-final-snapshot.json": {
+      "bytes": 320536,
+      "sha256": "3a61328e9a18e511e01b26c692370844b2e89d1e4d823b563db5083c3ac18a7a"
+    },
+    "output/performance-b7-20261025/pdf-webkit-diagnostic.txt": {
+      "bytes": 5052,
+      "sha256": "6c2585813672e07ec380a853679d4d72c23613225ca5d407f27bf755b2864d94"
+    },
+    "output/performance-b7-20261025/pdf-regression-before-corrected.log": {
+      "bytes": 884,
+      "sha256": "c7e2465c41c15666f78314426dbdcc7c57ab0253c11fc27c7474c490b6778bc2"
+    },
+    "output/performance-b7-20261025/cleanup.py": {
+      "bytes": 4472,
+      "sha256": "f760696e43694b715771dbc184b3cd634ada2d9e4143a1d132eac8c1b501d312"
+    },
+    "output/performance-b7-20261025/build-final.log": {
+      "bytes": 1967,
+      "sha256": "8f3cfab7b4922546b47b1c5ae16d2b1d710aaafe71930103534e2849fcf54a48"
+    },
+    "output/performance-b7-20261025/rust-full-final.log": {
+      "bytes": 102849,
+      "sha256": "c89c4878157a1ff8a2de3f15be9b86bbeb40ed1c51b50a518a32ab13f3994d01"
+    },
+    "output/performance-b7-20261025/checks.json": {
+      "bytes": 678,
+      "sha256": "f8d3105aba6516d03e08a3082e69dd393b93c606f3cf58d0c3d4580be4cdb4ff"
+    },
+    "output/performance-b7-20261025/app-runtime.log": {
+      "bytes": 2271,
+      "sha256": "f5885fdd7c5e54cd53271509ef4169270655ce7492c3ee9c956d54f5b45e96d2"
+    },
+    "output/performance-b7-20261025/gui-before-stop.json": {
+      "bytes": 663,
+      "sha256": "89662494a6ae16069b809fc08e5fa21987566d0f17b44a35306dcadf63d5de55"
+    },
+    "output/performance-b7-20261025/gui-after-stop.json": {
+      "bytes": 793,
+      "sha256": "9dbdf5fdec4661cf72b94b81a9d24e22b02c21a7f7216a1842773ab851993c78"
+    },
+    "output/performance-b7-20261025/history.png": {
+      "bytes": 21583,
+      "sha256": "b57e4ceafb3686f3e6c6b561636c92bf10452a0653dc709765f582b502ef36ab"
+    },
+    "output/performance-b7-20261025/pdf-reader-fixed.log": {
+      "bytes": 448,
+      "sha256": "a37d643fa3db2f47a0cb524a6b0513765ccc9d88ea33a2038d28b83061874c22"
+    },
+    "output/performance-b7-20261025/app-session-before-pdf-fix.json": {
+      "bytes": 719,
+      "sha256": "9d5fbb0199936b6c98d16e290c9163a967b525f2951bcc8a901ff8a7d8d5b542"
+    },
+    "output/performance-b7-20261025/second-launch.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "output/performance-b7-20261025/stop-ax.txt": {
+      "bytes": 1246,
+      "sha256": "ad4cdf2fd30ad9c3ceb1d758c42d3478db565c6b70e7d032c6c00b30cc320dac"
+    },
+    "output/performance-b7-20261025/app-runtime-final.log": {
+      "bytes": 1602,
+      "sha256": "d95a77d31ee371cea426cff7876acd09ac6abb9bb14b2860b7d70b1de9d7fd39"
+    },
+    "output/performance-b7-20261025/qa-storage-readback.json": {
+      "bytes": 1292,
+      "sha256": "a9851725d0e7622ebd5ca291af5b8cd252bfdcc72cc3a916940fe912ebe93f8c"
+    },
+    "output/performance-b7-20261025/second-launch.json": {
+      "bytes": 1266,
+      "sha256": "9a053189a72b7f3318d480cfcace14f188745745536c7b93a10385a3e5f27614"
+    },
+    "output/performance-b7-20261025/rust-full.log": {
+      "bytes": 101545,
+      "sha256": "718265119589315bc3ecea8ab3f6fe984bc7aa87c22df7d82bf8eb874819e15c"
+    },
+    "output/performance-b7-20261025/idle-summary.json": {
+      "bytes": 2263158,
+      "sha256": "ac0ffc96a4d86a3db5d7c2a584562bc1e437d6ae0242bb6d7c47f7d6b8975dde"
+    },
+    "output/performance-b7-20261025/workbench-reuse.json": {
+      "bytes": 176,
+      "sha256": "0d4ebf4f69621d8ddf1b508e30c5ecba543d8a432c09efdef7b4590a16c06f5e"
+    },
+    "output/performance-b7-20261025/workbench.png": {
+      "bytes": 36801,
+      "sha256": "43fd802bdd8ceb7836b11e360b0e3bd43371bed0025a16c5d834e3090c92f3de"
+    },
+    "output/performance-b7-20261025/gui-provider-requests.json": {
+      "bytes": 1390,
+      "sha256": "b4389c3503a3332304f6453c48d000606fc3fa45c3bf8b4a89ff85b6d28f0023"
+    },
+    "output/performance-b7-20261025/pdf-targeted.json": {
+      "bytes": 162,
+      "sha256": "5a0a66b7c37b5e72d2d4c1a9176adb79cd0d84638975c4181fe4547f0d65c0ec"
+    },
+    "output/performance-b7-20261025/native-engine.log": {
+      "bytes": 3970,
+      "sha256": "ce55354ef46f8a2e5e3645f148cdc3db71184060d42a8263ff88bf94941844ea"
+    },
+    "output/performance-b7-20261025/displays.json": {
+      "bytes": 59,
+      "sha256": "426c3ba6f92ccf75e22be7ba6ebf152f9c7f3874a45e3408d29b7138bbad59d1"
+    },
+    "output/performance-b7-20261025/pdf-failure.png": {
+      "bytes": 26689,
+      "sha256": "3d05fe4a6714236eb326397d36b7f7c337b32e3b3ec587388c907da3e27cf597"
+    },
+    "output/performance-b7-20261025/pdf.png": {
+      "bytes": 29011,
+      "sha256": "ea6ee4892fcb4f25deb306bddf1b3f61baa9b03b1d32bfc66d713c23abd369c2"
+    },
+    "output/performance-b7-20261025/pet.png": {
+      "bytes": 6867,
+      "sha256": "ed1ed034a3641fcd2e55bf59ff4b6739dfd31e1bcd864616dbf6808ea61f5bdd"
+    },
+    "output/performance-b7-20261025/frontend-final.log": {
+      "bytes": 13096,
+      "sha256": "de0da5f7b8a7ed1b33299b8bdd65d82a7a754c54baed3bf004f84a8b7e5ff1cf"
+    },
+    "output/performance-b7-20261025/source-snapshot.json": {
+      "bytes": 320765,
+      "sha256": "cfabb29914da7474b11d09e77009a42104f58fc3f842eee0a586b9edf54a165b"
+    },
+    "output/performance-b7-20261025/pdf-success-ax.txt": {
+      "bytes": 1001,
+      "sha256": "7ec922406adef6fb9000e968f2d39251fdad142d5145c360c0aeb9a397844bcf"
+    },
+    "output/performance-b7-20261025/pdf-real-fixed.log": {
+      "bytes": 1200,
+      "sha256": "559f6a4025b740686b4412f4ddaf8694644e0b7ebf6a7f5716c2c2901a3c7674"
+    },
+    "output/performance-b7-20261025/update-docs.py": {
+      "bytes": 7619,
+      "sha256": "9889929885c90beb01107076e965f72d0e68574df4fc03f05ac15ad8e7a29ab2"
+    },
+    "output/performance-b7-20261025/checks-final.json": {
+      "bytes": 1081,
+      "sha256": "6f33ff6b9fba43d6aefacd354d71db07aa5cc7100217f73fdd6a2bd8914301a2"
+    },
+    "output/performance-b7-20261025/qa-build-final.log": {
+      "bytes": 5766,
+      "sha256": "0b4b78be8d73e7af02360d5d73b62d2a41790673fa5047cf783f0b5ba8eab096"
+    },
+    "output/performance-b7-20261025/cargo-check-production.log": {
+      "bytes": 3614,
+      "sha256": "684a7648e8f016a6e08c800527c3c0e59d605167c1f5891bbfa1fd3ceb8d5f2a"
+    },
+    "output/performance-b7-20261025/tauri.qa.json": {
+      "bytes": 1780,
+      "sha256": "43f39400a05a2dc93dea7db4df687dadbe03c1e9d508c3cd9960eae74753af1a"
+    },
+    "output/performance-b7-20261025/pdf-lifecycle-fixed.log": {
+      "bytes": 3099,
+      "sha256": "c004f48aa4815437a62db2e4939d86301b494d6c72bbd004b3e13771dddd4196"
+    },
+    "output/performance-b7-20261025/pdf-regression-before.log": {
+      "bytes": 246,
+      "sha256": "dba3eb38273bdaf3dd13f2f817b04d041af0706f29531ba38fc8c7052eea1353"
+    },
+    "output/performance-b7-20261025/app-session.json": {
+      "bytes": 720,
+      "sha256": "0880c8a3d9f9278d904b89286221b243d739c343a8dfe816d85ac0fcfd139ef1"
+    },
+    "output/performance-b7-20261025/b7-fixture.pdf": {
+      "bytes": 601,
+      "sha256": "8a61a0bf953e41171a4e0d63b7e64ecd37137e804ef8b210a94f2ae0123a7360"
+    },
+    "output/performance-b7-20261025/build.log": {
+      "bytes": 1967,
+      "sha256": "eda88900a0ddb08cc27fa9244ee4fd4886e7e9b53fa8eb898f7aba672fc27dad"
+    },
+    "output/performance-b7-20261025/gui-provider.ts": {
+      "bytes": 2861,
+      "sha256": "7abd0653528c2506a628d64359c81f66f07c2bcac39ff4f34e315ef13f750b99"
+    }
+  }
+}

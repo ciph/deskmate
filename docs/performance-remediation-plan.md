@@ -2,7 +2,7 @@
 
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归通过，历史目录 schema 3、记忆库 schema 4；B7 待做，原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 11 节 B7。不要切回旧 main 重做已有修改。
+**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归通过，历史目录 schema 3、记忆库 schema 4；B7 进行中：完整检查通过，已执行真实引擎回归与部分 Mac QA 原生检查，平台缺口保留。** 接续先读 [B7 结果与逐项证据](performance-evidence/b7-macos-20261025/index.html) 和 [Mac 接续说明](performance-remediation-handoff.md)，再按第 11 节补齐未验项。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
@@ -396,7 +396,7 @@ macOS 单独待验：单实例/恢复语义、WebKit PDF worker/CSP、媒体/二
 | #19 到期扫描/FTS 扫描 | M19a/b/c | B6 | 大，三步 | 部分索引→读过滤/维护→显式稳定 rowid |
 | #20 删除递归全扫 | D20a/b | B5 | 中，两步 | 不变不写→闭包一次处理；独立快照不漏擦除 |
 
-历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5；Mac 已完成 B6 H18a/H18b/H18c 与 M19a 的代码及自动回归。当前接续核对本地检查点后从 M19b 开始；原生缺口仍按 V1/V2 补验，不重做已保存步骤。
+历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5；Mac 已完成 B6 H18a/H18b/H18c 与 M19a/M19b/M19c 的代码及自动回归。B7 本机全套通过（最终前端 1352 pass / 172 文件，Rust 953 pass / 23 ignored），另有真实 OpenCode 宿主测试和隔离 debug App 的部分原生证据；状态仍为进行中。接续按 [B7 逐项矩阵](performance-evidence/b7-macos-20261025/index.html) 补 V1/V2，不重做已保存迁移或把 QA 当生产/跨平台验收。
 
 
 ## 历史回执：B1 开工（2026-10-22）

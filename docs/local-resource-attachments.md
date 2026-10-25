@@ -41,7 +41,7 @@
 - 原生资源指向原文件，原文件被移动或删除后需要重新添加。它不是内容快照。
 - 移除草稿、切换会话或关闭聊天会释放未发送的引用及应用自己的上传副本。已发送的引用保留至删除会话。以上操作不会删除用户选择的原文件。
 
-PDF 文本提取按需加载随前端构建发行的本地 worker，不依赖 CDN 或放宽 CSP。成功、损坏、截断和取消都释放 loading task；移除附件、切换会话、卸载、重入准备以及同批失败会中止在途准备，旧结果不能发入新会话。提取保留 160,000 字符预算，达到预算且仍有后续内容时显示截断提示。相应回归位于 `attachmentsPdfLifecycle.test.ts`；浏览器通过不能代替 Tauri 本地协议和 WebKit 验收。
+PDF 文本提取按需加载随前端构建发行的本地 worker，不依赖 CDN 或放宽 CSP。成功、损坏、截断和取消都释放 loading task；移除附件、切换会话、卸载、重入准备以及同批失败会中止在途准备，旧结果不能发入新会话。提取保留 160,000 字符预算，达到预算且仍有后续内容时显示截断提示。PDF.js 6 在 `getTextContent()` 内使用 `ReadableStream` 异步迭代。B7 的 Mac WebKit 实测缺少该方法但有 `getReader()`，非 XFA 文本在这一环境改用局部 reader 消费并释放锁；XFA 保留 PDF.js 自有路径，不改全局流原型或 worker/CSP。取消会中止等待中的 reader，外层继续等待 loading task 销毁。回归覆盖真实 PDF 在缺少异步迭代器时的提取、分块合并、读取失败、取消和 XFA，位于 `attachments.test.ts`、`pdfPageText.test.ts` 与 `attachmentsPdfLifecycle.test.ts`；本轮原生结果见 [B7 记录](verification-backlog.md#2026-10-25-mac-b7)，其他平台与内存收敛边界仍分别验收。
 
 ## 边界
 

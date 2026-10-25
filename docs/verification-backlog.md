@@ -4,6 +4,21 @@
 
 ## 当前验证入口
 
+### 2026-10-25 Mac B7
+
+起点 `31e7724`，分支 `codex/yume-performance-b6`，产品 0.4.21；历史 schema 3、记忆 schema 4 均不变。B7 状态为**进行中**：本机完整检查通过，已有真实 OpenCode 与部分隔离 Mac GUI 证据，未满足 Windows/全部原生退出条件。[结果 HTML 与 #01–20 矩阵](performance-evidence/b7-macos-20261025/index.html)、[摘要/日志 SHA](performance-evidence/b7-macos-20261025/summary.json) 是本轮接续入口。
+
+- 三个时钟边界修复单独保存为 `5170451`：automatic worker 首次立即同步、完成后十秒再同步；archive guard 在真实锁内注入观察时钟，测试向前验证 6 秒仍占用/6.001 秒过期；审批保存首次五分钟绝对期限，重复轮询不续期，测试 helper 无需回退单调时钟。新增普通回归验证 helper、迟到回复和后续拒绝，未更改 schema/依赖/产品版本。
+- 固定 Bun 1.3.14 / Rust 1.94.1，顺序执行 `bun run typecheck` → `bun run test:frontend` → `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4` → `bun run build`，退出码均 0。最终前端 172/172 文件，1352 pass / 0 fail / 0 skip / 0 unfinished；Rust **953 pass / 0 fail / 23 ignored**，10k 检索预算用例通过。PDF 修复前的初轮为 171 文件 / 1347 pass；最终检查已按同一顺序重跑，日志不覆盖。Rust 源码在两轮之间未变。本轮不单独打印其通过时延，不复用 M19c 的 10/14 ms 冒充本轮计时。
+- 原生 WebKit 发送真实 PDF 暴露 `undefined is not a function (near ...i of e...)`：PDF.js 6.2.108 的 `getTextContent` 使用 `for await`，本机 `ReadableStream[Symbol.asyncIterator]` 为 undefined 而 `getReader` 可用。新增局部 reader 兼容，保留 PDF.js XFA 分支、取消、锁释放、字符预算、loading task 销毁及原 worker/CSP；没有升级依赖或修改生产全局原型。修复前回归已复现同一错误，夹具初版误操作 Bun 不可 configurable 的方法也保留日志，改为临时替换 writable value 后完成复现。定向 12 + 4 + 17 项通过；重建 App 后同一 PDF 经 WebKit 提取到预期标记、真实 OpenCode 和本地 provider 后在 GUI 回显。修复单独保存为 `2026f8c`。
+- 无 QA feature 的生产 `cargo check` 通过；随后 `bun scripts/audit-remediation/verify-native.ts` 显式执行一项 ignored 真实 OpenCode + 合成 provider 测试，1 pass。归档失败持续 31.258 秒期间审批仍可推进，批准执行、拒绝终结、取消清所有权、恢复不重放及后续新运行通过；provider 初始请求 3 次、恢复 1 次，清理四项均 true。这是 Rust 宿主/真实引擎证据，不是 GUI 或真实模型推理验收；其他 ignored 保持原边界。
+- 使用 `worklog-qa`、独立身份 `com.deskmate.unifiedhistoryqa.b720261025a` 和输出目录中的 overlay 构建本机未签名 debug `.app`。生产前端资源装载、资源包检查通过；955 个工作台产物与 H18a 固定上游完整构建逐项 SHA 一致。本轮没有重建未改的 overlay。生产检查/QA 构建均保留 13 个既有 Rust warning，Vite 大 chunk 警告保留；固定工具链无 rustfmt，不记录为格式化通过。
+- Mac QA 窗口与桌宠可见；首次/二次工作台打开保持同一会话；原生选择器导入、worker 提取、发送 PDF 并回显预期文本通过；20 秒延迟请求到达 provider 后点击 Stop，目标请求 aborted=true，后续同一会话恢复；从历史列表重开保留三轮文本与模型选择；二次启动进程退出 0，原 primary/引擎 PID 与出生时间未变。取消当下显示“出错了: Aborted”，历史重开后 PDF 徽标未重现，两点保留为待收口观察；不声称全部附件历史恢复通过。原生 HTML select 的自动控制出现 AXError.failure，角色切换未完成，不据此认定产品故障。首次 CUA getApp 阻塞约 1199 秒，只作为工具异常记录，不能算 App 启动性能。
+- 十分钟有限范围采样（PDF 修复前 debug 构建）：600.003 秒 / 120 样本，宿主+OpenCode CPU 系统估算 p50/p95 9.1%/12.3%，RSS 1019.125–1026.875 MiB，QA 目录 size/mtime 无变化。默认 GIF 与空聊天可见，设置/工作台隐藏，无并跑构建/测试或模型请求；没有优化前原生基线，排除未归属的 WebKit/GPU，不证明零唤醒/磁盘读取或整机省电。
+- 新鲜 QA 数据、钥匙串作用域、sidecar HOME/XDG 与日常 YUME 隔离；QA 禁用自启和全局快捷键。只保存过无实际权限的本地 fixture 占位值，已从独立钥匙串删除。两次 App 与各自 OpenCode 均正常退出，provider/端口及 Support/Caches/WebKit 三个专属目录清理成功；退出回读四个 SQLite 库 integrity_check 均 ok，历史 3/记忆 4。没有读取/迁移日常库、安装、签名、公证、推送或发布。启动日志有一次 SSE connection refused，随后引擎与工作台正常；公开更新 feed 没有当前 darwin 目标而报告无适用平台，未改变 feed 或执行更新。
+
+继续 B7：Windows primary/orphan/并发与 WebView2；Mac 复杂 PDF/取消堆收敛/附件历史/媒体、真实 GUI 权限/SSE/故障恢复、1000 消息输入滚动、日志五工具/到期任务、历史删除/多窗口争用和记忆的导出/删除/重开；2D/3D 全动作、隐藏/睡眠/跨屏 DPI/高刷与原生内存/GPU/能耗前后对照。`system_profiler` 未返回显示器明细，不据此假定实际 Hz/DPI。M19c 完整 DELETE 外键扫描与小库开销、C16 1000 行全挂载、R06 残留锁和 D20 全库一次读取仍保留。默认 60 fps、原版模型不变；缺验证不算“条件实验未采纳”。
+
 ### 2026-10-25 Mac B6 M19c
 
 起点 `7673984`，分支 `codex/yume-performance-b6`。记忆库 schema **3→4**，历史目录仍为独立 schema 3，产品仍为 0.4.21；远端核对仍为 `fcb4635`。本批代码与自动回归通过，下一步 B7 联合回归和原生验收。

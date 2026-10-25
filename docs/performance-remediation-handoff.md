@@ -13,7 +13,7 @@
 - M19a 从 H18c 检查点 `c52379c` 接续：记忆库独立 schema 2→3，新增 active 且 expires_at 非空的部分索引；旧迁移、到期语义、候选清理和 FTS 触发器不变。100k 行五种场景命中范围索引；迁移/回滚/作用域/旧库保留验证通过。完整 Rust 复测 933 pass / 0 fail / 21 ignored，生产检查通过；首次检索预算超时及独立/全套复测见 [M19a 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19a)，未放宽 50 ms 预算。产品仍为 0.4.21，日常用户库未迁移。
 - M19b 从 M19a 检查点 `73b254b` 接续：列表/导出使用只读快照，检索实时排除到期项；显式 expired 和历史查询即时包含逻辑过期记录。后台按最近期限维护，每轮最多 8 条记忆/32 条候选并在逐条处理后检查 10 ms 预算，忙时让出、失败重试；保留最近编辑时间和 revision。完整 Rust 941 pass / 0 fail / 22 ignored，10k 检索 p95 16 ms；100k 规模专项通过，单条 FTS 成本仍保留，详见 [M19b 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19b)。schema 与产品版本不变。
 - M19c 从 M19b 检查点 `7673984` 接续：记忆库 schema 3→4，独立整数主键映射稳定 FTS rowid，metadata/无效值更新不重建全文；保留独立内容表并开启 FTS secure-delete，旧迁移不变。1k/10k/100k FTS 删除定位均为 26 VM steps；迁移失败回滚、重开/VACUUM、并发、哨兵文件擦除与旧查询结果一致性通过。完整 Rust 951 pass / 0 fail / 23 ignored，10k 检索 p95 14 ms；详见 [M19c 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19c)。历史目录 schema 仍为 3，产品仍为 0.4.21。
-- 下一步 **B7**：联合回归、原生场景与最终证据；M19c 未消除完整硬删除的既有外键扫描，1k 小库内容更新/删除实测开销变化也已记录，继续按实际场景观测。下方三个时钟边界待办仍未改，本轮的自动回归不关闭 Windows/macOS 实机缺口。
+- **B7 进行中**：从 `31e7724` 接续，三个时钟边界已独立修复；本机顺序完整检查通过，最终前端 172 文件 / 1352 pass / 0 fail / 0 skip，Rust 953 pass / 0 fail / 23 ignored，生产配置 cargo check 与隔离 debug QA App 构建通过。真实 OpenCode + 合成 provider 的审批/取消/归档失败恢复测试另行通过并完成清理；原生工作台、窗口、PDF 提取/发送、Stop/恢复和历史文本重开已有部分 Mac 证据；实测发现的 PDF WebKit 流迭代问题已另存修复 `2026f8c`（时钟修复 `5170451`）。十分钟采样、剩余 UI 显示观察及清理均已记录。见 [B7 结果与 #01–20 矩阵](performance-evidence/b7-macos-20261025/index.html) 及 [本轮验收记录](verification-backlog.md#2026-10-25-mac-b7)。Windows、真实模型、完整 GUI/硬件与同环境性能对照仍未闭合；M19c 完整硬删除外键扫描及小库成本变化继续保留。
 
 本机基线/H18a 日志、源码校验与工作台生成物清单集中在 `output/performance-b6-preflight-20261024/`；H18b 在 `output/performance-b6-h18b-20261024/`，H18c 在 `output/performance-b6-h18c-20261025/`，M19a 在 `output/performance-b6-m19a-20261025/`，M19b 在 `output/performance-b6-m19b-20261025/`，M19c 在 `output/performance-b6-m19c-20261025/`，均忽略于 Git。源代码与现行契约以当前 B6 分支为准，历史发布证据仍在 `docs/performance-evidence/`。
 
@@ -111,13 +111,13 @@ env DEVELOPER_DIR=/Library/Developer/CommandLineTools   RUSTUP_TOOLCHAIN=1.94.1 
 
 | 待办 | 当前依据与下一步 |
 | --- | --- |
-| 自动记忆 worker 极早启动 | `src-tauri/src/memory/automatic/worker.rs` 的 `start` 仍用 `Instant::now() - 10s` 初始化，低 uptime 平台可能越界；独立修复首次立即同步与完成后 10 秒节奏，不与 schema 迁移混成一个差异 |
-| 工作台租约测试时钟 | `src-tauri/src/workbench.rs` 的 `archive_guard_obeys_live_lease_full_scope_and_expiration` 仍倒退 6.001 秒；改为确定性观察时间时必须继续走真实 archive guard，不能削弱完整作用域/租约断言 |
-| ignored 权限夹具 | `src-tauri/src/agent/permissions.rs` 的测试 helper 使用 `checked_sub(300s)`，低 uptime 可返回测试时钟错误；仅 ignored 原生用例使用，独立处理，不宣称生产超时已坏 |
+| 自动记忆 worker 极早启动 | B7 已修：首次无完成时间即执行，随后从完成时刻计十秒；自动回归覆盖立即执行、9.999/10 秒与慢同步后的节奏，无 schema 改动 |
+| 工作台租约测试时钟 | B7 已修：真实 archive guard 锁内获取观察时钟，测试向前到 6/6.001 秒；完整作用域、锁占用与提交期间持锁断言保留 |
+| ignored 权限夹具 | B7 已修：保存首次审批的五分钟绝对期限，helper 令当前期限到期，不倒减 Instant；正常套件验证 helper、重复轮询不续期及迟到回复拒绝，真实引擎回归通过 |
 | 长聊天仍有卡顿风险 | C16 浏览器样本 input p95 113 ms、scroll p95 436.2 ms，1000 行仍全部挂载；需要 Mac WebKit 实测，不能凭减少 commit 次数声称已流畅 |
 | 尚存线性工作/锁 | R06c 关键落盘与既有结算 HTTP 仍在锁内；D20 仍加载全库一次，真实 HTTP 取消由 heartbeat 感知；后续以新证据决定是否继续拆分 |
 
-前三项来自 B5 发布审查后续清单，交接时已与当前源码核对，尚未修复。不要把 CI 通过理解为不存在这些边界问题。
+前三项来自 B5 发布审查后续清单，原交接时未修复，现已在 B7 独立修复并纳入本机全量回归。后两项性能风险仍未关闭；自动通过不替代平台实机证据。
 
 B7 要补 Mac WebKit 的 PDF worker/CSP、真实附件 IPC/媒体、Stop/权限/SSE 断流与恢复、历史及工作台所有权、隐藏/多屏/高刷新、模型完整动作、数据库恢复和真实内存/GPU/耗电。Mac CI 与 Chromium fixture 不能代替这些实机检查；Mac 通过也不能关闭 Windows 单实例/孤儿、WebView2、真实升级和 Windows 性能待验。逐项写入 [验收待办](verification-backlog.md)。
 
@@ -131,4 +131,4 @@ B7 要补 Mac WebKit 的 PDF worker/CSP、真实附件 IPC/媒体、Stop/权限/
 
 ## 给 Mac 上接手助手的提示
 
-> 继续 YUME 性能整改。先读 AGENTS.md、docs/performance-remediation-handoff.md、docs/performance-remediation-plan.md 和 docs/verification-backlog.md，核对实际路径/分支/status/版本及 origin/main。B1–B5 已完成代码并随 Windows 0.4.21 发布，源码基线 fee4d707804f76e5c608ceef33c622e71d17b175；B6/B7 未开工。保留本机改动，准备固定依赖和完整工作台、记录 Mac 基线，从 H18a 开始小步修复，再按 H18b/H18c 和 M19a/b/c 推进。只用隔离数据库验证迁移，保留身份、所有权、墓碑和隐私擦除契约。各步保存证据及待验事项，不把 Mac CI 当 GUI 实测，不改公开标签/资产，不自动发布或安装到日常环境。
+> 继续 YUME B7。先读 AGENTS.md、接续说明、施工计划、verification-backlog.md 和 performance-evidence/b7-macos-20261025/summary.json，核对本地 codex/yume-performance-b6 检查点、未提交差异及 origin/main。B6 H18a/b/c、M19a/b/c 已完成，历史 schema 3、记忆 schema 4，产品仍为 0.4.21。B7 完整自动检查、真实 OpenCode + 合成 provider 回归及部分隔离 Mac debug QA 窗口检查已执行，三个时钟边界已修复；从原生待验矩阵继续，不重做已有迁移、不把未签名 QA App 当生产验收。保留日常数据、完整身份/所有权/墓碑/隐私契约，清理仅限本次登记的进程与隔离目录；不自动推送、安装、签名或发布。
