@@ -1,6 +1,14 @@
 use super::*;
 use sha2::{Digest, Sha256};
 
+// Exercise the original 2 -> 3 index-only migration in isolation. The 3 -> 4
+// FTS rebuild intentionally changes search rowids and has its own preservation tests.
+fn open_expiry_store(path: &Path) -> MemoryResult<MemoryStore> {
+    let store = MemoryStore { connection: Mutex::new(open_connection(path)?) };
+    store.migrate_steps(&MIGRATIONS[..3])?;
+    Ok(store)
+}
+
 fn old_store(path: &Path, rows: usize) -> Connection {
     let mut connection = Connection::open(path).unwrap();
     for step in &MIGRATIONS[..2] { connection.execute_batch(step.sql).unwrap(); }
@@ -41,7 +49,7 @@ fn expiry_index_upgrade_preserves_data_and_old_readonly_copy_across_reopen() {
     std::fs::copy(&path, &old_path).unwrap();
     let hash = Sha256::digest(std::fs::read(&old_path).unwrap());
     for _ in 0..2 {
-        let store = MemoryStore::open(&path).unwrap();
+        let store = open_expiry_store(&path).unwrap();
         assert_eq!(store.schema_version().unwrap(), 3);
         store.with_connection(|connection| {
             assert_eq!(snapshot(connection), before);
@@ -75,7 +83,7 @@ fn expiry_index_late_failure_rolls_back_index_and_version_then_can_retry() {
         assert_eq!(snapshot(connection), before);
         Ok(())
     }).unwrap();
-    store.migrate().unwrap();
+    store.migrate_steps(&MIGRATIONS[..3]).unwrap();
     assert_eq!(store.schema_version().unwrap(), 3);
 }
 
@@ -88,7 +96,7 @@ fn expiry_index_full_database_keeps_schema_two_and_all_committed_rows() {
     let pages: i64 = connection.query_row("PRAGMA page_count", [], |row| row.get(0)).unwrap();
     connection.pragma_update(None, "max_page_count", pages).unwrap();
     let store = MemoryStore { connection: Mutex::new(connection) };
-    let error = store.migrate().unwrap_err();
+    let error = store.migrate_steps(&MIGRATIONS[..3]).unwrap_err();
     assert_eq!(error.code(), crate::memory::error::MemoryErrorCode::MigrationFailed);
     assert!(error.message().contains("full"), "{error}");
     store.with_connection(|connection| {
@@ -98,7 +106,7 @@ fn expiry_index_full_database_keeps_schema_two_and_all_committed_rows() {
         connection.pragma_update(None, "max_page_count", 1_000_000)?;
         Ok(())
     }).unwrap();
-    store.migrate().unwrap();
+    store.migrate_steps(&MIGRATIONS[..3]).unwrap();
     assert_eq!(store.schema_version().unwrap(), 3);
 }
 
@@ -110,7 +118,7 @@ fn expiry_index_open_failure_preserves_uncheckpointed_v2_wal_and_parallel_retry(
     old.execute_batch("PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; INSERT INTO memory_events VALUES('wal','memory-0','edited','latest'); CREATE TABLE idx_memories_active_expiry(conflict TEXT);").unwrap();
     let before = snapshot(&old);
     assert!(path.with_extension("db-wal").exists());
-    assert!(MemoryStore::open(&path).is_err());
+    assert!(open_expiry_store(&path).is_err());
     assert_eq!(read_schema_version(&old).unwrap(), 2);
     assert_eq!(snapshot(&old), before);
     old.execute_batch("DROP TABLE idx_memories_active_expiry;").unwrap();
@@ -120,7 +128,7 @@ fn expiry_index_open_failure_preserves_uncheckpointed_v2_wal_and_parallel_retry(
         let path = path.clone(); let barrier = barrier.clone();
         std::thread::spawn(move || {
             barrier.wait();
-            let store = MemoryStore::open(&path).unwrap();
+            let store = open_expiry_store(&path).unwrap();
             assert_eq!(store.schema_version().unwrap(), 3);
             store.with_connection(|connection| { assert_eq!(index_count(connection), 1); Ok(snapshot(connection)) }).unwrap()
         })

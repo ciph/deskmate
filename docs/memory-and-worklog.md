@@ -1,6 +1,6 @@
 # 记忆与工作日志：当前契约
 
-核对日期：2026-10-25（M19b 逻辑到期与独立维护）；文件桥与调度等待行为沿用 2026-10-22，其余契约沿用 2026-09-30 核对。实际实现和已执行验证见[自动处理验收记录](automatic-memory-verification.md)及[M19b 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19b)；真实模型语义的未验项见[当前验收与待办](verification-backlog.md)。原设计保存在[历史施工方案](archive/memory/automatic-memory-construction-plan.md)。
+核对日期：2026-10-25（M19c 稳定 FTS 身份与精确维护）；文件桥与调度等待行为沿用 2026-10-22，其余契约沿用 2026-09-30 核对。实际实现和已执行验证见[自动处理验收记录](automatic-memory-verification.md)及[M19c 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19c)；真实模型语义的未验项见[当前验收与待办](verification-backlog.md)。原设计保存在[历史施工方案](archive/memory/automatic-memory-construction-plan.md)。
 
 ## 自动处理与开关
 
@@ -43,7 +43,7 @@ OpenCode 拥有原生聊天、消息、part 和工具事实。YUME 的 `deskmate
 
 ### 到期索引（2026-10-25 M19a）
 
-本地 B6 源码将记忆库 schema 从 2 升至 3，独立迁移 `003_active_expiry.sql` 仅增加 `memories(expires_at)` 部分索引，谓词为 `status='active' AND expires_at IS NOT NULL`。旧 `001`/`002` 迁移不修改；记忆、FTS、来源、事项、任务和日志关联均不重写。索引及版本在既有 IMMEDIATE 迁移事务中提交，失败保留旧 schema 与已提交 WAL；未来版本继续拒绝。旧版记忆库门禁拒绝 schema 3，不通过修改版本号降级或用旧备份覆盖新增数据。
+M19a 将记忆库 schema 从 2 升至 3（当前 M19c 为 4），独立迁移 `003_active_expiry.sql` 仅增加 `memories(expires_at)` 部分索引，谓词为 `status='active' AND expires_at IS NOT NULL`。旧 `001`/`002` 迁移不修改；记忆、FTS、来源、事项、任务和日志关联均不重写。索引及版本在既有 IMMEDIATE 迁移事务中提交，失败保留旧 schema 与已提交 WAL；未来版本继续拒绝。旧版记忆库门禁拒绝 schema 3，不通过修改版本号降级或用旧备份覆盖新增数据。
 
 ### 读取与到期维护（2026-10-25 M19b）
 
@@ -57,7 +57,20 @@ FTS 仍沿用 active-only 契约：三字符及以上的 MATCH 查询还会过�
 
 物化只改 status，**保留 updated_at 与 revision**，使同一记录维护前后的排序、导出和编辑版本一致；这取代旧版“首次读取发现到期时把 updated_at 改为当时 now”的副作用，已物化历史记录不回写。新建立即到期记录直接保存为 expired；编辑已逻辑过期记录不会通过延长期限复活。新建同 key 的记录只在自身事务中释放对应过期的 active 槽位，不再顺带全局清理；自动提议目标、日志关联同样拒绝逻辑过期项。
 
-FTS 触发器仍有按未索引 memory_id 扫描的成本，留给 M19c。维护单批执行期间仍短暂持有写锁，显式忘记无需等待整批积压排空；删除继续执行原有真正擦除、secure_delete、WAL TRUNCATE 与批量 compact。schema 仍为 3，未更改迁移或发布版本；合成库自动验证不代表日常用户库已迁移或 Windows/macOS 原生验收完成。
+维护单批执行期间仍短暂持有写锁，显式忘记无需等待整批积压排空；删除继续执行原有真正擦除、secure_delete、WAL TRUNCATE 与批量 compact。M19c 已替换 FTS 的扫描定位，见下节。合成库自动验证不代表日常用户库已迁移或 Windows/macOS 原生验收完成。
+
+
+### 稳定全文身份与删除（2026-10-25 M19c）
+
+记忆库 schema **3→4**，独立迁移 `004_precise_fts.sql`；001/002/003 保持原字节。`memory_search_ids` 为每条 active/expired/superseded 记忆分配 `search_id INTEGER PRIMARY KEY AUTOINCREMENT`，UUID 唯一映射到这个显式主键。FTS rowid 使用 search_id，不使用 `memories` 的隐式 rowid；状态切换、重开与 VACUUM 保持映射，已删除的已提交 search_id 不再分配给新记录。历史目录仍为其独立 schema 3。
+
+创建记忆时同事务建立映射并仅为物理 active 行建立全文；更新只在 id/content/规范化 memory_key/status 实际改变且旧或新状态为 active 时维护 FTS。重要度、敏感度、到期时间、updated_at/revision 等 metadata 以及无效值变更不重建全文。NULL 与空 key 的索引内容都为空字符串。编辑及状态变化以 UUID 唯一索引找 search_id，再按 FTS rowid 精确删除/插入；映射由外键级联删除，其删除触发器直接使用 OLD.search_id，避免依赖父表触发器与级联的执行顺序。
+
+FTS 继续拥有独立内容副本和原 trigram tokenizer；没有切换为 external-content 或 contentless。迁移从权威 memories 重建 active 全文，可丢弃旧索引中孤立或缺失的副本；记录、来源、事项、任务、日志、候选、自动处理与审计数据不重写。映射、重建、触发器和 user_version 在同一 IMMEDIATE 迁移事务提交，磁盘满/后置失败整批回滚；并发打开在写锁内复查版本。旧支持上限 3 的代码会拒绝 schema 4，不通过改版本号降级或以旧备份覆盖新数据。
+
+除连接级 `PRAGMA secure_delete=ON` 外，新全文表持久启用 FTS5 `secure-delete=1`，清除更新/删除的旧词项，随后沿用忘记的 WAL TRUNCATE 与批量 clear 的 compact。两项设置职责及 FTS 格式兼容性见 [SQLite 官方说明](https://www.sqlite.org/fts5.html#the_secure_delete_configuration_option)；所需 FTS5 版本至少 3.42.0，仓库固定 bundled SQLite 为 3.53.2，无依赖升级。合成哨兵测试同时检查原表、映射、FTS、来源/关联与可控数据库/WAL 字节，不能据此保证外部备份、文件系统快照或其他应用持有的副本也被擦除。
+
+M19b 的逻辑到期、只读快照、搜索/全量导出、逐条时间预算与候选重试契约不变。1k/10k/100k 下实际 FTS 删除定位均为 26 VM steps；这不表示整个硬删除恒定工作量：既有 `memories.supersedes_id` 与 `memory_candidates.accepted_memory_id` 外键检查仍可能扫描，实测完整 DELETE 保留相应工作量。FTS 词项本身的维护也受文本与索引状态影响；细分证据和平台待验见验收记录。
 
 ## 回复上下文与管理
 

@@ -15,7 +15,7 @@ use super::error::{MemoryError, MemoryResult};
 
 /// Current logical schema version. Bump together with a new entry in
 /// [`MIGRATIONS`].
-pub const SCHEMA_VERSION: i64 = 3;
+pub const SCHEMA_VERSION: i64 = 4;
 
 /// Database file name inside the Tauri app-data directory.
 pub const DB_FILE_NAME: &str = "deskmate-memory.db";
@@ -39,6 +39,10 @@ const MIGRATIONS: &[Migration] = &[
     Migration {
         to_version: 3,
         sql: include_str!("migrations/003_active_expiry.sql"),
+    },
+    Migration {
+        to_version: 4,
+        sql: include_str!("migrations/004_precise_fts.sql"),
     },
 ];
 
@@ -298,6 +302,18 @@ fn read_schema_version(connection: &Connection) -> MemoryResult<i64> {
 mod expiry_migration_tests;
 
 #[cfg(test)]
+#[path = "fts_migration_tests.rs"]
+mod fts_migration_tests;
+
+#[cfg(test)]
+#[path = "fts_tests.rs"]
+mod fts_tests;
+
+#[cfg(test)]
+#[path = "fts_perf_tests.rs"]
+mod fts_perf_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -336,6 +352,7 @@ mod tests {
             "relationship_states",
             "memory_events",
             "memory_search",
+            "memory_search_ids",
         ] {
             assert!(table_exists(&store, table), "missing table {table}");
         }

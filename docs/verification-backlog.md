@@ -4,6 +4,32 @@
 
 ## 当前验证入口
 
+### 2026-10-25 Mac B6 M19c
+
+起点 `7673984`，分支 `codex/yume-performance-b6`。记忆库 schema **3→4**，历史目录仍为独立 schema 3，产品仍为 0.4.21；远端核对仍为 `fcb4635`。本批代码与自动回归通过，下一步 B7 联合回归和原生验收。
+
+- 独立迁移 `004_precise_fts.sql` 建立 UUID 唯一映射到 `search_id INTEGER PRIMARY KEY AUTOINCREMENT`，FTS 使用显式 search_id 作为 rowid；不依赖 VACUUM 可改变的隐式 rowid。active/expired/superseded 均保留映射，删除后不复用已提交身份。001/002/003 字节和 SHA-256 不变。
+- 只有 id/content/规范化 key/status 的有效变化且涉及 active 时才更新全文。metadata 与无效值更新只写原表，FTS shadow tables 和映射逐项未变；内容/key/状态切换、合法 UUID 改名、重复/唯一约束冲突、REPLACE、事务后置失败回滚、重开/VACUUM/再激活均验证一致性。映射级联删除触发器按 OLD.search_id 定位，不依赖父表 AFTER DELETE 时映射是否已经消失。
+- 保留 owned-content trigram 和短词 LIKE；开启持久 FTS `secure-delete=1`，配合原有 core secure_delete、WAL TRUNCATE 和批量 compact。合成 Unicode 哨兵有删除前文件阳性对照；忘记后验证原表、映射、FTS、来源/关联、MATCH 结果、数据库和 WAL 中的完整文本与唯一 trigram 字节消失，批量 persona clear 后其他记忆仍可用。依据与适用边界见[当前契约](memory-and-worklog.md#稳定全文身份与删除2026-10-25-m19c)及 [SQLite 官方说明](https://www.sqlite.org/fts5.html#the_secure_delete_configuration_option)。不是对系统备份或外部快照的擦除承诺。
+- 迁移重建来自 memories 权威记录，不信任旧 FTS 副本；故意制造缺失/孤立旧索引后仍恢复完整、无多余全文。升级前后全记录、supersedes/来源/任务/事项/日志/候选/审计数据、公开搜索/导出视图一致，旧 schema 3 关闭后的只读副本及 SHA 保持不变。重建后注入失败、容量不足、未检查点 WAL 下名称冲突都恢复旧表/旧触发器/FTS rowid/版本，修复后可重试；并发打开只产生一套映射。M19a 测试明确隔离运行 2→3，继续验证其原有“只加索引不改 FTS rowid”；现行 0/1/2/3/4 升级和未来版本拒绝由完整版本矩阵覆盖。
+- 记忆模块：`cargo test --locked --manifest-path src-tauri/Cargo.toml --lib memory:: -- --test-threads=4 --nocapture`，122 pass / 0 fail / 3 ignored，10k 检索 p50/p95 10/15 ms。真正子进程并发写入后验证原表、映射、FTS 一一对应；原有逻辑到期/候选重试/删除屏障/32767 与 50000 行完整导出继续通过。
+- 完整 Rust：`cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4 --nocapture`，**951 pass / 0 fail / 23 ignored**，10k 检索 p50/p95 10/14 ms，未改 50 ms 预算。生产 `cargo check --locked --manifest-path src-tauri/Cargo.toml` 退出 0，保留原有 13 warnings。收尾仅补充测试夹具中的 supersedes 关联及 SET NULL 验证，FTS 专项再次通过；生产代码未变。前端、工作台、依赖和锁文件未改变，复用 H18a 已记录基线；未重复无关全套。
+
+规模命令：`cargo test --locked --manifest-path src-tauri/Cargo.toml --lib memory::storage::fts_perf_tests::precise_fts_scaling_benchmark -- --ignored --exact --test-threads=1 --nocapture`，退出 0。固定 Rust 1.94.1 / bundled SQLite 3.53.2 / Mac ARM64 debug，schema 3 与 4 使用独立临时合成库；并非旧应用二进制 A/B。先从真实触发器提取 DELETE 语句，仅把 OLD/NEW.id 替换为绑定参数，执行后回滚；随后按 metadata、content、delete 顺序各执行固定 20 条真实原表 DML。时延为 execute 阶段（不含准备和提交），提交耗时另记日志；p95 为 nearest-rank，未做额外预热或随机化顺序。
+
+| 行数 | FTS DELETE VM steps（旧→新） | metadata p95 ms（旧→新） | content p95 ms（旧→新） | 完整 DELETE p95 ms（旧→新） |
+| --- | ---: | ---: | ---: | ---: |
+| 1k | 3017 → 26 | 1.105 → 0.004 | 0.835 → 1.257 | 0.814 → 1.217 |
+| 10k | 30017 → 26 | 3.086 → 0.004 | 3.101 → 1.058 | 6.394 → 3.803 |
+| 100k | 300017 → 26 | 32.143 → 0.006 | 33.070 → 1.389 | 66.161 → 44.787 |
+
+新计划为 `memory_search VIRTUAL TABLE INDEX 0:=` 加 UUID 唯一索引（FTS 计划文字仍写 SCAN，末尾 `=` 表明 rowid 约束）；旧计划没有 `=`，按 memory_id 扫描。固定 20 次新 metadata/content UPDATE 分别为 920/2720 VM steps，三个规模均相同。完整 DELETE 仍有外键检查：实际计划含 `SCAN memories`（supersedes_id）及 `SCAN memory_candidates`（accepted_memory_id）；本夹具候选为空，20 次删除 FullscanStep 仍从 39560 增至 3999560，新版总 VM steps 为 143910/1403910/14003910，不能声称整个删除 O(1)。没有在 M19c 顺带修改这些外键索引。1k 小库 content/delete p95 有约 0.4 ms 的上升；本轮同时新增稳定映射和 FTS secure-delete，未做单项因果拆分，保留作为 B7 真实场景观测项。
+
+复跑 M19b 的 `logical_expiry_scaling_benchmark -- --ignored --exact --test-threads=1 --nocapture` 同样通过：100k 无期限/全未来/20k 集中到期均为零读取写入，最近期限仍为 36/40/40 VM steps；集中到期一轮处理 8 条耗时 5.330 ms，后续显式忘记 42.255 ms。对应 M19b 当时为 1 条/40.800 ms；这是单批测量，不是 p95 或严格延迟保证。100k 检索本身仍扫描/排序，本轮三个场景 p50 约 99–116 ms。
+
+本机证据：`output/performance-b6-m19c-20261025/` 中 `fts-tests.log`、`fts-final-tests.log`、`memory-tests.log`、`scaling.log`、`expiry-scaling.log`、`rust-full.log`、`cargo-check.log`、源码快照与汇总。新增 ignored 规模测试和 M19b 规模测试均已单独执行；其他 ignored 仍按原边界保留。所有库为临时合成数据，未迁移日常用户库、安装、推送、签名或发布。B7 保留 Windows/macOS 实机、真实 IPC/窗口、CPU/GPU/耗电、完整删除的外键成本与三个既有时钟边界，不因本轮自动回归关闭。
+
+
 ### 2026-10-25 Mac B6 M19b
 
 起点 `73b254b`，分支 `codex/yume-performance-b6`。本批完成读取逻辑过期与独立维护；历史目录、记忆库各自 schema 仍为 3，产品仍为 0.4.21。远端核对仍为 `fcb4635`，从本地 B6 接续；下一步 M19c，B7 与平台实机验收保留。

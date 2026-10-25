@@ -2,7 +2,7 @@
 
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b 代码及自动回归通过，历史目录和记忆库各自 schema 3；M19c 和 B7 待做，原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 M19c。不要切回旧 main 重做已有修改。
+**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归通过，历史目录 schema 3、记忆库 schema 4；B7 待做，原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 11 节 B7。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
@@ -323,6 +323,10 @@ QA：迁移前后同一 1k/10k/100k fixture 的所有过滤/排序/分页结果�
 QA：冻结时钟覆盖边界、立即到期、远未来、集中到期、关闭后重启、persona/global 作用域；对 active/expired/list/export/FTS/短词 LIKE/pending candidate 的逻辑过期和已物化结果逐一对照。只读检索不拿写事务，读期间有并发写仍正确，导出/管理页面一致。保留 10k 检索预算及跨进程锁测试；过期维护不能阻塞显式忘记。
 
 ### M19c｜稳定 rowid 的 FTS 精确维护（#19 第三步，大；依赖 M19b）
+
+状态（2026-10-25 Mac）：**代码与自动测试通过但原生待验**。独立 `004_precise_fts.sql` 将记忆库 schema 3→4，旧 001/002/003 不变。每条记忆有 UUID 唯一映射到显式 `INTEGER PRIMARY KEY AUTOINCREMENT` search_id；FTS rowid 使用它，VACUUM/重开/状态切换不改变身份。metadata 和无效值变更不重建全文；有效文本/key/status 变化按 rowid 定位，映射级联删除直接擦除相应 FTS 行。仍为 owned-content trigram 表，新增 FTS secure-delete，保留 core secure_delete、WAL TRUNCATE、clear compact 与删除屏障。
+
+完整 Rust 951 pass / 0 fail / 23 ignored，10k 检索 p95 14 ms；M19c 规模专项与 M19b 到期规模复跑均单独通过。1k/10k/100k 实际触发器的 FTS DELETE 定位均为 26 VM steps，旧 schema 3 为 3017/30017/300017；metadata 与内容更新的固定 20 次 VM 工作量不再随全库增长。100k 下内容更新 p95 33.070→1.389 ms，metadata 32.143→0.006 ms。完整硬删除仍有 supersedes_id/accepted_memory_id 外键扫描，1k 小库内容更新/删除本轮 p95 高于旧值（均 <1.3 ms）；新映射与 secure-delete 同时引入，未把单次微测推断为整体恒定时延或已完成平台验收。细分测量、删除哨兵、迁移/回滚/并发与未验边界见 [M19c 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19c)。历史目录仍为独立 schema 3，产品版本 0.4.21，未迁移日常用户数据或发布。
 
 文件：memory/storage.rs、repository.rs、retrieval.rs、新增 migration；repository/retrieval/perf/cross_process/commands_forget 测试。
 

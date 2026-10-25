@@ -162,6 +162,14 @@ fn concurrent_processes_do_not_lose_writes_or_corrupt_the_database() {
                 integrity, "ok",
                 "database corrupted by concurrent processes"
             );
+            let expected=(PER_PROCESS*(CHILDREN+1)) as i64;
+            for table in ["memory_search_ids","memory_search"] {
+                assert_eq!(connection.query_row::<i64,_,_>(&format!("SELECT count(*) FROM {table}"),[],|r|r.get(0))?,expected);
+            }
+            assert_eq!(connection.query_row::<i64,_,_>("SELECT count(*) FROM memories m
+                JOIN memory_search_ids s ON s.memory_id=m.id
+                JOIN memory_search f ON f.rowid=s.search_id AND f.memory_id=m.id
+                WHERE f.content=m.content AND f.memory_key=IFNULL(m.memory_key,'')",[],|r|r.get(0))?,expected);
             Ok(())
         })
         .expect("inspect");
