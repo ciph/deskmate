@@ -560,10 +560,13 @@ fn storage_error(error: rusqlite::Error) -> MemoryError {
 }
 
 /// Flip anything past its expiry to `expired` so it drops out of retrieval.
+const EXPIRE_MEMORIES_SQL: &str =
+    "UPDATE memories SET status = 'expired', updated_at = ?1 \
+     WHERE status = 'active' AND expires_at IS NOT NULL AND expires_at <= ?1";
+
 fn expire_due(tx: &Transaction<'_>, now: &str) -> MemoryResult<()> {
     tx.execute(
-        "UPDATE memories SET status = 'expired', updated_at = ?1 \
-         WHERE status = 'active' AND expires_at IS NOT NULL AND expires_at <= ?1",
+        EXPIRE_MEMORIES_SQL,
         params![now],
     )
     .map_err(storage_error)?;
@@ -574,6 +577,10 @@ fn expire_due(tx: &Transaction<'_>, now: &str) -> MemoryResult<()> {
     .map_err(storage_error)?;
     Ok(())
 }
+
+#[cfg(test)]
+#[path = "expiry_index_tests.rs"]
+mod expiry_index_tests;
 
 /// A changed stable fact supersedes the previous active value with the same key.
 fn supersede_previous(

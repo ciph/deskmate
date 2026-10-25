@@ -2,7 +2,7 @@
 
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 代码与自动回归通过，历史目录 schema 3；M19 和 B7 待做，原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 M19a。不要切回旧 main 重做已有修改。
+**当前（2026-10-25）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a 代码及自动回归通过，历史目录和记忆库各自 schema 3；M19b/c 和 B7 待做，原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，核对本地 B6 检查点，再执行本计划第 10 节 M19b。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
@@ -302,6 +302,10 @@ QA：迁移前后同一 1k/10k/100k fixture 的所有过滤/排序/分页结果�
 
 ### M19a｜有界到期索引（#19 第一步，小；依赖 A04）
 
+状态（2026-10-25 Mac）：**代码与自动测试通过但原生待验**。独立 `003_active_expiry.sql` 将记忆库 schema 2→3，仅增加 `memories(expires_at)` 的 active/non-null 部分索引；001/002 未修改。现有到期 UPDATE、pending 候选清理、TEXT 时间比较、作用域和 IMMEDIATE 事务语义保留。A04 的全量导出及 400 参数分块不变；读取实时过滤和 FTS 触发器优化仍分别留给 M19b/M19c。
+
+100k 行无期限、全未来、5 条到期、20k 集中到期和其他 persona 到期的真实 UPDATE 计划均为 `SEARCH memories USING COVERING INDEX idx_memories_active_expiry`；候选检索与强制扫描 oracle 完全一致。无到期时实际 UPDATE 为 17/21 VM steps，集中到期仍按命中数工作。迁移保留旧库只读副本/哈希、完整记录/关联/FTS；容量不足、后置失败、未检查点 WAL、重复/并发打开和未来版本均覆盖。完整 Rust 复测 933 pass / 0 fail / 21 ignored，规模专项单独通过，生产 `cargo check` 通过。首次全套的 10k 检索 p95 95 ms 超出原 50 ms 预算；独立复测 20 ms、原 4 线程全套复测 15 ms，未改预算；失败与复测均记录于 [M19a 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19a)。不以候选定位的收益代表完整 FTS 更新或原生性能。
+
 文件：memory/repository.rs、storage.rs、新增独立 migration；repository_tests.rs、perf_tests.rs、cross_process_tests.rs。
 
 步骤/QA：只为 active 且 expires_at 非空建立适配谓词的部分索引，不顺手改变读语义；新建 migration，不修改已应用的 001_initial.sql。100k 行无到期、有少量到期、集中到期、无关 persona 下 EXPLAIN 不再全扫到期 UPDATE；保留 ISO 时间与时区比较语义，旧 schema 迁移原子成功，失败仍可打开旧副本。
@@ -384,7 +388,7 @@ macOS 单独待验：单实例/恢复语义、WebKit PDF worker/CSP、媒体/二
 | #19 到期扫描/FTS 扫描 | M19a/b/c | B6 | 大，三步 | 部分索引→读过滤/维护→显式稳定 rowid |
 | #20 删除递归全扫 | D20a/b | B5 | 中，两步 | 不变不写→闭包一次处理；独立快照不漏擦除 |
 
-历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5；Mac 已完成 B6 H18a/H18b/H18c 的代码与自动回归。当前接续核对本地检查点后从 M19a 开始；原生缺口仍按 V1/V2 补验，不重做已保存步骤。
+历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5；Mac 已完成 B6 H18a/H18b/H18c 与 M19a 的代码及自动回归。当前接续核对本地检查点后从 M19b 开始；原生缺口仍按 V1/V2 补验，不重做已保存步骤。
 
 
 ## 历史回执：B1 开工（2026-10-22）

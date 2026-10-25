@@ -15,7 +15,7 @@ use super::error::{MemoryError, MemoryResult};
 
 /// Current logical schema version. Bump together with a new entry in
 /// [`MIGRATIONS`].
-pub const SCHEMA_VERSION: i64 = 2;
+pub const SCHEMA_VERSION: i64 = 3;
 
 /// Database file name inside the Tauri app-data directory.
 pub const DB_FILE_NAME: &str = "deskmate-memory.db";
@@ -35,6 +35,10 @@ const MIGRATIONS: &[Migration] = &[
     Migration {
         to_version: 2,
         sql: include_str!("migrations/002_automatic.sql"),
+    },
+    Migration {
+        to_version: 3,
+        sql: include_str!("migrations/003_active_expiry.sql"),
     },
 ];
 
@@ -246,6 +250,10 @@ fn read_schema_version(connection: &Connection) -> MemoryResult<i64> {
 }
 
 #[cfg(test)]
+#[path = "expiry_migration_tests.rs"]
+mod expiry_migration_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -290,6 +298,7 @@ mod tests {
         for index in [
             "idx_memories_scope_status",
             "idx_memories_key",
+            "idx_memories_active_expiry",
             "idx_memory_sources_conversation",
         ] {
             assert!(table_exists(&store, index), "missing index {index}");
@@ -464,7 +473,7 @@ mod tests {
 
     #[test]
     fn upgrades_each_supported_schema_and_rejects_future_without_journal_changes() {
-        for version in [0, 1, SCHEMA_VERSION, SCHEMA_VERSION + 1] {
+        for version in 0..=SCHEMA_VERSION + 1 {
             let dir = temp_dir("versions");
             let path = dir.join(DB_FILE_NAME);
             let connection = Connection::open(&path).expect("open fixture");

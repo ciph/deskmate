@@ -4,6 +4,31 @@
 
 ## 当前验证入口
 
+### 2026-10-25 Mac B6 M19a
+
+起点 `c52379c`，分支 `codex/yume-performance-b6`。本批完成 M19a，记忆库 schema 2→3；历史目录仍为其独立 schema 3，产品仍为 0.4.21。下一步 M19b，M19c/B7 未实施。
+
+- 新增独立迁移 `003_active_expiry.sql`：`idx_memories_active_expiry ON memories(expires_at) WHERE status='active' AND expires_at IS NOT NULL`。001/002 与现有 FTS、候选、来源/事项/任务/日志关联定义未改。生产到期 UPDATE 仅提取为常量供真实查询计划验证，谓词和调用时点保持原样；M19b 的读事务拆分尚未进行。
+- A04 仍为全量导出与每批 400 参数取关联；保留 active/superseded/expired、NULL、等于边界、未来、ISO 偏移量及小数表示的原 TEXT 比较。实际 `expire_due` 在索引库与无该索引的对照库结果一致，FTS 和 pending 候选清理一致；候选删除失败会回滚记忆状态、索引成员和 FTS。另一 persona 的到期记录仍按既有全局维护处理，但不会出现在当前 persona 的列表中。
+- 迁移用关闭连接后的 schema 2 副本做只读对照及 SHA-256 检查，比较记忆、来源/关联、FTS rowid 和自动状态；重复打开不重写数据。索引创建后注入后置迁移失败、SQLite 容量上限、未检查点 WAL 中的 schema 名称冲突均保留旧库和版本，修复夹具后可重试；四线程并发打开只完成一次升级。原有测试扩展至 0/1/2/3 的所有已支持版本，未来版本仍在改变持久 journal 设置前拒绝。
+- 专项：首次 `cargo test --locked --manifest-path src-tauri/Cargo.toml memory:: -- --test-threads=4` 为 103 pass / 1 fail / 1 ignored，唯一失败是新增测试把 `USING INDEX` 写死，未识别实际合法的 `USING COVERING INDEX` 文本；修正后 `cargo test --locked --manifest-path src-tauri/Cargo.toml expiry_ -- --test-threads=4` 为 7 pass / 0 fail / 1 ignored。仍要求命中准确的范围索引，不放宽为任意计划。
+- 完整 Rust 首次 4 线程运行 932 pass / 1 fail / 21 ignored：原有 10k 检索用例 p95 95 ms，超过 50 ms 预算。未改代码或预算，独立运行该用例为 p50/p95 9/20 ms；随后原 4 线程全套复测为 **933 pass / 0 fail / 21 ignored**，检索 p50/p95 10/15 ms。首次时延异常原因未进一步定位，失败日志保留，不能用复测结果证明原生尾延迟稳定。两次完整命令为 `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4`，复测另加 `--nocapture` 保存通过时的计时结果。
+- `cargo check --locked --manifest-path src-tauri/Cargo.toml` 退出 0，保留既有 13 warnings。完整回归包含 32767/50000 条 A04 导出、跨进程迁移/竞争、检索预算及隐私删除。前端、工作台、依赖和锁文件未变，复用已记录的 H18a 前端/工作台基线。
+
+规模命令 `cargo test --locked --manifest-path src-tauri/Cargo.toml expiry_index_scaling_benchmark -- --ignored --nocapture` 退出 0。五个 100k 合成库的真实 UPDATE 均计划为 `SEARCH memories USING COVERING INDEX idx_memories_active_expiry (expires_at>? AND expires_at<?)`。以下仅测同谓词候选 ID 定位，与强制 `NOT INDEXED` 的扫描 oracle 比较，结果逐项相等；不是完整到期更新或旧生产二进制测速。固定 Rust 1.94.1 / Mac ARM64 debug，预热 3 次、采样 30 次，nearest-rank p50/p95：
+
+| 场景 | 命中数 | 索引 / 扫描 VM steps | 索引 p50/p95（ms） | 扫描 p50/p95（ms） |
+| --- | ---: | ---: | ---: | ---: |
+| 全部无期限 | 0 | 9 / 500008 | 0.002 / 0.003 | 18.180 / 19.165 |
+| 全部未来到期 | 0 | 13 / 700008 | 0.003 / 0.003 | 23.215 / 24.275 |
+| 少量到期 | 5 | 37 / 500028 | 0.006 / 0.008 | 18.282 / 19.721 |
+| 集中到期 | 20000 | 100013 / 740008 | 12.339 / 13.721 | 31.639 / 32.578 |
+| 其他 persona 到期 | 5 | 37 / 500028 | 0.006 / 0.006 | 18.082 / 18.832 |
+
+两种无到期场景还执行了真实 UPDATE，分别为 17/21 VM steps、0 行变更。大规模实际到期 UPDATE 的 FTS 触发器总成本未在本批测量；其结果一致性由小库真实更新和既有回归验证，不能宣称整条到期链路恒定耗时。FTS 精确维护留给 M19c。
+
+证据目录 `output/performance-b6-m19a-20261025/`：`memory-tests.log`、`expiry-tests.log`、`scaling.log`、首次 `rust-full.log`、`retrieval-isolated.log`、`rust-full-recheck.log`、`cargo-check.log`、源码指纹及 `summary.json`。所有数据库为隔离合成库，未访问/迁移日常用户库，未安装、推送或发布。旧版记忆 schema 门禁拒绝新版库；原生 Mac/Windows GUI、IPC、真实模型与整机性能待验仍保留。
+
 ### 2026-10-25 Mac B6 H18c
 
 起点 `62ae45d`，本地分支 `codex/yume-performance-b6`。本批完成 H18c，历史目录 schema 2→3；产品仍为 0.4.21。下一步 M19a，M19b/c 和 B7 未实施。

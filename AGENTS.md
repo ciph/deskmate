@@ -2,7 +2,7 @@
 
 ## 性能整改接续（2026-10-25）
 
-继续性能整改时，先读 [Mac 接续说明](docs/performance-remediation-handoff.md)、[完整施工计划](docs/performance-remediation-plan.md) 和 [验收待办](docs/verification-backlog.md)。B1–B5 已随 Windows 0.4.21 发布；Mac 分支 `codex/yume-performance-b6` 已完成 H18a/H18b/H18c 代码及自动回归，历史目录 schema 已升至 3，下一步 M19a，M19b/c 和 B7 仍待做。先核对本机分支、未提交改动及远端；本地 B6 检查点尚未推送时从该分支继续，不切回旧 main 丢掉进度。后续实施及时更新这些入口，保留平台待验边界。
+继续性能整改时，先读 [Mac 接续说明](docs/performance-remediation-handoff.md)、[完整施工计划](docs/performance-remediation-plan.md) 和 [验收待办](docs/verification-backlog.md)。B1–B5 已随 Windows 0.4.21 发布；Mac 分支 `codex/yume-performance-b6` 已完成 H18a/H18b/H18c 与 M19a 代码及自动回归，历史目录和记忆库各自的 schema 均为 3，下一步 M19b，M19c 和 B7 仍待做。先核对本机分支、未提交改动及远端；本地 B6 检查点尚未推送时从该分支继续，不切回旧 main 丢掉进度。后续实施及时更新这些入口，保留平台待验边界。
 
 ## 保存、提交、push、发布新版本
 
