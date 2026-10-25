@@ -1,4 +1,5 @@
 /// <reference path="./pdfWorkerUrl.d.ts" />
+import { readPdfPageText } from "./pdfPageText";
 
 export const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024;
 const MAX_TEXT_CHARS = 160_000;
@@ -229,11 +230,7 @@ async function extractPdfText(data: ArrayBuffer, signal?: AbortSignal): Promise<
     for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
       signal?.throwIfAborted();
       const page = await document.getPage(pageNumber);
-      const content = await page.getTextContent();
-      const pageText = content.items
-        .map((item) => ("str" in item ? item.str : ""))
-        .filter(Boolean)
-        .join(" ");
+      const pageText = await readPdfPageText(page, signal);
       pages.push(pageText);
       extractedChars += pageText.length + (pageNumber > 1 ? 2 : 0);
       if (extractedChars > MAX_TEXT_CHARS) break;

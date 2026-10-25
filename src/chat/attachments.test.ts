@@ -66,6 +66,22 @@ describe("chat attachments", () => {
     expect(attachment.dataUrl).toBe("data:text/plain;charset=utf-8;base64,UERGIHNlbWFudGljIHRleHQ=");
   }, 30_000);
 
+  test("extracts real PDF text without stream async iteration in WebKit", async () => {
+    const iterator = Object.getOwnPropertyDescriptor(ReadableStream.prototype, Symbol.asyncIterator);
+    expect(Reflect.set(ReadableStream.prototype, Symbol.asyncIterator, undefined)).toBe(true);
+    try {
+      const bytes = bytesFromBase64(PDF_FIXTURE_BASE64);
+      const attachment = await prepareModelReadyAttachment({
+        metadata: { id: "webkit-pdf", name: "guide.pdf", mime: "application/pdf", size: bytes.byteLength },
+        bytes,
+      });
+      expect(attachment.dataUrl).toBe("data:text/plain;charset=utf-8;base64,UERGIHNlbWFudGljIHRleHQ=");
+    } finally {
+      if (iterator) Object.defineProperty(ReadableStream.prototype, Symbol.asyncIterator, iterator);
+      else Reflect.deleteProperty(ReadableStream.prototype, Symbol.asyncIterator);
+    }
+  }, 30_000);
+
   test("extracts semantic text from staged DOCX bytes", async () => {
     const bytes = bytesFromBase64(DOCX_FIXTURE_BASE64);
     const attachment = await prepareModelReadyAttachment({
