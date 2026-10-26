@@ -1,6 +1,6 @@
 # YUME 性能整改：Mac 接续说明
 
-核对日期：2026-10-25（Asia/Shanghai）。原始交接提交只保存施工计划、证据与待办；下节记录随后在 Mac 上完成的 H18a/H18b/H18c 与 M19a/M19b/M19c，后面的原发布回执仍保留其历史范围。
+核对日期：2026-10-27（Asia/Shanghai）。原始交接提交只保存施工计划、证据与待办；下节记录随后在 Mac 上完成的 H18a/H18b/H18c 与 M19a/M19b/M19c，后面的原发布回执仍保留其历史范围。
 
 ## Mac 接续进度：H18a/H18b/H18c 与 M19a/M19b/M19c
 
@@ -15,7 +15,9 @@
 - M19c 从 M19b 检查点 `7673984` 接续：记忆库 schema 3→4，独立整数主键映射稳定 FTS rowid，metadata/无效值更新不重建全文；保留独立内容表并开启 FTS secure-delete，旧迁移不变。1k/10k/100k FTS 删除定位均为 26 VM steps；迁移失败回滚、重开/VACUUM、并发、哨兵文件擦除与旧查询结果一致性通过。完整 Rust 951 pass / 0 fail / 23 ignored，10k 检索 p95 14 ms；详见 [M19c 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19c)。历史目录 schema 仍为 3，产品仍为 0.4.21。
 - **B7 进行中**：从 `31e7724` 接续，三个时钟边界已独立修复；本机顺序完整检查通过，最终前端 172 文件 / 1352 pass / 0 fail / 0 skip，Rust 953 pass / 0 fail / 23 ignored，生产配置 cargo check 与隔离 debug QA App 构建通过。真实 OpenCode + 合成 provider 的审批/取消/归档失败恢复测试另行通过并完成清理；原生工作台、窗口、PDF 提取/发送、Stop/恢复和历史文本重开已有部分 Mac 证据；实测发现的 PDF WebKit 流迭代问题已另存修复 `2026f8c`（时钟修复 `5170451`）。十分钟采样、剩余 UI 显示观察及清理均已记录。见 [B7 结果与 #01–20 矩阵](performance-evidence/b7-macos-20261025/index.html) 及 [本轮验收记录](verification-backlog.md#2026-10-25-mac-b7)。Windows、真实模型、完整 GUI/硬件与同环境性能对照仍未闭合；M19c 完整硬删除外键扫描及小库成本变化继续保留。
 
-本机基线/H18a 日志、源码校验与工作台生成物清单集中在 `output/performance-b6-preflight-20261024/`；H18b 在 `output/performance-b6-h18b-20261024/`，H18c 在 `output/performance-b6-h18c-20261025/`，M19a 在 `output/performance-b6-m19a-20261025/`，M19b 在 `output/performance-b6-m19b-20261025/`，M19c 在 `output/performance-b6-m19c-20261025/`，均忽略于 Git。源代码与现行契约以当前 B6 分支为准，历史发布证据仍在 `docs/performance-evidence/`。
+- **B7 接续（2026-10-26–27）**：从 `703c124` 接续，附件历史标签修复 `c00528e`、导航资源上下文过滤 `dea6d77`；最终前端 172 文件 / 1354 pass，Rust 957 pass / 23 ignored，类型检查/生产检查/构建通过。React Doctor 留 1 条既有辅助函数导出提示。Mac 原生 PDF 标签与三种媒体在历史重开及重启后恢复；1/8/20 MiB 原始上传、20 MiB + 1 B 拒绝和 64 MiB 音频播放/近末尾 seek 已验证。1000 消息非流式 DOM input/scroll 到第二个 rAF 的 p95 为 22/21 ms，各 30 次，不是物理输入延迟、50 Hz 流式或前后对照。检查器崩溃、QA 虚拟凭据读取阻塞、CSP 探针拒绝及恢复均保留；5 个库完整性通过，专属数据/进程/凭据已清理。见 [最新 B7 证据](performance-evidence/b7-macos-20261026/index.html) 与 [接续验收](verification-backlog.md#2026-10-27-mac-b7-接续)。下一步优先 1000 消息 50 Hz 流式和复杂 PDF 生命周期循环；Windows/硬件/完整原生缺口继续保留。
+
+本机基线/H18a 日志、源码校验与工作台生成物清单集中在 `output/performance-b6-preflight-20261024/`；H18b 在 `output/performance-b6-h18b-20261024/`，H18c 在 `output/performance-b6-h18c-20261025/`，M19a 在 `output/performance-b6-m19a-20261025/`，M19b 在 `output/performance-b6-m19b-20261025/`，M19c 在 `output/performance-b6-m19c-20261025/`，B7 接续在 `output/performance-b7-20261026/`，均忽略于 Git。源代码与现行契约以当前 B6 分支为准，历史发布证据仍在 `docs/performance-evidence/`。
 
 ## 从哪里继续
 

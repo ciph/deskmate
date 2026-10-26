@@ -1,8 +1,23 @@
 # 当前验收与待办
 
-核对日期：2026-09-30，YUME 0.4.16 / OpenCode 1.18.21。这里集中现行命令及历史记录里尚无完成证据的事项；不是新增功能授权、发布授权或一次新的实机通过声明。各次测试的实际结果继续保存在带基线的原记录。
+核对日期：2026-10-27，YUME 0.4.21 / OpenCode 1.18.21。这里集中现行命令及历史记录里尚无完成证据的事项；不是新增功能授权、发布授权或一次新的实机通过声明。各次测试的实际结果继续保存在带基线的原记录。
 
 ## 当前验证入口
+
+### 2026-10-27 Mac B7 接续
+
+起点 `703c124`，`codex/yume-performance-b6`；最新代码 `dea6d77`，仍为 0.4.21 / 历史 schema 3 / 记忆 schema 4。B7 **进行中**。[最新 HTML](performance-evidence/b7-macos-20261026/index.html)、[完整边界](performance-evidence/b7-macos-20261026/README.md)、[结果与日志 SHA](performance-evidence/b7-macos-20261026/summary.json)。下方 10 月 25 日记录保持当时结果，本节覆盖其中已新增验证的范围。
+
+- `c00528e`：从已有受完整身份约束的 native snapshot 恢复用户 file part 文件名标签，支持仅附件消息；不新增逐消息 HTTP/IPC，不读取 URL/字节，不改变持久 HistoryMessage 或 SQLite schema。去掉路径前缀、忽略无效/重复/synthetic 文件标签，local-only 记录不借用标签。原生 PDF 提取/发送后，历史重开及进程重启均显示文件名，关闭上一轮 PDF 徽标丢失观察。
+- `dea6d77`：导航标题使用与气泡一致的资源上下文过滤；自动测试和最终原生 AX 均验证内部 JSON/路径不再出现在导航提示中。
+- 最终前端 **172/172 文件，1354 pass / 0 fail / 0 skip / 0 unfinished**；Rust **957 pass / 0 fail / 23 ignored**。固定工具链，套件与测量串行；类型检查、生产 cargo check、前端及 QA App 构建通过。React Doctor 保留 1 条基线已有 `conversationTurns` 导出提示，无规则抑制；13 个 Rust warnings、Vite chunk warning 保留。初次编译/夹具错误、沙箱回环失败和修正后复跑日志分别保存。
+- WAV/MP3/MP4 经原生 picker 登记，播放推进、暂停和 DOM seek 到中点通过，发送后重开/重启恢复卡片。WAV 原生播放/暂停控件已操作，物理滑块拖动未完成，不把 DOM seek 写成原生拖动。
+- 生产 Tauri 原始 ArrayBuffer 入口在 WebKit 上接收 1/8/20 MiB，20 MiB + 1 B 普通附件按配额拒绝；64 MiB WAV 上传、播放、近末尾 seek 和清理通过。单次耗时 3/8/19/65 ms，不是 p95；不替代 OS 拖入或完整浏览器 File 生命周期。直接 fetch Range 被 CSP 拒绝，策略未放宽；没有取得原生 HTTP 206 回执。上传结果 JSON 明确为 CUA 工具输出转录，后续 AX 保存只得到 no-change diff，不冒称原始导出。
+- 官方 OpenCode import 导入 500 轮/1000 消息的合成 Markdown，真实聊天加载。非流式程序化 DOM input/scroll 到第二个 rAF，各 5 次预热 + 30 样本，p50/p95 输入 20/22 ms、滚动 20/21 ms。全部行仍挂载；没有 50 Hz 流式、物理按键到显示或同环境前后对照证据，原 C16 风险不能据此关闭。
+- 检查器开启时上传探针曾 SIGTRAP，堆栈位于 WebKit Inspector JSON 序列化；关闭检查器后的延迟探针完成，崩溃原因仍未定。重建后 QA 启动停在读取专属虚拟凭据，停掉核验过的进程并仅移除该条目后恢复。旧端口早期连接拒绝随后恢复；这些异常不覆盖为全程无故障。
+- 最终 QA 正常退出、引擎随之结束；前次崩溃孤儿、阻塞宿主和合成服务均按 PID/出生时间核对后停止。5 个 SQLite 库 integrity_check 全为 ok；测试凭据不存在，两个端口关闭，三处专属根按创建时间清理；无日常数据迁移、安装、签名、公证、推送或发布。
+
+下一步优先：**1000 消息 + 50 Hz 流式 + 10k/50k 代码/表格尾消息**，复核终态、Stop、输入焦点、导航与滚动，再补正常/损坏/超预算 PDF 共至少 20 次循环及取消/堆收敛。Windows、完整 GUI 审批/SSE/故障恢复、日志五工具/到期、历史删除/多窗口、记忆导出/忘记/重开、2D/3D 全动作/隐藏/睡眠/DPI/高刷/GPU/能耗仍待验。M19c 外键扫描、小库成本及 R06/D20 残留复杂度继续保留。
 
 ### 2026-10-25 Mac B7
 

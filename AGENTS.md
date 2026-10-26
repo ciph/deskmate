@@ -1,8 +1,8 @@
 # YUME 仓库 AI 工作入口
 
-## 性能整改接续（2026-10-25）
+## 性能整改接续（2026-10-27）
 
-继续性能整改时，先读 [Mac 接续说明](docs/performance-remediation-handoff.md)、[完整施工计划](docs/performance-remediation-plan.md) 和 [验收待办](docs/verification-backlog.md)。B1–B5 已随 Windows 0.4.21 发布；Mac 分支 `codex/yume-performance-b6` 已完成 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归，历史目录 schema 3、记忆库 schema 4，B7 已完成本机完整自动检查与部分 Mac QA 原生链路，并修复实测发现的 PDF WebKit 兼容问题，当前仍为进行中；从 [B7 证据索引](docs/performance-evidence/b7-macos-20261025/index.html) 接续平台缺口。先核对本机分支、未提交改动及远端；本地 B6 检查点尚未推送时从该分支继续，不切回旧 main 丢掉进度。后续实施及时更新这些入口，保留平台待验边界。
+继续性能整改时，先读 [Mac 接续说明](docs/performance-remediation-handoff.md)、[完整施工计划](docs/performance-remediation-plan.md) 和 [验收待办](docs/verification-backlog.md)。B1–B5 已随 Windows 0.4.21 发布；Mac 分支 `codex/yume-performance-b6` 已完成 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归，历史目录 schema 3、记忆库 schema 4，B7 已完成本机完整自动检查与部分 Mac QA 原生链路，并修复 PDF WebKit 兼容、附件历史标签与导航提示问题；已补媒体/二进制上传及 1000 消息非流式采样，当前仍为进行中。从 [B7 最新证据](docs/performance-evidence/b7-macos-20261026/index.html) 接续，优先补 50 Hz 长会话流式与 PDF 生命周期循环。先核对本机分支、未提交改动及远端；本地 B6 检查点尚未推送时从该分支继续，不切回旧 main 丢掉进度。后续实施及时更新这些入口，保留平台待验边界。
 
 ## 保存、提交、push、发布新版本
 

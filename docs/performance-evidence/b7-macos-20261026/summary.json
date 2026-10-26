@@ -1,0 +1,821 @@
+{
+  "dates": [
+    "2026-10-26",
+    "2026-10-27"
+  ],
+  "timezone": "Asia/Shanghai",
+  "status": "B7 in progress",
+  "baseCommit": "703c124",
+  "testedCodeCommit": "dea6d771d90394e89e3e151f74dfbde6a6281680",
+  "attachmentCommit": "c00528e829cdc27c065e980cd2a5da113f36c1f0",
+  "branch": "codex/yume-performance-b6",
+  "originMainAtFetch": "fcb463516bdde3f8bd0e3f8aa2ab287f0d355356",
+  "productVersion": "0.4.21",
+  "catalogSchema": 3,
+  "memorySchema": 4,
+  "toolchains": {
+    "bun": "1.3.14",
+    "rust": "1.94.1",
+    "opencode": "1.18.21",
+    "reactDoctor": "0.9.12"
+  },
+  "host": {
+    "arch": "arm64",
+    "os": "macOS 26.5.2 (25F84)",
+    "displayHz": "unverified",
+    "scaleFactorObserved": 1,
+    "viewport": [
+      720,
+      760
+    ]
+  },
+  "counts": {
+    "frontendFiles": 172,
+    "frontendPassed": 1354,
+    "frontendFailed": 0,
+    "frontendSkipped": 0,
+    "frontendUnfinished": 0,
+    "rustPassed": 957,
+    "rustFailed": 0,
+    "rustIgnored": 23
+  },
+  "checks": [
+    {
+      "name": "frontend-final",
+      "command": "bun run test:frontend",
+      "exitCode": 0,
+      "seconds": 71.634
+    },
+    {
+      "name": "rust-final",
+      "command": "cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4",
+      "exitCode": 0,
+      "seconds": 58.332
+    },
+    {
+      "name": "react-doctor-final",
+      "command": "DO_NOT_TRACK=1 bun node_modules/react-doctor/bin/react-doctor.js --scope changed --base 703c124 --no-score --no-supply-chain --no-parallel --verbose --output-dir output/performance-b7-20261026/react-doctor-final",
+      "exitCode": 0,
+      "seconds": 3.151
+    }
+  ],
+  "earlierChecks": [
+    {
+      "name": "native-wire-loopback",
+      "command": "cargo test --locked --manifest-path src-tauri/Cargo.toml --lib agent::opencode_wire_tests -- --test-threads=4",
+      "exitCode": 0,
+      "seconds": 0.307
+    },
+    {
+      "name": "frontend",
+      "command": "bun run test:frontend",
+      "exitCode": 0,
+      "seconds": 72.235
+    },
+    {
+      "name": "rust-full",
+      "command": "cargo test --locked --manifest-path src-tauri/Cargo.toml --lib -- --test-threads=4",
+      "exitCode": 0,
+      "seconds": 29.533
+    },
+    {
+      "name": "build",
+      "command": "bun run build",
+      "exitCode": 0,
+      "seconds": 7.804
+    }
+  ],
+  "additionalChecks": {
+    "typecheck": "typecheck-final.log exit 0",
+    "productionCargoCheck": "cargo-check.log exit 0; 13 existing warnings",
+    "frontendBuild": "build-final.log exit 0; existing chunk warning",
+    "qaBuild": "qa-build-final.log exit 0; worklog-qa debug, unsigned",
+    "reactDoctor": "1 existing only-export-components warning at ChatNavigation conversationTurns; helper export already present in 703c124; no suppression or unrelated refactor"
+  },
+  "native": {
+    "identity": "com.deskmate.unifiedhistoryqa.b720261026a",
+    "finalSession": {
+      "identity": "com.deskmate.unifiedhistoryqa.b720261026a",
+      "app": "/Users/xmaczone/Documents/Codex/deskmate/src-tauri/target/debug/bundle/macos/YUME B7 Followup QA.app",
+      "binary": "/Users/xmaczone/Documents/Codex/deskmate/src-tauri/target/debug/bundle/macos/YUME B7 Followup QA.app/Contents/MacOS/yume",
+      "binarySha256": "47418ff4b6175b777968ed04361909504170349cbc2052dac846df2336794d3d",
+      "pid": 46196,
+      "birth": "Tue Oct 27 00:07:20 2026",
+      "dataRoot": "/Users/xmaczone/Library/Application Support/com.deskmate.unifiedhistoryqa.b720261026a",
+      "feature": "worklog-qa",
+      "config": "/Users/xmaczone/Documents/Codex/deskmate/output/performance-b7-20261026/tauri.qa.json",
+      "profile": "debug",
+      "startedAt": 1793030840.24239
+    },
+    "pdfHistory": "Native picker → PDF extraction → real OpenCode/local synthetic provider → reply → history reopen preserved PDF filename badge. Reopened again after process restart.",
+    "media": [
+      {
+        "name": "预览 b7-clip.mp4",
+        "duration": 8,
+        "advanced": 1.0784818333699255,
+        "seek": 4,
+        "paused": true,
+        "ready": 4,
+        "error": null,
+        "width": 160,
+        "height": 90
+      },
+      {
+        "name": "预览 b7-tone.mp3",
+        "duration": 12.096,
+        "advanced": 0.795474008105679,
+        "seek": 6.048,
+        "paused": true,
+        "ready": 4,
+        "error": null,
+        "width": null,
+        "height": null
+      },
+      {
+        "name": "预览 b7-tone.wav",
+        "duration": 12,
+        "advanced": 0.5008321250788867,
+        "seek": 6,
+        "paused": true,
+        "ready": 4,
+        "error": null,
+        "width": null,
+        "height": null
+      }
+    ],
+    "mediaHistory": "WAV, MP3, MP4 cards restored after reopen and process restart. WAV native Play/Pause controls observed; seek observations came from media DOM API, not a physical slider drag.",
+    "navigation": "Final AX exposes only user prompt titles, no internal resource envelope/path.",
+    "binary": {
+      "provenance": "Manually transcribed from CUA tool AX output in this turn at 00:09–00:10 Asia/Shanghai. Later AX saves returned no-change diffs; not a raw AX export.",
+      "binaryBatch": [
+        {
+          "size": 1048576,
+          "media": false,
+          "identityMatched": true,
+          "hostSize": 1048576,
+          "accepted": true,
+          "uploadMs": 3,
+          "discarded": true
+        },
+        {
+          "size": 8388608,
+          "media": false,
+          "identityMatched": true,
+          "hostSize": 8388608,
+          "accepted": true,
+          "uploadMs": 8,
+          "discarded": true
+        },
+        {
+          "size": 20971520,
+          "media": false,
+          "identityMatched": true,
+          "hostSize": 20971520,
+          "accepted": true,
+          "uploadMs": 19,
+          "discarded": true
+        },
+        {
+          "size": 20971521,
+          "media": false,
+          "accepted": false,
+          "error": "attachment item exceeds 20 MiB"
+        },
+        {
+          "size": 67108864,
+          "media": true,
+          "identityMatched": true,
+          "hostSize": 67108864,
+          "accepted": false,
+          "uploadMs": 65,
+          "ranges": [],
+          "error": "TypeError: Load failed",
+          "discarded": true
+        }
+      ],
+      "interpretation": "64 MiB upload succeeded before the direct fetch Range step was denied by connect-src CSP; accepted=false in that combined probe denotes the later fetch failure. No HTTP 206 assertion was obtained.",
+      "mediaElementRetest": {
+        "size": 67108864,
+        "media": true,
+        "identityMatched": true,
+        "hostSize": 67108864,
+        "accepted": true,
+        "uploadMs": 65,
+        "duration": 2097.150625,
+        "advanced": 0.7959264653977237,
+        "seekedTo": 2096.150625,
+        "errorCode": null,
+        "mediaPassed": true,
+        "discarded": true
+      },
+      "sampling": "one recorded batch, plus one 1 MiB preflight; elapsed values are single observations, not percentiles"
+    },
+    "longHistory": {
+      "sessionId": "ses_b7long20261026",
+      "count": 1000,
+      "command": "bundled OpenCode import <synthetic JSON>",
+      "exitCode": 0,
+      "seconds": 1.1310906250728294,
+      "dataRoot": "/Users/xmaczone/Library/Application Support/com.deskmate.unifiedhistoryqa.b720261026a"
+    },
+    "interaction": {
+      "rows": 1000,
+      "viewport": [
+        720,
+        760
+      ],
+      "listHeight": 591,
+      "scrollHeight": 205016,
+      "input": {
+        "n": 30,
+        "p50": 20,
+        "p95": 22,
+        "max": 22.000000000029104,
+        "samples": [
+          19,
+          22,
+          19,
+          20,
+          20,
+          19,
+          22.000000000029104,
+          18.999999999970896,
+          20,
+          20.000000000029104,
+          20.999999999970896,
+          19,
+          20.000000000029104,
+          20.999999999970896,
+          19,
+          20,
+          21,
+          19,
+          20,
+          21,
+          19.000000000029104,
+          19.999999999970896,
+          20,
+          20.000000000029104,
+          19.999999999970896,
+          20,
+          20,
+          20,
+          20,
+          20
+        ]
+      },
+      "scroll": {
+        "n": 30,
+        "p50": 20,
+        "p95": 20.999999999970896,
+        "max": 21,
+        "samples": [
+          19.999999999970896,
+          20,
+          20.000000000029104,
+          19.999999999970896,
+          20,
+          20,
+          20,
+          20,
+          19.000000000029104,
+          20.999999999970896,
+          20.000000000029104,
+          18.999999999970896,
+          21,
+          20.000000000029104,
+          19.999999999970896,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20.000000000029104,
+          19.999999999970896,
+          20,
+          20.000000000029104,
+          19.999999999970896,
+          20
+        ]
+      },
+      "elapsedMs": 1405,
+      "method": "programmatic DOM input/scroll to second requestAnimationFrame; 5 warmups + 30 samples; Inspector closed"
+    },
+    "provider": {
+      "requests": [
+        {
+          "at": "2026-10-26T15:50:25.619Z",
+          "pdfTextPresent": true,
+          "delayMs": 0,
+          "aborted": false
+        },
+        {
+          "at": "2026-10-26T15:53:58.155Z",
+          "pdfTextPresent": true,
+          "delayMs": 0,
+          "aborted": false
+        }
+      ]
+    }
+  },
+  "anomalies": [
+    {
+      "event": "Inspector-attached upload probe terminated host with SIGTRAP",
+      "evidence": "upload-crash.json",
+      "observedStack": [
+        "WTF::StringBuilder::appendQuotedJSONString",
+        "WTF::JSONImpl::ObjectBase::writeJSONImpl",
+        "Inspector::TargetFrontendDispatcher::dispatchMessageFromTarget"
+      ],
+      "conclusion": "Cause unresolved. No size completion claimed for failed run. Later delayed probes with Inspector closed completed. This is not proof of a fixed WebKit crash."
+    },
+    {
+      "event": "Unsigned rebuilt QA host blocked before UI",
+      "evidence": "qa-restart-sample.txt",
+      "observedStack": [
+        "settings load",
+        "read_provider_api_key",
+        "SecKeychainFindGenericPassword"
+      ],
+      "recovery": "Verified and stopped only own QA host; removed only own synthetic credential; same rebuilt binary started afterward. No access protection changed."
+    },
+    {
+      "event": "Direct fetch Range probe denied by CSP",
+      "conclusion": "64 MiB host upload succeeded, later fetch failed. CSP unchanged. Media element playback/near-end seek passed separately; no native fetch 206 claim."
+    },
+    {
+      "event": "Saved AX diff contained no-change instead of raw upload result",
+      "conclusion": "Structured upload values explicitly transcribed from CUA tool outputs. Original no-change saves retained with hashes; no raw AX export claim."
+    },
+    {
+      "event": "Initial test and environment failures",
+      "conclusion": "Missing Rust test fixture fields and placement, UI fixture originRunId, and navigation fixture envelope were corrected. Sandboxed loopback Operation not permitted reran in authorized context. All initial logs retained."
+    }
+  ],
+  "cleanup": {
+    "processes": [
+      {
+        "kind": "host",
+        "pid": 46196,
+        "birth": "Tue Oct 27 00:07:20 2026",
+        "command": "/Users/xmaczone/Documents/Codex/deskmate/src-tauri/target/debug/bundle/macos/YUME B7 Followup QA.app/Contents/MacOS/yume",
+        "aliveBeforeProviderStop": false,
+        "gone": true
+      },
+      {
+        "kind": "provider",
+        "pid": 43204,
+        "birth": "Mon Oct 26 23:42:17 2026",
+        "command": "bun output/performance-b7-20261026/gui-provider.ts",
+        "aliveBeforeProviderStop": true,
+        "gone": true
+      },
+      {
+        "kind": "child",
+        "pid": 46203,
+        "birth": "Tue Oct 27 00:07:20 2026",
+        "command": "/Users/xmaczone/Documents/Codex/deskmate/src-tauri/target/debug/bundle/macos/YUME B7 Followup QA.app/Contents/Resources/resources/opencode/opencode serve --port 53960 --hostname 127.0.0.1 --cors http://tauri.localhost --cors tauri://localhost --print-logs",
+        "aliveBeforeProviderStop": false,
+        "gone": true
+      },
+      {
+        "kind": "app-session-crashed.json",
+        "pid": 45306,
+        "birth": "Mon Oct 26 23:47:59 2026",
+        "gone": true
+      },
+      {
+        "kind": "app-session-keychain-hang.json",
+        "pid": 46008,
+        "birth": "Tue Oct 27 00:00:24 2026",
+        "gone": true
+      }
+    ],
+    "databases": [
+      {
+        "relativePath": "yume-worklog.db",
+        "integrity": [
+          [
+            "ok"
+          ]
+        ],
+        "tableCount": 8
+      },
+      {
+        "relativePath": "deskmate-memory.db",
+        "integrity": [
+          [
+            "ok"
+          ]
+        ],
+        "tableCount": 20
+      },
+      {
+        "relativePath": "opencode-home/xdg-data/opencode/opencode.db",
+        "integrity": [
+          [
+            "ok"
+          ]
+        ],
+        "tableCount": 20
+      },
+      {
+        "relativePath": "chat-resources.sqlite3",
+        "integrity": [
+          [
+            "ok"
+          ]
+        ]
+      },
+      {
+        "relativePath": "history-catalog.sqlite",
+        "integrity": [
+          [
+            "ok"
+          ]
+        ]
+      }
+    ],
+    "roots": [
+      {
+        "path": "/Users/xmaczone/Library/Application Support/com.deskmate.unifiedhistoryqa.b720261026a",
+        "birth": 1793029650.7024982,
+        "removed": true
+      },
+      {
+        "path": "/Users/xmaczone/Library/Caches/com.deskmate.unifiedhistoryqa.b720261026a",
+        "birth": 1793029681.2703156,
+        "removed": true
+      },
+      {
+        "path": "/Users/xmaczone/Library/WebKit/com.deskmate.unifiedhistoryqa.b720261026a",
+        "birth": 1793029681.271438,
+        "removed": true
+      }
+    ],
+    "fixtures": [
+      {
+        "name": "b7-fixture.pdf",
+        "bytes": 601,
+        "sha256": "8a61a0bf953e41171a4e0d63b7e64ecd37137e804ef8b210a94f2ae0123a7360"
+      },
+      {
+        "name": "b7-tone.wav",
+        "bytes": 384044,
+        "sha256": "19867511108618fccbf27a85d1a6f2b905aec34f7e8c9f5a440b37fb5f49b379"
+      },
+      {
+        "name": "b7-tone.mp3",
+        "bytes": 36512,
+        "sha256": "512f2bb02c95247ef0c0c3e72c4f216b8a4bb255bc87c3b197580ed6a875c29c"
+      },
+      {
+        "name": "b7-clip.mp4",
+        "bytes": 71802,
+        "sha256": "e5b676d7bd486bea3b85e5a916f9c8025e2fd300652e8cc8a9a1e75514db4cce"
+      }
+    ],
+    "crashedHostEngineGone": true,
+    "fixtureCredentialAbsent": true,
+    "remainingMediaProbeRows": 0,
+    "portsClosed": [
+      50830,
+      53960
+    ],
+    "completedAt": 1793031232.621891
+  },
+  "remaining": [
+    "Windows WebView2 and full primary/orphan/concurrent matrix",
+    "1000-message 50 Hz streaming, 10k/50k tail, physical input/paint latency and comparable before/after native baseline",
+    "Repeated complex/corrupt/truncated PDF and cancellation/heap convergence",
+    "OS drag/drop, physical seek gestures, full MIME/codec matrix, repeated upload memory/latency sampling",
+    "GUI approval/SSE faults, worklog five tools/expiry, history delete/multi-window contention, memory export/forget/reopen",
+    "2D/3D full actions, hidden/sleep/multi-display DPI/high refresh and attributed GPU/energy",
+    "M19c foreign-key scan and small-library cost; mounted 1000 rows; remaining R06 lock and D20 whole-library read"
+  ],
+  "releaseActions": {
+    "push": false,
+    "install": false,
+    "sign": false,
+    "notarize": false,
+    "release": false
+  },
+  "rawEvidence": {
+    "app-runtime-final.log": {
+      "bytes": 1330,
+      "sha256": "25690e2a981d48f4670e60f84b3cb8e35f6aba7a20e28064af618f99859a6d01"
+    },
+    "app-runtime.log": {
+      "bytes": 1450,
+      "sha256": "231b5bccccc89a6ca57c739418b734de37b4c6d99b57ce904bb378bd4e2db4a0"
+    },
+    "app-session-before-restart.json": {
+      "bytes": 739,
+      "sha256": "93d51af8b8212efbeaf4aec64200b55c6a9b054ad7afbdf8cfce4f1a9c23a1e5"
+    },
+    "app-session-crashed.json": {
+      "bytes": 739,
+      "sha256": "3d8e5815c49721d3a6f96a340262c9ab6437aca3057cc650712ca2620edde906"
+    },
+    "app-session-keychain-hang.json": {
+      "bytes": 739,
+      "sha256": "93d51af8b8212efbeaf4aec64200b55c6a9b054ad7afbdf8cfce4f1a9c23a1e5"
+    },
+    "app-session.json": {
+      "bytes": 738,
+      "sha256": "b66cec08cf29c062b2db4f74e867e552f8664fd707089876b6a1482e86eab844"
+    },
+    "binary-1mb-ax.txt": {
+      "bytes": 2538,
+      "sha256": "337cef4336135854937130e997cd7e637d2c0b859f8779f843003b377c00abf9"
+    },
+    "binary-full-ax.txt": {
+      "bytes": 204,
+      "sha256": "5a9804f7a7ca25a7a08e5e0adb2f1a6e153c646ea19d26b1a873e4b1e27ebff4"
+    },
+    "binary-media64-probe.js": {
+      "bytes": 3167,
+      "sha256": "47a21db1f3104d5664697def82aa92a9f28c16b6ce07676be1fd81c21abc3d67"
+    },
+    "binary-probe-1mb.js": {
+      "bytes": 2615,
+      "sha256": "4acca90badb324334317e50303ac53ffaafa4426e9a1dc23b53eb469190375a0"
+    },
+    "binary-probe-without-inspector.js": {
+      "bytes": 2654,
+      "sha256": "dac7bfc883985de6f3c38c586f2e070ce5b2d0ed49710fa4bb77b42b7e5202f6"
+    },
+    "binary-probe.js": {
+      "bytes": 2371,
+      "sha256": "263583a5eed0a3205f63ce4c2bd4a3b8f94748bb52620b065f788e860ef21529"
+    },
+    "binary-results-transcribed.json": {
+      "bytes": 1811,
+      "sha256": "e94321a76bbe903916a15ce1298477e90e8fdfb594f059cb4617decfd3250cda"
+    },
+    "build-final.log": {
+      "bytes": 1967,
+      "sha256": "2100940fe618d8882f65f9e3f2f3dcc232950df2877753b6e75b1697315dc529"
+    },
+    "build.log": {
+      "bytes": 1967,
+      "sha256": "c34b3a4be7f0ddfd3fe2eab68601d23261eb8598f2166e1af874dea063389fc6"
+    },
+    "cargo-check.log": {
+      "bytes": 4919,
+      "sha256": "c4027d7c07b1b764133699b1447c5713a439faeb21f8f02184eff41fa737d63f"
+    },
+    "checks-before-loopback.json": {
+      "bytes": 362,
+      "sha256": "4a0ae80383e0bf05ab0975f4085e64f57a9c9d6bc0a76d42fb18268c0a70cd6f"
+    },
+    "checks-initial.json": {
+      "bytes": 159,
+      "sha256": "f379bd0873f36992c21b72ba884666e61c7da30d71b70ef78daaa77bcc479e14"
+    },
+    "checks.json": {
+      "bytes": 608,
+      "sha256": "21bc978b4a13a02642fd3b53519688145febbb8ecb193c06fb57106fa77ac30a"
+    },
+    "child-processes.json": {
+      "bytes": 196,
+      "sha256": "787eeed947d2baf11a2d31e9d982adf959d12124ae72de227e337b42bf0d9533"
+    },
+    "cleanup-preflight.json": {
+      "bytes": 3051,
+      "sha256": "060e08da5afbd73ceec965af2662e24f7ab0ab02e303ab36711213e4a0051384"
+    },
+    "cleanup.json": {
+      "bytes": 3293,
+      "sha256": "e6300bc474ce3146f2eddc67198f48c40baf59c0d09fc4b15f8c7a9446cbaad5"
+    },
+    "crash-owned-engine-stop.json": {
+      "bytes": 128,
+      "sha256": "6a97acb7176e7e75bf3bf1808f740a41c3ebfa7ed25862c37353b83c4bf96aad"
+    },
+    "edit-history.py": {
+      "bytes": 3528,
+      "sha256": "d359f0540e3156bb9e792b3b5f51f2e9d637cd1abf56e1176ae7860e60b6beb2"
+    },
+    "final-checks.json": {
+      "bytes": 613,
+      "sha256": "69b6a92da3190514dc890bb4d7614c54ee6c4de197f782c680a03a4103e7fc5a"
+    },
+    "final-owned-processes.json": {
+      "bytes": 750,
+      "sha256": "690f3ce81fa716a11acf6f0baeea0ffac09a39cb499c55b6c901287e81152723"
+    },
+    "frontend-final.log": {
+      "bytes": 13097,
+      "sha256": "0753f6ac502a16fbd66b0267cf3bbbae3db7175f286e902d97add1b451d7b8c3"
+    },
+    "frontend.log": {
+      "bytes": 13097,
+      "sha256": "eb3e7da006e9e5aadb254bacc1da2ca245208b6bcbda4617c8fc6909b966fd2e"
+    },
+    "gui-provider-cleanup.json": {
+      "bytes": 309,
+      "sha256": "3a8e7899c492a0a714d9f4a35077af9adb9780e9b13407c4096238ca714712b8"
+    },
+    "gui-provider-receipt.json": {
+      "bytes": 267,
+      "sha256": "029a19e9a549d840a3efb50126614e711fee0140391887edc74dae4d8aefa9f9"
+    },
+    "gui-provider-requests.json": {
+      "bytes": 230,
+      "sha256": "ecf66270a9117990ef976b547d259e4b7a4054f79d395a0f5ba58b3d237efb15"
+    },
+    "gui-provider.ts": {
+      "bytes": 2861,
+      "sha256": "7abd0653528c2506a628d64359c81f66f07c2bcac39ff4f34e315ef13f750b99"
+    },
+    "history-files-final.log": {
+      "bytes": 3635,
+      "sha256": "4aa44a3ff3eb53e50f568617b2da304b7b812f2e46199fbfc4c4578cfa462718"
+    },
+    "history-files-rust-fixed.log": {
+      "bytes": 3636,
+      "sha256": "8986666b7fc684ff58b42279b9b597cabbafb41069b76727b39234287179540e"
+    },
+    "history-files-rust.log": {
+      "bytes": 7567,
+      "sha256": "54f2521467407fe033a041d30e9b29a9ad5a4bd074247012dceea8fcdd0a822b"
+    },
+    "history-final-ax.txt": {
+      "bytes": 2399,
+      "sha256": "0044b45feed9695468ea273b847ec815e6ec923d0ad60d911d61dd754486ad73"
+    },
+    "interaction-probe.js": {
+      "bytes": 1886,
+      "sha256": "63bda3aebe86cb82aacc373be717538d9cc81c7a51c5fd35ed0cd5f7633b0903"
+    },
+    "interaction-results-ax.txt": {
+      "bytes": 1649,
+      "sha256": "706aa25465059d38521bdf63dc3a06aa990cefc871df6220b7d2d38ef22fb013"
+    },
+    "interaction-results.json": {
+      "bytes": 1441,
+      "sha256": "3af6f94c4fc900c36a63b53232cd1df2c72520de0da0e0fb4faba5e27af5f53d"
+    },
+    "keychain-recovery.json": {
+      "bytes": 231,
+      "sha256": "9745a6d97aa31d7ac38ba39139470f8aa235aff1aa4dd5e9a6ca1f4fa1f4bf78"
+    },
+    "long-history-import.json": {
+      "bytes": 266,
+      "sha256": "fc77d1c71dfcbe2b72dd9206f0e0bf7a21c0968627d940ec222c3c44f6dc7315"
+    },
+    "long-history-import.log": {
+      "bytes": 37,
+      "sha256": "73d5008cf29edacbb05ee30e5d2d2da18ee8d4f8a42defb4dbc483eacfb1abf6"
+    },
+    "long-history-initial-ax.txt": {
+      "bytes": 142,
+      "sha256": "ea6a692e4683b02e5115ecc2a9320126993d76c8a2599a4a67b67fb080d236af"
+    },
+    "long-history.json": {
+      "bytes": 694005,
+      "sha256": "a8796d7bad89de1a5ef52d0a256a0c59c4e8bd1ecaf4744dbacc870ee51344f9"
+    },
+    "media-history-ax-before.txt": {
+      "bytes": 2471,
+      "sha256": "e8588c3e413f6234ef5dee6b7eb164e1d1de7ed1b3a230f467f6edfc64f92e69"
+    },
+    "media-probe-ax.txt": {
+      "bytes": 7423,
+      "sha256": "c80e6397af4e604b3452625f7e1c6069b7a2dbcdb96160a41901f97c1dde73eb"
+    },
+    "media64-ax.txt": {
+      "bytes": 185,
+      "sha256": "f71f7766020e9d36038465b43d57b6e90f8bf358abdb6c6efa1bf046c9883267"
+    },
+    "native-resource-ui-fixed.log": {
+      "bytes": 1561,
+      "sha256": "b5148455dbf782f362959f652f4fcd67ddbead37407fae4081cd065e47ddeb36"
+    },
+    "native-resource-ui.log": {
+      "bytes": 31428,
+      "sha256": "4f1deda4cc917864147fd20faf03cf2719e29ea8dcc64b01de0f501068dfdfef"
+    },
+    "native-session.py": {
+      "bytes": 2181,
+      "sha256": "252c1b0955328d4f5a7325695815d266a93ce4b299975502a166be9c0d396a08"
+    },
+    "native-wire-loopback.log": {
+      "bytes": 4538,
+      "sha256": "c9d32ef687f8dff628541010354fdc569396629c28cd33af22ac67dcb52e5209"
+    },
+    "native-wire.log": {
+      "bytes": 7889,
+      "sha256": "4bf1283365fa85765d48afb9a567e528c9896012720532af05b312d2b4e7336d"
+    },
+    "navigation-final.log": {
+      "bytes": 1167,
+      "sha256": "738a2fafc9985150a673432cb9856cb88252c92460b138c8b1c95251174cbbd6"
+    },
+    "navigation-fixed.log": {
+      "bytes": 1740,
+      "sha256": "2b0692404c13f600e25bb570c0f123d8a235201975c39da9d5395f84f4bf44ac"
+    },
+    "package-evidence.py": {
+      "bytes": 6283,
+      "sha256": "be0bad1c53b7dc04219fc48bd5615ff71e7c81be19ba78ffacf84c46131a98b3"
+    },
+    "pdf-history-ax.txt": {
+      "bytes": 1033,
+      "sha256": "b7d5f75cc28c79c5a6e18a84e0d298f8813bcbd74bbbfac9169c840463ad608a"
+    },
+    "provider-final-status.json": {
+      "bytes": 182,
+      "sha256": "967528270c148a3c661c1f375151c54d89c9bc27e38e9bec3c08e0b46842af0d"
+    },
+    "provider-scope.json": {
+      "bytes": 224,
+      "sha256": "e6e2d4e853c5ef035cca5c354f20d22ab058022737e7078c674a1d0e7870fda0"
+    },
+    "qa-build-final.log": {
+      "bytes": 4489,
+      "sha256": "5683381ff57ed531a06d92bb86724c743a7c9a06ceae06f8e06835543be1ea61"
+    },
+    "qa-build.log": {
+      "bytes": 5793,
+      "sha256": "afb9ab0f311024b80f5c6e2a69218cfbd1dc9cbdbce9494b53ca15c2e1cb666c"
+    },
+    "qa-restart-sample.txt": {
+      "bytes": 216330,
+      "sha256": "4c5eb6623b665dfa1d49f3f0089b4dcb854bef5927f67e5bec616b19d84efde5"
+    },
+    "react-doctor/diagnostics.json": {
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "react-doctor-final/diagnostics.json": {
+      "bytes": 491,
+      "sha256": "8041c2fc2138b66fa639316272c8d4bfe4114783a920066b4749eae29c7d4e8c"
+    },
+    "react-doctor-final/react-doctor--only-export-components.txt": {
+      "bytes": 523,
+      "sha256": "75df627e30cbd0cec10e13ed22d7d43fcbe4a1be060f864aedac7cc1c2f1dd04"
+    },
+    "react-doctor-final.log": {
+      "bytes": 2688,
+      "sha256": "d005dc8e680587c6a13e630e7cc727daf2ca136de082f0c9a54f3b07bf707cde"
+    },
+    "react-doctor-help.log": {
+      "bytes": 6611,
+      "sha256": "765a6131ae9c54d70b104c12fb526a9edf60d8c933ed87ac0636795c372754c4"
+    },
+    "react-doctor-version.log": {
+      "bytes": 7,
+      "sha256": "71e12a378ec002955b38b9bdfdbc8fda0fd6c2b34a505d24d6288f1e727f5911"
+    },
+    "react-doctor.log": {
+      "bytes": 2553,
+      "sha256": "555f9d35d9e8cd61fa3235f9ff1a8c440bd16318194b4fa0739eee105094aeb3"
+    },
+    "run-checks.py": {
+      "bytes": 931,
+      "sha256": "26d18f7be99b7f9ec6c60132672dc3023f3ea7d68eb1fb1c81c2447c56c6f841"
+    },
+    "rust-final.log": {
+      "bytes": 103298,
+      "sha256": "428345142897e7baeac10017ebf38feb512d308f48984e687708aebc407359c7"
+    },
+    "rust-full.log": {
+      "bytes": 101914,
+      "sha256": "ec1ad778924e30b33949c149b45ab7a64b3c7fe8809fd0c1c8640ccb198d6eee"
+    },
+    "seed-long-history.py": {
+      "bytes": 3037,
+      "sha256": "9e0db16b0b4d99bf555b2e694f51304662669886c312f7c4beac2fd0113f8090"
+    },
+    "seed-root.json": {
+      "bytes": 231,
+      "sha256": "c00e29270bc595bcdca9c97fd4f708d9b5bbdf39fef6e6b50bb9dee9b2f2aa2f"
+    },
+    "tauri.qa.json": {
+      "bytes": 1815,
+      "sha256": "effa35cf2538cea5b6a3cc4f285b05e1fc68f275d597692bca4048fc16301ab1"
+    },
+    "typecheck-final.log": {
+      "bytes": 93,
+      "sha256": "6b3496f4b4228dbe6b3021c71a9cfdcbac077e758ec51376b311de635de0d964"
+    },
+    "typecheck.log": {
+      "bytes": 93,
+      "sha256": "6b3496f4b4228dbe6b3021c71a9cfdcbac077e758ec51376b311de635de0d964"
+    },
+    "update-docs.py": {
+      "bytes": 11077,
+      "sha256": "b38f4b6a51379cc8163923ff4fe24807fefccbfb66341f79030e992ed90ea436"
+    },
+    "upload-crash.json": {
+      "bytes": 16869,
+      "sha256": "3cf0975ec6ccaf9aa00aa8bb2d90d0bd6ce9abb77ef842ae0e610882d5a9974c"
+    }
+  }
+}
