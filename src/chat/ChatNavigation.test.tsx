@@ -258,3 +258,16 @@ describe("conversation navigation", () => {
   });
 
 });
+
+
+test("navigation never exposes internal local-resource context in user titles", () => {
+  const turns = conversationTurns([
+    { id: "u1", role: "user", text: '处理媒体\n\n<yume-local-resources>\n[{"name":"clip.mp4","path":"/private/fixture/clip.mp4"}]\n</yume-local-resources>' },
+    { id: "a1", role: "assistant", text: "已处理" },
+    { id: "u2", role: "user", text: '\n\n<yume-local-resources>\nprivate\n</yume-local-resources>' },
+  ]);
+  expect(turns[0]?.title).toBe("处理媒体");
+  expect(turns[0]?.summary).toBe("已处理");
+  expect(turns[1]?.title).toBe("");
+  expect(JSON.stringify(turns)).not.toContain("/private/");
+});

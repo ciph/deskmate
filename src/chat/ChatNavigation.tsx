@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type RefObject } from "react";
 import "./chat-navigation.css";
+import { stripLocalResourceContext } from "./localResources";
 
 interface NavigationMessage {
   readonly id: string;
@@ -22,7 +23,7 @@ export function conversationTurns(messages: readonly NavigationMessage[]): reado
   const turns: Turn[] = [];
   for (const message of messages) {
     if (message.role === "user") {
-      turns.push({ id: message.id, title: previewText(message.text ?? "").slice(0, 160), summary: "" });
+      turns.push({ id: message.id, title: previewText(stripLocalResourceContext(message.text ?? "")).slice(0, 160), summary: "" });
     } else if (message.role === "assistant" && message.text?.trim()) {
       const previous = turns.at(-1);
       if (previous && previous.summary.length < 240) {
