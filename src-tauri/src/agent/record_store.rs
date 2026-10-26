@@ -50,6 +50,7 @@ pub(crate) struct RunListing {
 
 #[derive(Clone, Debug)]
 pub(crate) struct NativePart {
+    pub(crate) file_name: Option<String>,
     pub(crate) id: String,
     pub(crate) synthetic: bool,
     pub(crate) kind: Option<String>,

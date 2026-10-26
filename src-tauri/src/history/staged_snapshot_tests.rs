@@ -112,6 +112,7 @@ fn message() -> NativeMessage {
         finish: Some("stop".into()),
         error: None,
         parts: vec![NativePart {
+            file_name: None,
             synthetic: false,
             id: "part_reply".into(),
             kind: Some("text".into()),

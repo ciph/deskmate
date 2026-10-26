@@ -17,6 +17,7 @@ fn text_message(id: &str, role: &str, created: Option<u64>) -> NativeMessage {
         finish: Some("stop".to_owned()),
         error: None,
         parts: vec![NativePart {
+            file_name: None,
             synthetic: false,
             id: format!("prt-{id}"),
             kind: Some("text".to_owned()),

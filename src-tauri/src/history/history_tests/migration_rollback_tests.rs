@@ -41,6 +41,7 @@ fn record(
 
 fn text_part(id: &str, text: &str) -> NativePart {
     NativePart {
+        file_name: None,
         synthetic: false,
         id: id.to_owned(),
         kind: Some("text".to_owned()),
@@ -77,6 +78,7 @@ fn native_messages() -> Vec<NativeMessage> {
         parts: vec![
             text_part("prt_native_text", "native answer"),
             NativePart {
+                file_name: None,
                 synthetic: false,
                 id: "prt_native_tool".to_owned(),
                 kind: Some("tool".to_owned()),

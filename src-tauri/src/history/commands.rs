@@ -170,7 +170,7 @@ pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: taur
             CatalogIdentity::Legacy { history_id } => {
                 let session = app.state::<HistoryState>().0.lock().map_err(|_| "history_state_unavailable")?.iter().find(|session| &session.id == history_id && !session.deleted).ok_or("history_not_found")?.clone();
                 let agent_details = super::catalog_details::for_entry(&entry, &app.state::<crate::agent::AgentRunState>().all_records()?, session.origin_run_id.as_deref());
-                Ok(CatalogLoaded { entry: entry.into(), messages: session.messages, agent_details, origin_run_id: session.origin_run_id })
+                Ok(CatalogLoaded { entry: entry.into(), messages: session.messages.into_iter().map(Into::into).collect(), agent_details, origin_run_id: session.origin_run_id })
             }
             CatalogIdentity::Native { directory, session_id, .. } => {
                 let client = client(&app)?;
@@ -184,18 +184,20 @@ pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: taur
                 let snapshot = snapshot?;
                 let profiles = app.path().app_data_dir().ok().map(|path| super::persona::cached_profiles(&path)).unwrap_or_default();
                 let identities = super::persona::message_personas(&snapshot, &profiles);
-                let messages = snapshot.into_iter().flat_map(|message| {
+                let files = super::native_files::collect(&snapshot);
+                let mut messages: Vec<_> = snapshot.into_iter().flat_map(|message| {
                     let persona_id = identities.get(&message.id).cloned();
                     let role = message.role.unwrap_or_default(); let time = message.created.unwrap_or(0);
                     message.parts.into_iter().filter(|part| !part.synthetic && part.kind.as_deref() == Some("text")).filter_map(move |part| Some(super::HistoryMessage { persona_id: persona_id.clone(), local_only: false, role: role.clone(), text: part.text?, time, message_id: Some(message.id.clone()), part_id: Some(part.id) }))
                 }).collect();
+                super::native_files::include_file_only_messages(&mut messages, &files);
                 let mut rows = vec![store.get(&key)?]; apply_ownership(&app, &mut rows)?;
                 let entry = rows.remove(0);
                 let agent_details = super::catalog_details::for_entry(&entry, &app.state::<crate::agent::AgentRunState>().all_records()?, None);
                 let origin_run_id = super::catalog_details::native_origin(&entry, &app.state::<crate::agent::AgentRunState>().all_records()?);
                 let local = app.state::<HistoryState>().0.lock().map_err(|_| "history_state_unavailable")?.clone();
                 let (entry, messages) = super::catalog_local::combine_messages(entry.into(), messages, &local, &workspace(&app)?);
-                Ok(CatalogLoaded { entry, messages, agent_details, origin_run_id })
+                Ok(CatalogLoaded { entry, messages: super::native_files::attach(messages, files), agent_details, origin_run_id })
             }
         }
     }).await.map_err(|_| "history_load_unavailable".to_owned())?

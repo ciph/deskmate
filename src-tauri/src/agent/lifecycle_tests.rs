@@ -254,6 +254,7 @@ fn terminal_message_with_unresolved_tool(
         finish: Some("tool-calls".into()),
         error: None,
         parts: vec![NativePart {
+            file_name: None,
             synthetic: false,
             id: "part_tool".into(),
             kind: Some("tool".into()),

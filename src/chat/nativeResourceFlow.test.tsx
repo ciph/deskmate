@@ -166,3 +166,27 @@ describe("native audio video and folder integration", () => {
     expect(screen.queryByRole("button", { name: "移除 voice.mp3" })).toBeNull();
   });
 });
+
+
+test("reopened native PDF and file-only turns display labels without fetching file bytes", async () => {
+  setHistory({ ses_document_history: {
+    id: "ses_document_history", title: "附件历史", created: 1, updated: 3, originRunId: "run_files",
+    messages: [
+      { role: "user", text: "整理文档", time: 1, messageId: "msg_pdf", partId: "part_text",
+        attachments: [{ id: "part_pdf", name: "b7-fixture.pdf" }, { id: "part_image", name: "photo.png" }] },
+      { role: "user", text: "", time: 2, messageId: "msg_only", attachments: [{ id: "part_only", name: "only.txt" }] },
+      { role: "assistant", text: "已收到", time: 3, messageId: "msg_reply" },
+    ],
+  } });
+  render(<ChatApp />);
+  await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.click(screen.getByRole("button", { name: "历史" }));
+  fireEvent.click(await screen.findByRole("button", { name: "打开 附件历史" }));
+  for (const name of ["b7-fixture.pdf", "photo.png", "only.txt"]) {
+    expect((await screen.findByText(`附件 · ${name}`)).closest(".chat-msg-user")).toBeTruthy();
+  }
+  expect(screen.getByText("整理文档")).toBeTruthy();
+  expect(screen.getByText("已收到")).toBeTruthy();
+  expect(invoke.mock.calls.some(([command]) => ["read_chat_attachment", "read_chat_resource_attachment", "get_chat_message_resources"].includes(command))).toBe(false);
+  expect(promptRequests).toHaveLength(0);
+});

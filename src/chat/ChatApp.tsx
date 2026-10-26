@@ -150,6 +150,7 @@ function historyChatMessages<T extends Pick<HistorySession, "messages">>(session
     const next: TextChatMessage = {
       id: grouped || message.partId || message.messageId || `history-${index}`,
       nativeMessageId: message.messageId,
+      historyAttachments: message.attachments,
       role: message.role, personaId: message.personaId, text: message.text,
       localOnly: message.localOnly, time: message.time,
     };

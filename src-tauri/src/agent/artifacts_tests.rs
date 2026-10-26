@@ -41,6 +41,7 @@ fn message(tool: &str, status: &str, input: serde_json::Value) -> NativeMessage 
         finish: Some("stop".into()),
         error: None,
         parts: vec![NativePart {
+            file_name: None,
             synthetic: false,
             kind: None,
             text: None,
