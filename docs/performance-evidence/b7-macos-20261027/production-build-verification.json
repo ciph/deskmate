@@ -1,0 +1,11 @@
+{
+  "exitCode": 0,
+  "command": "bun run build",
+  "qaEntryAbsent": true,
+  "htmlEntries": [
+    "chat.html",
+    "pet.html",
+    "settings.html"
+  ],
+  "logSha256": "efdf4fe454fe674782b946faafcd93ff690b459145896a131ca69f05beb2014d"
+}

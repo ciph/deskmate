@@ -45,6 +45,8 @@
 
 PDF 文本提取按需加载随前端构建发行的本地 worker，不依赖 CDN 或放宽 CSP。成功、损坏、截断和取消都释放 loading task；移除附件、切换会话、卸载、重入准备以及同批失败会中止在途准备，旧结果不能发入新会话。提取保留 160,000 字符预算，达到预算且仍有后续内容时显示截断提示。PDF.js 6 在 `getTextContent()` 内使用 `ReadableStream` 异步迭代。B7 的 Mac WebKit 实测缺少该方法但有 `getReader()`，非 XFA 文本在这一环境改用局部 reader 消费并释放锁；XFA 保留 PDF.js 自有路径，不改全局流原型或 worker/CSP。取消会中止等待中的 reader，外层继续等待 loading task 销毁。回归覆盖真实 PDF 在缺少异步迭代器时的提取、分块合并、读取失败、取消和 XFA，位于 `attachments.test.ts`、`pdfPageText.test.ts` 与 `attachmentsPdfLifecycle.test.ts`；本轮原生结果见 [B7 记录](verification-backlog.md#2026-10-25-mac-b7)，其他平台与内存收敛边界仍分别验收。
 
+2026-10-27 隔离 Mac WebKit 最终 QA 通过正常/损坏/超预算/取消交替 32 次（各 8 次），生产附件模块的真实 worker 创建/终止均 32，峰值 1，每次结束活动数 0；正常与截断正文各自哈希稳定。`performance.memory` 不可用，没有 heap/RSS 收敛结论；此循环不是原生 picker/发送全流程。见 [PDF 生命周期证据](performance-evidence/b7-macos-20261027/README.md)。
+
 ## 边界
 
 资源只能来自原生选择器、原生拖拽，或受限的媒体上传。预览协议只接受已注册的不透明资源 ID，限定在聊天窗口；不能传任意路径。音视频支持字节范围读取，每次 Range 响应最多 2 MiB。没有 Range 的完整媒体响应最多 64 MiB，图片最多 20 MiB。

@@ -1,0 +1,81 @@
+Window: "YUME B7 Stream PDF QA chat", App: YUME B7 Stream PDF QA.
+0 standard window YUME B7 Stream PDF QA chat, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content inspector-resource:///Main.html
+			3 button Close
+			4 button Dock to left of window
+			5 button Dock to right of window
+			6 button Detach into separate window
+			7 button Start element selection (⇧⌘C)
+			8 button Device Settings
+			9 button Click to show 3 errors in the Console
+			10 tab group (selectable)
+				11 tab (selectable) Elements
+				12 tab (selected) Console
+				13 tab (selectable) Sources
+				14 tab (selectable) Network
+				15 tab (selectable) Timelines
+				16 tab (selectable) Show hidden tabs…
+				17 tab (selectable) Search (⇧⌘F)
+				18 tab (selectable) Settings (⌘,)
+			19 container Console
+				20 search text field (settable)  
+				21 button (disabled) Find Previous (⇧⌘G)
+				22 button (disabled) Find Next (⌘G)
+				23 button Other filter options…
+				24 checkbox (settable, integer) Emulate User Gesture, Help: Run console commands as if inside a user gesture, Value: 0
+				25 button Run Console Snippet…
+				26 button Collect garbage
+				27 button Clear log (⌘K or ⌃L)
+				28 container
+					29 text Console opened at 09:23:15
+					30 image
+					31 text Could not connect to the server.
+					32 image
+					33 text Fetch API cannot load 
+					34 link http://127.0.0.1:62914/session, Value: 127.0.0.1:62914/session
+					35 text  due to access control checks.
+					36 image
+					37 link http://127.0.0.1:62914/session, Value: 127.0.0.1:62914/session
+					38 text Failed to load resource: Could not connect to the server.
+					39 image
+					40 text B7_READY 1000
+					41 image
+					42 text window.__b7Export=async(name)=>{const s=localStorage.getItem('b7-'+name);if(!s){console.log('B7_MISSING '+name+' '+localStorage.getItem('b7-stream-error'));return;}const bytes=new Uint8Array(await new Response(new Blob([s]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer());const b64=btoa(String.fromCharCode(...bytes));for(let i=0;i<b64.length;i+=300)console.log('B7_EXPORT '+name+' '+(i/300)+' '+b64.slice(i,i+300));};void window.__b7Export('fixed-10k');
+					43 image
+					44 text undefined
+					45 image
+					46 text B7_EXPORT fixed-10k 0 H4sIAAAAAAAAE+2cTW8bRxKG/8pgrsuNp7+rZezB63iBAOs4cAzsYWUEtDheE6FIgjNKbBj+76mhLfVDUSPkkNu2IBBi11vdNdVvV1UXCX1ut8vrvr1o368/9qu/m+7XdtGut+txvdy83v0+tBem67qFircYsIt2GJfvNv2rzerH3aoH7DCMz8b2wnbJLdp+s9wP/erlJLcx5O+6ux8TFu3NfrUcJ+X/fm6XX5V05qsPy8Mwvfmy+DZsOnc3nKQMB3M3bAzGcyzjwNuQy+zA24xVQ7obd77M74B3uZjjgPfO
+					47 image
+					48 text B7_EXPORT fixed-10k 1 3417g3Ep6/pQ5gmuK+MZ4/BCcGU8WoznMn9MZf6I+ZMr9kfMnzB/wvxiCz4BL0nuxsWVdbMtfpCE8VDGM/yWc/FPLna6znkSw5fdyxmoFMqudsVsZ0yGABomFf8aAw1rSJwEQYSGhYYzFgJoODyrAUkcSWJc8Y7zZK2HhgcNDXiiS2AqEEW5hycPZWdcpLkB5kaaG7F4xN4YkMglRwEWT9yPBA2xsAo8csL9AJFc5n4IzCWTDKjkSCWTi4bvfOGq7QwEOUFQzPXGMSpAQ1EQQMN6aFhqCAXQcHCihptUBAkC
+					49 image
+					50 text B7_EXPORT fixed-10k 2 Bw1vIwQZAjhRI04RBDjR+kI4H4K9F3dvUQG2B3jUBlgSaUmAJTHCoxGWpA57ELE5iZuTSoT0SSgoIdWTSxZc8pLwtILFs3EQYPEc8IC5aISO+wwuhS4WgUPECRplICiuDiaUzXHgUlDyQlC8G6yjIEOAIO1sOSzBGf/wdjrEpeDgaoe4pPkEtoNxwVsKYImHqx0YFwKijPNYPODYOpAskGQOcSlEj+dAXApR7hcNd6hCk5CQSTWUQUDbkeuC0PYES4S2g1ghgyYOxNJngqsRpPSswKNIeLGjuchxkTnOg3FR
+					51 image
+					52 text B7_EXPORT fixed-10k 3 sxQECYJQFvfIcdGCo1qMpCIARz2iV2QZ5BG9onMUwFyHA6Ixrgh8Fx/eNQ14QHk8FDJh1JMHATQC8rNHaRQjnxbEihGx2oNYMXUGAmgkxAmlPgSZAmgICOAFGsLCT+DR7LoZ/wjcmxECPCJW6iwsAX808Bb/hK4ckGQcBdBgjRRMCTPJ4oAE1EjJ4oAE8CdptH34oQLIlJwVCMpRTY6WgEzJm5n8FUCmpJtbBCBT8pkCWBJA64CyKp3U3yirEsuqEBIEAQKwLMUMc1FWaQkON6CsSqpSBIhYSYyZcQO4mBi+
+					53 image
+					54 text B7_EXPORT fixed-10k 4 AriYBOwNCF+JNVZA+JIOJyQgL0qHCBI7aqDmjaCfGNykIvKiGFgVkRdFi6EiAMtklmURLBOHZBYRsoQsi2CZeJRPEcQSEisi/YmWARAUNkhAhR+DgQARNqLGkogKP6LGkijQAH8k8QHBH2HGi+CPMONFUEZImQjKaPTCGqCM5AC3kzLMeBEZL3duhrwxlxCQef1PSH96P0ADAOkvGwTrhPSXLVJIQvrLFpuTQKzM9JfApcziPYFL2aEATuBS9iiAE7iUPU5OQosg8+6XfDk5ejhnqr2EiJUDLUFezJGWIC9m
+					55 image
+					56 text B7_EXPORT fixed-10k 5 5sWEiJUjwmUC43ICRxMYl3kRTGBclk5mbE/YEOGGgH7KJQpgie7IzLzInsordjNKFDeqgidBYFOJn6lbBGFOYbiuCO6SpmOeFeRZlYDbAqaazsIcMTTHokASSwt40xRLC1isiaUFvGuKowXkqzhaQMIKCKsS7I54WhAQusXTgoDcJoEWRMRSCbQggh4S6YOIbCORFiRcWSXSgoSDIokWCCpISbRA6AOhDwSnVoQWzFJUMh+B8VIQL42ZDZiCek9hCa02REyjP2ijIWSqIBQfZDLRWOoYrmNjYUi21HHwW7Zc
+					57 image
+					58 text B7_EXPORT fixed-10k 6 x2HnMq6gKoHfMjqoxvg5v2VHczxCTib5jN6bIaEOyZdJPhOR+jPJZ1jXZZLPsF+WIx+BlV0m+TQLFSJlks8wN2eSzwgtIPkMC7os1MknHVRanVGOahj1dxKr0WHG8TobYHEmHeUc45e3i3ZYXu83/X/W29Xxs4JvjX0NSvro726GT+3FeLjpF+3Yfxyff1U96aeG6OeB7H1K9wgQ7civHcEZ4EmHUIPlPJDdvGOAmwOy85am/uwcEP2v0E0Hbw7IlpQN80990j7yed7hJ00c5eE8kK2U4210DgiWRfvIw5x0
+					59 image
+					60 text B7_EXPORT fixed-10k 7 Io6d8Dkg+wHHu/ockHd3Lcnu0XNOC5WC3vH/pNbJBdnb+ydmTovX1JjmnXNyc8yPeJH3NzGP7MvJXet4w5kD8sYT4/0L95wWryp5+pBuDgiD8/EDnhngSXF/bFXOAVlvx0cO5EnVK/GRGVF7ark2NdxmkKclnwvzJ+1YgL2dPlDd3yj4c7udGsaLdh86VVU37HOY+vuL9nr5cYoJtwF0Cp0qV9/rphn/Xb77keA1oE2CE/pNXf6F6msdZWRhVckpYqF55QjV1/M57PnQ9Hs+ms9WOu1FfB1KE/Dc0HMr9bc7
+					61 image
+					62 text B7_EXPORT fixed-10k 8 Vw8L9YPx+vr2i7rh6rDbbO67bOp7HV3mbl023c2Ky9QBCtFXlT9gjD13Qtb1zm2Rc6OjGj3NrEbqEuooXUIzvV7Dddx152ude9cdt+QBwQPueMBUk29X9pOH3u+uboafDv3QH37rV7fkWx2W78fX/TDuDmVQ3+2fb9ZXv05D75ebob9l7Lc343K9eaO0bS/ay+0/0y8/v3n94tnLX6bP9LvL7eV2HKbXq912GJt3qflHY6x72jx50gyftuOHflxfNcN46JfX6+3/mv3y02a3XFV8xVd8xVd8xVd8xVd8xVd8
+					63 image
+					64 text B7_EXPORT fixed-10k 9 xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8c7n9YeyvL8efx+V4M0zf0rscn796+dO/X7x5we/svfjx+9vv7bWL9mq36r99se8vtabiK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK/7/AX/8Mt51P37YrdqLdrP+rW/2h93q5mpc77bN969ePm1C8/vycH2z1xnXh6H5m+uOf/Wr5tv/N2yG/fJK39qua66Hp83xn0o++fqP
+					65 image
+					66 text B7_EXPORT fixed-10k 10 Eptx1wy9mrBqDs/+9bT5YTvs+6txd2iuNruhX7Vf/gBd+dD06W8AAA==
+			67 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]
+			68 container
+	69 scroll area
+		70 HTML content Description: YUME chat, URL: tauri://localhost/chat.html
+71 menu bar
+	72 YUME B7 Stream PDF QA
+	73 File
+	74 Edit
+	75 View
+	76 Window
+	77 Help
+
+The focused UI element is 67 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]

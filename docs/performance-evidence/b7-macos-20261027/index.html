@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B7 · Mac 流式与 PDF 生命周期</title><style>
+:root{color-scheme:dark;font:16px/1.65 system-ui,sans-serif;background:#101622;color:#e4eaf4}body{max-width:1100px;margin:auto;padding:36px 28px 72px}h1{font-size:36px;line-height:1.25;margin:.3em 0}h2{font-size:22px;margin-top:36px}p{max-width:960px}a{color:#9fc8ff}small,.muted{color:#aab6c9}.badge{display:inline-block;border:1px solid #ba985c;color:#f0ce8e;border-radius:24px;padding:3px 12px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}.card{border:1px solid #344358;background:#192334;border-radius:14px;padding:18px}.value{font-size:30px;font-weight:700;color:#95e5c2}table{width:100%;border-collapse:collapse}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #344358;padding:12px 10px}th{color:#acc9ef}code{color:#bfd2ed}figure{margin:0}img{max-width:100%;border:1px solid #40516c;border-radius:12px}figcaption{font-size:14px;color:#aab6c9;margin:8px 0 20px}.screens{display:grid;grid-template-columns:1fr 1fr;gap:22px}.note{border-left:3px solid #c7a96b;padding:8px 18px;background:#211f21}footer{margin-top:40px;border-top:1px solid #344358;padding-top:18px}@media(max-width:750px){body{padding:24px 16px}.cards,.screens{grid-template-columns:1fr}h1{font-size:28px}table{font-size:14px}}
+</style></head><body>
+<small>DESKMATE / YUME · B7 · 2026-10-27 · macOS 26.5.2 ARM64</small>
+<h1>补上原生文本增量，长回复持续显示</h1><span class="badge">B7 进行中</span>
+<p>真实引擎的 <code>message.part.delta</code> 此前未进入聊天界面。本轮已修复并完成 1000 消息下的 10k/50k 流式、停止后继续及 PDF worker 循环验收。产品仍为 0.4.21；历史 schema 3 / 记忆 schema 4。</p>
+<div class="cards"><div class="card"><div class="value">1359 pass</div>完整前端回归 · 172 文件<br><small>Rust 本轮未改、未重跑</small></div><div class="card"><div class="value">28 / 38 ms</div>50k 流式输入 / 滚动 p95<br><small>30 对 DOM 到第二帧样本</small></div><div class="card"><div class="value">32 / 32</div>PDF worker 创建 / 终止<br><small>峰值 1，结束活动数 0</small></div></div>
+<p><a href="README.md">完整说明与边界</a> · <a href="summary.json">结果 / 日志 SHA</a> · <a href="source-fingerprints.json">代码指纹</a> · <a href="manifest.json">文件清单</a> · <a href="../b7-macos-20261026/index.html">上一轮附件证据</a></p>
+<h2>问题确实发生在原生链路</h2>
+<p>修复前：10k 回复只有空白占位和最终正文两次 DOM 文本变化；持久化全文正确，中途却不显示。修复 <code>3069953</code> 接收已确认 text part 的增量，复用 33 ms 缓冲，保留最终快照替换、会话与请求边界，不展示未知或 reasoning part。</p>
+<p class="note">旧实现没有实际流式展示，因此旧输入耗时不构成有效的流式性能对照。本页的前后证据用于说明增量显示恢复，不宣称性能提升百分比。</p>
+<h2>1000 消息 + 50 Hz 长回复</h2><table><thead><tr><th>观察</th><th>10k 字符</th><th>50k 字符</th></tr></thead><tbody>
+<tr><td>DOM 文本变化</td><td>232 次</td><td>212 次</td></tr>
+<tr><td>输入 / 滚动 p95</td><td>23 / 33 ms</td><td>28 / 38 ms</td></tr>
+<tr><td>流式期间保留采样</td><td>30 / 30</td><td>30 / 30</td></tr>
+<tr><td>旧消息节点 / 输入焦点</td><td>1000 保持 / 保持</td><td>1000 保持 / 保持</td></tr>
+<tr><td>全文与代码块</td><td>native 与 provider SHA 一致，DOM 代码逐字一致</td><td>native 与 provider SHA 一致，DOM 代码逐字一致</td></tr>
+</tbody></table>
+<p class="muted">真实 WebKit + OpenCode + localhost 合成 provider；每轮 500 块、计划间隔 20 ms。检查器关闭，5 次预热后采样 30 对，间隔 200 ms。全部旧行仍挂载；不是物理输入延迟、生产包或 Windows/GPU/能耗证据。<a href="fixed-10k.json">10k 原始样本</a> · <a href="fixed-50k.json">50k 原始样本</a> · <a href="native-verification.json">全文校验</a></p>
+<h2>停止、继续与 PDF 回收</h2>
+<p>Stop 中断上游 162/500 块，native 保留 16,100 字符；下一请求收到 <code>B7_LOCAL_REPLY_OK</code>。现有临时「出错了: Aborted」提示仍保留，不写入额外 native 消息。</p>
+<p>PDF 正常、损坏、超预算与取消交替 32 次，各 8 次。正常与截断文本哈希分别稳定，损坏/取消均返回预期错误，每次结束 worker 活动数为 0。QA 入口共享生产附件模块与相同 CSP；不是完整 picker/发送循环。WebKit 不提供 <code>performance.memory</code>，不声称 heap/RSS 收敛。<a href="pdf-final.json">PDF 完整结果</a></p>
+<h2>原生 QA 画面</h2><div class="screens"><figure><img src="stream-50k-final.png" alt="50k 回复最终表格和结束标记，随后是停止测试的部分代码"><figcaption>完整 50k 回复的表格与结束标记；下方为随后停止的另一条回复。</figcaption></figure><figure><img src="stop-resume.png" alt="停止保留部分代码，后续 B7_RESUME 收到 B7_LOCAL_REPLY_OK"><figcaption>停止后继续成功，临时 Aborted 提示如实保留。</figcaption></figure></div>
+<h2>验证与清理</h2><p>类型检查、完整前端回归、生产构建和 QA App 构建通过。React Doctor 2 条既有模式提示经审阅保留。首次沙箱 localhost 夹具失败及复跑日志、首次 UI 工具长停顿均有记录；工具停顿不是启动指标。</p><p>5 个 SQLite 完整性均 ok；专属进程、凭据、数据根和端口已清理。标准构建已恢复三个 HTML 入口，测试入口不存在。代码与证据保存在本地，未推送或发布。</p>
+<h2>下一步</h2><p>优先补 Mac GUI 审批、SSE 断流/故障恢复与日志五工具/到期链路。Windows、PDF 内存、完整存储删除/多窗口、2D/3D、隐藏/睡眠/DPI/高刷/GPU/能耗继续待验。</p>
+<footer><a href="../../performance-remediation-handoff.md">接续说明</a> · <a href="../../verification-backlog.md">统一待办</a><p class="muted">隔离 debug QA，不涉及日常数据；冻结脚本只供复核，重现时必须换用新的身份与输出目录。</p></footer></body></html>

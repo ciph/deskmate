@@ -1,0 +1,133 @@
+Window: "YUME B7 Stream PDF QA chat", App: YUME B7 Stream PDF QA.
+0 standard window YUME B7 Stream PDF QA chat, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content inspector-resource:///Main.html
+			3 button Close
+			4 button Dock to left of window
+			5 button Dock to right of window
+			6 button Detach into separate window
+			7 button Start element selection (⇧⌘C)
+			8 button Device Settings
+			9 button Click to show 3 errors in the Console
+			10 tab group (selectable)
+				11 tab (selectable) Elements
+				12 tab (selected) Console
+				13 tab (selectable) Sources
+				14 tab (selectable) Network
+				15 tab (selectable) Timelines
+				16 tab (selectable) Show hidden tabs…
+				17 tab (selectable) Search (⇧⌘F)
+				18 tab (selectable) Settings (⌘,)
+			19 container Console
+				20 search text field (settable)  
+				21 button (disabled) Find Previous (⇧⌘G)
+				22 button (disabled) Find Next (⌘G)
+				23 button Other filter options…
+				24 checkbox (settable, integer) Emulate User Gesture, Help: Run console commands as if inside a user gesture, Value: 0
+				25 button Run Console Snippet…
+				26 button Collect garbage
+				27 button Clear log (⌘K or ⌃L)
+				28 container
+					29 text Console opened at 09:33:44
+					30 image
+					31 text Could not connect to the server.
+					32 image
+					33 text Fetch API cannot load 
+					34 link http://127.0.0.1:62914/session, Value: 127.0.0.1:62914/session
+					35 text  due to access control checks.
+					36 image
+					37 link http://127.0.0.1:62914/session, Value: 127.0.0.1:62914/session
+					38 text Failed to load resource: Could not connect to the server.
+					39 image
+					40 text B7_READY 1000
+					41 image
+					42 text B7_EXPORT fixed-10k 0 H4sIAAAAAAAAE+2cTW8bRxKG/8pgrsuNp7+rZezB63iBAOs4cAzsYWUEtDheE6FIgjNKbBj+76mhLfVDUSPkkNu2IBBi11vdNdVvV1UXCX1ut8vrvr1o368/9qu/m+7XdtGut+txvdy83v0+tBem67qFircYsIt2GJfvNv2rzerH3aoH7DCMz8b2wnbJLdp+s9wP/erlJLcx5O+6ux8TFu3NfrUcJ+X/fm6XX5V05qsPy8Mwvfmy+DZsOnc3nKQMB3M3bAzGcyzjwNuQy+zA24xVQ7obd77M74B3uZjjgPfO
+					43 image
+					44 text B7_EXPORT fixed-10k 1 3417g3Ep6/pQ5gmuK+MZ4/BCcGU8WoznMn9MZf6I+ZMr9kfMnzB/wvxiCz4BL0nuxsWVdbMtfpCE8VDGM/yWc/FPLna6znkSw5fdyxmoFMqudsVsZ0yGABomFf8aAw1rSJwEQYSGhYYzFgJoODyrAUkcSWJc8Y7zZK2HhgcNDXiiS2AqEEW5hycPZWdcpLkB5kaaG7F4xN4YkMglRwEWT9yPBA2xsAo8csL9AJFc5n4IzCWTDKjkSCWTi4bvfOGq7QwEOUFQzPXGMSpAQ1EQQMN6aFhqCAXQcHCihptUBAkC
+					45 image
+					46 text B7_EXPORT fixed-10k 2 Bw1vIwQZAjhRI04RBDjR+kI4H4K9F3dvUQG2B3jUBlgSaUmAJTHCoxGWpA57ELE5iZuTSoT0SSgoIdWTSxZc8pLwtILFs3EQYPEc8IC5aISO+wwuhS4WgUPECRplICiuDiaUzXHgUlDyQlC8G6yjIEOAIO1sOSzBGf/wdjrEpeDgaoe4pPkEtoNxwVsKYImHqx0YFwKijPNYPODYOpAskGQOcSlEj+dAXApR7hcNd6hCk5CQSTWUQUDbkeuC0PYES4S2g1ghgyYOxNJngqsRpPSswKNIeLGjuchxkTnOg3FR
+					47 image
+					48 text B7_EXPORT fixed-10k 3 sxQECYJQFvfIcdGCo1qMpCIARz2iV2QZ5BG9onMUwFyHA6Ixrgh8Fx/eNQ14QHk8FDJh1JMHATQC8rNHaRQjnxbEihGx2oNYMXUGAmgkxAmlPgSZAmgICOAFGsLCT+DR7LoZ/wjcmxECPCJW6iwsAX808Bb/hK4ckGQcBdBgjRRMCTPJ4oAE1EjJ4oAE8CdptH34oQLIlJwVCMpRTY6WgEzJm5n8FUCmpJtbBCBT8pkCWBJA64CyKp3U3yirEsuqEBIEAQKwLMUMc1FWaQkON6CsSqpSBIhYSYyZcQO4mBi+
+					49 image
+					50 text B7_EXPORT fixed-10k 4 AriYBOwNCF+JNVZA+JIOJyQgL0qHCBI7aqDmjaCfGNykIvKiGFgVkRdFi6EiAMtklmURLBOHZBYRsoQsi2CZeJRPEcQSEisi/YmWARAUNkhAhR+DgQARNqLGkogKP6LGkijQAH8k8QHBH2HGi+CPMONFUEZImQjKaPTCGqCM5AC3kzLMeBEZL3duhrwxlxCQef1PSH96P0ADAOkvGwTrhPSXLVJIQvrLFpuTQKzM9JfApcziPYFL2aEATuBS9iiAE7iUPU5OQosg8+6XfDk5ejhnqr2EiJUDLUFezJGWIC9m
+					51 image
+					52 text B7_EXPORT fixed-10k 5 5sWEiJUjwmUC43ICRxMYl3kRTGBclk5mbE/YEOGGgH7KJQpgie7IzLzInsordjNKFDeqgidBYFOJn6lbBGFOYbiuCO6SpmOeFeRZlYDbAqaazsIcMTTHokASSwt40xRLC1isiaUFvGuKowXkqzhaQMIKCKsS7I54WhAQusXTgoDcJoEWRMRSCbQggh4S6YOIbCORFiRcWSXSgoSDIokWCCpISbRA6AOhDwSnVoQWzFJUMh+B8VIQL42ZDZiCek9hCa02REyjP2ijIWSqIBQfZDLRWOoYrmNjYUi21HHwW7Zc
+					53 image
+					54 text B7_EXPORT fixed-10k 6 x2HnMq6gKoHfMjqoxvg5v2VHczxCTib5jN6bIaEOyZdJPhOR+jPJZ1jXZZLPsF+WIx+BlV0m+TQLFSJlks8wN2eSzwgtIPkMC7os1MknHVRanVGOahj1dxKr0WHG8TobYHEmHeUc45e3i3ZYXu83/X/W29Xxs4JvjX0NSvro726GT+3FeLjpF+3Yfxyff1U96aeG6OeB7H1K9wgQ7civHcEZ4EmHUIPlPJDdvGOAmwOy85am/uwcEP2v0E0Hbw7IlpQN80990j7yed7hJ00c5eE8kK2U4210DgiWRfvIw5x0
+					55 image
+					56 text B7_EXPORT fixed-10k 7 Io6d8Dkg+wHHu/ockHd3Lcnu0XNOC5WC3vH/pNbJBdnb+ydmTovX1JjmnXNyc8yPeJH3NzGP7MvJXet4w5kD8sYT4/0L95wWryp5+pBuDgiD8/EDnhngSXF/bFXOAVlvx0cO5EnVK/GRGVF7ark2NdxmkKclnwvzJ+1YgL2dPlDd3yj4c7udGsaLdh86VVU37HOY+vuL9nr5cYoJtwF0Cp0qV9/rphn/Xb77keA1oE2CE/pNXf6F6msdZWRhVckpYqF55QjV1/M57PnQ9Hs+ms9WOu1FfB1KE/Dc0HMr9bc7
+					57 image
+					58 text B7_EXPORT fixed-10k 8 Vw8L9YPx+vr2i7rh6rDbbO67bOp7HV3mbl023c2Ky9QBCtFXlT9gjD13Qtb1zm2Rc6OjGj3NrEbqEuooXUIzvV7Dddx152ude9cdt+QBwQPueMBUk29X9pOH3u+uboafDv3QH37rV7fkWx2W78fX/TDuDmVQ3+2fb9ZXv05D75ebob9l7Lc343K9eaO0bS/ay+0/0y8/v3n94tnLX6bP9LvL7eV2HKbXq912GJt3qflHY6x72jx50gyftuOHflxfNcN46JfX6+3/mv3y02a3XFV8xVd8xVd8xVd8xVd8xVd8
+					59 image
+					60 text B7_EXPORT fixed-10k 9 xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8xVd8c7n9YeyvL8efx+V4M0zf0rscn796+dO/X7x5we/svfjx+9vv7bWL9mq36r99se8vtabiK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK77iK/7/AX/8Mt51P37YrdqLdrP+rW/2h93q5mpc77bN969ePm1C8/vycH2z1xnXh6H5m+uOf/Wr5tv/N2yG/fJK39qua66Hp83xn0o++fqP
+					61 image
+					62 text B7_EXPORT fixed-10k 10 Eptx1wy9mrBqDs/+9bT5YTvs+6txd2iuNruhX7Vf/gBd+dD06W8AAA==
+					63 image
+					64 text B7_STATE 1000
+					65 image
+					66 text B7_50K_READY 1000
+					67 image
+					68 text B7_EXPORT fixed-50k 0 H4sIAAAAAAAAE+3ZXY/TSBbG8a8S+Xazg+u9qtFeMAwrjbTMjABpL7YRColZokknUeKeASG++5Qz0H5MY1a70t79WwjRPj+7Xlw+PmU+NPvVTddcNW+277rNX0P7a7Nstvttv13tnh1+PzdXpm3bZQ3v5YBdNud+9XrX/bzb/HTYdMJO5/5R31y5Ni2bbrc6nrvN00s4J7dsbo+bVT/wf31oVhcWl8367epUD5X8cfnpaEx3R9142Lfl7nAo6e5wsHeH83g4tONFTDteJfjyXfv5x5joR2Xl7BLG42E8O3rx
+					69 image
+					70 text B7_EXPORT fixed-50k 1 SY5n8WU8nmyaac0aUTGPx2XEWUZsoxxP7Xg8j8eLjNnJmIsfr+OsHC/jdZyM0rReLpQ0kOVKMk5j3HgpbzWQ3RjwErB2nDIfNSC338voahOyAFoNxHEJBJk/4814qaBt+Dh3X4KsIROkxagthjAu3KjDDXlsMepwox3vcdSuRLmZUYeb2vGMpI2nYGY6n7QrSWY+aVeyHTuftCtZ1mHSrhQz9jFrV4rPM13J2hVdaFm6Yls39jEnDcgDlWWhWWPHCS5GA3HuwS6yJKw1ZgxEDciyKzJ46+SMmuY0EopEtBUv
+					71 image
+					72 text B7_EXPORT fixed-50k 2 E2ZayVbWR72athOMXE1Tlg3BSUTbia3kHU1UNsojbDRV2Zi1HZ3b5MbnyGiCskkmx2iKspqjjNUe5KDnaA9ykXbqUz3Ozvx6Mpq4bClzj4Bxsr5cvSkSSRopch+8zLYzOnOay5yRZWw0mTkr67ier5GcJVLGsTrnpNfBakTvUNB2vKRZoxnN1UYlInfVBScjjUYjSXqg2aomVFlXmq5clBxhNF+5ZOSuasJyKehbU1aPy/qWTkEjMc7dYU1Nruj609zkSpBxZ53fUvQcadW3QeZXE1JdIfqGl3Z8fZlIxGpE
+					73 image
+					74 text B7_EXPORT fixed-50k 3 72OR+fVWn7SahsZqxur8ah7yzkyfjTtmW6MsWYlo/eRNmbtAVCbvDasZqlZaEjHy3Pogz7rVDOWjvMWsZigf5f5Yo+0kyWrW6lwnqWSs1blORfqmechnuT9W81AtLqSOsvJs+iLPs9XM4/VVZjXXhHZyTtKIFAVWy6Zg5NmsLw2NJOm15pqghVN9nUjRWmtEiciMBmel10HbmSwXLZ6CvsPqK0gjUSPaTh3QGNFcUwumudUbtdEoL1uriSfEKMPWxBOSlsmaeEKSvYHVxBOyVIZWE0/IUtrZpLcx6xJLehuL
+					75 image
+					76 text B7_EXPORT fixed-50k 4 3pKswy6TUl16EFudgxw1EjUiI62TI1cr8gBGo72uBc8Ysa1GdC9jg15NdzOuHefNackTnTy0VUnEtxqZ7JmCXk3bCa35+qJwWv9ErX+cZpeo2cVNNmpxco42GuVpdFr/RK1/nNY/MSUZnNXp1YXkdJMWdZfmdJsWi+RR57SdItm/FghjJLVGzwkakfzmat5JY0RqHKd5J9VaaIxojZOMzo7mnaTvLKc7tmTljVFTokTqtWducNBGnRSETgue5L1GkkYm52ijQYo+p7uzFKQYc1rwpCjJ20VtZ7JcoraTpICr
+					77 image
+					78 text B7_EXPORT fixed-50k 5 1Y9GUjszbE1CKU8iOqOXryV3EVk7qVg/c+mad8ZbX9LcxNf91x3L+s5ymoRqYSZTpTuwrDswp1uw+ijILdFdV67v6pnu6B4sa/FTT5eO1qr8LuI1I2UXNaKNenlkvGak7KVc8Vri5CCPszc6uCAvV69JKEftm9HxaLHstcTJyaSvT4i3chtzXUkSkQWbs5PPJ1rV1BeGdMfqndOqxmtVU++vtONkhZQ26DnSTn39zNxTr6mmGPlk5jXV1KWjERlcXeMy17qdKnVHN0b0I1Bx2lHNLsVPzgkakTeT1+xSgp6j
+					79 image
+					80 text B7_EXPORT fixed-50k 6 n36Kvoy8ZpcSJ+doO1E2QD7Kui7JyG3UHFKSpACvaaNkK1fTtFFy0ojehSK5ymumqHdeI/qdqG2d3FTdDQ2fQfQs/RJYX1QSKrLvqiE9q0zasrpMyqQtW2ZSntf9kWmdfGKrb6EYP75cNufVzXHX/XO731y+Xn/68FzLpdrc69vz++aqP912y6bv3vWP/zx38kHvskOdgfpVzV62jjNw8mnLDp+2ZuDkw1Nw81ecfiBKaX40k881Q8k2LyefTuywAZmTk08cdacwLycfHNI3hj75MFAf2W+MfbJlv7wz5uRk
+					81 image
+					82 text B7_EXPORT fixed-50k 7 Ax3s/CxNt7OXz11zUredobV2Xk62h5fN2ZycbNbCt6452VSlOD9L0/1OKfMzP92XWDd/36f7h2DmW58W8JcPQHNyUmjXx/aLZ33utEl1bN38DZvWqn7YxM3JMC3v5m/YtNwr31jW03rrfh00d9qkLvLly33SzGnTYia5+Ufjzzrj5fC/fcfbij80+yE9LJtjaIeHsf6jhGEVfVc+/ww1xzDSm9W7YdF8zq1DVq0r1pRlrbfysu5taj1k4/Cn9rRGrBmO1EsOB3NV9y5ZY2ZaMfv6Xqzn1VKzXmM49X4/6uqr
+					83 image
+					84 text B7_EXPORT fixed-50k 8 gUurptyL2nD/hPjyY+30+nTY7b4c8LCBvwx4mLLLAH2YDLBd1uxRB1NLKHu/qy7c7317sXk4qY7hayIOvfzyaJ0qd5m5rw2qXjMPk1K7W+ollzWb15Vfp95fpstdRvjmsL49/3Lqzt3pt27z+d5vTqs3/bPu3B9O48H62/Hxbrv+dTj0ZrU7d58XzKdf+tV296Kumuaqud5/n149f/HsyaOnr8LQ4ev99b4/D3+vD/tzv3idFn9b1NfNw8WDB4vz+33/tuu368W5P3Wrm+3+34vj6v3usNrg8Xg8Ho/H4/F4
+					85 image
+					86 text B7_EXPORT fixed-50k 9 PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8/v/lr/c/9t3Ndf+8X/W35+v99+m6f/zz01/+8eTFk+G3V89fPHvy6OmrJz/98Cq09ed63yyb9WHTveje9c1V
+					87 image
+					88 text B7_EXPORT fixed-50k 10 858a+G87hMfj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8fj/zV/vm2Vz0/VvD5vmqtltf+sWx9Nhc7vut4f94oefnz5chMXvq9PN7bFedHs6
+					89 image
+					90 text B7_EXPORT fixed-50k 11 L/7i2su/us3ivLo57rrz4nxcreuvtm0XN+eHi+3+eNs/OK9Ph91u0R8W5672YrM4Pfr7w8WP+/OxW/eH02K9O5y7TfPxD/GVk6MqrQEA
+					91 image
+					92 text B7_EXPORT stop 0 H4sIAAAAAAAAE5VXy27bRhT9FWK2JdJ5P+SVkaJAF2mKoEAXjRc0SSNEKJIgqSSF4W37A930V/I9zaJ/0UtZ4hzaVTGRtBDvOXPfc4dzz7piX7Mdm+Z+YDlrumZuivZN/3FiO8G5zNld04HA5EQtbtv6dVv92Fc10MZpvp7ZTkmds7othqmuXhEcpA45OwxVMS/sX+9ZcWSpnJXvinFh+If8JLV2lcoo1oKvYhPcKnZyFbvINjysYsFBbqMWIaMay3WU68i32kW5Bbn3UR6i3GkRnRcg99FNqaLcy6hfgn6P
+					93 image
+					94 text B7_EXPORT stop 1 fB/lAfgK9Acf41KgX3AZHVU2Biw4RKDAghDSrIDmCNhoW0NlhOTRuNYI6FhgbRHwMd0ajSuIz6Bx8j0CGKCGyI2HAA1EbiFVwrioyqIqK2PxrEEAmsxClwnHo7sO3XUm2nCYK8+jDYe58jqmxGGuvA8v+PlDRQAaNJ4IWl6geQw+QNk92Jdcxzx6iwCuAItSwIogEIDmDZBgKWX0KhgEYM8H6AdJPb4CNGMQsQIQ2MpScwMIxqjBY8EtrsH9zNEDI6NrAkeJxD4SAuO0UgKCgVoHHgi042AY0o5CxEI8EppJ
+					95 image
+					96 text B7_EXPORT stop 2 emg/2myIQP8JCS0rA2ZHYj0D2lFgR3GYvULB9FXcXuo6ocCqEjiPcaoo4aCOGrKosFuENojAJBIa7Si0gwNEKfTNQL8ojVk0kEWlDcRt0I7BLJqAiPKXMqIfbujkLPZDW//SdNXxOD0dhcIaapnbw/Qb283joc7ZXH+aXz4u3Myi/xgHF5a57WYNF4mbzauCTtS/3XV2OVkvMTd7IPDLrmw6UtFwv8zcdJFKzsq29la5M/OuaKenJlaedyaFRy8pOomndBrPuDSeT7NruErjSbvtgqRFOqQpdyopmTRnkvRZ
+					97 image
+					98 text B7_EXPORT stop 3 mRa81Wl2rbVpPB++Pknu+HqVwFMmjWd8Gs+n+UeNlKTPyzS73oj/32E3y4VjOBD1nnXLiZKzwfBlutCfYJZzNmf74tMyYs7Tc5mbkufC5BQUiYkinkwtwuhAFf5FOH+8V0uuyJ2Q01sF6X/8hTw8Jx0py9fnYf360zp380CelGPftk+9lmevlTp5rTx6Tf6SQIaccHrblPK5aQrH5aTn+HsWFHmwRB4i46mCLXx+JFvieYbEyl5CuuvLw/TTWE/1+KGuzrOzGou7+U1Nl8MxCper4su2Kd9H0bbGRdP+THWm
+					99 image
+					100 text B7_EXPORT stop 4 W+Xb7ssfn//586+/P/++y65v+3Guq7cd3TNLujqeOPS0r+d3PSljbfOhzoaxrw7l3PRd9t3rV1eZyT4W4/4wZENBd8zsG8WP/+oqO+U2m4aipEe6i2T76So79tS3j0XK5j6b6rLvqmy8/v4q+6GbhrqkeLKy7emGyh7+Bc1ifuoDDwAA
+					101 image
+					102 text B7_EXPORT resume 0 H4sIAAAAAAAAE41VbWvbMBD+K0JfJzrJtmzL+ZRlG4ylSymDMdYQVFuhZn7DktuOkP++U+I2SRO2M8JIukf36KRHdxva6NrQjPbGDtBhtGxKV+rqtn2yNBOcS0bXZXM0kTBqnb6vzKIqvrWFOYL11k0dzcI4ZtRUurOmuAZzqpKU0aErtPPoXxuqPSpSjOYPuvcO1HYJbnXdVeZH2RQ7rhEnZBgxej/YPzRb68oaRp15drPXlWzEJTEOp1R0xV8+IXCrgiDA4SIpUbg4xeGUQPGGIsLhwgTFG8Ych0txtxNx
+					103 image
+					104 text B7_EXPORT resume 1 3DlHgULxRjLA4RLcfUQKxysDHK9E6kAidSCROoiROoiROoiROojTUJ68KsyihMco5wlSFAlSFEkS4/aHFEUahP/2t/R5tRsAuqENPBrOaCc5zSADdkp6CKO1ft539mnQJ8CUKZZeqZcvhTMGtajT7CWkRzHBfVMXrK8WJtRFgF++swDZW9s5/YUNecep/4l0uYUA8r6tqrexBnwMNhBjsL5zCBZG+ybUGYM38EO7gABybxMH6CU3/Cy+Y8//J9759yGu23ywN1A0Tf9oCpq5foBLL3q9drfGurY/TMKom1Vl
+					105 image
+					106 text B7_EXPORT resume 2 /ttPjeo4lYouq+8gF6jCd82HZDVfzKbz1e2nm/nP1eLrXQNFOYc6O0JgVBv30IIzWpWPhnR9Wwy5K9uGfFxcT4gkT7qvh450GgoyeRfyXc8UZDxrYjudwzDgnNR2QnbKfL+/NOJaYk3eNgXpp58n5EtjO5NDPCSvWijndPsXmPq0qjIIAAA=
+					107 image
+					108 text void window.__b7Export('pdf-final');document.querySelector('.chat-list').scrollTop=document.querySelector('.chat-list').scrollHeight;void 0
+					109 image
+					110 text undefined
+					111 image
+					112 text B7_EXPORT pdf-final 0 H4sIAAAAAAAAE+VYwW6cMBD9FcvnbYJtMDY5bdJUinpJlUMOVQ/GHgQKmJUxaVZR/r1md2GbdLdqb0hwQHjw2O/NzLNgXnEOResAZ6+4BLXBme3r+m2FVeHB/WGFZ7C+w9n3V1zhLFrhp8oanGHbukbVeIUru+n99dZDmERSIcJC2lfPcH3YJbi0TzjzrocVDnerlYewQqHqbrDAi78plQveIgrOpeoevHJ+9BjGfVFUL+88HkpFEx5gmNzINBHE5BBxwwHiXMo01lFBaS6Z4mkBQoMupCGR4TRRnMWcJJGW
+					113 image
+					114 text B7_EXPORT pdf-final 1 SSF4jke46z37gLYJUCjjF3K8hGCJeFvtAkCmAOjWuX7jP0QgJmf4H8CDc23YBt/ZZ1VX5v7zl9sXDRtftTZDByMKVtQF+tr3Di4GiHnrfg/aKcgk5geMdMJ4DPd7lEzylPJ/zdTBcEwU4VFE/56ro8+UqpwXkKqIyyiNKYkEkSxKQFBFdBJTalJZiJQUQhswLJVMAI2JCVMYLYwQ8blUxfTAm028d/H6H84fsrMe/G+HQYauU9TpEkxfg0HjwlNC9jxP5yM+4IoXIhrCyUU0XoTwKTHJjEWTntY5X5qGToch
+					115 image
+					116 text B7_EXPORT pdf-final 2 namkxGIkNWpIzldDCT0texItS0QsGYmTmclmAkYXo5vxpCBsvsKJ0xFkvDClTEdEMjelnDnK+FKEk8gzPz7pjHUkR5BiYTqaiMvZ6ehkFdFoKTriZKQ855bBWD90YT0DNhXk3JoGUxNnQV2DkfKs+wQjyIV1BqafGjrXXgBdTjNgojzjbkDMT39Cs2hhwhlPcja/bsCPFdYO9mFkdAiIayp7HO/9di4bUAFHoBDmG5XX8ODDU7PutlbfBT/ld8h6a6Co7C6lDfiyHeh+W39qbb1FYL3boqrZBHAd8iWgTjWA
+					117 image
+					118 text B7_EXPORT pdf-final 3 Nq41obhCzSHlvdJlEyaiph0oXaGwS40eIf9aefSzdU/gLm8e7q/Q4+4Z6dbua7N1lxP8YO1tGHVXoYi7DQxvka7bLuB6+wWbp3V7+RoAAA==
+			119 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]
+			120 container
+	121 scroll area
+		122 HTML content Description: YUME chat, URL: tauri://localhost/chat.html
+123 menu bar
+	124 YUME B7 Stream PDF QA
+	125 File
+	126 Edit
+	127 View
+	128 Window
+	129 Help
+
+The focused UI element is 119 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]

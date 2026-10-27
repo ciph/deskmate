@@ -1,0 +1,521 @@
+{
+  "name": "stop",
+  "initialRows": 1002,
+  "finalRows": 1005,
+  "stableOldNodes": 1002,
+  "firstAt": 324,
+  "elapsedMs": 9249,
+  "updates": [
+    {
+      "at": 323,
+      "chars": 98
+    },
+    {
+      "at": 366,
+      "chars": 298
+    },
+    {
+      "at": 410,
+      "chars": 597
+    },
+    {
+      "at": 472,
+      "chars": 798
+    },
+    {
+      "at": 509,
+      "chars": 1098
+    },
+    {
+      "at": 560,
+      "chars": 1297
+    },
+    {
+      "at": 604,
+      "chars": 1498
+    },
+    {
+      "at": 647,
+      "chars": 1698
+    },
+    {
+      "at": 688,
+      "chars": 1998
+    },
+    {
+      "at": 741,
+      "chars": 2198
+    },
+    {
+      "at": 782,
+      "chars": 2398
+    },
+    {
+      "at": 827,
+      "chars": 2698
+    },
+    {
+      "at": 882,
+      "chars": 2898
+    },
+    {
+      "at": 927,
+      "chars": 3198
+    },
+    {
+      "at": 980,
+      "chars": 3398
+    },
+    {
+      "at": 1028,
+      "chars": 3697
+    },
+    {
+      "at": 1088,
+      "chars": 3898
+    },
+    {
+      "at": 1125,
+      "chars": 4098
+    },
+    {
+      "at": 1167,
+      "chars": 4298
+    },
+    {
+      "at": 1200,
+      "chars": 4498
+    },
+    {
+      "at": 1243,
+      "chars": 4698
+    },
+    {
+      "at": 1284,
+      "chars": 4898
+    },
+    {
+      "at": 1327,
+      "chars": 5098
+    },
+    {
+      "at": 1369,
+      "chars": 5398
+    },
+    {
+      "at": 1480,
+      "chars": 5897
+    },
+    {
+      "at": 1528,
+      "chars": 6198
+    },
+    {
+      "at": 1579,
+      "chars": 6398
+    },
+    {
+      "at": 1621,
+      "chars": 6598
+    },
+    {
+      "at": 1672,
+      "chars": 6798
+    },
+    {
+      "at": 1707,
+      "chars": 7098
+    },
+    {
+      "at": 1759,
+      "chars": 7298
+    },
+    {
+      "at": 1801,
+      "chars": 7498
+    },
+    {
+      "at": 1844,
+      "chars": 7698
+    },
+    {
+      "at": 1889.0000000001164,
+      "chars": 7998
+    },
+    {
+      "at": 1942.0000000001164,
+      "chars": 8198
+    },
+    {
+      "at": 1988,
+      "chars": 8498
+    },
+    {
+      "at": 2040,
+      "chars": 8698
+    },
+    {
+      "at": 2088,
+      "chars": 8998
+    },
+    {
+      "at": 2140,
+      "chars": 9198
+    },
+    {
+      "at": 2182,
+      "chars": 9398
+    },
+    {
+      "at": 2224,
+      "chars": 9598
+    },
+    {
+      "at": 2266,
+      "chars": 9898
+    },
+    {
+      "at": 2319,
+      "chars": 10098
+    },
+    {
+      "at": 2361,
+      "chars": 10297
+    },
+    {
+      "at": 2405,
+      "chars": 10498
+    },
+    {
+      "at": 2440,
+      "chars": 10697
+    },
+    {
+      "at": 2488,
+      "chars": 10898
+    },
+    {
+      "at": 2526,
+      "chars": 11098
+    },
+    {
+      "at": 2579,
+      "chars": 11398
+    },
+    {
+      "at": 2622,
+      "chars": 11598
+    },
+    {
+      "at": 2670,
+      "chars": 11898
+    },
+    {
+      "at": 2723,
+      "chars": 12098
+    },
+    {
+      "at": 2765,
+      "chars": 12298
+    },
+    {
+      "at": 2807,
+      "chars": 12498
+    },
+    {
+      "at": 2859,
+      "chars": 12798
+    },
+    {
+      "at": 2905,
+      "chars": 12998
+    },
+    {
+      "at": 2965,
+      "chars": 13298
+    },
+    {
+      "at": 3010,
+      "chars": 13597
+    },
+    {
+      "at": 3062.0000000001164,
+      "chars": 13798
+    },
+    {
+      "at": 3109,
+      "chars": 14098
+    },
+    {
+      "at": 3171,
+      "chars": 14398
+    },
+    {
+      "at": 3224,
+      "chars": 14598
+    },
+    {
+      "at": 3267,
+      "chars": 14798
+    },
+    {
+      "at": 3309,
+      "chars": 15098
+    },
+    {
+      "at": 3364,
+      "chars": 15297
+    },
+    {
+      "at": 3407,
+      "chars": 15498
+    },
+    {
+      "at": 3450,
+      "chars": 15798
+    },
+    {
+      "at": 3505,
+      "chars": 15998
+    },
+    {
+      "at": 3538.0000000001164,
+      "chars": 14
+    }
+  ],
+  "sampleWindows": [
+    {
+      "at": 1652,
+      "busy": true,
+      "textChars": 6598
+    },
+    {
+      "at": 1889.0000000001164,
+      "busy": true,
+      "textChars": 7998
+    },
+    {
+      "at": 2149,
+      "busy": true,
+      "textChars": 9198
+    },
+    {
+      "at": 2394.0000000001164,
+      "busy": true,
+      "textChars": 10297
+    },
+    {
+      "at": 2660,
+      "busy": true,
+      "textChars": 11598
+    },
+    {
+      "at": 2909,
+      "busy": true,
+      "textChars": 12998
+    },
+    {
+      "at": 3148,
+      "busy": true,
+      "textChars": 14098
+    },
+    {
+      "at": 3389.0000000001164,
+      "busy": true,
+      "textChars": 15297
+    },
+    {
+      "at": 3637,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 3875,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 4104,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 4344,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 4574,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 4804,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 5034,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 5264.000000000116,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 5494,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 5735,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 5974,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 6204,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 6435,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 6665,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 6894.000000000116,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 7125,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 7355,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 7585,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 7816,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 8045,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 8285,
+      "busy": false,
+      "textChars": 14
+    },
+    {
+      "at": 8517,
+      "busy": false,
+      "textChars": 14
+    }
+  ],
+  "input": {
+    "n": 30,
+    "p50": 10,
+    "p95": 25,
+    "max": 26,
+    "samples": [
+      20,
+      15,
+      16,
+      26,
+      25,
+      14.000000000116415,
+      23,
+      18.999999999883585,
+      17,
+      9,
+      19,
+      10,
+      10,
+      10,
+      9,
+      9.999999999883585,
+      19,
+      19,
+      9,
+      9,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      8,
+      19,
+      10,
+      7
+    ]
+  },
+  "scroll": {
+    "n": 30,
+    "p50": 20,
+    "p95": 33,
+    "max": 38,
+    "samples": [
+      16,
+      38,
+      29,
+      33,
+      21,
+      22.999999999883585,
+      16,
+      27,
+      20,
+      20,
+      20.000000000116415,
+      19,
+      20,
+      19,
+      20,
+      20,
+      20.999999999883585,
+      20,
+      19,
+      20,
+      20,
+      20,
+      20,
+      19,
+      21,
+      21.000000000116415,
+      21,
+      20,
+      19,
+      20
+    ]
+  },
+  "focusPreserved": true,
+  "draftRestored": true,
+  "stopClicked": true,
+  "busy": false,
+  "tailText": "\n\u51fa\u9519\u4e86: Aborted\n",
+  "codeText": "",
+  "method": "live production DOM; 5 warmup pairs +30 paired samples spaced 200 ms; input/scroll to second rAF; Inspector closed"
+}

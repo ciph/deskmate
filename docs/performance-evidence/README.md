@@ -1,6 +1,8 @@
 # 性能整改便携证据
 
-最新：[2026-10-26–27 B7 接续 HTML](b7-macos-20261026/index.html) · [结果/日志 SHA](b7-macos-20261026/summary.json)。新增普通附件历史标签与导航修复、三种媒体/原始上传和 1000 消息非流式采样；B7 仍进行中，下一步补 50 Hz 流式与 PDF 循环。下方旧记录保持其当时范围。
+最新：[2026-10-27 B7 流式与 PDF HTML](b7-macos-20261027/index.html) · [结果/日志 SHA](b7-macos-20261027/summary.json)。修复原生 text delta，新增 1000 消息 50 Hz 的 10k/50k、Stop/继续和 PDF worker 32 次循环；前端 1359 pass。B7 仍进行中，下一步 GUI 审批/SSE/日志链路，内存/Windows/硬件边界保留。
+
+上一轮：[2026-10-26–27 B7 接续 HTML](b7-macos-20261026/index.html) · [结果/日志 SHA](b7-macos-20261026/summary.json)。新增普通附件历史标签与导航修复、三种媒体/原始上传和 1000 消息非流式采样；该轮提出的流式与 PDF 循环已由最新记录补充。下方旧记录保持其当时范围。
 
 新增 [2026-10-25 Mac B7 结果 HTML](b7-macos-20261025/index.html)、[摘要与证据 SHA](b7-macos-20261025/summary.json) 和 [代码指纹](b7-macos-20261025/source-fingerprints.json)。B7 进行中：本机全套与部分原生 QA 通过，Windows/完整原生性能待验；下方 Windows 历史原件保持不变。
 

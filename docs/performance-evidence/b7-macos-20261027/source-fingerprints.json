@@ -1,0 +1,49 @@
+{
+  "commit": "30699533104aa4dbfd9b3d3934ce582b2c52f07d",
+  "files": [
+    {
+      "path": "src/chat/ChatApp.tsx",
+      "sha256": "22578e5fa9b3b44baccc841fcc73037f0a18227c39b1f84bd200641bacebbc3a"
+    },
+    {
+      "path": "src/chat/streamText.ts",
+      "sha256": "334747c7703279919dea6795a576a8b4a6468d7bda3ddd486bc25661bc6ad767"
+    },
+    {
+      "path": "src/chat/chatPetActivity.test.tsx",
+      "sha256": "22c0ffa25423c801206de758bdc005973a428858264a2b47937599dd80f5b41e"
+    },
+    {
+      "path": "src/chat/streamText.test.ts",
+      "sha256": "e644187d78f280936c8748f8f5e332f7150565eb1e291c46f76e1bff3481724b"
+    },
+    {
+      "path": "src/chat/attachments.ts",
+      "sha256": "70cf50f266ee4d3f2e6f2da5fdac14b03514864abcab545038fd56789f6ee03c"
+    },
+    {
+      "path": "src/chat/pdfPageText.ts",
+      "sha256": "fdc87e608e5843de691ed8f521403ef46ea3413851b0d5422f66204bb91ada83"
+    },
+    {
+      "path": "package.json",
+      "sha256": "79d323fad6e56cfb69a322061da2d91ddd3b7402334c7cb82551767c5278ef6d"
+    },
+    {
+      "path": "bun.lock",
+      "sha256": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "8ae1b3c82f82f0f24e8fd0271b5acc4c9dba7f911e8213160cc3ef8ba32bd167"
+    },
+    {
+      "path": "src-tauri/Cargo.lock",
+      "sha256": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8"
+    },
+    {
+      "path": "src-tauri/tauri.conf.json",
+      "sha256": "c500bc7e3c321d82a0cca3a93bb1ba8a8bbb74542e649abded70c2d0107dc2af"
+    }
+  ]
+}

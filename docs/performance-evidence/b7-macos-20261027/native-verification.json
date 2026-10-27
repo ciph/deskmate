@@ -1,0 +1,24 @@
+[
+  {
+    "sessionId": "ses_b7fixed10k20261027",
+    "messages": 1002,
+    "characters": 10000,
+    "sha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1",
+    "providerMatches": true,
+    "renderedCodeMatches": true,
+    "renderedCodeCharacters": 9900
+  },
+  {
+    "sessionId": "ses_b7fixed50k20261027",
+    "messages": 1006,
+    "characters": 50000,
+    "sha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea",
+    "providerMatches": true,
+    "renderedCodeMatches": true,
+    "renderedCodeCharacters": 49900,
+    "stoppedTextCharacters": 16100,
+    "stoppedTextSha256": "5abf49a2c3f005ca7da4f5854e9d418f6499ec709015fe534f25a005d00c9c43",
+    "resumeText": "B7_LOCAL_REPLY_OK",
+    "stopErrorPresentation": "Transient UI row: 出错了: Aborted; not an extra persisted assistant message"
+  }
+]

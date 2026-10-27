@@ -1,0 +1,87 @@
+Window: "YUME B7 Stream PDF QA chat", App: YUME B7 Stream PDF QA.
+0 standard window YUME B7 Stream PDF QA chat, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content inspector-resource:///Main.html
+			3 button Close
+			4 button Dock to left of window
+			5 button Dock to right of window
+			6 button Detach into separate window
+			7 button Start element selection (⇧⌘C)
+			8 button Device Settings
+			9 button Click to show 7 errors in the Console
+			10 tab group (selectable)
+				11 tab (selectable) Elements
+				12 tab (selected) Console
+				13 tab (selectable) Sources
+				14 tab (selectable) Network
+				15 tab (selectable) Timelines
+				16 tab (selectable) Show hidden tabs…
+				17 tab (selectable) Search (⇧⌘F)
+				18 tab (selectable) Settings (⌘,)
+			19 container Console
+				20 search text field (settable)  
+				21 button (disabled) Find Previous (⇧⌘G)
+				22 button (disabled) Find Next (⌘G)
+				23 button Other filter options…
+				24 checkbox (settable, integer) Emulate User Gesture, Help: Run console commands as if inside a user gesture, Value: 0
+				25 button Run Console Snippet…
+				26 button Collect garbage
+				27 button Clear log (⌘K or ⌃L)
+				28 container
+					29 text Console opened at 09:09:15
+					30 image
+					31 text Could not connect to the server.
+					32 image
+					33 text Fetch API cannot load 
+					34 link http://127.0.0.1:57850/session, Value: 127.0.0.1:57850/session
+					35 text  due to access control checks.
+					36 image
+					37 link http://127.0.0.1:57850/session, Value: 127.0.0.1:57850/session
+					38 text Failed to load resource: Could not connect to the server.
+					39 image
+					40 link http://127.0.0.1:57850/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261027a%2Fworkspace, Value: 127.0.0.1:57850/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261027a%2Fworkspace
+					41 text Failed to load resource: The network connection was lost.
+					42 image
+					43 text Could not connect to the server.
+					44 image
+					45 text Fetch API cannot load 
+					46 link http://127.0.0.1:57850/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261027a%2Fworkspace, Value: 127.0.0.1:57850/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261027a%2Fworkspace
+					47 text  due to access control checks.
+					48 image
+					49 link http://127.0.0.1:57850/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261027a%2Fworkspace, Value: 127.0.0.1:57850/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261027a%2Fworkspace
+					50 text Failed to load resource: Could not connect to the server.
+					51 image
+					52 text B7_PROBE_READY {"rows":1000,"compression":"function","worker":"function"}
+					53 image
+					54 text B7_EXPORT stream-10k 0 H4sIAAAAAAAAE+3cTU/bMBgH8K9i+ToP8tI0a6sdGHQS0goIuK0ImcQdEY4d2Q4vQv3u2CFhpXTSDrvtH1WW/fj3+E3pzcozVbwWdEqtM4LXn+PojjJaqcpVXJ7rB0uncRRFjK4qtRFImE/gN1KcyvJEl2KDGesOnG9+yeK9Sf+Mk3yUMyokb6woF0Enoyzf7M8YbZuSuzDUz2fKuyFGfsTilpuQsGZ91Iezrcze+OZ4fRWW37RePlNFp6kfoskiOk1CZZL5SsxozR9DZS/qnzRPsmTiN8XrRnZLiCfvVx8z
+					55 image
+					56 text B7_EXPORT stream-10k 1 P0DSlfFkKD8M0HXtSuxy41cQKtuJf8za+A25b+XV2q+4MFrK7c367n6z2bDZ7N3uxiwZsXj8YRnp9jLi3AdZ8OlQz/8iqx9/yNo5V7JrrozF2VCOPhzveMdBhaNIw1GsdNHaMyOsMPeipFNnWsFoafjKnQvrtPkd9K3mUFbFXQituLQ+dtPap7eG45W8FI/+LaJL9S2/vrg8nx8srsNLHi3VUjkbykIr68hNTr6SOElnZH+f2CflboWrCvL6j6rUL9LwJ6l5CQ8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8P
+					57 image
+					58 text B7_EXPORT stream-10k 2 Dw8PDw8PDw8PDw8PT5bq2Il66S4cd60Nt/SW7vB0cfZjfjnfvLM3Pzka7u1RRgtdiv5i3z9dDTw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDz8/+C7y3i1cLe6pFMqq3tBGqPLtnCVVuTodDEjGXngpm4bSz6lEWmEIbzrnZHuA4/7r58+JE4TK/xcJTEH32fkWNlGFE4bUkhtRUnXL3lwZuDkUgAA
+					59 image
+					60 text void window.__b7Export('pdf');console.log('B7_PDF_STATUS '+(localStorage.getItem('b7-pdf-error')||'no-error'));void 0
+					61 image
+					62 text B7_PDF_STATUS no-error
+					63 image
+					64 text undefined
+					65 image
+					66 text B7_EXPORT pdf 0 H4sIAAAAAAAAE+VYzW+bMBz9Vyyfs9YfYBt6SrtOqnbp1EMP0w7G/qGg8hEZ0zWq8r/PJEDWLp22GxIcIuz4Z97z8wPrveIM8sYBTl/xBvQWp3VXlvsV1rkH90cvPEPtW5x+f8UFTskKPxW1xSmuG1fpEq9wUW87f73zEAZRqVSYyPjiGa6Hp4SS5gmn3nWwwuG3NtpDmCHXZdv3wIu/2WgXqhUJxRvdPnjt/FjRt7s8L17eVDxsNItFgGEzm8hYUZsBEVYARFmSyMiQnLEs4VrIHJQBkyeWEitYrAWPBI2J
+					67 image
+					68 text B7_EXPORT pdf 1 SeJciQyPcNdH9gFtFaCwiO1XB8Z0Ymwa57qtf0c5oh8QHtCCc02YF9/Vz7os7P3nL7cvBra+aOoUDZ0o9KI28DW+c3DRY8oa9/sqncNIIzVgZBPG0/q+RckTIZn4V2mGjpMyVBDC/i7OqWbSJhM5SE1EQmTEKFE04SQGxTQ1ccSYlUmuJM2VsWC5TLgCFlEbhnCWW6WiD7WJBt584n1Yr//h/E6ddV9/2zdSdC1RazZguxIsGieeBDnyPK+HHHBFC3EJFXxgHM/XJWJ0sliWS2J6QYaLSxaPSsmZeUZcJMMl
+					69 image
+					70 text B7_EXPORT pdf 2 mJwcpBbnoGS+DorJ+C0ky7KQnA4BdGauGX1C2WKMMmnB5+uUKBlBRstyCk/OvsZpPDPfiBGYWIxvxg8MlTP2jTp7VqFqaS4aiScz9Q0ji/HNqAWbcwIwvmjZwiIAPhGfXQZw9k3GlhMJ0LMnATbjhGA6tbGFRQRRPBKfWyowAVtOEDCGmmzGScBkZ06W5RQ+Ru18ZklATPY/Vtg4OC4jZ/2CuKqoT+1j3aFkCzrgCBTCeKuzEh58uKvW7a42d6FO+wOyrraQF/VB0gr8punpflt/aupyh6D2boeKahvAtchv
+					71 image
+					72 text B7_EXPORT pdf 3 ALW6ArR1jQ27KWwypL3XZlOFgahqekpXKDylRI+QfS08+tm4J3CXNw/3V+jxcI9MUx83Y+MuJ/iht6tDq70Ku7bdQv8vMmXTBlz7X9v29y3GGgAA
+			73 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]
+			74 container
+	75 scroll area
+		76 HTML content Description: YUME chat, URL: tauri://localhost/chat.html
+77 menu bar
+	78 YUME B7 Stream PDF QA
+	79 File
+	80 Edit
+	81 View
+	82 Window
+	83 Help
+
+The focused UI element is 73 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]

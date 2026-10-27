@@ -1,0 +1,78 @@
+{
+  "identity": "com.deskmate.unifiedhistoryqa.b720261027a",
+  "processes": [
+    {
+      "pid": 77804,
+      "birth": "Tue Oct 27 09:21:28 2026",
+      "gone": true
+    },
+    {
+      "pid": 77811,
+      "birth": "Tue Oct 27 09:21:30 2026",
+      "gone": true
+    },
+    {
+      "pid": 48431,
+      "birth": "Tue Oct 27 00:40:08 2026",
+      "gone": true
+    }
+  ],
+  "databases": [
+    {
+      "path": "chat-resources.sqlite3",
+      "integrity": [
+        "ok"
+      ]
+    },
+    {
+      "path": "deskmate-memory.db",
+      "integrity": [
+        "ok"
+      ]
+    },
+    {
+      "path": "history-catalog.sqlite",
+      "integrity": [
+        "ok"
+      ]
+    },
+    {
+      "path": "opencode-home/xdg-data/opencode/opencode.db",
+      "integrity": [
+        "ok"
+      ]
+    },
+    {
+      "path": "yume-worklog.db",
+      "integrity": [
+        "ok"
+      ]
+    }
+  ],
+  "roots": [
+    {
+      "path": "/Users/xmaczone/Library/Application Support/com.deskmate.unifiedhistoryqa.b720261027a",
+      "birth": 1793032861.5677898,
+      "removed": true
+    },
+    {
+      "path": "/Users/xmaczone/Library/Caches/com.deskmate.unifiedhistoryqa.b720261027a",
+      "birth": 1793033032.2886772,
+      "removed": true
+    },
+    {
+      "path": "/Users/xmaczone/Library/WebKit/com.deskmate.unifiedhistoryqa.b720261027a",
+      "birth": 1793033032.2895482,
+      "removed": true
+    }
+  ],
+  "dummyCredential": {
+    "deleteExit": 0,
+    "absentExit": 44
+  },
+  "ports": {
+    "57464": "closed",
+    "62914": "closed"
+  },
+  "finishedAt": 1793064947.3165739
+}
