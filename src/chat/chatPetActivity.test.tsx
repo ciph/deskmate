@@ -386,6 +386,50 @@ test("a queued second snapshot flushes before idle and preserves ordered parts",
   expect(document.querySelector(".chat-typing")).toBeNull();
 });
 
+test("native text deltas render before completion and final snapshots replace accumulated text", async () => {
+  const info = await sendPrompt();
+  const identity = { sessionID: info.sessionID, messageID: info.id };
+  await deliverEvents([
+    { type: "message.updated", properties: { info: { ...info, time: { created: 1 } } } },
+    { type: "message.part.updated", properties: { part: { ...identity, id: "text", type: "text", text: "" } } },
+    { type: "message.part.delta", properties: { ...identity, partID: "text", field: "text", delta: "visible while streaming" } },
+  ]);
+  expect(screen.getByText("visible while streaming")).toBeDefined();
+  expect(screen.getByRole("button", { name: "停" })).toBeDefined();
+  await deliverEvents([
+    { type: "message.part.delta", properties: { ...identity, partID: "text", field: "text", delta: " pending" } },
+    { type: "message.part.updated", properties: { part: { ...identity, id: "text", type: "text", text: "authoritative final text" } } },
+    { type: "session.idle", properties: { sessionID: info.sessionID } },
+    { type: "message.part.delta", properties: { ...identity, partID: "text", field: "text", delta: " late" } },
+  ]);
+  expect(screen.getByText("authoritative final text")).toBeDefined();
+  expect(screen.queryByText(/pending|late/)).toBeNull();
+});
+
+test("deltas cannot reveal reasoning or cross session, user, parent and Stop boundaries", async () => {
+  const info = await sendPrompt();
+  const identity = { sessionID: info.sessionID, messageID: info.id };
+  await deliverEvents([
+    { type: "message.updated", properties: { info: { ...info, time: { created: 1 } } } },
+    { type: "message.part.updated", properties: { part: { ...identity, id: "text", type: "text", text: "safe" } } },
+    { type: "message.part.updated", properties: { part: { ...identity, id: "reason", type: "reasoning", text: "" } } },
+    { type: "message.part.delta", properties: { ...identity, partID: "reason", field: "text", delta: " secret reasoning" } },
+    { type: "message.part.delta", properties: { ...identity, sessionID: "other", partID: "text", field: "text", delta: " wrong session" } },
+    { type: "message.part.delta", properties: { ...identity, partID: "text", field: "output", delta: " wrong field" } },
+    { type: "message.updated", properties: { info: { ...info, id: "user", role: "user" } } },
+    { type: "message.part.delta", properties: { sessionID: info.sessionID, messageID: "user", partID: "text", field: "text", delta: " user echo" } },
+    { type: "message.updated", properties: { info: { ...info, parentID: "old-request", time: { created: 1 } } } },
+    { type: "message.part.delta", properties: { ...identity, partID: "text", field: "text", delta: " wrong parent" } },
+    { type: "message.updated", properties: { info: { ...info, parentID: submittedMessageId, time: { created: 1 } } } },
+    { type: "message.part.delta", properties: { ...identity, partID: "text", field: "text", delta: " accepted" } },
+  ]);
+  fireEvent.click(screen.getByRole("button", { name: "停" }));
+  await waitFor(() => expect(activityEvents.some(event => event.type === "cancel")).toBe(true));
+  await deliverEvents([{ type: "message.part.delta", properties: { ...identity, partID: "text", field: "text", delta: " cancelled tail" } }]);
+  expect(screen.getByText("safe accepted")).toBeDefined();
+  expect(document.querySelector(".chat-msg-assistant")?.textContent).not.toMatch(/secret|wrong|user echo|cancelled/);
+});
+
 test("error flushes queued content before its error row and rejects later chunks", async () => {
   const info = await sendPrompt();
   await deliverEvents([

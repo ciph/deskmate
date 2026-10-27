@@ -1,4 +1,4 @@
-/** Full text snapshots, not deltas: repeat events replace their own part only. */
+/** Published text is a full message snapshot, composed from ordered text parts. */
 export interface AssistantTextSnapshot {
   readonly messageId: string;
   readonly text: string;
@@ -24,26 +24,36 @@ export function createStreamTextBuffer(publish: (updates: readonly AssistantText
     publish(updates);
   }
 
+  function push(messageId: string, partId: string | undefined, text: string) {
+    let messageParts = parts.get(messageId);
+    if (!messageParts) {
+      messageParts = new Map();
+      parts.set(messageId, messageParts);
+    }
+    const key = partId ?? messageId;
+    if (messageParts.get(key) === text && !invalidated.has(messageId)) return;
+    invalidated.delete(messageId);
+    messageParts.set(key, text);
+    const combined = Array.from(messageParts.values()).join("");
+    pending.set(messageId, combined);
+    if (!presented.has(messageId) && combined.length) {
+      presented.add(messageId);
+      flush();
+    } else if (timer === undefined) {
+      const expected = generation;
+      timer = setTimeout(() => { if (expected === generation) flush(); }, STREAM_TEXT_INTERVAL_MS);
+    }
+  }
+
   return {
-    push(messageId: string, partId: string | undefined, text: string) {
-      let messageParts = parts.get(messageId);
-      if (!messageParts) {
-        messageParts = new Map();
-        parts.set(messageId, messageParts);
-      }
-      const key = partId ?? messageId;
-      if (messageParts.get(key) === text && !invalidated.has(messageId)) return;
-      invalidated.delete(messageId);
-      messageParts.set(key, text);
-      const combined = Array.from(messageParts.values()).join("");
-      pending.set(messageId, combined);
-      if (!presented.has(messageId) && combined.length) {
-        presented.add(messageId);
-        flush();
-      } else if (timer === undefined) {
-        const expected = generation;
-        timer = setTimeout(() => { if (expected === generation) flush(); }, STREAM_TEXT_INTERVAL_MS);
-      }
+    push,
+    append(messageId: string, partId: string, delta: string): boolean {
+      // Reasoning uses the same delta event/field. Only a text snapshot (or
+      // restored text part) establishes eligibility; never infer it from delta.
+      const text = parts.get(messageId)?.get(partId);
+      if (text === undefined || !delta) return false;
+      push(messageId, partId, text + delta);
+      return true;
     },
     flush,
     invalidate(messageId: string) { invalidated.add(messageId); },

@@ -719,6 +719,19 @@ export default function ChatApp() {
         }
         break;
       }
+      case "message.part.delta": {
+        const { sessionID, messageID, partID, field, delta } = props;
+        if (sessionID !== sessionRef.current || replyRequestRef.current === null || field !== "text"
+          || typeof messageID !== "string" || typeof partID !== "string" || typeof delta !== "string") return;
+        if (rolesRef.current.get(messageID) === "user") return;
+        const parentID = messageParentsRef.current.get(messageID);
+        if (parentID && replyRequestRef.current.requestId !== null && parentID !== replyRequestRef.current.requestId) return;
+        if (streamText.append(messageID, partID, delta)) {
+          setIsPersonaTyping(true);
+          petActivity.part({ sessionID, messageID, type: "text" });
+        }
+        break;
+      }
       case "session.status": {
         if (props.sessionID !== sessionRef.current || replyRequestRef.current === null) return;
         const s = (props.status as { type: string } | undefined)?.type;

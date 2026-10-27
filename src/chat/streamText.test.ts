@@ -88,3 +88,41 @@ test("an empty restored native part does not defer its first real content", () =
   buffer.push("m", "p", "first real content");
   expect(publications).toEqual([[{ messageId: "m", text: "first real content" }]]);
 });
+
+test("native deltas require a known text part and snapshots remain authoritative", () => {
+  const { buffer, publications } = harness();
+  expect(buffer.append("m", "unknown", "hidden")).toBe(false);
+  buffer.push("m", "p", "");
+  expect(buffer.append("m", "p", "\uD83D")).toBe(true);
+  expect(publications.at(-1)).toEqual([{ messageId: "m", text: "\uD83D" }]);
+  buffer.append("m", "p", "\uDE80");
+  buffer.push("m", "p2", " second");
+  buffer.append("m", "p2", " part");
+  buffer.flush();
+  expect(publications.at(-1)).toEqual([{ messageId: "m", text: "🚀 second part" }]);
+  buffer.push("m", "p", "corrected");
+  buffer.flush();
+  expect(publications.at(-1)).toEqual([{ messageId: "m", text: "corrected second part" }]);
+  buffer.reset();
+  expect(buffer.append("m", "p", "late")).toBe(false);
+  buffer.restore([{ messageId: "restored", partId: "p", text: "old" }]);
+  buffer.append("restored", "p", " new");
+  buffer.flush();
+  expect(publications.at(-1)).toEqual([{ messageId: "restored", text: "old new" }]);
+});
+
+for (const length of [10_000, 50_000]) {
+  test(`native 50 Hz deltas preserve ${length} UTF-16 characters with bounded publications`, () => {
+    const { buffer, publications } = harness();
+    const text = "🚀 native delta 中文\n".repeat(length).slice(0, length);
+    buffer.push("m", "p", "");
+    for (let i = 0; i < 500; i++) {
+      buffer.append("m", "p", text.slice(Math.floor(length * i / 500), Math.floor(length * (i + 1) / 500)));
+      jest.advanceTimersByTime(20);
+    }
+    buffer.flush();
+    expect(publications.at(-1)).toEqual([{ messageId: "m", text }]);
+    expect(publications.length).toBeGreaterThan(200);
+    expect(publications.length).toBeLessThanOrEqual(252);
+  });
+}
