@@ -4,6 +4,8 @@
 
 ## 当前验证入口
 
+**2026-10-27 Windows 接管安排**：本轮代码与 Mac 证据已完成保存，按用户要求推送 `codex/yume-performance-b6` 供 Windows 接续；见 [Windows 接管入口](performance-windows-handoff.md)。先建立 Windows 本机基线，再验首实例/并发/孤儿、WebView2、GUI 审批/SSE/日志与存储。此安排不新增测试通过声明；下方 Mac 尚未验证的范围继续保留。
+
 ### 2026-10-27 Mac B7 流式与 PDF
 
 起点 `1add56b`，代码 `3069953`；版本/schema 不变，B7 **进行中**。[最新 HTML](performance-evidence/b7-macos-20261027/index.html)、[完整方法与边界](performance-evidence/b7-macos-20261027/README.md)、[结果与日志 SHA](performance-evidence/b7-macos-20261027/summary.json)。下方历史记录保持各自执行范围。

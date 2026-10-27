@@ -2,7 +2,7 @@
 
 当前规则和历史证据分别维护。功能或操作入口发生变化时，更新下表对应的现行文档；阶段记录保留原基线、结果和未验边界。最近核对：2026-09-30，YUME 0.4.16 / OpenCode 1.18.21。
 
-2026-10-27 Mac 接续更新：B1–B5 已随 Windows 0.4.21 保存发布；B6 的 H18a/H18b/H18c 与 M19a/M19b/M19c 已完成代码与自动回归，历史目录 schema 3、记忆库 schema 4，B7 已完成本机完整检查及部分 Mac QA 原生链路，平台验收继续，见 [接续说明](performance-remediation-handoff.md)。下方其余文档保留各自核对日期。
+2026-10-27 Mac 接续更新：B1–B5 已随 Windows 0.4.21 保存发布；B6 的 H18a/H18b/H18c 与 M19a/M19b/M19c 已完成代码与自动回归，历史目录 schema 3、记忆库 schema 4，B7 已完成本机完整检查及部分 Mac QA 原生链路，平台验收继续，见 [接续说明](performance-remediation-handoff.md)。下一阶段由 Windows 按 [接管入口](performance-windows-handoff.md) 从 `origin/codex/yume-performance-b6` 继续。下方其余文档保留各自核对日期。
 
 ## 当前产品与维护契约
 
@@ -29,7 +29,7 @@
 
 | 入口 | 当前责任 |
 | --- | --- |
-| [性能整改施工计划](performance-remediation-plan.md) / [Mac 接续说明](performance-remediation-handoff.md) / [便携证据](performance-evidence/README.md) | 2026-10-22 性能审计；B1–B5 已保存，B6 H18a/H18b/H18c 与 M19a/M19b/M19c 已完成代码与自动回归，B7 进行中；[本轮结果](performance-evidence/b7-macos-20261027/index.html)，平台待验继续保留 |
+| [性能整改施工计划](performance-remediation-plan.md) / [Windows 接管入口](performance-windows-handoff.md) / [Mac 施工记录](performance-remediation-handoff.md) / [便携证据](performance-evidence/README.md) | 2026-10-22 性能审计；B1–B5 已保存，B6 H18a/H18b/H18c 与 M19a/M19b/M19c 已完成代码与自动回归，B7 进行中；[本轮结果](performance-evidence/b7-macos-20261027/index.html)，平台待验继续保留 |
 | [仓库审计](../AUDIT.md) | 2026-09-30 基线 findings；历史基线不等于当前缺陷均仍存在 |
 | [审计整改方案](audit-remediation-construction-plan.md) / [施工进度](audit-remediation-progress.md) | 运行、记忆库、UI、工作台和历史简化的实施依赖与真实结果 |
 | [文件清理方案](repository-cleanup-plan.md) / [执行进度](repository-cleanup-progress.md) | 文件全集、用途判定、实际处理与条件项 |

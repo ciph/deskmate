@@ -1,5 +1,7 @@
 # 性能整改便携证据
 
+2026-10-27 接管安排：用户指定下一阶段由 Windows 继续，见 [Windows 接管入口](../performance-windows-handoff.md)。下方证据保留各次采样时状态；旧报告中的“未推送”不代表本次分支交接尚未授权。
+
 最新：[2026-10-27 B7 流式与 PDF HTML](b7-macos-20261027/index.html) · [结果/日志 SHA](b7-macos-20261027/summary.json)。修复原生 text delta，新增 1000 消息 50 Hz 的 10k/50k、Stop/继续和 PDF worker 32 次循环；前端 1359 pass。B7 仍进行中，下一步 GUI 审批/SSE/日志链路，内存/Windows/硬件边界保留。
 
 上一轮：[2026-10-26–27 B7 接续 HTML](b7-macos-20261026/index.html) · [结果/日志 SHA](b7-macos-20261026/summary.json)。新增普通附件历史标签与导航修复、三种媒体/原始上传和 1000 消息非流式采样；该轮提出的流式与 PDF 循环已由最新记录补充。下方旧记录保持其当时范围。

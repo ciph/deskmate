@@ -2,7 +2,7 @@
 
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前（2026-10-27）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归通过，历史目录 schema 3、记忆库 schema 4。B7 进行中：最新前端 1359 pass；Rust 本轮未改未重跑，上一轮 957 pass / 23 ignored。新增原生文本 delta 修复、1000 消息 50 Hz 的 10k/50k 流式和 32 次 PDF worker 循环证据。** 接续先读 [最新 B7 结果](performance-evidence/b7-macos-20261027/index.html) 和 [Mac 接续说明](performance-remediation-handoff.md)，优先补 Mac GUI 审批、SSE 断流/故障恢复与日志五工具/到期链路，再按第 11 节补齐未验项。不要切回旧 main 重做已有修改。
+**当前（2026-10-27）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归通过，历史目录 schema 3、记忆库 schema 4。B7 进行中：最新前端 1359 pass；Rust 本轮未改未重跑，上一轮 957 pass / 23 ignored。新增原生文本 delta 修复、1000 消息 50 Hz 的 10k/50k 流式和 32 次 PDF worker 循环证据。** 接续先读 [最新 B7 结果](performance-evidence/b7-macos-20261027/index.html) 和 [Mac 接续说明](performance-remediation-handoff.md)，用户指定下一阶段由 Windows 接管，按 [Windows 接管入口](performance-windows-handoff.md) 获取完整施工分支、建立本机基线，优先补 Windows 启动所有权/WebView2 与 GUI 审批/SSE/日志链路，再按第 11 节补齐未验项；Mac 专有待验继续保留。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
