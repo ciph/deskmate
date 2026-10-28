@@ -1,0 +1,35 @@
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 5435 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/pet.html                                 1.03 kB │ gzip:   0.45 kB
+dist/settings.html                            1.10 kB │ gzip:   0.49 kB
+dist/chat.html                                1.26 kB │ gzip:   0.51 kB
+dist/assets/pdf.worker.min-CLrFZWeq.mjs   1,312.45 kB
+dist/assets/pet-kuEUgwpr.css                  2.23 kB │ gzip:   0.75 kB
+dist/assets/userAvatar-Dgt0Ji5w.css           4.38 kB │ gzip:   1.33 kB
+dist/assets/window-BbWyHlPB.css               5.22 kB │ gzip:   1.34 kB
+dist/assets/chat-B4528mX8.css                37.87 kB │ gzip:   6.91 kB
+dist/assets/settings-cTZmAkq_.css            52.74 kB │ gzip:   8.79 kB
+dist/assets/pdf.worker.min-FyRH-AZg.js        0.07 kB │ gzip:   0.09 kB
+dist/assets/_commonjsHelpers-CE1G-McA.js      0.76 kB │ gzip:   0.40 kB
+dist/assets/preload-helper-BXl3LOEh.js        1.11 kB │ gzip:   0.65 kB
+dist/assets/petVisibility-CQmGKtLa.js         4.37 kB │ gzip:   1.77 kB
+dist/assets/attachments-D7GbgO_m.js           5.02 kB │ gzip:   2.49 kB
+dist/b7-qa.js                                 6.07 kB │ gzip:   2.91 kB
+dist/assets/personaAssets-DuFoYa1Q.js         9.51 kB │ gzip:   3.59 kB
+dist/assets/pet-DCYce_q5.js                  43.21 kB │ gzip:  14.74 kB
+dist/assets/settings-CQbJ11Lo.js            144.18 kB │ gzip:  47.42 kB
+dist/assets/chat-Bjy6bPdX.js                174.80 kB │ gzip:  57.31 kB
+dist/assets/userAvatar-DSDIRyfZ.js          188.88 kB │ gzip:  58.46 kB
+dist/assets/window-C5HS_61l.js              377.50 kB │ gzip: 114.36 kB
+dist/assets/pdf-DlDyyR6N.js                 488.63 kB │ gzip: 148.46 kB
+dist/assets/index-DMl000o-.js               503.74 kB │ gzip: 131.42 kB
+dist/assets/GlbPetView-BiCnk2rb.js          776.51 kB │ gzip: 201.76 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 9.19s

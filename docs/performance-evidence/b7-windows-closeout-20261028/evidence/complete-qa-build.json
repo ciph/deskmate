@@ -1,0 +1,9 @@
+{
+  "binarySha256": "A9BBFF944872DB8C2B1EEBB9D490D412EC4022897CEC90CD4E22A027BFC57C3B",
+  "identity": "com.deskmate.unifiedhistoryqa.winb7closeout20261028a",
+  "exitCode": 0,
+  "startedAt": "2026-10-28T11:21:03.8213636+08:00",
+  "finishedAt": "2026-10-28T11:26:52.0555970+08:00",
+  "features": "worklog-qa",
+  "profile": "release / fat LTO"
+}

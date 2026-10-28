@@ -1,0 +1,5 @@
+Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.
+timestamp=2026-10-27T08:25:49.991Z level=INFO run=9d11288e message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-dekNn7\\xdg-config\\opencode\\config.json"
+timestamp=2026-10-27T08:25:50.002Z level=INFO run=9d11288e message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-dekNn7\\xdg-config\\opencode\\opencode.json"
+timestamp=2026-10-27T08:25:50.003Z level=INFO run=9d11288e message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-dekNn7\\xdg-config\\opencode\\opencode.jsonc"
+opencode server listening on http://127.0.0.1:51511

@@ -1,0 +1,22 @@
+bun test v1.3.14 (0d9b296a)
+
+scripts\worklog-qa\provider-models.test.ts:
+OPTIONS http://127.0.0.1:60291/qa/control 404 (Not Found)
+Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at "http://127.0.0.1:60291/qa/control".
+180 |         }
+181 |         if (!this.disableSameOriginPolicy) {
+182 |             const compliesWithCrossOriginPolicy = await this.compliesWithCrossOriginPolicy();
+183 |             if (!compliesWithCrossOriginPolicy) {
+184 |                 this.#browserFrame.page.console.warn(`Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at "${this.request.url}".`);
+185 |                 throw new this.#window.DOMException(`Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at "${this.request.url}".`, DOMExceptionNameEnum.networkError);
+                            ^
+NetworkError: Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at "http://127.0.0.1:60291/qa/control".
+      at send (E:\Codex\工作伙伴\deskmate-windows-b7\node_modules\happy-dom\lib\fetch\Fetch.js:185:23)
+      at async fetch (E:\Codex\工作伙伴\deskmate-windows-b7\node_modules\happy-dom\lib\window\BrowserWindow.js:2208:12)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\scripts\worklog-qa\provider-models.test.ts:32:29)
+(fail) wraps all five worklog tool inputs in both JSON and streaming responses [18.69ms]
+
+ 0 pass
+ 4 filtered out
+ 1 fail
+Ran 1 test across 1 file. [4.21s]

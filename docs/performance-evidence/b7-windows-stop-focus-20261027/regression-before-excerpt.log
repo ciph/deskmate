@@ -1,0 +1,10 @@
+Excerpt only; full raw log retained locally.
+Expected: HTMLTextAreaElement {
+Received: null
+(fail) catalog refresh preserves local reply controls through idle [1437.22ms]
+Expected: HTMLTextAreaElement {
+Received: null
+(fail) catalog refresh preserves local reply controls through stop [1331.11ms]
+ 0 pass
+ 2 fail
+Ran 2 tests across 1 file. [10.73s]

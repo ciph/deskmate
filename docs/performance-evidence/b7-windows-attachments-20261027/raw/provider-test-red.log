@@ -1,0 +1,32 @@
+bun test v1.3.14 (0d9b296a)
+
+scripts\worklog-qa\provider-models.test.ts:
+44 |       const response = await post(`${receipt.baseUrl}/chat/completions`, { stream, messages: [], tools: [{ type: "function", function: { name } }] });
+45 |       const raw = response.body;
+46 |       const body = JSON.parse(stream ? raw.split("\n")[0].slice(6) : raw);
+47 |       const call = (stream ? body.choices[0].delta : body.choices[0].message).tool_calls[0];
+48 |       expect(call.function.name).toBe(name);
+49 |       expect(JSON.parse(call.function.arguments)).toEqual({ input });
+                                                       ^
+error: expect(received).toEqual(expected)
+
+  {
+-   "input": {
+-     "mode": "direct",
+-     "text": "合成工作记录",
+-   },
++   "mode": "direct",
++   "text": "合成工作记录",
+  }
+
+- Expected  - 4
++ Received  + 2
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\scripts\worklog-qa\provider-models.test.ts:49:51)
+(fail) wraps all five worklog tool inputs in both JSON and streaming responses [14.21ms]
+
+ 0 pass
+ 4 filtered out
+ 1 fail
+ 3 expect() calls
+Ran 1 test across 1 file. [3.81s]

@@ -1,0 +1,1148 @@
+   Compiling yume v0.4.21 (E:\Codex\工作伙伴\deskmate-windows-b7\src-tauri)
+warning: unused import: `Manager`
+  --> src\updater.rs:11:38
+   |
+11 | use tauri::{ipc::Channel, AppHandle, Manager};
+   |                                      ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `app`
+   --> src\updater.rs:594:40
+    |
+594 | pub(crate) fn confirm_installed_update(app: &AppHandle) {
+    |                                        ^^^ help: if this is intentional, prefix it with an underscore: `_app`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `decision_with_approvals` is never used
+  --> src\agent\permission_policy.rs:83:15
+   |
+83 | pub(super) fn decision_with_approvals(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `invalidate_all` is never used
+  --> src\history\catalog_preview.rs:64:15
+   |
+64 | pub(crate) fn invalidate_all() {
+   |               ^^^^^^^^^^^^^^
+
+warning: function `active_provider_clone` is never used
+   --> src\settings.rs:514:15
+    |
+514 | pub(crate) fn active_provider_clone(state: &SettingsState) -> Option<AiProvider> {
+    |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variants `UnsafeInstall`, `PermissionDenied`, and `RestoreFailed` are never constructed
+   --> src\updater.rs:145:5
+    |
+137 | pub enum UpdateError {
+    |          ----------- variants in this enum
+...
+145 |     UnsafeInstall,
+    |     ^^^^^^^^^^^^^
+146 |     PermissionDenied,
+    |     ^^^^^^^^^^^^^^^^
+147 |     RestoreFailed,
+    |     ^^^^^^^^^^^^^
+    |
+    = note: `UpdateError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: variants `WaitingForIdle` and `Restarting` are never constructed
+   --> src\updater.rs:222:5
+    |
+206 | pub enum UpdateEvent {
+    |          ----------- variants in this enum
+...
+222 |     WaitingForIdle {
+    |     ^^^^^^^^^^^^^^
+...
+228 |     Restarting {
+    |     ^^^^^^^^^^
+    |
+    = note: `UpdateEvent` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: variant `WaitingForIdle` is never constructed
+   --> src\updater.rs:248:5
+    |
+235 | pub enum UpdateStatus {
+    |          ------------ variant in this enum
+...
+248 |     WaitingForIdle {
+    |     ^^^^^^^^^^^^^^
+    |
+    = note: `UpdateStatus` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: method `has_running_run` is never used
+  --> src\worklog\commands.rs:43:19
+   |
+13 | impl WorklogState {
+   | ----------------- method in this implementation
+...
+43 |     pub(crate) fn has_running_run(&self) -> WorklogResult<bool> {
+   |                   ^^^^^^^^^^^^^^^
+
+warning: method `has_running_run` is never used
+  --> src\worklog\repository_runtime.rs:20:12
+   |
+19 | impl Repository {
+   | --------------- method in this implementation
+20 |     pub fn has_running_run(&self) -> WorklogResult<bool> {
+   |            ^^^^^^^^^^^^^^^
+
+warning: `yume` (lib test) generated 10 warnings (run `cargo fix --lib -p yume --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.00s
+     Running unittests src\lib.rs (src-tauri\target\debug\deps\yume_lib-8bfdae2dcef0bbf7.exe)
+
+running 998 tests
+test agent::collector_refresh::tests::cache_resets_for_run_workspace_session_generation_and_creation_identity ... ok
+test agent::collector_refresh::tests::approval_and_owned_tool_timers_reuse_cache_without_message_http ... ok
+test agent::collector_refresh::tests::cancellation_and_pending_failure_force_full_despite_quiet_stream ... ok
+test agent::collector_refresh::tests::dirty_message_budget_and_reconnect_force_authoritative_reads ... ok
+test agent::collector_refresh::tests::failed_get_does_not_commit_a_partial_prefix_or_advance_full_deadline ... ok
+test agent::collector_refresh::tests::initial_then_idle_then_thirty_second_reconciliation ... ok
+test agent::artifacts_tests::file_artifact_requires_completed_tool_and_current_inside_file ... ok
+test agent::artifacts_tests::spoofed_cross_run_outside_and_script_execution_fail_closed ... ok
+test agent::collector_refresh::tests::missing_or_incomplete_message_uses_full_snapshot_to_remove_stale_data ... ok
+test agent::collector_refresh::tests::owned_error_is_terminal_but_foreign_terminal_does_not_force_full ... ok
+test agent::collector_refresh::tests::partial_snapshot_replaces_appends_and_preserves_native_creation_order ... ok
+test agent::collector_refresh::tests::sixty_refresh_http_work_matches_full_reference_without_old_record_reads ... ignored, isolated HTTP work comparison with 10000 historical run files; run with --ignored --nocapture
+test agent::collector_refresh::tests::terminal_partial_read_requires_full_confirmation_and_cannot_finish_a_newer_turn ... ok
+test agent::collector_refresh::tests::missed_terminal_event_recovers_at_thirty_seconds_without_renderer_activity ... ok
+test agent::collector_refresh::tests::concurrent_usage_revision_skips_capture_then_retries_terminal_snapshot ... ok
+test agent::collector_tests::host_tick_archives_and_finishes_without_renderer_polling ... ok
+test agent::collector_tests::permission_tests::collector_auto_allows_reads_but_caches_write_for_user ... ok
+test agent::collector_tests::permission_tests::cancel_evicts_cached_approval_and_automatic_reply_runs_without_locks ... ok
+test agent::collector_tests::permission_tests::live_pending_refresh_evicts_missing_and_replaced_requests ... ok
+test agent::collector_tests::permission_tests::invalid_permission_snapshot_reports_error_before_native_execution_is_stopped ... ok
+test agent::collector_refresh::tests::missed_tool_completion_rechecks_full_before_interrupt_or_timeout ... ok
+test agent::collector_tests::permission_tests::same_session_continuation_keeps_only_current_run_tool_permissions ... ok
+test agent::collector_tests::permission_tests::mismatched_live_request_evicts_stale_cached_approval ... ok
+test agent::collector_tests::preparation_is_idle_and_confirmed_sidecar_loss_interrupts ... ok
+test agent::collector_tests::projection_tests::critical_run_write_failure_never_publishes_terminal_state ... ok
+test agent::collector_tests::projection_tests::projection_control_wait_measurement ... ignored, isolated 30-sample lock experiment; run serially with --ignored --nocapture
+test agent::collector_tests::projection_tests::overlapping_collector_skips_without_losing_pending_recovery ... ok
+test agent::collector_tests::persistent_archive_failure_does_not_gate_owned_ids_approval_or_terminal_commit ... ok
+test agent::collector_tests::projection_tests::usage_commit_does_not_invalidate_its_own_prepared_projection ... ok
+test agent::collector_tests::race_tests::cancellation_discards_snapshot_read_before_native_settlement ... ok
+test agent::collector_tests::race_tests::cancellation_requested_during_snapshot_wins_without_relabeling ... ok
+test agent::collector_tests::race_tests::stale_finish_never_removes_the_newer_active_run ... ok
+test agent::collector_tests::race_tests::pending_cancel_survives_reload_until_final_text_is_archived ... ok
+test agent::collector_tests::race_tests::repeated_restart_interruption_keeps_the_exact_reason ... ok
+test agent::collector_tests::reply_tests::permission_reply_rejects_previous_turn_tool_on_the_same_session ... ok
+test agent::collector_tests::reply_tests::rejected_permission_waits_for_native_result_and_model_reply ... ok
+test agent::collector_tests::race_tests::stale_snapshot_cannot_finish_a_newer_run ... ok
+test agent::collector_tests::uncertain_submission_settlement_releases_ownership_despite_archive_failure ... ok
+test agent::collector_tests::transient_read_and_archive_failures_retry_without_terminalizing ... ok
+test agent::collector_tests::usage_tests::deleted_run_record_is_not_recreated_by_usage_retry ... ok
+test agent::collector_tests::projection_tests::projection_barrier_releases_control_and_rejects_every_changed_revision ... ok
+test agent::collector_tests::usage_tests::failed_or_missing_usage_responses_preserve_pending_and_retry ... ok
+test agent::collector_tests::usage_tests::slow_usage_http_does_not_hold_control_or_active_collection ... ok
+test agent::continuation::catalog_tests::archived_catalog_session_cannot_continue ... ok
+test agent::continuation::catalog_tests::busy_catalog_session_cannot_continue ... ok
+test agent::continuation::catalog_tests::catalog_continuation_keeps_existing_active_run_guard ... ok
+test agent::continuation::catalog_tests::catalog_key_mismatch_is_rejected_before_start ... ok
+test agent::collector_tests::usage_tests::usage_retry_rejects_changed_generation_and_full_run_identity ... ok
+test agent::continuation::catalog_tests::pending_delete_catalog_session_cannot_continue ... ok
+test agent::lifecycle_contract_tests::continuation_workspace_requires_the_exact_origin_and_session ... ok
+test agent::lifecycle_contract_tests::host_boundary_failure_injection_is_observable ... ok
+test agent::continuation::catalog_tests::selected_catalog_scope_wins_over_colliding_legacy_origin ... ok
+test agent::continuation::catalog_tests::unavailable_catalog_session_cannot_continue ... ok
+test agent::lifecycle_contract_tests::submission_failure_is_terminal_and_reloadable ... ok
+test agent::lifecycle_contract_tests::start_validates_and_persists_only_the_canonical_workspace_contract ... ok
+test agent::lifecycle_contract_tests::persisted_session_ownership_resolves_to_first_run ... ok
+test agent::lifecycle_recovery_tests::snapshot_recovery_deduplicates_native_references_and_never_replays ... ok
+test agent::lifecycle_restart_tests::lifecycle_registration_and_completion_clear_permission_ownership ... ok
+test agent::lifecycle_tests::atomic_double_start_accepts_exactly_one ... ok
+test agent::lifecycle_tests::cancel_and_permission_reply_share_one_operation_boundary ... ok
+test agent::lifecycle_restart_tests::unknown_restart_marks_interrupted_and_clears_initial_input ... ok
+test agent::lifecycle_recovery_tests::intermediate_tool_calls_keep_run_active_until_explicit_terminal_message ... ok
+test agent::lifecycle_tests::cancel_only_commits_after_confirmed_abort ... ok
+test agent::lifecycle_tests::persistence_failure_never_leaves_running_state ... ok
+test agent::lifecycle_tests::catalog_revision_ignores_streaming_usage_and_pending_finish_but_tracks_binding_and_terminal_commit ... ok
+test agent::lifecycle_tests::unresolved_tool_in_earlier_round_prevents_later_stop_from_finishing ... ok
+test agent::lifecycle_tests::unresolved_tool_in_latest_error_prevents_premature_failure ... ok
+test agent::opencode::settlement_tests::confirmed_abort_rejects_stale_permission_and_question_requests ... ok
+test agent::opencode::settlement_tests::confirms_abort_only_after_native_status_is_idle ... ok
+test agent::opencode::settlement_tests::error_output_is_visible_when_native_tool_has_error ... ok
+test agent::opencode::settlement_tests::refuses_settlement_when_abort_is_unconfirmed ... ok
+test agent::opencode::settlement_tests::refuses_settlement_when_aborted_session_remains_busy_or_retrying ... ok
+test agent::opencode::settlement_tests::rejects_verified_abort_when_native_status_remains_active ... ok
+test agent::opencode::settlement_tests::settles_each_orphan_once_when_abort_confirms_idle ... ok
+test agent::opencode::settlement_tests::busy_expired_or_cancelled_tools_require_host_isolation_before_finishing ... ok
+test agent::opencode::settlement_tests::skips_patch_when_native_abort_already_settled_the_tool ... ok
+test agent::lifecycle_tests::every_failed_commit_preserves_ram_disk_and_restart_then_can_retry ... ok
+test agent::opencode_wire_tests::accepted_prompt_confirmation_recovers_from_native_facts_without_replay ... ok
+test agent::opencode_wire_tests::full_snapshot_keeps_legacy_optional_identity_behavior ... ok
+test agent::opencode_wire_tests::incomplete_usage_never_disrupts_snapshot_and_invalid_counts_are_not_captured ... ok
+test agent::opencode_wire_tests::recovery_snapshot_is_one_get_and_never_posts ... ok
+test agent::opencode_wire_tests::single_message_accepts_valid_user_assistant_empty_parts_and_empty_text ... ok
+test agent::opencode_wire_tests::single_message_get_preserves_complete_native_fields_directory_and_auth ... ok
+test agent::opencode_wire_tests::single_message_keeps_404_and_malformed_payload_errors ... ok
+test agent::collector_tests::sixty_identical_thousand_message_snapshots_do_not_write_run_records ... ok
+test agent::opencode_wire_tests::single_message_rejects_incomplete_structures_before_cache_replacement ... ok
+test agent::opencode_wire_tests::single_message_rejects_unsafe_path_ids_before_http ... ok
+test agent::opencode_tests::delayed_health_allows_one_session_create ... ok
+test agent::opencode_wire_tests::snapshot_preserves_native_file_names_without_resolving_urls ... ok
+test agent::opencode_wire_tests::snapshot_rejects_a_different_or_invalid_session_before_capture ... ok
+test agent::opencode_wire_tests::workspace_directory_scopes_every_session_request ... ok
+test agent::pending_projection_tests::active_preparation_projects_empty_permissions_but_unknown_stays_closed ... ok
+test agent::permissions::deadline_tests::a_late_reply_cannot_approve_an_expired_request ... ok
+test agent::permissions::deadline_tests::cancel_clears_deadlines_before_a_new_run ... ok
+test agent::permissions::deadline_tests::live_fixture_expires_pending_approvals_without_backdating_the_clock ... ok
+test agent::permissions::deadline_tests::malformed_metadata_rejects_only_its_request ... ok
+test agent::permissions::deadline_tests::multiple_approvals_have_independent_deadlines ... ok
+test agent::permissions::deadline_tests::repeated_polls_keep_the_original_approval_deadline ... ok
+test agent::permissions::deadline_tests::timely_reply_is_consumed_only_once ... ok
+test agent::pending_projection_tests::confirmed_registered_run_projects_its_cached_permissions ... ok
+test agent::opencode_wire_tests::single_message_rejects_missing_or_mismatched_message_and_part_identities ... ok
+test agent::permissions::path_tests::asks_for_host_observed_existing_and_new_edit_targets ... ok
+test agent::permissions::path_tests::glob_pattern_uses_its_host_defaulted_workspace_path ... ok
+test agent::permissions::tests::asks_for_selected_desktop_mcp_tools_and_rejects_unselected_capabilities ... ok
+test agent::permissions::tests::a_new_turn_on_the_same_session_drops_old_permission_ownership ... ok
+test agent::permissions::tests::asks_for_write_and_shell_with_host_derived_cwd ... ok
+test agent::permissions::tests::binds_pending_requests_to_owned_run_session_and_workspace ... ok
+test agent::permissions::tests::denies_unknown_external_stale_cross_run_and_repeated_replies ... ok
+test agent::permissions::tests::remembered_shell_pattern_is_scoped_to_its_workspace_and_can_be_added_live ... ok
+test agent::permissions_escape_tests::rejects_host_observed_outside_and_symlink_edit_targets ... ok
+test agent::permissions_escape_tests::reply_returns_only_the_host_observed_request ... ok
+test agent::permissions_escape_tests::exact_git_relative_edit_pattern_matches_host_filepath ... ok
+test agent::permissions::path_tests::resolves_root_stripped_read_patterns_and_rejects_outside_or_mixed_paths ... ok
+test agent::recovery_permission_tests::invalid_recovered_workspace_is_interrupted_but_session_stays_blocked ... ok
+test agent::recovery_permission_tests::recovered_active_session_blocks_all_legacy_permission_commands ... ok
+test agent::recovery_permission_tests::recovered_preparation_stays_idle_and_can_be_cancelled_for_retry ... ok
+test agent::run_commands_tests::catalog_failure_releases_slot_and_permission_but_preserves_input ... ok
+test agent::recovery_permission_tests::recovered_terminal_agent_sessions_remain_excluded_from_legacy_permissions ... ok
+test agent::recovery_permission_tests::snapshot_transport_failure_keeps_run_active_for_retry ... ok
+test agent::run_commands_tests::start_settings_snapshot_cannot_mix_identity_after_concurrent_mutation ... ok
+test agent::scheduled_tests::busy_occurrence_records_one_terminal_receipt_and_never_queues ... ok
+test agent::run_commands_tests::failed_bind_keeps_unbound_record_and_caller_releases_registered_permissions ... ok
+test agent::run_commands_tests::history_start_uses_only_the_persisted_session_workspace_pair ... ok
+test agent::scheduled_tests::occurrence_identity_is_stable_and_task_scoped ... ok
+test agent::scheduled_tests::confirmation_failure_keeps_the_submitted_schedule_owned_and_never_replays ... ok
+test agent::scheduled_tests::host_submission_runs_once_without_a_chat_observer ... ok
+test agent::scheduled_tests::scheduled_failure_is_terminal_and_private_workspace_is_immutable ... ok
+test agent::scheduled_tests::transport_failure_is_persisted_and_not_retried ... ok
+test agent::tests::command_boundary_uses_owned_state_and_renderer_ids_only ... ok
+test agent::scheduled_tests::uncertain_submission_keeps_pending_failure_owned_until_settlement ... ok
+test agent::tests::permission_reply_requires_current_exact_scoped_request ... ok
+test agent::tool_lifecycle_live_tests::live_audit_remediation ... ignored, requires scripts/audit-remediation/verify-native.ts isolated native runtime/provider
+test agent::tool_lifecycle_live_tests::live_tool_lifecycle ... ignored, requires scripts/agent-qa/tool-lifecycle.ts localhost runtime/provider
+test agent::usage_retry::tests::empty_state_and_stale_queue_items_do_not_panic_or_claim_inflight ... ok
+test agent::tests::permission_reply_rejects_a_run_terminalized_by_collection ... ok
+test agent::tests::permission_workspace_comes_from_the_active_host_run ... ok
+test agent::workspace_tests::git_root_relative_pattern_still_rejects_outside_symlink_when_supported ... ok
+test agent::workspace_tests::handles_drive_root_and_unc_patterns_without_guessing ... ok
+test agent::workspace_tests::opencode_wire_directory_removes_only_windows_verbatim_prefixes ... ok
+test agent::usage_retry::tests::pending_marker_failure_preserves_ram_disk_and_restart ... ok
+test agent::workspace_tests::permits_existing_and_new_paths_only_under_canonical_root ... ok
+test agent::workspace_tests::rejects_ambiguous_workspace_relative_pattern_named_like_drive_root_directory ... ok
+test agent::workspace_tests::rejects_missing_root_and_file_root ... ok
+test agent::workspace_tests::rejects_symlink_git_marker_instead_of_widening_relative_base ... ok
+test agent::workspace_tests::rejects_symlink_that_resolves_outside_root_when_supported ... ok
+test agent::workspace_tests::resolves_repo_root_relative_pattern_for_git_directory_and_worktree_file ... ok
+test agent::workspace_tests::resolves_exact_git_root_relative_permission_pattern_inside_workspace ... ok
+test ai_usage::local::tests::capture_cache_uses_complete_scope_and_current_provider_mapping ... ok
+test ai_usage::local::tests::conflicting_persisted_identity_is_never_cached_as_saved ... ok
+test ai_usage::local::tests::duplicate_snapshot_rows_preserve_highest_observed_tokens ... ok
+test ai_usage::local::tests::failed_storage_does_not_cache_and_can_retry ... ok
+test ai_usage::local::tests::local_ledger_deduplicates_messages_and_groups_by_provider ... ok
+test ai_usage::local::tests::local_ledger_records_non_deepseek_providers ... ok
+test ai_usage::local::tests::missing_or_invalid_usage_and_unknown_providers_require_compensation ... ok
+test ai_usage::local::tests::snapshot_usage_is_local_and_replay_skips_ledger_access ... ok
+test ai_usage::tests::parses_openrouter_key_usage_without_inventing_a_limit ... ok
+test ai_usage::tests::parses_the_weekly_summary_and_sorts_the_daily_models ... ok
+test ai_usage::tests::preserves_usage_summary_when_models_is_null ... ok
+test ai_usage::tests::reads_the_official_balance_without_inventing_a_weekly_limit ... ok
+test ai_usage::tests::recognizes_only_the_official_deepseek_api_host ... ok
+test ai_usage::tests::rejects_unknown_usage_provider_id_from_stage_c_ipc ... ok
+test ai_usage::tests::rejects_usage_without_a_verified_model_catalog ... ok
+test ai_usage::tests::removes_the_openai_v1_suffix_before_building_the_usage_endpoint ... ok
+test ai_usage::tests::resolves_active_usage_provider_when_legacy_ipc_omits_provider_id ... ok
+test ai_usage::tests::resolves_active_usage_provider_when_legacy_ipc_sends_empty_provider_id ... ok
+test ai_usage::tests::uses_only_the_base_url_from_the_verified_catalog ... ok
+test chat_attachments::binary_upload::tests::basic_image_signatures_cannot_be_relabelled ... ok
+test chat_attachments::binary_upload::tests::binary_ordinary_and_ncm_limits_and_store_quota_are_preserved ... ok
+test ai_usage::local::tests::capture_cache_evicts_old_entries_at_a_fixed_limit ... ok
+test chat_attachments::binary_upload::tests::media_header_preserves_body_limits_and_rejects_false_mime ... ok
+test chat_attachments::binary_upload::tests::raw_body_is_mandatory_and_metadata_is_bounded_and_strict ... ok
+test chat_attachments::binary_upload::tests::tauri_mock_command_routes_enforce_chat_and_raw_metadata_before_staging ... ok
+test chat_attachments::cleanup::tests::cleanup_missing_directory_is_nonfatal_and_removes_record ... ok
+test chat_attachments::cleanup::tests::cleanup_rejects_invalid_session_without_touching_cache ... ok
+test chat_attachments::cleanup::tests::cleanup_removal_failure_is_logged_nonfatal_and_not_counted_removed ... ok
+test chat_attachments::cleanup::tests::cleanup_session_removes_only_target_session_cache_records ... ok
+test chat_attachments::cleanup::tests::stale_sweep_removes_exactly_24h_or_older_orphans_and_keeps_newer_dirs ... ok
+test chat_attachments::export::tests::failures::create_new_permission_denied_retains_artifact_and_writes_no_download ... ok
+test chat_attachments::export::tests::failures::export_denies_unknown_wrong_session_and_unready_sources ... ok
+test chat_attachments::export::tests::failures::missing_download_root_retains_cached_artifact_and_writes_nowhere_else ... ok
+test chat_attachments::export::tests::happy::concurrent_exports_create_distinct_byte_identical_files ... ok
+test chat_attachments::export::tests::happy::existing_download_is_not_overwritten_and_suffix_preserves_bytes ... ok
+test chat_attachments::export::tests::happy::exports_first_available_download_name_when_artifact_is_ready ... ok
+test chat_attachments::export::tests::happy::sanitizes_clock_dollar_device_before_creating_download ... ok
+test chat_attachments::export::tests::happy::sanitizes_conin_dollar_device_before_creating_download ... ok
+test chat_attachments::export::tests::happy::sanitizes_conout_dollar_dotted_device_before_creating_download ... ok
+test chat_attachments::export::tests::happy::sanitizes_reserved_display_name_and_preserves_verified_artifact_extension ... ok
+test agent::opencode_tests::never_ready_is_bounded_and_never_posts_session_or_prompt ... ok
+test chat_attachments::export::tests::happy::sanitizes_separator_characters_without_treating_metadata_as_a_path ... ok
+test chat_attachments::export::tests::happy::sanitizes_superscript_com_device_before_creating_download ... ok
+test chat_attachments::export::tests::happy::sanitizes_superscript_lpt_device_before_creating_download ... ok
+test chat_attachments::export::tests::manual::manual_qa_exports_two_files_and_keeps_artifact_after_failed_export ... ignored, requires YUME_TASK6_DOWNLOAD_QA_DIR pointing to an isolated export evidence directory
+test chat_attachments::export::tests::happy::sanitizes_windows_reserved_dot_stems_before_creating_download ... ok
+test chat_attachments::ncm::tests::budget::converted_artifact_counts_toward_session_total_budget ... ok
+test chat_attachments::ncm::tests::budget::exact_session_limit_replacement_succeeds ... ok
+test chat_attachments::ncm::tests::budget::oversized_artifact_output_rolls_back_usage_and_keeps_source_retryable ... ok
+test chat_attachments::ncm::tests::failures::concurrency::containment_failure_clears_conversion_reservation_for_retry ... ok
+test chat_attachments::ncm::tests::budget::smaller_artifact_releases_source_budget ... ok
+test chat_attachments::ncm::tests::failures::concurrency::conversion_counts_same_session_discard_while_runner_is_blocked ... ok
+test chat_attachments::ncm::tests::failures::concurrency::conversion_counts_same_session_stage_while_runner_is_blocked ... ok
+test chat_attachments::ncm::tests::failures::identity::rejects_non_xiaozhu_persona_before_running_converter ... ok
+test chat_attachments::ncm::tests::failures::concurrency::rejects_duplicate_conversion_while_first_is_in_progress ... ok
+test chat_attachments::ncm::tests::failures::identity::rejects_wrong_session_unknown_id_and_non_ncm_sources ... ok
+test chat_attachments::ncm::tests::failures::output::cleans_private_work_dir_after_success_and_failure ... ok
+test chat_attachments::ncm::tests::happy::artifact_filename_sanitizer_keeps_reserved_windows_stems_safe ... ok
+test chat_attachments::ncm::tests::happy::authorizes_only_xiaozhu_with_declared_skill ... ok
+test chat_attachments::ncm::tests::happy::authorizes_third_generation_only_with_declared_skill ... ok
+test chat_attachments::ncm::tests::happy::converts_staged_ncm_to_persistent_flac_artifact ... ok
+test chat_attachments::ncm::tests::happy::converts_staged_ncm_to_persistent_mp3_artifact ... ok
+test chat_attachments::ncm::tests::happy::second_generation_converts_staged_music ... ok
+test chat_attachments::binary_upload::tests::binary_roundtrip_preserves_raw_bytes_and_scope_receipt ... ok
+test chat_attachments::ncm::tests::manual::manual_qa_converts_real_ncm_with_bundled_runner_and_exports_downloads ... ignored, requires YUME_REAL_NCM_QA_PATH and YUME_REAL_NCM_QA_DOWNLOAD_DIR
+test chat_attachments::ncm::tests::happy::third_generation_converts_staged_music ... ok
+test chat_attachments::ncm::tests::work_dir::dropping_one_work_dir_preserves_a_live_sibling ... ok
+test chat_attachments::picker::tests::rejects_directories_missing_files_and_oversized_files ... ok
+test chat_attachments::picker::tests::selection_is_path_free_and_cancel_is_empty ... ok
+test chat_attachments::resources::preview::tests::ranges_are_bounded_and_reject_invalid_requests ... ok
+test agent::usage_retry::tests::terminal_pending_recovery_is_fair_beyond_the_listing_and_retry_window ... ok
+test chat_attachments::ncm::tests::manual::manual_qa_prints_native_codec_artifact_state ... ok
+test chat_attachments::ncm::tests::failures::output::conversion_failures_keep_source_retryable_without_artifact ... ok
+test chat_attachments::resources::tests::concurrent_draft_cleanup_cannot_delete_a_new_upload_or_an_original ... ok
+test chat_attachments::resources::tests::discard_draft_is_idempotent_and_cannot_delete_submitted_resources ... ok
+test chat_attachments::resources::tests::mainstream_media_and_ncm_are_classified_without_audio_video_confusion ... ok
+test chat_attachments::resources::tests::deleting_a_conversation_revokes_only_its_references_and_preserves_originals ... ok
+test chat_attachments::resources::tests::duplicate_session_ids_in_different_directories_never_share_read_scopes ... ok
+test chat_attachments::resources::tests::media_upload_registration_failure_rolls_back_only_its_new_copy ... ok
+test chat_attachments::resources::tests::media_upload_accepts_audio_only_webm_and_mp4_container_mimes ... ok
+test chat_attachments::resources::tests::originals_and_message_references_survive_restart_without_path_metadata ... ok
+test chat_attachments::resources::tests::preview_serves_seek_ranges_and_rejects_unknown_or_non_media_resources ... ok
+test chat_attachments::resources::tests::selected_resource_paths_are_read_only_and_scope_is_session_bound ... ok
+test chat_attachments::store::tests::input_validation::rejects_empty_data ... ok
+test chat_attachments::store::tests::input_validation::rejects_separator_control_and_reserved_filenames ... ok
+test chat_attachments::store::tests::input_validation::rejects_size_mime_and_ncm_metadata_mismatches ... ok
+test chat_attachments::store::tests::input_validation::rejects_unknown_and_malformed_ids ... ok
+test chat_attachments::store::tests::ipc::internal_stage_fixture_returns_opaque_metadata ... ok
+test chat_attachments::store::tests::ipc::ipc_read_and_discard_contracts_use_attachment_id_and_typed_receipts ... ok
+test chat_attachments::resources::tests::media_upload_validates_name_mime_and_exact_64_mib_limit_before_writing ... ok
+test chat_attachments::resources::tests::uploaded_media_is_owned_at_registration_and_late_discard_only_removes_copy ... ok
+test chat_attachments::store::tests::manual::manual_qa_prints_opaque_metadata_and_sanitized_temp_tree ... ok
+test chat_attachments::store::tests::storage::denies_cross_session_reads_and_discards ... ok
+test chat_attachments::store::tests::storage::discard_invalidates_read ... ok
+test chat_attachments::store::tests::storage::stages_to_opaque_uuid_source_and_read_never_serializes_native_paths ... ok
+test chat_links::tests::accepts_only_external_web_and_email_links ... ok
+test chat_links::tests::settings_can_only_open_approved_links ... ok
+test component_activation::tests::an_active_model_request_prevents_the_restart_boundary ... ok
+test chat_attachments::resources::tests::folder_preview_is_bounded_and_rejects_parent_traversal ... ok
+test chat_attachments::store::tests::quotas::enforces_ordinary_item_and_aggregate_budget_boundaries ... ok
+test history::catalog::tests::preference_write_cannot_leave_an_orphan_when_entry_removal_overlaps ... ok
+test history::catalog::tests::simultaneous_single_and_bulk_updates_preserve_independent_fields ... ok
+test history::catalog::tests::single_entry_isolates_unrelated_corruption_but_full_validation_still_rejects_it ... ok
+test chat_attachments::store::tests::quotas::enforces_ncm_item_and_total_staged_budget_boundaries ... ok
+test history::catalog::tests::single_entry_failure_rolls_back_row_preference_and_revision ... ok
+test history::catalog::tests::single_entry_scaling_benchmark ... ignored, manual synthetic 1k/10k/100k H18b operation-count measurement
+test history::catalog::tests::single_entry_normalizes_directory_but_cannot_rekey_or_insert_invalid_identity ... ok
+test history::catalog_cache::tests::failed_import_is_retried_and_concurrent_source_commit_is_never_acknowledged ... ok
+test history::catalog::tests::single_entry_only_committed_native_associations_invalidate_imports ... ok
+test history::catalog::tests::single_entry_preserves_colliding_identities_preferences_and_unchanged_rows ... ok
+test history::catalog_content::tests::colliding_legacy_ids_cannot_prove_content_in_another_directory ... ok
+test history::catalog_cache::tests::catalog_associations_advance_only_on_success_while_mutations_and_tombstones_remain_live ... ok
+test history::catalog_cache::tests::recovery_reloads_external_history_and_index_and_survives_failed_import_and_restart ... ok
+test history::catalog_content::tests::empty_classification_survives_restart_without_deleting_composer_identity_or_model ... ok
+test history::catalog_content::tests::local_only_replies_and_legacy_records_override_empty_native_evidence ... ok
+test history::catalog_content::tests::running_tasks_and_agent_records_survive_even_without_text ... ok
+test history::catalog_content::tests::verified_empty_contexts_never_enter_pages_counts_search_or_archive ... ok
+test history::catalog_details::tests::legacy_details_require_trusted_origin_even_when_bare_id_matches ... ok
+test history::catalog_content::tests::content_update_preserves_organization_model_and_colliding_directory ... ok
+test history::catalog_local::tests::invalid_local_messages_do_not_modify_original_history ... ok
+test history::catalog_details::tests::loaded_agent_details_are_scoped_and_serialized_for_native_history ... ok
+test history::catalog_local::tests::local_fixed_reply_write_is_chat_only ... ok
+test history::catalog_local::tests::local_notes_survive_native_turns_without_crossing_colliding_directory_ids ... ok
+test history::catalog_local::tests::old_projection_is_read_only_only_when_native_is_verified_empty ... ok
+test history::catalog_local::tests::untagged_projection_cannot_replace_existing_native_content ... ok
+test history::catalog_migration_tests::agent_snapshot_scope_rejects_other_directory_and_preserves_same_scope_continuation ... ok
+test history::catalog_cache::tests::warm_import_does_no_source_reads_or_catalog_opens_when_bodies_grow_tenfold ... ok
+test history::catalog_local::tests::linked_local_notes_never_become_extra_legacy_catalog_rows ... ok
+test history::catalog_migration_tests::deleted_projection_stays_suppressed_when_native_index_is_imported ... ok
+test history::catalog_migration_tests::known_directories_are_canonical_and_reject_relative_paths ... ok
+test history::catalog_migration_tests::startup_index_cannot_forge_agent_origin_for_existing_legacy_collision ... ok
+test history::catalog_content::tests::late_content_evidence_preserves_newer_content_runtime_availability_and_deletion ... ok
+test history::catalog_model::catalog_path::tests::malformed_directory_cannot_enter_catalog ... ok
+test history::catalog_model::catalog_path::tests::unc_aliases_collapse_while_posix_case_stays_distinct ... ok
+test history::catalog_model::tests::archived_native_is_readable_and_tombstone_has_no_actions ... ok
+test history::catalog_model::tests::identity_tuple_encoding_cannot_collide_at_delimiters ... ok
+test history::catalog_model::tests::legacy_is_readable_and_rename_wins_over_automatic_title ... ok
+test history::catalog_model::tests::malformed_child_deleted_and_unknown_directory_have_explicit_reasons ... ok
+test history::catalog_migration_tests::local_organization_survives_when_projection_is_later_discovered_native ... ok
+test history::catalog_model::tests::native_identity_distinguishes_directories_instances_and_legacy ... ok
+test history::catalog_model::tests::ownership_and_runtime_guard_send_and_delete ... ok
+test history::catalog_model::tests::paged_fixture_preserves_every_composite_identity ... ok
+test history::catalog_model::tests::unavailable_native_retains_local_organization_but_denies_remote_mutations ... ok
+test history::catalog_model::tests::windows_directory_aliases_have_one_identity ... ok
+test history::catalog_migration_tests::unrelated_agent_collision_preserves_legacy_metadata ... ok
+test history::catalog_mutation::tests::deletion_receipt_never_creates_a_tombstone_or_changes_another_directory ... ok
+test history::catalog_migration_tests::unrelated_snapshot_is_skipped_while_scoped_native_run_completes ... ok
+test history::catalog_model::tests::metadata_file_reopens_without_any_native_transcript ... ok
+test history::catalog_mutation::tests::delete_requires_confirmation_and_current_native_status_then_receipt_is_idempotent ... ok
+test history::catalog_preview::tests::incomplete_native_tail_is_unavailable_not_verified_empty ... ok
+test history::catalog_preview::tests::local_projection_clones_only_the_latest_matching_message ... ok
+test history::catalog_preview::tests::preview_uses_latest_visible_text_and_unicode_safe_limit ... ok
+test history::catalog_mutation::tests::newer_activity_timestamp_keeps_running_evidence_even_when_status_value_matches_baseline ... ok
+test history::catalog_mutation::tests::organization_merges_with_discovery_and_live_guard_without_losing_fields ... ok
+test history::catalog_mutation::tests::mutation_revalidates_current_runtime_availability_and_tombstone ... ok
+test history::catalog_schema::tests::interrupted_backfill_rolls_back_ddl_partial_rows_and_version_then_retries ... ok
+test history::catalog_schema::tests::sqlite_full_rolls_back_migration_without_changing_old_metadata ... ok
+test history::catalog_schema::tests::malformed_json_or_identity_rolls_back_schema_and_leaves_old_reader_usable ... ok
+test history::catalog_schema::tests::future_schema_is_rejected_without_mutation_and_parallel_open_migrates_once ... ok
+test history::catalog_sql::tests::offline_and_directories_are_global_but_empty_and_tombstoned_rows_do_not_count ... ok
+test history::catalog_sql::tests::metadata_projection_and_removal_commit_or_roll_back_together ... ok
+test history::catalog_sql::tests::sql_paging_scaling_benchmark ... ignored, manual H18c 1k/10k/100k migration, query equivalence and work measurement
+test history::catalog_schema::tests::migration_preserves_metadata_preferences_registry_and_readonly_old_copy ... ok
+test history::catalog_sql::tests::unprojected_or_corrupt_metadata_fails_listing_even_outside_returned_page ... ok
+test history::catalog_tests::catalog_index_and_delta_benchmark ... ignored, manual synthetic performance measurement
+test history::catalog_sql::tests::page_count_and_global_metadata_share_a_wal_read_snapshot ... ok
+test history::catalog_tests::cached_catalog_read_does_not_require_a_writer_lock ... ok
+test history::catalog_tests::delete_is_non_destructive_when_agent_is_running_or_confirmation_missing ... ok
+test history::catalog_tests::discovery_preserves_tombstone_and_rename_when_native_returns_again ... ok
+test history::catalog_tests::local_archive_roundtrip_is_reversible_when_native_is_offline ... ok
+test history::catalog_tests::metadata_reopens_when_same_native_id_occurs_in_two_projects ... ok
+test history::catalog_tests::concurrent_updates_preserve_all_pins_when_connections_overlap ... ok
+test history::catalog_tests::migration_preserves_legacy_bytes_when_repeated_and_coalesces_registered_projection ... ok
+test history::catalog_tests::model_selection_uses_full_key_and_survives_metadata_refresh_without_reordering ... ok
+test history::catalog_tests::metadata_search_pages_every_row_when_offline_and_excludes_tombstones ... ok
+test history::catalog_tests::old_catalog_migrates_without_inventing_model_selection ... ok
+test history::catalog_tests::transaction_rolls_back_when_edit_fails_or_duplicate_identity_is_inserted ... ok
+test history::commands::startup_tests::early_catalog_access_returns_not_ready_instead_of_panicking ... ok
+test history::commands::startup_tests::early_list_waits_for_host_state_and_has_a_bounded_failure ... ok
+test history::history_tests::archive_tests::later_run_snapshot_keeps_first_trusted_origin ... ok
+test history::history_tests::archive_tests::malformed_native_text_does_not_mutate_history ... ok
+test history::history_tests::archive_tests::native_snapshots_upsert_by_ids_in_stable_time_order ... ok
+test history::catalog_tests::updates_only_write_changed_rows_and_get_reads_only_its_key ... ok
+test history::history_tests::archive_tests::synthetic_attachment_context_is_not_displayed_as_user_input ... ok
+test history::history_tests::archive_tests::unchanged_snapshot_does_not_touch_storage ... ok
+test history::history_tests::migration_rollback_tests::synthetic_migration_and_separate_rollback_rehearsal_is_idempotent ... ok
+test history::history_tests::ownership_tests::agent_delete_tombstone_cannot_be_resurrected_and_active_delete_is_rejected ... ok
+test history::history_tests::ownership_tests::continuation_requires_trusted_live_agent_history ... ok
+test history::history_tests::ownership_tests::ordinary_delete_remains_physical ... ok
+test history::history_tests::ownership_tests::persisted_agent_ownership_turns_legacy_collision_into_tombstone ... ok
+test history::history_tests::ownership_tests::renderer_cannot_create_history_for_persisted_agent_session ... ok
+test history::history_tests::ownership_tests::renderer_cannot_impersonate_or_overwrite_agent_history ... ok
+test history::history_tests::recovery_tests::lazy_tests::existing_text_skips_lazy_fetch_and_late_result_cannot_revive_delete ... ok
+test history::history_tests::recovery_tests::lazy_tests::lazy_read_uses_only_the_recorded_origin_workspace_and_session ... ok
+test history::history_tests::recovery_tests::lazy_tests::lazy_success_fills_native_text_and_first_question_title ... ok
+test history::history_tests::recovery_tests::lazy_tests::recovered_metadata_marks_scheduled_source_and_missing_details ... ok
+test history::history_tests::recovery_tests::lazy_tests::same_named_and_moved_workspaces_never_borrow_another_path ... ok
+test history::history_tests::recovery_tests::startup_tests::list_summary_derives_agent_workspace_and_status_from_run_records ... ok
+test history::history_tests::recovery_tests::startup_tests::startup_index_write_failure_keeps_memory_unchanged ... ok
+test history::history_tests::recovery_tests::startup_tests::startup_indexes_every_session_and_is_idempotent ... ok
+test history::history_tests::recovery_tests::startup_tests::startup_never_resurrects_tombstones_or_fabricates_no_session_chats ... ok
+test history::history_tests::recovery_tests::startup_tests::startup_source_reads_all_run_files_including_multiple_unfinished_records ... ok
+test history::history_tests::storage_tests::abandoning_prepared_history_removes_only_its_temporary_file ... ok
+test history::history_tests::storage_tests::atomic_replace_overwrites_existing_history_without_temp_files ... ok
+test history::history_tests::storage_tests::corrupt_json_surfaces_and_is_not_overwritten ... ok
+test history::history_tests::storage_tests::failed_prepare_write_or_sync_preserves_target_and_cleans_up ... ok
+test history::history_tests::storage_tests::failed_prepared_commit_preserves_target_and_removes_temporary_file ... ok
+test history::history_tests::storage_tests::failed_replace_preserves_old_file_and_memory ... ok
+test history::history_tests::storage_tests::old_history_json_remains_readable ... ok
+test history::history_tests::storage_tests::prepared_history_waits_for_commit_before_replacing_target ... ok
+test history::maintenance::tests::cleanup_excludes_live_unknown_recent_and_used_scopes ... ok
+test history::catalog_tests::concurrent_large_catalog_import_load_and_list_preserve_availability ... ok
+test history::maintenance::tests::legacy_cleanup_requires_unchanged_empty_unlinked_local_record ... ok
+test history::maintenance::tests::cleanup_receipt_preserves_current_organization_and_existing_deletion_time ... ok
+test history::native_api::reconciliation_tests::pending_delete_does_not_contact_mutation_when_native_task_is_busy ... ok
+test history::native_api::tests::a_redirect_cannot_relay_the_sidecar_credential ... ok
+test history::native_api::reconciliation_tests::delete_retry_survives_remote_failure_and_confirms_only_observed_removal ... ok
+test history::native_api::tests::authentication_failure_has_a_typed_redacted_error ... ok
+test history::native_api::tests::automatic_cleanup_requires_empty_idle_unchanged_scoped_root ... ok
+test history::native_api::tests::adaptive_listing_keeps_all_1001_rows_with_equal_timestamps ... ok
+test history::native_api::tests::cross_directory_get_is_rejected_even_when_sidecar_returns_success ... ok
+test history::native_api::tests::bounded_preview_uses_recent_text_and_excludes_tool_parts ... ok
+test history::native_api::tests::failed_empty_delete_is_not_reported_as_removed ... ok
+test history::native_api::tests::history_presence_distinguishes_empty_from_files_tools_and_unanswered_users ... ok
+test history::native_api::tests::history_refresh_removes_existing_empty_rows_from_history_then_restores_first_message ... ok
+test history::native_api::tests::missing_session_has_an_explicit_error ... ok
+test history::native_api::tests::permanent_delete_requires_observed_removal ... ok
+test history::native_api::tests::presence_errors_cannot_be_mistaken_for_empty_and_scope_is_verified ... ok
+test history::native_api::tests::preview_metadata_requires_the_requested_directory ... ok
+test history::native_api::tests::project_bootstrap_has_a_separate_budget_without_extending_ordinary_reads ... ok
+test history::native_api::tests::project_readiness_rejects_http_and_malformed_status_failures ... ok
+test history::native_api::tests::resolve_known_session_accepts_actual_directory_from_another_known_project ... ok
+test history::native_api::tests::resolve_known_session_rejects_unknown_scope_and_children ... ok
+test history::native_api::tests::restore_is_rejected_without_sending_an_invalid_archive_value ... ok
+test history::native_api::tests::stalled_sidecar_has_a_bounded_timeout ... ok
+test history::native_api::tests::successful_rename_uses_basic_auth_and_patch ... ok
+test history::native_api::tests::wire_fixture_reads_fragmented_headers_and_body_completely ... ok
+test history::native_api::tests::wrong_window_is_denied_before_any_sidecar_access ... ok
+test history::native_files::tests::absent_or_invalid_filename_does_not_create_an_empty_history_turn ... ok
+test history::native_files::tests::file_labels_survive_scoped_projection_without_binary_urls_or_synthetic_text ... ok
+test history::native_files::tests::file_only_native_turns_remain_visible_and_legacy_local_notes_cannot_borrow_labels ... ok
+test history::native_index::tests::loads_legacy_metadata_without_rewriting_the_old_index ... ok
+test history::native_index::tests::missing_old_index_is_empty_and_corrupt_index_is_an_error ... ok
+test history::persona::profile_cache_is_scoped_and_install_invalidation_reloads ... ok
+test history::persona::tests::ignores_mentions_nested_ids_and_invalid_metadata ... ok
+test history::persona::tests::mixed_turns_follow_exact_parent_even_out_of_order ... ok
+test history::persona::tests::old_json_is_compatible_and_new_identity_survives_round_trip ... ok
+test history::persona::tests::plain_imports_require_full_unambiguous_prompt_and_section_boundary ... ok
+test history::staged_snapshot::tests::busy_catalog_fails_without_waiting_or_publishing_history ... ok
+test history::staged_snapshot::tests::busy_history_writer_does_not_block_control_or_publish_prepared_snapshot ... ok
+test history::catalog_sql::tests::sql_pages_match_full_oracle_for_filters_unicode_unsigned_time_and_all_pages ... ok
+test history::staged_snapshot::tests::competing_preparations_never_overwrite_first_published_snapshot ... ok
+test history::staged_snapshot::tests::catalog_read_transaction_serializes_tombstone_commit_after_atomic_replace ... ok
+test history::staged_snapshot::tests::dropped_preparation_and_invalid_snapshot_leave_no_pending_files ... ok
+test history::staged_snapshot::tests::later_catalog_tombstone_and_workbench_owner_prevent_publish ... ok
+test history::staged_snapshot::tests::concurrent_rows_titles_ownership_and_deletion_supersede_full_file_snapshot ... ok
+test history::staged_snapshot::tests::legacy_tombstone_rejects_projection_before_or_during_native_coalescing ... ok
+test history::staged_snapshot::tests::missing_or_mismatched_origin_is_not_silently_adopted ... ok
+test history::staged_snapshot::tests::malformed_catalog_metadata_fails_closed_without_becoming_a_tombstone ... ok
+test history::staged_snapshot::tests::replacement_failure_cleans_pending_and_never_publishes_ram ... ok
+test history::staged_snapshot::tests::prepare_does_not_publish_and_commit_keeps_title_and_first_origin ... ok
+test history::staged_snapshot::tests::tombstones_with_colliding_session_but_other_directory_or_sidecar_do_not_block ... ok
+test history::staged_snapshot::tests::revision_follows_successful_replacement_and_rejects_failed_noop_and_late_projection ... ok
+test history::staged_snapshot::tests::unchanged_projection_never_touches_history_storage ... ok
+test history::staged_snapshot::tests::unrelated_legacy_owner_or_workspace_is_preserved_without_temporary_write ... ok
+test history_entry::tests::duplicate_requests_coalesce_until_chat_consumes ... ok
+test history_entry::tests::only_chat_and_workbench_can_open_history ... ok
+test history_entry::tests::rejected_window_cannot_consume_the_chat_request ... ok
+test history_entry::tests::request_survives_until_chat_mounts_and_consumes_once ... ok
+test memory::automatic::tests::a_completed_branch_survives_retry_and_pending_context_obeys_epochs ... ok
+test memory::automatic::tests::a_running_tool_or_unfinished_assistant_is_not_a_completed_turn ... ok
+test memory::automatic::tests::automatic_targets_and_work_links_respect_logical_expiry_before_maintenance ... ok
+test memory::automatic::tests::automatic_then_manual_record_share_one_entry_and_workspaces_stay_separate ... ok
+test memory::automatic::tests::forgetting_and_clearing_cancel_old_proposals_but_allow_new_user_facts ... ok
+test history::staged_snapshot::tests::wal_catalog_guard_still_excludes_concurrent_tombstone_writers ... ok
+test memory::automatic::tests::long_sources_keep_complete_sentences_or_fail_without_partial_commit ... ok
+test memory::automatic::tests::journal_link_detects_revision_changes_without_erasing_unrelated_preferences ... ok
+test memory::automatic::tests::manual_correction_invalidates_pending_memory_only ... ok
+test memory::automatic::tests::manual_then_automatic_record_share_one_entry ... ok
+test memory::automatic::tests::new_state_wins_and_projects_are_isolated ... ok
+test memory::automatic::tests::rejects_ungrounded_quotes_secrets_and_disabled_branches ... ok
+test memory::automatic::tests::reports_and_internal_extractions_are_not_user_evidence ... ok
+test memory::automatic::tests::registration_and_memory_commit_are_idempotent ... ok
+test memory::automatic::tests::verified_agent_evidence_excludes_failed_tools_and_completion_claims ... ok
+test memory::automatic::worker::clock_tests::first_sync_is_immediate_and_next_sync_waits_after_completion ... ok
+test memory::automatic::tests::work_replay_correction_and_deleted_source_do_not_duplicate_or_resurrect ... ok
+test memory::commands::forget_tests::cross_directory_collision_preserves_memory_including_deleted_rows ... ok
+test memory::commands::forget_tests::mismatched_catalog_key_preserves_memory ... ok
+test memory::commands::forget_tests::unique_deleted_native_identity_removes_sole_source_memory ... ok
+test memory::commands::tests::a_disabled_store_answers_memory_disabled ... ok
+test memory::commands::tests::the_change_event_name_follows_the_app_convention ... ok
+test memory::commands::forget_tests::unique_legacy_identity_uses_existing_memory_cleanup ... ok
+
+running 1 test
+test memory::cross_process_tests::writer_helper ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 997 filtered out; finished in 0.01s
+
+
+running 1 test
+
+running 1 test
+test memory::cross_process_tests::a_second_process_can_open_the_same_database ... ok
+
+running 1 test
+
+running 1 test
+test memory::cross_process_tests::writer_helper ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 997 filtered out; finished in 0.01s
+
+test memory::cross_process_tests::read_snapshot_allows_another_process_to_commit_and_stays_consistent ... ok
+
+running 1 test
+test memory::cross_process_tests::writer_helper ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 997 filtered out; finished in 0.02s
+
+
+running 1 test
+test memory::cross_process_tests::writer_helper ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 997 filtered out; finished in 0.19s
+
+test memory::cross_process_tests::writer_helper ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 997 filtered out; finished in 0.01s
+
+
+running 1 test
+test memory::cross_process_tests::writer_helper ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 997 filtered out; finished in 0.01s
+
+test memory::cross_process_tests::simultaneous_first_launches_migrate_the_database_exactly_once ... ok
+test memory::cross_process_tests::writer_helper ... ok
+test memory::domain::tests::change_events_carry_ids_but_never_content ... ok
+test memory::domain::tests::every_enum_round_trips_through_its_wire_string ... ok
+test memory::domain::tests::rejects_unknown_enum_values_instead_of_defaulting ... ok
+test memory::domain::tests::shared_moments_are_persona_bound_and_stable_facts_are_marked ... ok
+test memory::error::tests::round_trips_every_code ... ok
+test memory::error::tests::serializes_codes_as_screaming_snake_case ... ok
+test memory::export::tests::a_forgotten_memory_is_absent_from_the_export ... ok
+test memory::cross_process_tests::writer_helper ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 997 filtered out; finished in 0.36s
+
+test memory::cross_process_tests::writer_helper ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 997 filtered out; finished in 0.47s
+
+test memory::cross_process_tests::concurrent_processes_do_not_lose_writes_or_corrupt_the_database ... ok
+test memory::export::tests::an_export_is_never_silently_truncated ... ok
+test memory::export::tests::the_export_contains_no_audit_metadata ... ok
+test memory::export::tests::exports_history_provenance_and_relationships ... ok
+test history::native_api::tests::disconnected_sidecar_is_unavailable ... ok
+test memory::perf_tests::concurrent_writers_from_several_windows_never_lose_a_write ... ok
+test memory::policy::tests::a_plain_number_is_not_mistaken_for_a_card ... ok
+test memory::policy::tests::bounds_content_key_and_importance ... ok
+test memory::policy::tests::classifies_credentials_as_secret ... ok
+test memory::policy::tests::classifies_ordinary_preferences_as_normal ... ok
+test memory::policy::tests::classifies_private_life_as_sensitive ... ok
+test memory::policy::tests::enforces_scope_invariants ... ok
+test memory::policy::tests::global_memories_drop_a_stray_persona_id ... ok
+test memory::policy::tests::moods_always_expire_within_the_ttl ... ok
+test memory::policy::tests::refuses_to_store_inferred_personal_labels ... ok
+test memory::policy::tests::rejects_secrets_without_echoing_them ... ok
+test memory::perf_tests::a_concurrent_reader_never_sees_a_partial_write ... ok
+test memory::policy::tests::sensitive_content_needs_confirmation_then_stores ... ok
+test memory::repository::expiry_index_tests::expiry_index_scaling_benchmark ... ignored, manual M19a 100k expiry access-path and candidate-selection measurement
+test memory::repository::expiry_index_tests::failed_expiry_rolls_back_status_index_membership_fts_and_candidates ... ok
+test memory::repository::expiry_index_tests::logical_expiry_scaling_benchmark ... ignored, manual M19b 100k logical reads, indexed deadlines and bounded maintenance measurement
+test memory::repository::expiry_index_tests::expiry_index_preserves_boundaries_text_time_comparison_and_candidate_cleanup ... ok
+test memory::repository::expiry_read_tests::candidate_deadline_alone_triggers_cleanup_and_preserves_decided_or_future_rows ... ok
+test memory::repository::expiry_index_tests::persona_listing_keeps_global_expiry_and_does_not_expose_other_personas ... ok
+test memory::repository::expiry_read_tests::expiry_survives_restart_and_nearest_future_deadline_needs_no_write ... ok
+test memory::repository::expiry_read_tests::logical_and_materialized_lists_search_export_and_retrieval_agree ... ok
+test memory::repository::expiry_read_tests::reads_work_in_query_only_mode_and_do_not_require_a_writer_reservation ... ok
+test memory::repository::expiry_read_tests::writes_handle_only_the_target_expiry_and_cannot_revive_expired_rows ... ok
+test memory::repository_tests::a_changed_stable_fact_supersedes_the_previous_value ... ok
+test memory::repository::expiry_read_tests::maintenance_is_bounded_atomic_retryable_and_skips_busy_writers ... ok
+test memory::repository_tests::a_stale_revision_conflicts_instead_of_overwriting ... ok
+test memory::repository_tests::batched_provenance_stays_attributed_to_its_own_memory ... ok
+test memory::repository_tests::clearing_a_persona_keeps_global_and_other_personas ... ok
+test memory::repository_tests::a_listing_stays_capped_even_when_the_caller_asks_for_everything ... ok
+test memory::repository_tests::clearing_everything_empties_every_content_table ... ok
+test memory::repository_tests::creates_an_explicit_global_memory_with_provenance ... ok
+test memory::repository_tests::deleting_a_conversation_removes_only_its_sole_source_memories ... ok
+test memory::repository_tests::episodic_memories_append_instead_of_superseding ... ok
+test memory::repository_tests::expired_memories_drop_out_of_active_listings ... ok
+test memory::repository_tests::export_preserves_all_records_at_32767_memories ... ok
+test memory::repository_tests::forget_hard_deletes_content_and_leaves_only_audit_metadata ... ok
+test memory::repository_tests::linking_an_unknown_memory_reports_not_found ... ok
+test memory::repository_tests::listing_respects_the_limit_and_orders_by_importance ... ok
+test memory::repository_tests::persona_memories_never_leak_to_another_persona ... ok
+test memory::repository_tests::rejects_secrets_and_writes_nothing ... ok
+test memory::repository_tests::relationship_state_is_per_persona_and_revision_checked ... ok
+test memory::repository_tests::relationship_summaries_stay_bounded_and_non_sensitive ... ok
+test memory::repository_tests::search_input_cannot_inject_fts_or_like_syntax ... ok
+test memory::repository_tests::search_matches_short_and_long_cjk_keywords ... ok
+test memory::repository_tests::sensitive_content_is_stored_only_after_confirmation ... ok
+test memory::repository_tests::task_links_are_a_relation_not_a_second_task_store ... ok
+test memory::repository_tests::updating_a_missing_memory_reports_not_found ... ok
+test memory::retrieval::tests::instructions_precede_the_untrusted_data_block ... ok
+test memory::retrieval::tests::keywords_cover_ascii_words_and_cjk_bigrams ... ok
+test memory::retrieval::tests::sanitize_removes_tag_fence_and_heading_characters ... ok
+test memory::retrieval_tests::a_superseded_memory_is_not_injected ... ok
+test memory::retrieval_tests::an_adversarial_memory_stays_quoted_data ... ok
+test memory::retrieval_tests::an_expired_memory_is_not_injected ... ok
+test memory::retrieval_tests::another_personas_memories_are_never_injected ... ok
+test memory::retrieval_tests::disabling_ai_use_injects_nothing_but_keeps_local_data ... ok
+test memory::retrieval_tests::identity_and_boundaries_lead_the_block ... ok
+test memory::retrieval_tests::injects_a_relevant_memory_exactly_once ... ok
+test memory::retrieval_tests::keyword_relevance_surfaces_the_matching_memory ... ok
+test memory::retrieval_tests::respects_the_record_and_character_budgets ... ok
+test memory::retrieval_tests::retrieval_is_deterministic_for_the_same_input ... ok
+test memory::retrieval_tests::the_owning_persona_does_see_its_shared_moment ... ok
+test memory::retrieval_tests::zero_memories_produce_an_empty_block_not_an_empty_shell ... ok
+test memory::storage::expiry_migration_tests::expiry_index_full_database_keeps_schema_two_and_all_committed_rows ... ok
+test memory::storage::expiry_migration_tests::expiry_index_late_failure_rolls_back_index_and_version_then_can_retry ... ok
+test memory::storage::expiry_migration_tests::expiry_index_open_failure_preserves_uncheckpointed_v2_wal_and_parallel_retry ... ok
+test memory::storage::expiry_migration_tests::expiry_index_upgrade_preserves_data_and_old_readonly_copy_across_reopen ... ok
+test memory::storage::fts_migration_tests::fts_migration_disk_full_rolls_back_and_can_retry ... ok
+test memory::storage::fts_migration_tests::fts_migration_rebuilds_from_authoritative_rows_not_a_stale_old_index ... ok
+test memory::storage::fts_migration_tests::fts_open_failure_preserves_wal_then_concurrent_openers_rebuild_once ... ok
+test memory::storage::fts_migration_tests::fts_upgrade_preserves_records_provenance_search_and_readonly_original ... ok
+test memory::storage::fts_migration_tests::late_fts_migration_failure_restores_old_triggers_rowids_schema_and_version ... ok
+test memory::storage::fts_perf_tests::precise_fts_scaling_benchmark ... ignored, manual M19c 1k/10k/100k actual trigger and mutation scaling comparison
+test memory::storage::fts_tests::conflicts_replacement_and_rollback_never_leave_orphan_search_rows ... ok
+test memory::storage::fts_tests::content_keys_and_status_transitions_keep_exact_search_identity ... ok
+test memory::storage::fts_tests::forget_and_clear_erase_owned_fts_content_postings_sources_and_file_bytes ... ok
+test memory::storage::fts_tests::metadata_and_noop_edits_leave_fts_shadows_and_identity_untouched ... ok
+test memory::storage::fts_tests::vacuum_reopen_and_reactivation_preserve_mapping_without_id_reuse ... ok
+test memory::storage::tests::checkpoint_and_compact_succeed_on_a_file_database ... ok
+test memory::storage::tests::creates_every_table_and_index_at_version_one ... ok
+test memory::storage::tests::enforces_connection_pragmas ... ok
+test memory::storage::tests::failed_upgrade_preserves_old_schema_and_uncheckpointed_wal ... ok
+test memory::storage::tests::multiple_pending_migrations_roll_back_as_one_unit ... ok
+test memory::storage::tests::reports_a_corrupt_database_without_panicking ... ok
+test memory::storage::tests::rolls_back_a_failed_transaction ... ok
+test memory::storage::tests::survives_reopen_across_process_lifetimes ... ok
+test memory::repository_tests::export_preserves_all_records_at_50000_memories ... ok
+test memory::storage::tests::upgrades_each_supported_schema_and_rejects_future_without_journal_changes ... ok
+test packs::gif_lzw_tests::accepts_transparent_index_beyond_local_palette ... ok
+test packs::gif_lzw_tests::rejects_catalog_gif_renderer_bypass_and_preserves_installation ... ok
+test packs::gif_lzw_tests::rejects_corrupt_lzw_upgrade_before_replacing_valid_install ... ok
+test packs::gif_lzw_tests::rejects_lzw_invalid_references_palette_count_and_missing_end ... ok
+test packs::gif_lzw_tests::validates_lzw_growth_special_next_code_and_clear_reset ... ok
+test packs::gif_tests::gif_extension_is_admitted_only_under_personas ... ok
+test packs::gif_tests::gif_import_validates_before_replacing_existing_pack ... ok
+test packs::gif_tests::gif_shared_contract_fixtures ... ok
+test packs::gif_tests::imports_actual_xiaoxiongchong_artifact ... ignored, requires explicitly built YUME_GIF_DMPACK artifact
+test packs::gif_tests::imports_real_gif_assets_and_rejects_invalid_config_upgrades ... ok
+test packs::gif_tests::legacy_gif_v1_and_v2_accept_optional_sleep_but_keep_seven_required_states ... ok
+test packs::gif_tests::render_type_defaults_to_glb_and_rejects_unknown_types ... ok
+test packs::import_tests::imports_metadata_when_archive_supplies_title_and_png ... ok
+test packs::import_tests::lists_metadata_when_reloading_an_installed_pack ... ok
+test packs::import_tests::omits_metadata_when_importing_an_id_only_legacy_pack ... ok
+test packs::import_tests::rejects_import_when_declared_png_is_missing_or_invalid ... ok
+test packs::import_tests::rejects_import_when_png_exceeds_cover_size_limit ... ok
+test packs::import_tests::retains_previous_pack_when_upgrade_cover_is_invalid ... ok
+test packs::metadata_tests::rejects_localized_name_when_blank ... ok
+test packs::metadata_tests::rejects_localized_name_when_over_the_limit ... ok
+test packs::metadata_tests::rejects_thumbnail_when_outside_declared_persona ... ok
+test packs::metadata_tests::rejects_thumbnail_when_url_or_unsafe_path ... ok
+test packs::position_tests::default_position_survives_real_import_and_upgrade ... ok
+test packs::position_tests::envelope_is_available_before_the_webview_loads_the_gif ... ok
+test packs::position_tests::invalid_default_position_upgrade_preserves_installed_pack ... ok
+test packs::qa_tests::qa_pack_command ... ignored, manual native command bridge, restricted to repository QA data
+test memory::storage::tests::wal_initialization_wait_is_bounded_and_can_retry_after_writer_releases ... ok
+test packs::rig2d_tests::rejects_padded_config_beyond_runtime_size_limit ... ok
+test packs::rig2d_tests::rig2d_config_accepts_authored_data_and_rejects_unsafe_parameters ... ok
+test packs::rig2d_tests::rig2d_import_rejects_missing_and_corrupt_textures_without_replacing_old_pack ... ok
+test packs::rig2d_tests::rig2d_png_checks_crc_and_full_decode ... ok
+test packs::rig2d_tests::shared_rig2d_contract_matches_frontend_and_authoring ... ok
+test packs::tests::accepts_only_the_documented_layout ... ok
+test packs::tests::extracts_a_well_formed_archive_and_reports_its_digest ... ok
+test packs::tests::ids_must_be_a_single_safe_path_segment ... ok
+test packs::tests::imports_a_real_dmpack_built_by_the_packaging_script ... ignored, requires an explicit YUME_TEST_DMPACK built by the packaging script
+test packs::tests::refuses_a_manifest_declaring_an_unsafe_skill_path ... ok
+test packs::tests::refuses_a_manifest_with_an_unsafe_pack_id ... ok
+test packs::tests::refuses_an_archive_that_tries_to_escape_the_pack_directory ... ok
+test packs::tests::refuses_an_archive_without_a_manifest ... ok
+test packs::tests::rejects_unexpected_locations_and_formats ... ok
+test packs::tests::rejects_zip_slip_and_absolute_paths ... ok
+test packs::tests::requires_a_persona_id_below_each_root ... ok
+test packs::tests::skill_file_names_stay_inside_their_own_directory ... ok
+test pet_geometry::native_tests::drawing_anchor_getters_release_snapshot_guard ... ok
+test pet_geometry::native_tests::explicit_target_persona_wins_over_cached_source_geometry ... ok
+test pet_geometry::native_tests::geometry_callbacks_see_target_and_preserve_physical_foot ... ok
+test pet_geometry::native_tests::getter_failures_and_invalid_dpi_do_not_mutate_geometry_or_window ... ok
+test pet_geometry::native_tests::queued_scale_and_configure_resolve_latest_state_when_executed ... ok
+test pet_geometry::native_tests::repeated_switch_and_scale_cycles_do_not_accumulate_rounding_drift ... ok
+test pet_geometry::native_tests::resize_failure_restores_old_geometry_but_position_failure_keeps_applied_geometry ... ok
+test pet_geometry::tests::chat_ignores_gif_motion_padding ... ok
+test pet_geometry::tests::envelope_fits_all_contract_boundaries_and_preserves_anchor ... ok
+test pet_geometry::tests::fractional_dpi_extent_rounds_outward_and_keeps_anchor ... ok
+test pet_geometry::tests::gif_full_left_travel_fits_when_scale_changes ... ok
+test pet_geometry::tests::legacy_sizes_when_scale_changes ... ok
+test pet_geometry::tests::native_callbacks_can_read_geometry_without_reentry_deadlock ... ok
+test pet_geometry::tests::native_envelope_rejects_unbounded_or_nonfinite_input ... ok
+test pet_input::tests::down_when_high_bit_is_set ... ok
+test pet_input::tests::left_is_primary_when_buttons_are_standard ... ok
+test pet_input::tests::released_when_only_prior_press_bit_is_set ... ok
+test pet_input::tests::released_when_state_is_zero ... ok
+test pet_input::tests::right_is_primary_when_buttons_are_swapped ... ok
+test pet_placement::tests::drawing_anchor_stays_relative_across_monitors_and_dpi ... ok
+test pet_placement::tests::rejects_invalid_ratio_types_ranges_and_anchor_modes ... ok
+test pet_placement::tests::reproduces_the_captured_visual_position_including_transparent_overflow ... ok
+test pet_recovery::tests::empty_space_between_monitors_is_not_a_visible_work_area ... ok
+test pet_recovery::tests::find_pet_moves_valid_external_position_to_primary_screen ... ok
+test pet_recovery::tests::ignores_transparent_gif_padding_and_preserves_frame_offset_when_recovering ... ok
+test pet_recovery::tests::observer_checks_only_settled_layout_changes_not_ordinary_dragging ... ok
+test pet_recovery::tests::oversized_pet_is_centered_and_does_not_oscillate ... ok
+test pet_recovery::tests::preserves_valid_position_on_negative_coordinate_monitor ... ok
+test pet_recovery::tests::restores_reported_retina_position_at_170_percent_scale ... ok
+test pet_recovery::tests::scale_increase_and_smaller_work_area_keep_drawing_reachable ... ok
+test pet_recovery::tests::transient_missing_monitors_do_not_invent_a_position ... ok
+test pet_startup::tests::missing_saved_position_uses_pack_or_generic_fallback ... ok
+test pet_startup::tests::saved_position_takes_priority_over_pack_updates ... ok
+test pet_visibility::native_visibility_tests::failed_native_change_does_not_claim_visibility_or_hide_the_error ... ok
+test pet_visibility::native_visibility_tests::publishes_actual_visibility_only_after_native_change_succeeds ... ok
+test pet_visibility_recovery::tests::successful_recovery_clears_cached_error_once ... ok
+test pet_visibility_state::tests::fallback_hides_only_current_unacknowledged_exit ... ok
+test pet_visibility_state::tests::feedback_visibility_requires_native_visibility_and_desired_visibility ... ok
+test pet_visibility_state::tests::glb_request_is_immediate_and_invalidates_gif_exit ... ok
+test pet_visibility_state::tests::hide_waits_for_acknowledgement_when_animated ... ok
+test pet_visibility_state::tests::late_hide_is_ignored_when_show_requested ... ok
+test pet_visibility_state::tests::old_reset_is_ignored_when_another_hide_requested ... ok
+test pet_visibility_state::tests::rapid_toggle_uses_desired_visibility_when_window_still_visible ... ok
+test pet_visibility_state::tests::reset_timeout_is_ignored_after_new_hide_or_successful_ack ... ok
+test pet_visibility_state::tests::reset_timeout_recovers_only_current_unacknowledged_show ... ok
+test pet_visibility_state::tests::startup_hidden_has_no_pending_animation ... ok
+test pomodoro::preference_tests::defaults_only_pomodoro_when_stored_preferences_are_malformed ... ok
+test pomodoro::preference_tests::defaults_preferences_when_loading_legacy_settings ... ok
+test pomodoro::preference_tests::persists_only_timer_preferences_when_serializing_settings ... ok
+test pomodoro::preference_tests::rejects_invalid_command_preferences_before_timer_mutation ... ok
+test pomodoro::qa_tests::qa_pomodoro_bridge ... ignored, isolated native timer bridge; never starts the app or reads user data
+test pomodoro::tests::advances_once_when_sleep_spans_many_possible_rounds ... ok
+test pomodoro::tests::cannot_restore_stale_deadline_when_reading_after_reset ... ok
+test pomodoro::tests::derives_remaining_from_deadline_when_no_view_is_subscribed ... ok
+test pomodoro::tests::does_not_autostart_next_phase_when_duplicate_start_arrives_at_expiry ... ok
+test pomodoro::tests::does_not_restart_when_start_is_repeated_while_running ... ok
+test pomodoro::tests::enters_break_ready_when_exact_focus_deadline_is_reached ... ok
+test pomodoro::tests::holds_remaining_when_paused_without_a_view ... ok
+test pomodoro::tests::keeps_completion_revision_when_read_again_after_expiry ... ok
+test pomodoro::tests::keeps_pause_idempotent_when_pause_is_repeated ... ok
+test pomodoro::tests::keeps_revision_stable_while_stopped_so_idle_emits_no_event ... ok
+test pomodoro::tests::latches_current_duration_when_saved_preferences_change_during_run ... ok
+test pomodoro::tests::rejects_clock_overflow_without_partial_preference_update ... ok
+test pomodoro::tests::reports_no_tick_needed_for_every_stopped_progress_state ... ok
+test pomodoro::tests::resets_current_phase_when_user_resets ... ok
+test pomodoro::tests::resumes_exact_remaining_when_starting_a_paused_phase ... ok
+test pomodoro::tests::starts_running_when_user_starts_focus ... ok
+test pomodoro::tests::stops_and_selects_phase_when_explicit_selection_changes ... ok
+test pomodoro::tests::uses_current_edit_when_start_precedes_settings_save ... ok
+test pomodoro::tests::uses_latest_rest_duration_when_current_phase_expires ... ok
+test qa_identity::tests::accepts_a_fresh_qa_identity_when_suffix_is_bounded_ascii ... ok
+test qa_identity::tests::isolates_credentials_when_fresh_qa_identity_initializes_twice ... ok
+test qa_identity::tests::rejects_production_and_path_shaped_identity_when_selecting_qa_storage ... ok
+test retired_tools::tests::clean_install_creates_no_retirement_state ... ok
+test retired_tools::tests::unexpected_tool_directory_is_not_moved_or_deleted ... ok
+test retired_tools::tests::upgrade_retires_only_the_old_tool_and_preserves_its_bytes ... ok
+test settings::ai_endpoint::tests::discovers_models_at_the_configured_api_prefix ... ok
+test settings::ai_endpoint::tests::migrates_legacy_kuro_provider_when_base_url_is_a_dead_yume_sidecar_port ... ok
+test settings::ai_endpoint::tests::preserves_current_yume_provider_when_user_intentionally_uses_loopback ... ok
+test settings::ai_endpoint::tests::preserves_legacy_provider_when_base_url_is_remote ... ok
+test settings::ai_endpoint::tests::recognizes_only_official_native_api_hosts ... ok
+test settings::avatar::tests::legacy_default_and_avatar_round_trip ... ok
+test settings::avatar::tests::rejects_external_invalid_and_oversized_images ... ok
+test settings::chat_model_tests::override_requires_both_configured_and_runtime_provider_id ... ok
+test settings::geometry_tests::native_move_during_settings_apply_survives_publication_and_notification ... ok
+test settings::geometry_tests::native_settings_effects_see_accepted_persona ... ok
+test settings::geometry_tests::stale_settings_page_cannot_restore_an_offscreen_position ... ok
+test settings::horoscope_tests::all_valid_signs_round_trip_as_camel_case_field ... ok
+test settings::horoscope_tests::legacy_settings_default_horoscope_sign_without_losing_other_values ... ok
+test settings::horoscope_tests::null_unknown_or_wrong_type_only_clears_horoscope_sign ... ok
+test settings::mcp_permission_tests::approved_mcp_tool_gets_ask_and_unrelated_tool_stays_denied ... ok
+test settings::mcp_permission_tests::default_policy_with_empty_approved_list_is_identical_to_baseline ... ok
+test settings::mcp_permission_tests::derives_the_exact_fixed_qa_mcp_tool_id ... ok
+test settings::mcp_permission_tests::desktop_mcp_defaults_to_disabled_and_keeps_the_baseline_policy ... ok
+test settings::mcp_permission_tests::desktop_mcp_survives_when_no_ai_provider_is_verified ... ok
+test settings::mcp_permission_tests::enabled_desktop_mcp_servers_are_pinned_minimal_and_ask_gated ... ok
+test settings::mcp_permission_tests::native_workbench_tools_are_visible_without_bypassing_approval ... ok
+test settings::mcp_permission_tests::preserves_hyphens_like_upstream_sanitize ... ok
+test settings::mcp_permission_tests::sanitizes_non_alphanumeric_characters_in_both_segments ... ok
+test settings::tests::a_settings_file_predating_memory_still_loads ... ok
+test settings::tests::api_key_is_never_serialized_to_settings_json ... ok
+test settings::tests::coalesces_a_whole_drag_into_one_pet_position_write ... ok
+test settings::tests::default_persona_is_the_built_in_one ... ok
+test settings::tests::generated_sidecar_environment_asks_for_native_workbench_tools ... ok
+test settings::tests::generated_sidecar_environment_declares_the_yume_provider ... ok
+test settings::tests::keeps_a_pending_position_for_the_exit_flush_when_the_app_closes_mid_drag ... ok
+test settings::tests::legacy_key_migration_deletes_legacy_after_scoped_readback_matches ... ok
+test settings::tests::legacy_key_migration_prefers_existing_scoped_key_over_legacy_key ... ok
+test settings::tests::legacy_key_migration_prefers_plaintext_key_over_legacy_key ... ok
+test settings::tests::legacy_key_migration_preserves_legacy_when_scoped_read_fails ... ok
+test settings::tests::legacy_key_migration_preserves_legacy_when_scoped_readback_mismatches ... ok
+test settings::tests::legacy_key_migration_preserves_legacy_when_scoped_write_fails ... ok
+test settings::tests::legacy_key_migration_preserves_legacy_when_settings_persistence_fails ... ok
+test settings::tests::legacy_key_migration_reports_delete_failure_after_verified_equality ... ok
+test settings::tests::legacy_key_migration_returns_none_when_preferred_and_legacy_keys_are_empty ... ok
+test settings::tests::legacy_model_catalog_conflict_preserves_both_catalogs ... ok
+test settings::tests::legacy_model_catalog_equal_target_only_removes_legacy ... ok
+test settings::tests::legacy_model_catalog_migrates_to_provider_catalog_after_readback ... ok
+test settings::tests::legacy_model_catalog_without_api_key_fingerprint_fails_closed ... ok
+test settings::tests::manual_model_ids_are_bounded_and_deduplicated_before_probing ... ok
+test settings::tests::new_install_defaults_enable_automatic_memory_and_worklog ... ok
+test settings::tests::official_providers_use_native_sidecar_packages ... ok
+test settings::tests::older_provider_settings_default_to_model_discovery ... ok
+test settings::tests::parses_cohere_chat_models_and_skips_deprecated_models ... ok
+test settings::tests::parses_gemini_generation_models_and_skips_embedding_only_models ... ok
+test settings::tests::parses_openai_model_catalog_into_stable_display_metadata ... ok
+test settings::tests::pet_position_is_optional_for_legacy_settings_and_round_trips ... ok
+test settings::tests::pet_scale_is_clamped_to_the_supported_range ... ok
+test settings::tests::provider_catalog_changes_are_tracked_per_provider_and_key_binding ... ok
+test settings::tests::provider_identifiers_reject_path_components_and_duplicates ... ok
+test settings::tests::provider_scoped_keyring_round_trips_and_deletes_with_uuid_user ... ok
+test settings::tests::provider_scoped_keys_hydrate_all_empty_providers ... ok
+test settings::tests::render_values_are_clamped_and_non_finite_values_use_defaults ... ok
+test settings::tests::scheduled_task_deduplication_includes_the_local_date ... ok
+test settings::tests::settings_state_has_defaults_before_setup_hydrates_persisted_values ... ok
+test settings::tests::settings_transaction_reports_original_and_rollback_errors ... ok
+test settings::tests::settings_transaction_rolls_back_both_providers_when_second_key_store_fails ... ok
+test settings::tests::settings_transaction_rolls_back_partial_catalog_clear_failure ... ok
+test settings::tests::settings_transaction_rolls_back_partial_key_store_failure ... ok
+test settings::tests::settings_transaction_rolls_back_partial_provider_key_delete_failure ... ok
+test settings::tests::settings_transaction_rolls_back_provider_cleanup_when_settings_save_fails ... ok
+test settings::tests::settings_transaction_skips_unchanged_key ... ok
+test settings::tests::theme_accepts_supported_palettes_and_falls_back_to_dark ... ok
+test settings::tests::unsafe_loaded_providers_are_discarded_before_storage_access ... ok
+test settings::tests::verified_model_catalog_matches_only_bound_base_key_and_non_empty_models ... ok
+test settings::tests::verified_settings_reconciliation_makes_identical_pending_settings_safe ... ok
+test settings::tests::verify_provider_resolution_accepts_old_frontend_missing_provider_id ... ok
+test settings::tests::verify_settings_save_failure_restores_key_catalog_and_settings ... ok
+test settings::tests::writes_once_after_the_drag_settles_and_not_before ... ok
+test settings::update_repo::tests::keeps_custom_repo_when_valid_custom_repo_is_saved ... ok
+test settings::update_repo::tests::migrates_empty_repo_when_blank_settings_are_loaded ... ok
+test settings::update_repo::tests::migrates_legacy_default_repo_when_old_settings_are_loaded ... ok
+test settings::update_repo::tests::migrates_legacy_full_github_url_when_old_settings_are_loaded ... ok
+test settings::update_repo::tests::migrates_placeholder_repo_when_template_settings_are_loaded ... ok
+test settings::update_repo::tests::migration_is_idempotent_when_new_default_is_loaded ... ok
+test settings::update_repo::tests::preserves_custom_full_github_url ... ok
+test settings::update_repo::tests::preserves_malformed_repo_when_user_must_fix_it ... ok
+test settings_window::tests::chat_sizes_fit_small_screens_and_keep_compact_defaults ... ok
+test settings_window::tests::legacy_settings_default_to_compact_and_large_choice_round_trips ... ok
+test settings_window::tests::sizes_fit_the_work_area_in_logical_pixels ... ok
+test sidecar_logs::tests::bad_paths_return_errors_instead_of_falling_back_to_raw_output ... ok
+test sidecar_logs::tests::credentials_split_at_every_byte_and_utf8_are_redacted_before_emission ... ok
+test sidecar_logs::tests::eof_without_newline_redacts_and_oversized_eof_is_only_a_marker ... ok
+test sidecar_logs::tests::escaped_and_multiline_values_and_overlapping_secrets_are_removed ... ok
+test sidecar_logs::tests::first_fault_survives_multiple_launches_and_a_host_reopen ... ok
+test sidecar_logs::tests::host_events_share_the_same_redaction_and_line_limits ... ok
+test sidecar_logs::tests::huge_redaction_expansion_remains_bounded ... ok
+test sidecar_logs::tests::json_credential_values_are_collected_recursively ... ok
+test sidecar_logs::tests::oversized_legacy_current_and_backups_are_bounded_and_scrubbed ... ok
+test sidecar_logs::tests::oversized_lines_are_discarded_until_newline_without_leaking_a_prefix ... ok
+test sidecar_logs::tests::rotation_keeps_only_four_files_with_each_file_within_64_kib ... ok
+test sidecar_logs::tests::sensitive_fields_are_redacted_case_insensitively_even_without_known_values ... ok
+test sidecar_logs::tests::sink_failure_does_not_stop_reading_the_child_pipe ... ok
+test history::history_tests::archive_tests::sixty_archive_ticks_read_only_the_origin_among_ten_thousand_old_runs ... ok
+test sidecar_supervisor::idle_probe_tests::stable_health_reduces_http_probes_and_a_failure_restores_fast_observation ... ok
+test sidecar_supervisor::readiness_tests::an_in_flight_health_response_cannot_certify_a_replacement_generation ... ok
+test sidecar_supervisor::readiness_tests::repeated_task_isolation_joins_backoff_without_resetting_automatic_budget ... ok
+test sidecar_supervisor::readiness_tests::stopping_during_a_health_probe_is_not_ready ... ok
+test sidecar_supervisor::tests::immediate_exits_keep_the_retry_budget_across_successful_spawns ... ok
+test sidecar_supervisor::tests::inactive_phases_cannot_reset_budget_from_an_unrelated_healthy_server ... ok
+test sidecar_supervisor::tests::initial_spawn_failure_waits_before_first_automatic_attempt ... ok
+test sidecar_supervisor::tests::intermittent_health_restarts_stability_window_and_outage_gets_its_own_deadline ... ok
+test sidecar_supervisor::tests::manual_retry_recovers_exhausted_budget_and_bypasses_a_pending_deadline ... ok
+test sidecar_supervisor::tests::repeated_failure_notifications_do_not_postpone_the_same_retry ... ok
+test sidecar_supervisor::tests::repeated_spawn_failures_back_off_then_exhaust_exactly_eight_attempts ... ok
+test sidecar_supervisor::tests::short_healthy_period_does_not_reset_budget ... ok
+test sidecar_supervisor::tests::slow_start_can_become_ready_without_resetting_budget ... ok
+test sidecar_supervisor::tests::startup_without_health_times_out_at_fifteen_seconds ... ok
+test sidecar_supervisor::tests::thirty_seconds_of_health_resets_budget_once_and_restarts_backoff ... ok
+test sidecar_wait_tests::manual_retry_wakes_a_backoff_wait ... ok
+test sidecar_wait_tests::shutdown_interrupts_wait_without_acquiring_recovery ... ok
+test startup_settings::tests::persisted_persona_is_ready_before_any_window_can_read_settings ... ok
+test tests::migrates_only_the_legacy_xiaozhu_intro ... ok
+test tests::moving_the_pet_repositions_the_visible_chat_window ... ok
+test tests::overwrites_builtin_xiaozhu_persona_when_runtime_copy_is_stale ... ok
+test tests::settings_can_authenticate_model_requests_without_exposing_credentials_to_other_windows ... ok
+test tests::stale_shown_state_does_not_hide_an_already_hidden_chat_window ... ok
+test tests::visible_settings_window_reclaims_focus_after_chat_is_shown ... ok
+test tests::yume_sidecar_disables_external_plugins ... ok
+test tests::yume_sidecar_environment_isolated_from_global_home_and_xdg_locations ... ok
+test tool_permissions::events::scoped_tests::scoped_path_request_falls_back_to_stream_and_defaults_missing_path ... ok
+test tool_permissions::events::tests::complete_updates_use_parent_message_and_busy_is_not_full ... ok
+test tool_permissions::events::tests::dirty_messages_coalesce_and_late_events_survive_ack ... ok
+test tool_permissions::events::tests::duplicates_are_bounded_and_sync_cannot_consume_normal_event_id ... ok
+test tool_permissions::events::tests::generation_change_rejects_cache_even_before_old_stream_disconnects ... ok
+test tool_permissions::events::tests::instance_and_global_disposal_revoke_scoped_permissions_and_refresh ... ok
+test tool_permissions::events::tests::late_full_invalidation_survives_ack ... ok
+test tool_permissions::events::tests::live_web_permission_without_timeout ... ignored, requires an isolated live OpenCode instance
+test tool_permissions::events::tests::missing_directory_and_contradictory_session_fail_to_full_refresh ... ok
+test tool_permissions::events::tests::overflow_malformed_removed_and_permission_force_authoritative_refresh ... ok
+test tool_permissions::events::tests::oversized_frame_is_bounded_and_requires_full_refresh ... ok
+test sidecar_logs::tests::stdout_and_stderr_share_atomic_records_and_rotation_lock ... ok
+test tool_permissions::events::tests::permission_fallback_isolated_by_directory_session_and_request ... ok
+test tool_permissions::events::tests::reconnect_and_run_switch_force_refresh_without_old_dirty_ids ... ok
+test tool_permissions::events::tests::relative_directory_is_rejected_before_canonicalization ... ok
+test tool_permissions::events::tests::reply_before_asked_cannot_resurrect_request_or_cross_scope ... ok
+test tool_permissions::events::tests::routing_ignores_foreign_directory_session_generation_and_workspace ... ok
+test tool_permissions::events::tests::pending_permission_cache_overflow_fails_closed_until_reconnect ... ok
+test tool_permissions::events::tests::sse_frames_handle_comments_multiline_and_malformed_data_fail_closed ... ok
+test tool_permissions::events::tests::settled_permission_bound_invalidates_instead_of_forgetting_late_replies ... ok
+test tool_permissions::events::tests::stream_uses_single_global_endpoint_and_parses_wire_envelope ... ok
+test memory::perf_tests::retrieval_stays_under_budget_with_ten_thousand_memories ... ok
+test packs::rig2d_tests::imports_all_authored_rig2d_assets_and_preserves_previous_pack_on_bad_upgrade ... ok
+test tool_permissions::events::transport_tests::stop_interrupts_a_silent_body_and_cannot_reconnect ... ok
+test tool_permissions::tests::agent_permission_requests_use_the_exact_workspace_query_while_legacy_stays_unscoped ... ok
+test tool_permissions::tests::allow_once_and_cancel_use_only_the_selected_request ... ok
+test tool_permissions::tests::approval_cannot_target_another_session_or_expired_request ... ok
+test tool_permissions::tests::auto_allow_and_deny_reply_once_while_ask_remains_pending ... ok
+test tool_permissions::tests::changed_deny_policy_overrides_a_late_allow_click ... ok
+test tool_permissions::tests::legacy_permission_commands_reject_agent_owned_scheduled_sessions ... ok
+test tool_permissions::tests::old_settings_receive_safe_defaults_and_invalid_modes_are_rejected ... ok
+test tool_permissions::tests::permission_request_keeps_engine_proposed_always_patterns ... ok
+test tool_permissions::tests::policy_covers_only_supported_tools ... ok
+test tool_permissions::tests::remembered_agent_approvals_round_trip_with_settings ... ok
+test updater::tests::concurrent_update_is_rejected_until_the_active_update_finishes ... ok
+test updater::tests::repository_endpoint_when_full_github_url_is_pasted ... ok
+test updater::tests::repository_endpoint_when_owner_and_name_are_valid ... ok
+test updater::tests::repository_is_rejected_when_input_is_a_placeholder ... ok
+test updater::tests::repository_is_rejected_when_path_has_extra_segments ... ok
+test window_layout::tests::bottom_right_pet_opens_chat_to_the_left_and_bottom_aligned ... ok
+test window_layout::tests::chat_is_clamped_when_the_pet_is_near_an_edge ... ok
+test window_layout::tests::default_pet_position_is_inside_the_bottom_right_work_area ... ok
+test window_layout::tests::smooth_step_moves_toward_target_without_jumping ... ok
+test window_layout::tests::top_left_pet_opens_chat_to_the_right_and_bottom_aligned ... ok
+test windows_component::tests::cancelled_and_oversized_downloads_stop_before_installation ... ok
+test windows_component::tests::concurrent_install_requests_share_one_download_and_retry_after_completion ... ok
+test windows_component::tests::extracts_only_the_expected_binary_and_checks_it_again ... ok
+test windows_component::tests::interrupted_or_corrupt_downloads_never_pass_verification_and_can_retry ... ok
+test windows_component::tests::live_component_download_verifies_and_extracts ... ignored, downloads the pinned 52 MiB archive from GitHub into an isolated temp directory
+test windows_component::tests::network_and_disk_errors_are_reported ... ok
+test windows_component::tests::published_manifest_is_fixed_and_complete ... ok
+test windows_component::tests::real_component_archive_passes_both_pinned_checksums ... ignored, requires the pinned upstream archive in YUME_COMPONENT_TEST_ARCHIVE
+test windows_component::tests::staging_is_removed_after_failure_or_cancel ... ok
+test tool_permissions::events::transport_tests::generation_change_interrupts_silent_connection_and_worker_reconnects ... ok
+test windows_process_tree::tests::rejects_zero_and_self ... ok
+test windows_startup::tests::cleanup_requires_proven_dead_host_and_exact_child_identity ... ok
+test windows_startup::tests::isolated_host_fixture ... ignored, subprocess fixture for native ownership recovery
+test windows_startup::tests::native_crash_reclaims_only_recorded_orphan_and_rejects_reused_identity ... ok
+test windows_startup::tests::old_plugin_mutex_without_a_window_does_not_prove_primary_ownership ... ok
+test windows_startup::tests::pid_reuse_application_mismatch_and_invalid_records_never_authorize_kill ... ok
+test windows_startup::tests::simultaneous_launches_have_one_primary_before_any_plugin_window_exists ... ok
+test workbench::ownership_tests::archive_guard_holds_ownership_until_publish_finishes ... ok
+test workbench::ownership_tests::archive_guard_never_waits_for_a_concurrent_ownership_mutation ... ok
+test workbench::ownership_tests::archive_guard_obeys_live_lease_full_scope_and_expiration ... ok
+test workbench::ownership_tests::claiming_a_new_session_releases_only_the_previous_session ... ok
+test workbench::ownership_tests::ownership_expires_without_a_workbench_heartbeat ... ok
+test workbench::ownership_tests::releasing_a_stale_session_does_not_release_the_current_session ... ok
+test workbench::scoped_routing_tests::directory_collision_does_not_transfer_ownership ... ok
+test workbench::scoped_routing_tests::session_commands_deny_unrelated_windows ... ok
+test workbench::visibility_tests::actual_hidden_host_cannot_refresh_a_lease ... ok
+test workbench::visibility_tests::failed_creation_can_retry_without_consuming_saved_handoff_or_claiming_input ... ok
+test workbench::visibility_tests::hidden_host_cannot_reclaim_from_still_visible_document ... ok
+test workbench::visibility_tests::lazy_creation_is_single_flight_and_reuses_the_hidden_window ... ok
+test workbench::visibility_tests::showing_host_allows_same_session_to_be_claimed_again ... ok
+test worklog::bridge::auth::tests::colloquial_queries_do_not_open_legacy_mutation_tools ... ok
+test worklog::bridge::auth::tests::expired_turn_rejects_model_routed_tools ... ok
+test worklog::bridge::auth::tests::legacy_mutations_reject_untrusted_or_non_work_contexts ... ok
+test worklog::bridge::auth::tests::model_routed_tools_do_not_open_other_actions ... ok
+test worklog::bridge::auth::tests::model_routed_tools_do_not_require_specific_words ... ok
+test worklog::bridge::auth::tests::natural_recall_does_not_authorize_legacy_mutations ... ok
+test worklog::bridge::auth::tests::natural_self_work_recall_does_not_open_legacy_mutations ... ok
+test worklog::bridge::auth::tests::quoted_request_does_not_authorize_legacy_mutations ... ok
+test worklog::bridge::auth::tests::work_journal_alias_grants_only_the_same_explicit_action ... ok
+test worklog::bridge::auth::tests::work_journal_alias_preserves_non_authorizing_contexts ... ok
+test worklog::bridge::dispatch::query_tests::conditional_record_adds_missing_work_after_successful_query ... ok
+test worklog::bridge::dispatch::query_tests::conditional_record_cannot_use_project_filtered_or_wrong_date_query ... ok
+test worklog::bridge::dispatch::query_tests::conditional_record_detects_work_in_current_daily_report ... ok
+test worklog::bridge::dispatch::query_tests::conditional_record_requires_successful_query_and_revokes_it_after_failure ... ok
+test worklog::bridge::dispatch::query_tests::conditional_record_returns_existing_entry_without_duplication ... ok
+test worklog::bridge::dispatch::query_tests::failed_conditional_recheck_blocks_switching_to_direct_record ... ok
+test worklog::bridge::dispatch::query_tests::failed_receipt_lookup_blocks_later_writes ... ok
+test worklog::bridge::dispatch::query_tests::query_can_read_the_authorized_operation_lookup_without_rescoping_dates ... ok
+test worklog::bridge::dispatch::query_tests::query_rejects_an_invalid_calendar_date ... ok
+test worklog::bridge::dispatch::query_tests::query_returns_empty_collections_when_authorized_day_has_no_data ... ok
+test worklog::bridge::dispatch::query_tests::query_returns_yesterday_entries_and_daily_reports_when_natural_recall_scope_matches ... ok
+test worklog::bridge::dispatch::query_tests::query_returns_yesterday_records_when_subject_precedes_date ... ok
+test worklog::bridge::dispatch::query_tests::record_modes_cannot_bypass_a_failed_query_or_use_a_receipt_lookup_to_clear_it ... ok
+test worklog::bridge::dispatch::query_tests::record_requires_a_valid_explicit_mode ... ok
+test worklog::bridge::dispatch::query_tests::semantic_direct_record_uses_explicit_mode_and_preserves_host_source ... ok
+test worklog::bridge::dispatch::query_tests::semantic_query_accepts_context_dates_without_a_keyword_or_date_in_current_text ... ok
+test worklog::bridge::dispatch::tests::complete_daily_report_archive_keeps_user_body ... ok
+test worklog::bridge::dispatch::tests::friday_schedule_without_time_returns_saved_default_and_next_due ... ok
+test worklog::bridge::dispatch::tests::invalid_record_dates_do_not_write ... ok
+test worklog::bridge::dispatch::tests::readonly_schedule_and_invalid_record_mode_do_not_mutate_database ... ok
+test worklog::bridge::dispatch::tests::record_uses_host_source_and_replays_once ... ok
+test worklog::bridge::dispatch::tests::supplied_source_identity_is_rejected ... ok
+test worklog::bridge::tests::explicit_followup_date_overrides_previous_context ... ok
+test worklog::bridge::tests::followup_keeps_current_user_source_separate_from_context ... ok
+test worklog::bridge::tests::new_turn_revokes_previous_session_grant ... ok
+test worklog::bridge::worker::http_tests::authenticated_rust_bridge_executes_all_five_tools_with_workspace ... ok
+test worklog::bridge::worker::http_tests::duplicate_native_registration_cannot_revive_revoked_expired_or_old_launch_sources ... ok
+test worklog::bridge::worker::http_tests::equal_ids_in_two_workspaces_cannot_borrow_or_revoke_grants ... ok
+test worklog::bridge::worker::http_tests::failed_launch_setup_revokes_old_grants_before_validation_or_filesystem_work ... ok
+test worklog::bridge::worker::http_tests::launch_reset_wakes_idle_worker_even_when_new_connection_is_invalid ... ok
+test worklog::bridge::worker::http_tests::native_pending_authorizes_all_five_tools_from_verified_parent ... ok
+test worklog::bridge::worker::http_tests::native_pending_rejects_spoofed_or_synthetic_parent_sources ... ok
+test worklog::bridge::worker::http_tests::native_pending_requires_real_user_and_keeps_query_state_on_duplicate_registration ... ok
+test worklog::bridge::worker::http_tests::old_launch_is_rejected_before_http_and_during_parent_lookup ... ok
+test worklog::bridge::worker::http_tests::pending_native_turn_keeps_registration_business_date_across_0300 ... ok
+test worklog::bridge::worker::http_tests::returned_session_directory_must_match_even_with_same_ids ... ok
+test worklog::bridge::worker::http_tests::windows_directory_aliases_share_the_host_grant_identity ... ok
+test worklog::bridge::worker::http_tests::wrong_or_missing_credentials_never_reach_dispatch ... ok
+test worklog::bridge::worker::tests::assistant_identity_requires_matching_tool_call ... ok
+test worklog::bridge::worker::worker_tests::changing_launch_and_rearming_a_replaced_directory_keeps_notifications_live ... ok
+test worklog::bridge::worker::worker_tests::duplicate_notifications_are_coalesced_and_do_not_hide_scan_time_notifications ... ok
+test worklog::bridge::worker::worker_tests::expired_files_are_removed_without_execution_and_rejections_keep_host_error ... ok
+test worklog::bridge::worker::worker_tests::half_written_temporary_file_is_not_consumed_and_response_is_published_atomically ... ok
+test worklog::bridge::worker::worker_tests::idle_notifications_ten_minutes_real_wall_clock ... ignored, 10 minute real wall-clock idle check; run separately from builds/benchmarks
+test worklog::bridge::worker::worker_tests::malformed_and_mismatched_request_files_never_execute ... ok
+test worklog::bridge::worker::worker_tests::notification_filter_ignores_own_outputs_and_accepts_atomic_request_publish ... ok
+test tool_permissions::events::transport_tests::stalled_headers_have_a_separate_deadline_and_next_connection_recovers ... ok
+test worklog::bridge::worker::worker_tests::real_file_notification_wakes_atomic_rename_without_waiting_for_reconciliation ... ok
+test worklog::bridge::worker::worker_tests::scan_rejects_a_linked_launch_directory_before_expired_cleanup ... ok
+test worklog::bridge::worker::worker_tests::shutdown_interrupts_an_idle_ten_second_wait ... ok
+test worklog::bridge::worker::worker_tests::watcher_failure_recovers_when_directory_returns ... ok
+test worklog::calendar::tests::business_date_switches_at_three_across_calendar_boundaries ... ok
+test worklog::calendar::tests::creation_boundary_and_clock_rollback_do_not_invent_past_occurrence ... ok
+test worklog::calendar::tests::daylight_gap_advances_and_overlap_chooses_first_instant ... ok
+test worklog::calendar::tests::early_schedule_keeps_wall_clock_but_reports_previous_workday ... ok
+test worklog::calendar::tests::friday_due_and_monday_recovery_choose_one_latest_week ... ok
+test worklog::calendar::tests::weekday_daily_skips_weekend_and_preserves_single_day_range ... ok
+test worklog::commands::tests::disabled_state_returns_explicit_error ... ok
+test worklog::commands::tests::state_service_preserves_committed_result ... ok
+test worklog::export::tests::exports_utf8_both_formats_and_preserves_colliding_file ... ok
+test worklog::export::tests::manual_export_reopen_evidence ... ignored, Writes synthetic export evidence under the repository evidence directory
+test worklog::export::tests::missing_destination_and_unknown_request_fields_are_rejected ... ok
+test worklog::export::tests::partial_write_failure_cleans_reserved_file ... ok
+test worklog::export::tests::permission_failure_cleans_file_and_exposes_no_native_path ... ok
+test worklog::export::tests::resolves_selected_historical_version_and_rejects_other_report_version ... ok
+test worklog::model_client::tests::real_http_fixture_requires_terminal_completion_and_disables_tools ... ok
+test worklog::reports::tests::input_is_chunked_without_truncation_and_empty_stays_empty ... ok
+test worklog::reports::tests::rejects_unknown_missing_empty_and_truncated_output ... ok
+test worklog::repository::report_tests::apply_candidate_invalidates_previous_current_dependents ... ok
+test worklog::repository::report_tests::deleting_entry_purges_weekly_daily_snapshot_and_late_run ... ok
+test worklog::repository::report_tests::linked_delete_option_removes_transitive_reports_but_not_other_entries ... ok
+test worklog::repository::report_tests::project_filter_follows_weekly_daily_snapshot_sources ... ok
+test worklog::repository::source_tests::d20a_unchanged_versions_receive_no_update ... ok
+test worklog::repository::source_tests::d20b_closure_clears_deep_duplicate_and_snapshot_only_edges_preserving_bodies ... ok
+test worklog::repository::source_tests::d20b_deleting_report_cancels_existing_regeneration_without_blocking_new_intent ... ok
+test worklog::repository::source_tests::d20b_entry_linked_delete_removes_closure_but_direct_report_delete_keeps_dependents ... ok
+test worklog::repository::source_tests::d20b_parse_and_write_failure_roll_back_all_erasure_changes ... ok
+test tool_permissions::events::transport_tests::slow_split_frame_outlives_header_deadline_without_losing_bytes ... ok
+test worklog::repository::source_tests::d20b_snapshot_only_run_cannot_publish_or_renew_after_erasure ... ok
+test worklog::repository::source_tests::d20b_target_cancellation_failure_rolls_back_report_deletion ... ok
+test worklog::repository::source_tests::explicit_retry_rebinds_model_and_retains_attempt_fence ... ok
+test worklog::repository::source_tests::manual_save_preserves_freshness_and_date_move_marks_old_day ... ok
+test worklog::repository::source_tests::manual_sqlite_reopen_evidence ... ignored, Prints synthetic SQLite reopen evidence
+test worklog::repository::source_tests::source_deletion_clears_transitive_snapshots_and_cancels_generation ... ok
+test worklog::repository::tests::daily_import_versions_are_unique_and_protected ... ok
+test worklog::repository::tests::generate_replay_is_stable_after_configured_model_changes ... ok
+test worklog::repository::tests::idempotent_revision_and_deleted_receipt ... ok
+test worklog::repository::tests::schedule_receipt_has_atomic_next_time_and_pause_resume ... ok
+test worklog::repository::tests::secret_and_future_completed_entries_are_rejected ... ok
+test worklog::repository::source_tests::d20b_scans_once_with_ten_thousand_unrelated_and_twenty_related_versions ... ok
+test worklog::runner::configuration_tests::missing_model_is_a_visible_persisted_failure ... ok
+test worklog::repository::tests::sqlite_reopen_preserves_dates_and_provenance ... ok
+test worklog::runner::http_tests::shared_service_report_live ... ignored, requires the P4 shared-service OpenCode runtime
+test worklog::runner::publication_tests::entry_inserted_after_snapshot_keeps_generated_report_stale ... ok
+test worklog::runner::publication_tests::new_daily_during_generation_keeps_weekly_stale ... ok
+test worklog::runner::publication_tests::stale_generated_daily_does_not_mask_current_entry_revision ... ok
+test worklog::runner::publication_tests::stale_manual_daily_is_preserved_without_hiding_updated_entry_or_claiming_freshness ... ok
+test worklog::runner::tests::daily_current_version_covers_its_entries_and_later_daily_edit_marks_candidate_stale ... ok
+test worklog::runner::tests::empty_material_finishes_without_a_model_result ... ok
+test worklog::runner::tests::empty_runner_never_looks_up_model_service ... ok
+test worklog::runner::tests::expired_attempt_is_fenced_and_publication_is_unique ... ok
+test worklog::runner::tests::failure_retries_after_one_then_five_minutes_and_stops ... ok
+test worklog::runner::tests::manual_edit_during_generation_remains_current_and_cancel_rejects_result ... ok
+test worklog::runner::tests::manual_retry_refreezes_material_and_receives_a_fresh_bounded_budget ... ok
+test worklog::runner::tests::schedule_tick_is_persistently_unique_after_clock_rollback ... ok
+test worklog::runner::http_tests::runner_posts_to_real_http_and_commits_real_sqlite ... ok
+test worklog::runner::wake_tests::closest_schedule_updates_and_disabling_it_removes_the_deadline ... ok
+test worklog::runner::wake_tests::competing_wakes_enqueue_and_claim_a_due_cycle_only_once ... ok
+test worklog::runner::wake_tests::deadlines_include_retries_and_exhausted_leases_and_exclude_disabled_or_terminal ... ok
+test worklog::runner::wake_tests::idle_stop_interrupts_a_long_wait ... ok
+test worklog::runner::wake_tests::queued_retry_and_lease_recovery_keep_the_existing_attempt_fence ... ok
+test worklog::runner::wake_tests::ten_minute_virtual_idle_has_bounded_sql_work_and_no_row_updates ... ok
+test worklog::runner::wake_tests::actual_worker_wakes_for_committed_work_drains_queue_and_stops ... ok
+test worklog::runner::wake_tests::wall_clock_rollback_forward_and_missed_wake_recompute_without_duplicates ... ok
+test worklog::scheduler::tests::latest_missed_cycle_is_enqueued_once_and_creation_is_respected ... ok
+test worklog::scheduler::tests::unchanged_next_due_does_not_update_any_schedule_row ... ok
+test worklog::runner::wake_tests::wake_before_or_during_wait_is_retained_and_many_notifications_coalesce ... ok
+test worklog::storage::tests::invalid_database_path_reports_failure ... ok
+test worklog::storage::tests::transaction_failure_rolls_back ... ok
+test worklog_tool_tests::worklog_query_tool_contract_covers_natural_recall_shape ... ok
+test worklog::storage::tests::backup_failure_stops_migration ... ok
+test worklog_tool_tests::worklog_tool_integrity_failure_removes_only_owned_tools ... ok
+test worklog_tool_tests::worklog_tool_missing_resource_fails_closed ... ok
+test yume_context::tests::fingerprint_uses_block_prefix ... ok
+test yume_context::tests::plugin_source_declares_the_transform_hook ... ok
+test worklog_tool_tests::worklog_tool_sync_overwrites_only_owned_complete_fixture ... ok
+test windows_process_tree::tests::kills_descendants_before_their_delayed_write_and_preserves_sibling ... ok
+test worklog::bridge::worker::worker_tests::pre_watch_requests_and_missed_notifications_are_found_by_the_same_scan ... ok
+
+test result: ok. 974 passed; 0 failed; 24 ignored; 0 measured; 0 filtered out; finished in 28.71s
+

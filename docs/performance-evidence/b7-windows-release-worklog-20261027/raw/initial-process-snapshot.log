@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "identifier": "com.deskmate.unifiedhistoryqa.winb7release20261027a",
+  "host": {
+    "pid": 256284,
+    "created": 134375740246843905,
+    "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\release\\yume.exe"
+  },
+  "sidecar": {
+    "pid": 255916,
+    "created": 134375741046678775,
+    "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\release\\resources\\opencode\\opencode.exe"
+  }
+}

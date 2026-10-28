@@ -1,0 +1,77 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\useWorklogChat.test.tsx:
+23 | 
+24 | test("opening a native session restores its rejected journal receipt without another reply", async () => {
+25 |   getSessionMessages.mockResolvedValue([{ parts: [toolOutput("rejected")] }]);
+26 |   const hook = renderHook(() => useWorklogChat("reopened"));
+27 |   await act(async () => {});
+28 |   expect(getSessionMessages).toHaveBeenCalledWith("reopened", undefined);
+                                  ^
+error: expect(received).toHaveBeenCalledWith(...expected)
+
+  [
+    "reopened",
+-   undefined,
+  ]
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\useWorklogChat.test.tsx:28:30)
+(fail) opening a native session restores its rejected journal receipt without another reply [13.59ms]
+30 | });
+31 | 
+32 | test("receipt recovery reads the selected native directory", async () => {
+33 |   renderHook(() => useWorklogChat("reopened", "C:/project-b"));
+34 |   await act(async () => {});
+35 |   expect(getSessionMessages).toHaveBeenCalledWith("reopened", "C:/project-b");
+                                  ^
+error: expect(received).toHaveBeenCalledWith(...expected)
+
+  [
+    "reopened",
+-   "C:/project-b",
+  ]
+
+- Expected  - 1
++ Received  + 0
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\useWorklogChat.test.tsx:35:30)
+(fail) receipt recovery reads the selected native directory [1.09ms]
+42 |     initialProps: { directory: "C:/first" },
+43 |   });
+44 |   hook.rerender({ directory: "C:/second" });
+45 |   hook.rerender({ directory: "C:/first" });
+46 |   await act(async () => { finish([{ parts: [toolOutput("rejected")] }]); });
+47 |   expect(hook.result.current.operations).toEqual([]);
+                                              ^
+error: expect(received).toEqual(expected)
+
+- []
++ [
++   {
++     "error": "NEEDS_EXPLICIT_REQUEST",
++     "messageId": "message",
++     "receipt": null,
++     "requestId": "ae0e8d01-25f2-2d08-3217-8d2de99cbedf",
++     "undoable": false,
++   },
++ ]
+
+- Expected  - 1
++ Received  + 9
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\useWorklogChat.test.tsx:47:42)
+(fail) revisiting a session cannot publish its previous recovery after switching directories [1.77ms]
+(pass) a late history recovery cannot publish receipts into another session [1.03ms]
+(pass) unrelated journal changes do not turn a rejected operation back into pending [2.61ms]
+(pass) late empty receipt lookup cannot erase a later rejection [17.47ms]
+(pass) a verified host receipt can resolve a previously pending operation [13.35ms]
+(pass) an old-session save completes without publishing a receipt into the new chat [15.76ms]
+(pass) an old-session rejected schedule does not attach an error to the new chat [16.17ms]
+
+ 6 pass
+ 3 fail
+ 15 expect() calls
+Ran 9 tests across 1 file. [2.53s]

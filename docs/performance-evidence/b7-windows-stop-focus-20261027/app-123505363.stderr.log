@@ -1,0 +1,9 @@
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb720261027b
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb720261027b
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb720261027b
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb720261027b
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb720261027b
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb720261027b
+settings window QA: large=false, physical_size=Ok(PhysicalSize { width: 900, height: 650 }), scale_factor=Ok(1.25)
+chat window QA: large=true, physical_size=Ok(PhysicalSize { width: 900, height: 950 }), scale_factor=Ok(1.25)
+permission stream: 远程主机强迫关闭了一个现有的连接。 (os error 10054)

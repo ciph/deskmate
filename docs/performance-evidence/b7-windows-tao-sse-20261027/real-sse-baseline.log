@@ -1,0 +1,6 @@
+Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.
+timestamp=2026-10-27T07:59:05.026Z level=INFO run=3f315bc9 message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\real-sse-home\\xdg-config\\opencode\\config.json"
+timestamp=2026-10-27T07:59:05.036Z level=INFO run=3f315bc9 message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\real-sse-home\\xdg-config\\opencode\\opencode.json"
+timestamp=2026-10-27T07:59:05.037Z level=INFO run=3f315bc9 message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\real-sse-home\\xdg-config\\opencode\\opencode.jsonc"
+opencode server listening on http://127.0.0.1:49237
+timestamp=2026-10-27T07:59:05.186Z level=INFO run=3f315bc9 message="global event connected"

@@ -1,0 +1,41 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\chatFixedReply.test.tsx:
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects history_native_missing [81.40ms]
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects %s [42.38ms]
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects history_native_timeout [34.14ms]
+(pass) 小著固定名字由来回复 > a newly registered unknown session refreshes host capabilities before the first send [44.35ms]
+new conversation status unavailable synthetic unavailable
+(pass) 小著固定名字由来回复 > a new session stays read only when its fresh host status cannot be loaded [12.89ms]
+(pass) 小著固定名字由来回复 > reopening a fixed reply preserves the local turn in the same native conversation [78.18ms]
+(pass) 小著固定名字由来回复 > keeps input locked until a disconnected workbench session has a verified state [51.82ms]
+(pass) 小著固定名字由来回复 > sends four lines two seconds apart and shows typing while waiting [59.77ms]
+(pass) 小著固定名字由来回复 > answers who-am-I directly with the requested intro [46.55ms]
+(pass) 小著固定名字由来回复 > stopping during the wait prevents stale later bubbles [46.01ms]
+(pass) 小著固定名字由来回复 > shows a 100 ms first chunk immediately and settles a 300 ms response [62.74ms]
+(pass) 小著固定名字由来回复 > shows slow streaming replies at their real arrival time [75.78ms]
+(pass) 小著固定名字由来回复 > does not add an empty placeholder bubble next to the typing indicator [63.96ms]
+(pass) 小著固定名字由来回复 > shows web search as a breathing network activity that settles when completed [60.88ms]
+(pass) Enter keeps the composer focusable while submission is locked and rejects duplicate sends [32.02ms]
+(pass) cold initialization preserves the history view opened while the native project is loading [73.70ms]
+(pass) catalog refresh preserves local reply controls through idle [109.23ms]
+(pass) catalog refresh preserves local reply controls through stop [124.37ms]
+(pass) catalog refresh preserves local reply controls through Aborted [122.44ms]
+(pass) catalog refresh preserves local reply controls through AbortError [102.01ms]
+(pass) catalog refresh preserves local reply controls through MessageAbortedError [117.25ms]
+(pass) real failures stay visible when local Stop is %s [96.51ms]
+(pass) real failures stay visible when local Stop is %s [78.25ms]
+(pass) a completed local reply does not grant control over a later external run [124.45ms]
+(pass) reopening a running read-only native session continues receiving its live text [106.84ms]
+Work journal receipt recovery unavailable
+Work journal receipt recovery unavailable
+(pass) switching to another native directory and session rejects the previous stream's text [109.14ms]
+(pass) native part IDs resume into one assistant row without duplicated restored content [69.09ms]
+Work journal receipt recovery unavailable
+Work journal receipt recovery unavailable
+(pass) a Stop confirmation for an old generation cannot cancel a newly selected native run [93.20ms]
+
+ 28 pass
+ 0 fail
+ 209 expect() calls
+Ran 28 tests across 1 file. [5.03s]

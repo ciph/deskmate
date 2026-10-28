@@ -1,0 +1,7 @@
+Excerpt only; full raw log retained locally and hashed.
+Expected: HTMLDivElement {
+Received: null
+(fail) cold initialization preserves the history view opened while the native project is loading [20497.96ms]
+ 0 pass
+ 1 fail
+Ran 1 test across 1 file. [28.41s]

@@ -1,0 +1,17 @@
+{
+  "pass": true,
+  "time": "2026-10-28T11:54:24.0474666+08:00",
+  "credentialCleared": true,
+  "ownedProcessesGone": true,
+  "portsClosed": [
+    9244,
+    61413,
+    61857
+  ],
+  "rootsRemoved": [
+    "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a",
+    "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a"
+  ],
+  "normalReleaseSha256": "765F92FEA04713AE267EB9A981C66CA07AE18EA4FB8456308728A2C9E9388DC8",
+  "integrityAfterStop": true
+}

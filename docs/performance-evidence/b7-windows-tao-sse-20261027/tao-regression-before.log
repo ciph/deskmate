@@ -1,0 +1,22 @@
+   Compiling tao v0.35.3 (E:\Codex\工作伙伴\deskmate-windows-b7\src-tauri\vendor\tao)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.18s
+     Running unittests src\lib.rs (src-tauri/target\debug\deps\tao-72035e26cee4b62b.exe)
+
+running 1 test
+
+thread 'platform_impl::platform::event_loop::reentrant_paint_tests::nested_thread_paint_keeps_outer_redraw_owner_and_processes_next_cycle' (167212) panicked at src\platform_impl\windows\event_loop.rs:2347:11:
+assertion failed: flush_paint_messages(None, &subclass_input.event_loop_runner)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'platform_impl::platform::event_loop::reentrant_paint_tests::nested_thread_paint_keeps_outer_redraw_owner_and_processes_next_cycle' (167212) panicked at src\platform_impl\windows\event_loop\reentrant_paint_tests.rs:67:5:
+nested WM_PAINT panicked in the native Tao callback
+test platform_impl::platform::event_loop::reentrant_paint_tests::nested_thread_paint_keeps_outer_redraw_owner_and_processes_next_cycle ... FAILED
+
+failures:
+
+failures:
+    platform_impl::platform::event_loop::reentrant_paint_tests::nested_thread_paint_keeps_outer_redraw_owner_and_processes_next_cycle
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+error: test failed, to rerun pass `--lib`

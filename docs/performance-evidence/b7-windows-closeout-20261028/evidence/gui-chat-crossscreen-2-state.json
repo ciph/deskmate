@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"success\":true,\"window\":{\"handle\":\"18621570\",\"title\":\"YUME B7 Closeout QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":361884,\"bounds\":[-1170,393,900,950],\"state\":\"normal\",\"monitorIndex\":2,\"isElevated\":true}}"
+    }
+  ],
+  "isError": false
+}

@@ -1,0 +1,29 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\chatFixedReply.test.tsx:
+COLD step render
+COLD step create pending
+COLD step history
+COLD step resolve
+COLD step initialized
+chat attachment cleanup failed 90 |   const sessionId = parseId(readField(source, "sessionId"), "sessionId");
+91 |   return { sessionId };
+92 | }
+93 | 
+94 | export function parseRecord(value: unknown, context: string): Readonly<Record<string, unknown>> {
+95 |   if (typeof value !== "object" || value === null || Array.isArray(value)) throw new AttachmentApiError(`invalid ${context}`);
+                                                                                      ^
+AttachmentApiError: invalid cleanup receipt
+ reason: "invalid cleanup receipt",
+
+      at parseRecord (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\attachmentApiBoundary.ts:95:82)
+      at parseCleanupReceipt (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\attachmentApi.ts:175:31)
+
+COLD step newchat
+(pass) cold initialization preserves the history view opened while the native project is loading [149.58ms]
+
+ 1 pass
+ 22 filtered out
+ 0 fail
+ 6 expect() calls
+Ran 1 test across 1 file. [7.99s]

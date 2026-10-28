@@ -1,0 +1,16 @@
+{
+  "cancelRed": {
+    "pass": 23,
+    "fail": 1,
+    "rawSha256": "14c0123d02a748ccd7442577522afc219a52ef9f958067475ea6d63a7b80c076"
+  },
+  "worklogRed": "2 substantive scope regressions plus one updated signature expectation failed before repair; final targeted 9/9 and full suite pass.",
+  "harness": [
+    "CDP top-level await required an async expression wrapper; fixed helper, not product.",
+    "Initial isolated model catalog was unverified, so the app correctly blocked sending. Those static samples were rejected. Verification restarted engine; ordinary history load failed transiently and passed after initialization. Final streams each have 500 actual provider chunks and matching native-text SHA.",
+    "Windows PowerShell 5 Measure-Object requires PSCustomObject rather than raw hashtable; sampler corrected before PDF cycles.",
+    "A chat hidden by persona changes was absent from visible-window enumeration; native show and refreshed enumeration restored it.",
+    "Nested fetch instrumentation was installed on harness retries; its 16 callback count is not an authoritative network-request count and is not used as a performance result."
+  ],
+  "rawEvidence": "E:/Codex/工作伙伴/reports/yume-b7-closeout-20261028"
+}

@@ -1,0 +1,608 @@
+$ bun scripts/test-frontend.ts
+passed: scripts\agent-qa\client.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\agent-qa\permissions-evidence.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\bundled-personas.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\check-package-resources.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\macos-release.test.ts (6 pass, 0 fail, 8 skip; exit 0)
+passed: scripts\pack-figure2d.test.ts (7 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\pack-personas.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\pack-position.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\pack-rig2d.test.ts (14 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\persona-asset-policy.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\prepare-opencode.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\prepare-persona-envelopes.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\test-frontend.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\workbench-ownership.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\workbench-qa\provider.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\workbench-routing.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\workbench-theme.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\worklog-qa\provider-models.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\worklog\bridge.test.ts (10 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\worklog\full-flow.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ArtifactCard.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\AttachmentTray.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ChatKeyboardNavigation.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ChatMessageRow.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ChatNavigation.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ChatText.test.tsx (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\HistoryOrganizer.test.tsx (15 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\HistoryPanel.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\LocalResourceTray.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\MediaPreview.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ToolApprovalCards.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\WorklogReceipt.test.tsx (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\WorkspaceTask.test.tsx (15 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentApi.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentApiLeak.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentBinaryUpload.test.ts (29 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentState.test.ts (94 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachments.test.ts (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentsPdfLifecycle.test.ts (17 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\binaryUploadTestHelpers.test.ts (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentFlow.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentFlowHarness.test.ts (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentLifecycle.test.tsx (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentLifecycleHarness.test.ts (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentSend.test.tsx (28 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentSendHarness.test.tsx (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatFixedReply.test.tsx (22 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatMemory.test.tsx (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatPersona.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+failed: src\chat\chatPetActivity.test.tsx (27 pass, 1 fail, 0 skip; exit 1)
+bun test v1.3.14 (0d9b296a)
+
+src\chat\chatPetActivity.test.tsx:
+(pass) chat emits scoped success once after terminal assistant SSE even after idle [145.97ms]
+An update to ChatApp inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ChatApp inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ChatApp inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ChatApp inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+(pass) chat cancellation rejects a late terminal SSE [20.56ms]
+(pass) chat keeps the run active when cancellation cannot be confirmed [30.74ms]
+(pass) chat reconciles a lost prompt response without resending the turn [24.89ms]
+(pass) chat leaves an unreadable prompt submission pending without resending [32.52ms]
+(pass) chat session failure rejects a later success [76.01ms]
+(pass) fixed identity reply emits exactly one completion [45.51ms]
+(pass) real SSE tool stop cannot celebrate before the tool follow-up response [107.82ms]
+(pass) stop isolates late text, busy and error events for the cancelled request [64.42ms]
+(pass) a request with an error before its first chunk rejects later text [91.29ms]
+(pass) unmount cancels the scoped request and ignores late streamed content [58.58ms]
+(pass) a new request in the same session rejects text from a known old parent [92.79ms]
+(pass) a queued second snapshot flushes before idle and preserves ordered parts [81.58ms]
+32 |   // throw errors w/ suggestions for better queries. Opt in so off by default.
+33 |   throwSuggestions: false,
+34 |   // called when getBy* queries fail. (message, container) => Error
+35 |   getElementError(message, container) {
+36 |     const prettifiedDOM = (0, _prettyDom.prettyDOM)(container);
+37 |     const error = new Error([message, `Ignored nodes: comments, ${config.defaultIgnore}\n${prettifiedDOM}`].filter(Boolean).join('\n\n'));
+                           ^
+TestingLibraryElementError: Unable to find an element with the text: authoritative final text. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="chat-root"
+      data-theme="dark"
+    >
+      <header
+        class="chat-header"
+        data-tauri-drag-region=""
+      >
+        <span
+          class="chat-title"
+        >
+          小著
+        </span>
+        <span
+          class="chat-status chat-status-ready"
+        >
+          在的,说吧
+        </span>
+        <button
+          aria-label="在工作台打开"
+          class="chat-iconbtn"
+          title="在工作台打开"
+        >
+          <svg
+            aria-hidden="true"
+            class="app-icon app-icon-18"
+            fill="currentColor"
+            focusable="false"
+            height="18"
+            viewBox="0 0 256 256"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M104,40H56A16,16,0,0,0,40,56v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,104,40Zm0,64H56V56h48v48Zm96-64H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm0,64H152V56h48v48Zm-96,32H56a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,104,136Zm0,64H56V152h48v48Zm96-64H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,200,136Zm0,64H152V152h48v48Z"
+            />
+          </svg>
+        </button>
+        <button
+          aria-label="历史"
+          class="chat-iconbtn"
+          title="历史"
+        >
+          <svg
+            aria-hidden="true"
+            class="app-icon app-icon-18"
+            fill="currentColor"
+            focusable="false"
+            height="18"
+            viewBox="0 0 256 256"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm-8-48A95.44,95.44,0,0,0,60.08,60.15C52.81,67.51,46.35,74.59,40,82V64a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16H49c7.15-8.42,14.27-16.35,22.39-24.57a80,80,0,1,1,1.66,114.75,8,8,0,1,0-11,11.64A96,96,0,1,0,128,32Z"
+            />
+          </svg>
+        </button>
+        <button
+          aria-label="设置"
+          class="chat-settings"
+          title="设置"
+        >
+          <svg
+            aria-hidden="true"
+            class="app-icon app-icon-18"
+            fill="currentColor"
+            focusable="false"
+            height="18"
+            viewBox="0 0 256 256"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z"
+            />
+          </svg>
+        </button>
+        <button
+          aria-label="关闭"
+          class="chat-close"
+        >
+          <svg
+            aria-hidden="true"
+            class="app-icon app-icon-18"
+            fill="currentColor"
+            focusable="false"
+            height="18"
+            viewBox="0 0 256 256"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"
+            />
+          </svg>
+        </button>
+      </header>
+      <div
+        class="chat-timeline"
+      >
+        <div
+          class="chat-list"
+        >
+          <div
+            class="chat-msg chat-msg-user"
+            data-message-id="msg_8939a884134f459cb8b0d29d48c07696"
+          >
+            <span
+              aria-label="我的头像"
+              class="yume-avatar"
+              role="img"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="20"
+                viewBox="0 0 256 256"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"
+                />
+              </svg>
+            </span>
+            <div
+              class="chat-msg-content"
+            >
+              <div
+                class="chat-bubble"
+              >
+                <span
+                  class="chat-plain-text"
+                >
+                  请回答一个测试问题
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="chat-msg chat-msg-assistant"
+            data-message-id="assistant"
+          >
+            <span
+              aria-label="小著"
+              class="yume-avatar"
+              role="img"
+            >
+              <span
+                aria-hidden="true"
+              >
+                小著
+              </span>
+            </span>
+            <div
+              class="chat-msg-content"
+            >
+              <div
+                class="chat-bubble"
+              >
+                <div
+                  class="chat-markdown"
+                >
+                  <p>
+                    authoritative final text late
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            aria-live="polite"
+            class="chat-typing"
+            role="status"
+          >
+            正在输入..
+          </div>
+        </div>
+      </div>
+      <div
+        aria-live="polite"
+        class="chat-tool-approvals"
+      />
+      <footer
+        class="chat-input-row"
+      >
+        <div
+          class="chat-input-wrap"
+        >
+          <div
+            class="chat-textarea-wrap"
+          >
+            <textarea
+              class="chat-input"
+              placeholder="输入消息,Enter 发送"
+              rows="2"
+            />
+          </div>
+          <div
+            class="chat-composer-tools"
+          >
+            <button
+              aria-label="附件"
+              class="chat-attach"
+              title="附件"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="app-icon app-icon-16"
+                fill="currentColor"
+                focusable="false"
+                height="16"
+                viewBox="0 0 256 256"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"
+                />
+              </svg>
+            </button>
+            <div
+              class="composer-picker composer-folder"
+            >
+              <button
+                aria-expanded="false"
+                aria-haspopup="menu"
+                aria-label="文件夹"
+                class="composer-tool"
+                title="文件夹"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="app-icon app-icon-16"
+                  fill="currentColor"
+                  focusable="false"
+                  height="16"
+                  viewBox="0 0 256 256"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M216,72H131.31L104,44.69A15.86,15.86,0,0,0,92.69,40H40A16,16,0,0,0,24,56V200.62A15.4,15.4,0,0,0,39.38,216H216.89A15.13,15.13,0,0,0,232,200.89V88A16,16,0,0,0,216,72ZM40,56H92.69l16,16H40ZM216,200H40V88H216Z"
+                  />
+                </svg>
+                <span>
+                  文件夹
+                </span>
+                <span
+                  aria-hidden="true"
+                >
+                  ⌄
+                </span>
+              </button>
+            </div>
+            <div
+              class="chat-composer-spacer"
+            />
+            <div
+              class="composer-picker composer-model"
+            >
+              <button
+                aria-expanded="false"
+                aria-haspopup="menu"
+                aria-label="Claude Sonnet 4.5"
+                class="composer-tool"
+                title="Claude Sonnet 4.5 (claude-sonnet-4.5)"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                  class="composer-model-label"
+                >
+                  <span
+                    class="composer-model-prefix"
+                  >
+                    Claude So
+                  </span>
+                  <span
+                    class="composer-model-suffix"
+                  >
+                    nnet 4.5
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  class="composer-caret"
+                >
+                  ⌄
+                </span>
+              </button>
+            </div>
+            <button
+              class="chat-send"
+              disabled=""
+              type="button"
+            >
+              发送
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</body>
+      at getElementError (E:\Codex\工作伙伴\deskmate-windows-b7\node_modules\@testing-library\dom\dist\config.js:37:23)
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\node_modules\@testing-library\dom\dist\query-helpers.js:76:38)
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\node_modules\@testing-library\dom\dist\query-helpers.js:52:17)
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\node_modules\@testing-library\dom\dist\query-helpers.js:95:19)
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:405:17)
+(fail) native text deltas render before completion and final snapshots replace accumulated text [123.28ms]
+(pass) deltas cannot reveal reasoning or cross session, user, parent and Stop boundaries [139.38ms]
+(pass) error flushes queued content before its error row and rejects later chunks [77.77ms]
+(pass) confirmed Stop keeps queued legal content and a new request never receives its stale timer [154.84ms]
+(pass) tool events flush prior text and duplicate text after a tool clears only plain activity [123.96ms]
+(pass) an unconfirmed Stop leaves queued content and subsequent chunks live [124.48ms]
+(pass) unmount discards an already queued presentation timer [121.30ms]
+(pass) completed assistant metadata flushes queued text without waiting for session idle [81.51ms]
+78 |       promptAttempts += 1;
+79 |       const body = typeof init.body === "string" ? JSON.parse(init.body) as unknown : null;
+80 |       submittedMessageId = typeof body === "object" && body !== null && "messageID" in body
+81 |         ? String(Reflect.get(body, "messageID"))
+82 |         : null;
+83 |       if (promptTransport !== "ok") return Promise.reject(new Error("response lost"));
+                                                                   ^
+error: response lost
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:83:63)
+      at api (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:149:21)
+      at async promptAsync (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:226:9)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:1145:13)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:942:24)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:956:17)
+
+(pass) confirmed missing prompt removes its optimistic row, keeps the draft and allows one visible retry [44.27ms]
+160 |       case "history_recent_workspaces":
+161 |         return Promise.resolve([]);
+162 |       case "history_register_native_session":
+163 |         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_fixed", directory: "." }));
+164 |       case "history_catalog_access":
+165 |         if (failNextCatalogAccess) { failNextCatalogAccess = false; return Promise.reject(new Error("private internal access detail")); }
+                                                                                                    ^
+error: private internal access detail
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:165:95)
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:1128:33)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:942:24)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:956:17)
+
+(pass) a failure before prompt submission removes only its optimistic question and shows no internal detail [36.19ms]
+(pass) late unknown submission confirmation cannot revive a request after confirmed Stop [46.13ms]
+(pass) Stop during native turn registration prevents a later prompt submission [60.17ms]
+(pass) native completion before confirmed confirmation never restores the sent draft [73.87ms]
+(pass) native completion before unknown confirmation never restores the sent draft [76.75ms]
+(pass) native completion before not_found confirmation never restores the sent draft [79.24ms]
+
+1 tests failed:
+(fail) native text deltas render before completion and final snapshots replace accumulated text [123.28ms]
+
+ 27 pass
+ 1 fail
+ 173 expect() calls
+Ran 28 tests across 1 file. [3.21s]
+
+passed: src\chat\chatWorklogPrompt.test.tsx (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\currentInformation.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\dragDropConfig.test.ts (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\localResources.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\memoryActions.test.ts (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\messagePersona.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\nativeResourceFlow.test.tsx (10 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\pdfPageText.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\petActivity.test.ts (20 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\providerConnection.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\sharedConversation.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\streamText.test.ts (10 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\toolPart.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useAgentHistoryView.test.tsx (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useAgentRun.test.tsx (17 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachments.test.ts (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachmentsGate.test.ts (13 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachmentsHarness.test.ts (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachmentsPreviewLifecycle.test.ts (16 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachmentsUtils.test.ts (21 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useHistoryOrganizerRequest.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useLocalResources.test.tsx (16 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\usePersonaAvatar.test.tsx (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useToolPermissions.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useWorklogChat.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\webSearchSites.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\worklogActions.test.ts (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\devtools.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\horoscope\date.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\horoscope\generator.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\localAiUsage.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\memory.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\nativeHistoryEvents.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\opencode.directory.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\opencode.test.ts (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\packs.events.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\petState.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\pomodoro.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\settings.test.ts (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\toolPermissions.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\unifiedHistory.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\userAvatar.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\worklog.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\GifPetView.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\GlbPetView.visibility.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetAnimation.test.ts (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetApp.glbMood.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetApp.loading.test.tsx (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetApp.reload.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetPomodoro.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetRendererActions.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetRendererEnvelope.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetRendererResources.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetRendererVisibility.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\figure2d.contract.test.ts (65 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\figure2d.test.ts (24 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\frameGate.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\gifGeometry.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\gifState.test.ts (20 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\mouseFollow.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\personaAssets.test.ts (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\personaAvatar.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\personaCatalog.test.ts (16 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\petLayout.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\petSleep.test.ts (10 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\petWindowGeometry.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\rig2d\assets.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\rig2d\config.test.ts (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\rig2d\renderer.test.ts (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\sandaimeAsset.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\useGifPassthrough.lifecycle.test.tsx (14 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\useGifPassthrough.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\useGifState.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\useGifVisibility.test.tsx (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\usePetInteraction.test.tsx (10 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\usePetSleep.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\variantEnvelope.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\variantEnvelopeAsset.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\xiaozhuNidaime.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\xiaozhuSandaime.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiProviderConnection.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiProviderDisclosure.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiProviderList.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiProviderShortcuts.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiTab.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiUsage.test.tsx (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\MemoryTab.test.tsx (18 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\PersonaPackNavigation.test.tsx (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\PersonaPacks.test.tsx (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\PersonaPacksLoading.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\SettingsKeyboardNavigation.test.tsx (22 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\ToolPermissionsTab.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\UpdateFooter.test.tsx (27 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\UserAvatarControl.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\UserAvatarSettings.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\WidgetSettings.test.tsx (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\WindowsComponentControl.test.tsx (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\WorklogWidget.test.tsx (15 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\aiProviderModel.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\modelManufacturer.test.ts (20 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\settingsPrimitives.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\theme.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\updateErrors.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\updateState.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\HoroscopeWidget.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\PomodoroWidget.test.tsx (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\TimePicker.test.tsx (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\useDailyHoroscope.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\usePomodoro.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\usePomodoroErrors.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\ReportEditor.test.tsx (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\ReportSchedulePanel.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\WeekWheel.test.tsx (17 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\WorklogTab.test.tsx (13 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\reportExport.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\worklogWeek.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\testing\harness.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\ui\Avatar.test.tsx (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\workbench\history-shortcut.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\workbench\session-route.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\workbench\theme-sync.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: vite.config.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+171/172 files passed; 0 unfinished
+error: script "test:frontend" exited with code 1

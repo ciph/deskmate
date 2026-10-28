@@ -1,0 +1,13 @@
+bun test v1.3.14 (0d9b296a)
+
+scripts\worklog-qa\provider-models.test.ts:
+(pass) wraps all five worklog tool inputs in both JSON and streaming responses [21.09ms]
+(pass) records bounded model discovery receipt [0.84ms]
+(pass) emits native workspace tool arguments without a wrapper [0.93ms]
+(pass) emits the explicit existing-file read then edit fixture [0.43ms]
+(pass) malforms an explicit QA stream after one valid delta without a final frame [1.06ms]
+
+ 5 pass
+ 0 fail
+ 47 expect() calls
+Ran 5 tests across 1 file. [3.69s]

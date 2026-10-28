@@ -1,0 +1,39 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\useWorklogChat.test.tsx:
+23 |   const hook = renderHook(() => useWorklogChat("session"));
+24 |   await act(async () => { hook.result.current.acceptTool(toolOutput("rejected")); });
+25 |   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
+26 |   await act(async () => { changed?.(); });
+27 |   expect(invoke).toHaveBeenCalledWith("worklog_get_operation", { requestId });
+28 |   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
+                                                        ^
+error: expect(received).toBe(expected)
+
+Expected: "NEEDS_EXPLICIT_REQUEST"
+Received: null
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\useWorklogChat.test.tsx:28:52)
+(fail) unrelated journal changes do not turn a rejected operation back into pending [27.47ms]
+32 |   let finish: (value: unknown) => void = () => {};
+33 |   invoke.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+34 |   const hook = renderHook(() => useWorklogChat("session"));
+35 |   await act(async () => { hook.result.current.acceptTool(toolOutput("pending")); });
+36 |   await act(async () => { hook.result.current.acceptTool(toolOutput("rejected")); });
+37 |   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
+                                                        ^
+error: expect(received).toBe(expected)
+
+Expected: "NEEDS_EXPLICIT_REQUEST"
+Received: null
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\useWorklogChat.test.tsx:37:52)
+(fail) late empty receipt lookup cannot erase a later rejection [12.28ms]
+(pass) a verified host receipt can resolve a previously pending operation [15.06ms]
+(pass) an old-session save completes without publishing a receipt into the new chat [15.05ms]
+(pass) an old-session rejected schedule does not attach an error to the new chat [17.62ms]
+
+ 3 pass
+ 2 fail
+ 10 expect() calls
+Ran 5 tests across 1 file. [4.15s]

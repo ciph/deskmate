@@ -1,0 +1,23 @@
+$ bun scripts/test-frontend.ts
+48 |   for (const child of active) killChild(child);
+49 | }
+50 | 
+51 | export async function runFile(file: string, base: string, executable: string, budget: number): Promise<Result> {
+52 |   return new Promise((done) => {
+53 |     const child = spawn(executable, ["test", resolve(file)], { cwd: base, env: { ...process.env, FORCE_COLOR: "0" }, detached: process.platform !== "win32", stdio: ["ignore", "pipe", "pipe"] });
+                       ^
+EPERM: operation not permitted, uv_spawn 'C:\Users\chenglingxiao\AppData\Roaming\npm\node_modules\bun\bin\bun.exe'
+    path: "C:\\Users\\chenglingxiao\\AppData\\Roaming\\npm\\node_modules\\bun\\bin\\bun.exe",
+ syscall: "uv_spawn",
+   errno: -1,
+    code: "EPERM"
+
+      at spawn (node:child_process:679:35)
+      at spawn (node:child_process:14:39)
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\scripts\test-frontend.ts:53:19)
+      at new Promise (1:11)
+      at runFile (E:\Codex\工作伙伴\deskmate-windows-b7\scripts\test-frontend.ts:52:10)
+      at main (E:\Codex\工作伙伴\deskmate-windows-b7\scripts\test-frontend.ts:87:26)
+
+Bun v1.3.14 (Windows x64)
+error: script "test:frontend" exited with code 1

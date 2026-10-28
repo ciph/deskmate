@@ -1,0 +1,3 @@
+
+Cannot combine file path arguments with --scope full. File path arguments use --scope files.
+

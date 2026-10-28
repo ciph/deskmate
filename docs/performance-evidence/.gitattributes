@@ -1,2 +1,4 @@
 *.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 *.pdf binary
+# Portable Windows evidence preserves raw bytes and recorded hashes on every host.
+b7-windows*/**/* -text

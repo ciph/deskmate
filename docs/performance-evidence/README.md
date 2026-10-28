@@ -1,5 +1,11 @@
 # 性能整改便携证据
 
+## 2026-10-28 Windows 本机整改交付
+
+[完整报告](b7-windows-closeout-20261028/README.md) · [HTML](b7-windows-closeout-20261028/index.html) · [结构化结果](b7-windows-closeout-20261028/summary.json) · [20 项审计矩阵](b7-windows-closeout-20261028/audit-matrix.json) · [SHA 清单](b7-windows-closeout-20261028/evidence-manifest.json)。原有改动保存为 `8702347`，本轮 Stop 取消误报与日志回执作用域修复为 `36a3c2e`。前端 1373 pass / 8 skip、Rust 974 pass / 24 ignored，均 0 fail；新增真实长流式、活跃工具二次启动、PDF 内存、宠物隐藏恢复、同 DPI 多屏及十分钟空闲记录。正常 release 和清理已核验。
+
+本机修复交付收尾；19 项实现、1 项模型条件实验保留原版，不冒充全平台 V2 全过。Mac 最终实机、混合 DPI/高刷、GPU/功耗受控 A/B 和实验室故障边界见报告。旧的失败、采样与轮次估计保留为历史，不再作为当前执行指令。补齐原先被忽略的 201 份精选日志；本轮未推送、安装或发布。
+
 ## 2026-10-28 Windows release 附件与日志检查点
 
 B7 仍进行中，当前 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b / 0.4.21。复用经 SHA 核验的隔离 release QA：原生 MP4 选择器、MP3/WAV/文件夹双区域拖放、坏视频回退、发送与重启后历史恢复通过；日志记录、冲突草稿、日报周报、版本采用、复制与导出、计划编辑/暂停、失败后真实重试、关联删除和浅深色固定窗口均有物理证据。构造的最近漏周重启后运行中暂停并取消，服务延迟期过后未归档；不宣称客户端收到了迟到响应。十次普通二次启动通过，活跃工具期间仍待验。本轮无产品源码修改，835 项原有文件内容保留；正常 release 已校验恢复。

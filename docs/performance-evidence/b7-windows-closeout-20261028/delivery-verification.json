@@ -1,0 +1,16 @@
+{
+  "time": "2026-10-28T03:58:21.051Z",
+  "pass": true,
+  "evidenceFilesHashVerified": 57,
+  "sourceCommit": "36a3c2e",
+  "sourceHashesVerified": 4,
+  "trackedPortableLinks": 292,
+  "missingLinks": [],
+  "scannedFiles": 1003,
+  "knownTemporaryTokensChecked": 7,
+  "credentialPatternMatches": [],
+  "credentialScanScope": "Known temporary tokens and common credential patterns; not an arbitrary-secret guarantee",
+  "normalExecutableRestored": true,
+  "normalFrontendRestored": true,
+  "appRootsRemoved": true
+}

@@ -1,0 +1,973 @@
+{
+  "name": "closeout-10000",
+  "initialRows": 1000,
+  "finalRows": 1002,
+  "stableOldNodes": 1000,
+  "firstAt": 1283.5,
+  "elapsedMs": 11939.29999999702,
+  "updates": [
+    {
+      "at": 1253.5,
+      "chars": 18
+    },
+    {
+      "at": 1316.2999999970198,
+      "chars": 75
+    },
+    {
+      "at": 1367.7999999970198,
+      "chars": 115
+    },
+    {
+      "at": 1425.2000000029802,
+      "chars": 175
+    },
+    {
+      "at": 1468.7999999970198,
+      "chars": 235
+    },
+    {
+      "at": 1537.7000000029802,
+      "chars": 295
+    },
+    {
+      "at": 1581.2999999970198,
+      "chars": 335
+    },
+    {
+      "at": 1630.7000000029802,
+      "chars": 375
+    },
+    {
+      "at": 1686.5999999940395,
+      "chars": 455
+    },
+    {
+      "at": 1752.2000000029802,
+      "chars": 515
+    },
+    {
+      "at": 1798.7000000029802,
+      "chars": 555
+    },
+    {
+      "at": 1858.9000000059605,
+      "chars": 615
+    },
+    {
+      "at": 1903.0999999940395,
+      "chars": 655
+    },
+    {
+      "at": 1942.5999999940395,
+      "chars": 715
+    },
+    {
+      "at": 2013.7999999970198,
+      "chars": 775
+    },
+    {
+      "at": 2071.0999999940395,
+      "chars": 834
+    },
+    {
+      "at": 2122.0999999940395,
+      "chars": 874
+    },
+    {
+      "at": 2168.0999999940395,
+      "chars": 935
+    },
+    {
+      "at": 2230.2000000029802,
+      "chars": 995
+    },
+    {
+      "at": 2292.0999999940395,
+      "chars": 1055
+    },
+    {
+      "at": 2336.5,
+      "chars": 1095
+    },
+    {
+      "at": 2388.4000000059605,
+      "chars": 1135
+    },
+    {
+      "at": 2429.2000000029802,
+      "chars": 1194
+    },
+    {
+      "at": 2489.7999999970198,
+      "chars": 1255
+    },
+    {
+      "at": 2551.4000000059605,
+      "chars": 1315
+    },
+    {
+      "at": 2597.5999999940395,
+      "chars": 1354
+    },
+    {
+      "at": 2655.2999999970198,
+      "chars": 1415
+    },
+    {
+      "at": 2702.4000000059605,
+      "chars": 1455
+    },
+    {
+      "at": 2749.4000000059605,
+      "chars": 1515
+    },
+    {
+      "at": 2821,
+      "chars": 1575
+    },
+    {
+      "at": 2887.2000000029802,
+      "chars": 1635
+    },
+    {
+      "at": 2932.4000000059605,
+      "chars": 1695
+    },
+    {
+      "at": 2992.2999999970198,
+      "chars": 1755
+    },
+    {
+      "at": 3036.4000000059605,
+      "chars": 1795
+    },
+    {
+      "at": 3086.9000000059605,
+      "chars": 1834
+    },
+    {
+      "at": 3131.4000000059605,
+      "chars": 1895
+    },
+    {
+      "at": 3195.5999999940395,
+      "chars": 1975
+    },
+    {
+      "at": 3260.0999999940395,
+      "chars": 2035
+    },
+    {
+      "at": 3330.5,
+      "chars": 2095
+    },
+    {
+      "at": 3391,
+      "chars": 2155
+    },
+    {
+      "at": 3454.5999999940395,
+      "chars": 2215
+    },
+    {
+      "at": 3518.2000000029802,
+      "chars": 2275
+    },
+    {
+      "at": 3559.5999999940395,
+      "chars": 2314
+    },
+    {
+      "at": 3619.9000000059605,
+      "chars": 2375
+    },
+    {
+      "at": 3671.9000000059605,
+      "chars": 2415
+    },
+    {
+      "at": 3715.5999999940395,
+      "chars": 2474
+    },
+    {
+      "at": 3777.0999999940395,
+      "chars": 2535
+    },
+    {
+      "at": 3820.7999999970198,
+      "chars": 2575
+    },
+    {
+      "at": 3870.9000000059605,
+      "chars": 2635
+    },
+    {
+      "at": 3936.4000000059605,
+      "chars": 2695
+    },
+    {
+      "at": 4003.2999999970198,
+      "chars": 2754
+    },
+    {
+      "at": 4051.5,
+      "chars": 2815
+    },
+    {
+      "at": 4098.79999999702,
+      "chars": 2855
+    },
+    {
+      "at": 4151.5,
+      "chars": 2895
+    },
+    {
+      "at": 4188.5999999940395,
+      "chars": 2955
+    },
+    {
+      "at": 4254.0999999940395,
+      "chars": 3015
+    },
+    {
+      "at": 4300.0999999940395,
+      "chars": 3055
+    },
+    {
+      "at": 4351.70000000298,
+      "chars": 3115
+    },
+    {
+      "at": 4419.70000000298,
+      "chars": 3174
+    },
+    {
+      "at": 4469.20000000298,
+      "chars": 3234
+    },
+    {
+      "at": 4536.5,
+      "chars": 3295
+    },
+    {
+      "at": 4602.0999999940395,
+      "chars": 3355
+    },
+    {
+      "at": 4651.5999999940395,
+      "chars": 3414
+    },
+    {
+      "at": 4699.4000000059605,
+      "chars": 3455
+    },
+    {
+      "at": 4752.0999999940395,
+      "chars": 3515
+    },
+    {
+      "at": 4804.5,
+      "chars": 3555
+    },
+    {
+      "at": 4851.70000000298,
+      "chars": 3615
+    },
+    {
+      "at": 4915.9000000059605,
+      "chars": 3694
+    },
+    {
+      "at": 4987.70000000298,
+      "chars": 3755
+    },
+    {
+      "at": 5054.5,
+      "chars": 3815
+    },
+    {
+      "at": 5119,
+      "chars": 3875
+    },
+    {
+      "at": 5186.9000000059605,
+      "chars": 3935
+    },
+    {
+      "at": 5232.9000000059605,
+      "chars": 3995
+    },
+    {
+      "at": 5299,
+      "chars": 4075
+    },
+    {
+      "at": 5368.9000000059605,
+      "chars": 4135
+    },
+    {
+      "at": 5435.0999999940395,
+      "chars": 4194
+    },
+    {
+      "at": 5499,
+      "chars": 4275
+    },
+    {
+      "at": 5572.79999999702,
+      "chars": 4335
+    },
+    {
+      "at": 5632.4000000059605,
+      "chars": 4395
+    },
+    {
+      "at": 5691.4000000059605,
+      "chars": 4455
+    },
+    {
+      "at": 5753.0999999940395,
+      "chars": 4515
+    },
+    {
+      "at": 5803.70000000298,
+      "chars": 4555
+    },
+    {
+      "at": 5852.29999999702,
+      "chars": 4594
+    },
+    {
+      "at": 5887.70000000298,
+      "chars": 4654
+    },
+    {
+      "at": 5952.5,
+      "chars": 4715
+    },
+    {
+      "at": 6018.4000000059605,
+      "chars": 4775
+    },
+    {
+      "at": 6070.0999999940395,
+      "chars": 4835
+    },
+    {
+      "at": 6123.20000000298,
+      "chars": 4875
+    },
+    {
+      "at": 6166.0999999940395,
+      "chars": 4915
+    },
+    {
+      "at": 6218.0999999940395,
+      "chars": 4995
+    },
+    {
+      "at": 6284.79999999702,
+      "chars": 5054
+    },
+    {
+      "at": 6348,
+      "chars": 5114
+    },
+    {
+      "at": 6410,
+      "chars": 5175
+    },
+    {
+      "at": 6469.79999999702,
+      "chars": 5235
+    },
+    {
+      "at": 6519.0999999940395,
+      "chars": 5275
+    },
+    {
+      "at": 6565,
+      "chars": 5315
+    },
+    {
+      "at": 6618.5,
+      "chars": 5375
+    },
+    {
+      "at": 6669,
+      "chars": 5435
+    },
+    {
+      "at": 6731,
+      "chars": 5495
+    },
+    {
+      "at": 6794.29999999702,
+      "chars": 5555
+    },
+    {
+      "at": 6854.5999999940395,
+      "chars": 5615
+    },
+    {
+      "at": 6888.5,
+      "chars": 5635
+    },
+    {
+      "at": 6931.0999999940395,
+      "chars": 5695
+    },
+    {
+      "at": 6991.9000000059605,
+      "chars": 5755
+    },
+    {
+      "at": 7048.9000000059605,
+      "chars": 5815
+    },
+    {
+      "at": 7103,
+      "chars": 5855
+    },
+    {
+      "at": 7145.70000000298,
+      "chars": 5894
+    },
+    {
+      "at": 7206.4000000059605,
+      "chars": 5955
+    },
+    {
+      "at": 7253.5,
+      "chars": 6015
+    },
+    {
+      "at": 7300.9000000059605,
+      "chars": 6054
+    },
+    {
+      "at": 7361.70000000298,
+      "chars": 6115
+    },
+    {
+      "at": 7418.79999999702,
+      "chars": 6175
+    },
+    {
+      "at": 7471.79999999702,
+      "chars": 6234
+    },
+    {
+      "at": 7536.4000000059605,
+      "chars": 6295
+    },
+    {
+      "at": 7571.9000000059605,
+      "chars": 6335
+    },
+    {
+      "at": 7618.5999999940395,
+      "chars": 6375
+    },
+    {
+      "at": 7671.9000000059605,
+      "chars": 6435
+    },
+    {
+      "at": 7724.29999999702,
+      "chars": 6474
+    },
+    {
+      "at": 7769.5,
+      "chars": 6514
+    },
+    {
+      "at": 7810.4000000059605,
+      "chars": 6575
+    },
+    {
+      "at": 7869.70000000298,
+      "chars": 6635
+    },
+    {
+      "at": 7937.79999999702,
+      "chars": 6695
+    },
+    {
+      "at": 7982.5,
+      "chars": 6735
+    },
+    {
+      "at": 8036.4000000059605,
+      "chars": 6795
+    },
+    {
+      "at": 8086.20000000298,
+      "chars": 6855
+    },
+    {
+      "at": 8148.0999999940395,
+      "chars": 6915
+    },
+    {
+      "at": 8211,
+      "chars": 6975
+    },
+    {
+      "at": 8269.70000000298,
+      "chars": 7035
+    },
+    {
+      "at": 8330.79999999702,
+      "chars": 7095
+    },
+    {
+      "at": 8392.59999999404,
+      "chars": 7155
+    },
+    {
+      "at": 8436.09999999404,
+      "chars": 7195
+    },
+    {
+      "at": 8482.09999999404,
+      "chars": 7235
+    },
+    {
+      "at": 8535.90000000596,
+      "chars": 7295
+    },
+    {
+      "at": 8601.70000000298,
+      "chars": 7355
+    },
+    {
+      "at": 8652.20000000298,
+      "chars": 7414
+    },
+    {
+      "at": 8719.09999999404,
+      "chars": 7474
+    },
+    {
+      "at": 8788.20000000298,
+      "chars": 7555
+    },
+    {
+      "at": 8849.59999999404,
+      "chars": 7615
+    },
+    {
+      "at": 8912.09999999404,
+      "chars": 7675
+    },
+    {
+      "at": 8969.29999999702,
+      "chars": 7735
+    },
+    {
+      "at": 9020.09999999404,
+      "chars": 7774
+    },
+    {
+      "at": 9071.59999999404,
+      "chars": 7815
+    },
+    {
+      "at": 9113.90000000596,
+      "chars": 7874
+    },
+    {
+      "at": 9173,
+      "chars": 7934
+    },
+    {
+      "at": 9219.20000000298,
+      "chars": 7975
+    },
+    {
+      "at": 9266.20000000298,
+      "chars": 8015
+    },
+    {
+      "at": 9324.09999999404,
+      "chars": 8075
+    },
+    {
+      "at": 9389.5,
+      "chars": 8155
+    },
+    {
+      "at": 9452.29999999702,
+      "chars": 8215
+    },
+    {
+      "at": 9488.09999999404,
+      "chars": 8235
+    },
+    {
+      "at": 9529.29999999702,
+      "chars": 8295
+    },
+    {
+      "at": 9588.20000000298,
+      "chars": 8354
+    },
+    {
+      "at": 9653,
+      "chars": 8414
+    },
+    {
+      "at": 9716.79999999702,
+      "chars": 8495
+    },
+    {
+      "at": 9786.70000000298,
+      "chars": 8555
+    },
+    {
+      "at": 9856.70000000298,
+      "chars": 8615
+    },
+    {
+      "at": 9900.5,
+      "chars": 8655
+    },
+    {
+      "at": 9954.59999999404,
+      "chars": 8714
+    },
+    {
+      "at": 10019.79999999702,
+      "chars": 8775
+    },
+    {
+      "at": 10071.5,
+      "chars": 8835
+    },
+    {
+      "at": 10133.09999999404,
+      "chars": 8894
+    },
+    {
+      "at": 10186.40000000596,
+      "chars": 8935
+    },
+    {
+      "at": 10220.09999999404,
+      "chars": 8975
+    },
+    {
+      "at": 10269.70000000298,
+      "chars": 9035
+    },
+    {
+      "at": 10349.90000000596,
+      "chars": 9115
+    },
+    {
+      "at": 10419.59999999404,
+      "chars": 9175
+    },
+    {
+      "at": 10469.20000000298,
+      "chars": 9235
+    },
+    {
+      "at": 10536.29999999702,
+      "chars": 9294
+    },
+    {
+      "at": 10580.20000000298,
+      "chars": 9334
+    },
+    {
+      "at": 10631.29999999702,
+      "chars": 9395
+    },
+    {
+      "at": 10683.59999999404,
+      "chars": 9455
+    },
+    {
+      "at": 10745,
+      "chars": 9515
+    },
+    {
+      "at": 10806.09999999404,
+      "chars": 9575
+    },
+    {
+      "at": 10867.59999999404,
+      "chars": 9635
+    },
+    {
+      "at": 10921.5,
+      "chars": 9675
+    },
+    {
+      "at": 10966.20000000298,
+      "chars": 9715
+    },
+    {
+      "at": 11020.70000000298,
+      "chars": 9795
+    },
+    {
+      "at": 11092.09999999404,
+      "chars": 9855
+    },
+    {
+      "at": 11148.40000000596,
+      "chars": 9915
+    },
+    {
+      "at": 11202.40000000596,
+      "chars": 9931
+    },
+    {
+      "at": 11263.79999999702,
+      "chars": 9943
+    },
+    {
+      "at": 11283.40000000596,
+      "chars": 9964
+    }
+  ],
+  "sampleWindows": [
+    {
+      "at": 2608.2000000029802,
+      "busy": true,
+      "textChars": 1354
+    },
+    {
+      "at": 2865.7999999970198,
+      "busy": true,
+      "textChars": 1575
+    },
+    {
+      "at": 3145.0999999940395,
+      "busy": true,
+      "textChars": 1895
+    },
+    {
+      "at": 3409.4000000059605,
+      "busy": true,
+      "textChars": 2155
+    },
+    {
+      "at": 3665.4000000059605,
+      "busy": true,
+      "textChars": 2375
+    },
+    {
+      "at": 3936.5,
+      "busy": true,
+      "textChars": 2695
+    },
+    {
+      "at": 4206.29999999702,
+      "busy": true,
+      "textChars": 2955
+    },
+    {
+      "at": 4462.5999999940395,
+      "busy": true,
+      "textChars": 3174
+    },
+    {
+      "at": 4729.4000000059605,
+      "busy": true,
+      "textChars": 3455
+    },
+    {
+      "at": 5009.5999999940395,
+      "busy": true,
+      "textChars": 3755
+    },
+    {
+      "at": 5265.70000000298,
+      "busy": true,
+      "textChars": 3995
+    },
+    {
+      "at": 5530.70000000298,
+      "busy": true,
+      "textChars": 4275
+    },
+    {
+      "at": 5803.79999999702,
+      "busy": true,
+      "textChars": 4555
+    },
+    {
+      "at": 6062.5,
+      "busy": true,
+      "textChars": 4775
+    },
+    {
+      "at": 6328.70000000298,
+      "busy": true,
+      "textChars": 5054
+    },
+    {
+      "at": 6595.29999999702,
+      "busy": true,
+      "textChars": 5315
+    },
+    {
+      "at": 6873.20000000298,
+      "busy": true,
+      "textChars": 5615
+    },
+    {
+      "at": 7131.5999999940395,
+      "busy": true,
+      "textChars": 5855
+    },
+    {
+      "at": 7396.9000000059605,
+      "busy": true,
+      "textChars": 6115
+    },
+    {
+      "at": 7663.9000000059605,
+      "busy": true,
+      "textChars": 6375
+    },
+    {
+      "at": 7930.0999999940395,
+      "busy": true,
+      "textChars": 6635
+    },
+    {
+      "at": 8201.70000000298,
+      "busy": true,
+      "textChars": 6915
+    },
+    {
+      "at": 8465.09999999404,
+      "busy": true,
+      "textChars": 7195
+    },
+    {
+      "at": 8740.29999999702,
+      "busy": true,
+      "textChars": 7474
+    },
+    {
+      "at": 8998,
+      "busy": true,
+      "textChars": 7735
+    },
+    {
+      "at": 9276.79999999702,
+      "busy": true,
+      "textChars": 8015
+    },
+    {
+      "at": 9539.90000000596,
+      "busy": true,
+      "textChars": 8295
+    },
+    {
+      "at": 9808.70000000298,
+      "busy": true,
+      "textChars": 8555
+    },
+    {
+      "at": 10064.70000000298,
+      "busy": true,
+      "textChars": 8775
+    },
+    {
+      "at": 10341.5,
+      "busy": true,
+      "textChars": 9035
+    }
+  ],
+  "input": {
+    "n": 30,
+    "p50": 27.099999994039536,
+    "p95": 30.799999997019768,
+    "max": 32.70000000298023,
+    "samples": [
+      17.799999997019768,
+      27.099999994039536,
+      14.200000002980232,
+      16.400000005960464,
+      27.30000001192093,
+      22.599999994039536,
+      20,
+      29.899999991059303,
+      30,
+      16.200000002980232,
+      32.70000000298023,
+      28.5,
+      22,
+      29.799999997019768,
+      30.5,
+      30.799999997019768,
+      19.80000001192093,
+      28.099999994039536,
+      29,
+      28.599999994039536,
+      29.400000005960464,
+      24.099999994039536,
+      27.5,
+      19.200000002980232,
+      28.200000002980232,
+      15.799999997019768,
+      19.400000005960464,
+      17.399999991059303,
+      27.900000005960464,
+      20.100000008940697
+    ]
+  },
+  "scroll": {
+    "n": 30,
+    "p50": 33.5,
+    "p95": 40,
+    "max": 42.3999999910593,
+    "samples": [
+      33.599999994039536,
+      39.099999994039536,
+      35.79999999701977,
+      33.79999999701977,
+      42.3999999910593,
+      33.6000000089407,
+      33.1000000089407,
+      33.400000005960464,
+      33.29999999701977,
+      33.400000005960464,
+      27.399999991059303,
+      33.400000005960464,
+      33.5,
+      33.30000001192093,
+      33.599999994039536,
+      33.099999994039536,
+      37.79999999701977,
+      33.400000005960464,
+      33.5,
+      33.5,
+      35.70000000298023,
+      33.29999999701977,
+      33.5,
+      33.29999999701977,
+      33.3999999910593,
+      33.599999994039536,
+      33.5,
+      33.400000005960464,
+      40,
+      30.899999991059303
+    ]
+  },
+  "focusPreserved": true,
+  "draftRestored": true,
+  "stopClicked": false,
+  "busy": false,
+  "tailText": "B7_STREAM_10000\nts\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic \n\nItem\tStatus\nB7\tCOMPLETE\n\nB7_STREAM_END_10000",
+  "codeText": "const b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic \n",
+  "method": "live production DOM; 5 warmup pairs +30 paired samples spaced 200 ms; input/scroll to second rAF; remote debug connected without Inspector UI"
+}
