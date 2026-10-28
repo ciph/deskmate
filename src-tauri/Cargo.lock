@@ -5809,7 +5809,7 @@ dependencies = [
 
 [[package]]
 name = "yume"
-version = "0.4.21"
+version = "0.4.22"
 dependencies = [
  "base64 0.22.1",
  "chacha20poly1305",
