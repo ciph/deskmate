@@ -1,6 +1,6 @@
 # YUME 性能整改：Mac 接续说明
 
-**当前接管方：Windows（2026-10-27）**。本页保留 Mac 施工记录及原 Windows → Mac 准备流程；下一台电脑按 [Windows 接管入口](performance-windows-handoff.md) 拉取 `origin/codex/yume-performance-b6`。不要执行下方历史流程中的“从旧 main 新建 B6”步骤。
+**历史记录，交接已完成。** B6/B7 本机整改已于 2026-10-28 随 Windows 0.4.22 发布，当前状态见 [Windows 入口](performance-windows-handoff.md)。本页仅保留 Mac 施工和原准备流程，不执行下方“从旧 main 新建 B6”等历史步骤；Mac 实机未验边界仍保留。
 
 核对日期：2026-10-27（Asia/Shanghai）。原始交接提交只保存施工计划、证据与待办；下节记录随后在 Mac 上完成的 H18a/H18b/H18c 与 M19a/M19b/M19c，后面的原发布回执仍保留其历史范围。
 

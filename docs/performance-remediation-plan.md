@@ -1,33 +1,12 @@
 # YUME 性能整改施工方案
 
-## 2026-10-28 本机整改交付结论
+原方案创建于 2026-10-22；2026-10-28 B6/B7 本机整改已随 Windows 0.4.22 交付。[当前状态](performance-windows-handoff.md)、[20 项处置矩阵](performance-evidence/b7-windows-closeout-20261028/audit-matrix.json) 和 [发布回执](performance-evidence/release-v0.4.22-windows/README.md) 是最新结论。
 
-Windows 本机修复与本轮可执行验收已收尾，版本 0.4.21，历史 schema 3、记忆 schema 4；保存点 `8702347`，最终产品修复 `36a3c2e`。原 20 项均有处置：19 项已实现，P14 条件实验未采纳、保留正式原模型。前端 1373 pass / 8 skip，Rust 974 pass / 24 ignored，均 0 fail；正常 release 构建和隔离清理完成。
-
-[最终报告](performance-evidence/b7-windows-closeout-20261028/README.md) 与 [逐项矩阵](performance-evidence/b7-windows-closeout-20261028/audit-matrix.json) 是当前交付依据，覆盖本轮修复、原生流式/工具恢复/PDF 内存/宠物/多屏/空闲和既有物理附件日志验收。不再以历史“2–3 轮”安排重复验收。严格 V2 的 Mac 实机、混合 DPI/高刷、生产前后 GPU/功耗及实验室故障边界未全部建立；本机交付不等于全平台验收通过，也没有发布。后续只按报告列明的实际瓶颈和发布目标安排工作。下文保留实施时的原始标准与历史状态，不修改旧证据结论。
-
-## 2026-10-28 Windows release 附件与日志检查点
-
-B7 仍进行中，当前 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b / 0.4.21。复用经 SHA 核验的隔离 release QA：原生 MP4 选择器、MP3/WAV/文件夹双区域拖放、坏视频回退、发送与重启后历史恢复通过；日志记录、冲突草稿、日报周报、版本采用、复制与导出、计划编辑/暂停、失败后真实重试、关联删除和浅深色固定窗口均有物理证据。构造的最近漏周重启后运行中暂停并取消，服务延迟期过后未归档；不宣称客户端收到了迟到响应。十次普通二次启动通过，活跃工具期间仍待验。本轮无产品源码修改，835 项原有文件内容保留；正常 release 已校验恢复。
-
-六库完整性检查均 ok，但随后发现宿主快照后新建的侧车，不能将检查称为所有进程停止后；该侧车已按父进程/出生时间/路径核验停止，隔离根和临时端口清理完成。详见 [本轮证据](performance-evidence/b7-windows-release-acceptance-20261028/README.md) 与 [结果](performance-evidence/b7-windows-release-acceptance-20261028/summary.json)。继续活跃工具二次启动、Aborted 文案、其余恢复/迁移、PDF 堆/RSS、硬件/生产对照、历史回执恢复新增读取的性能和最终完整门禁；真实模型意图和 Mac 单列。Windows 估计尚需 2–3 轮，出现新阻断为 3–4 轮；未提交、推送、安装或发布。以下历史记录保留当时状态。
-
-
-**Windows 当前（2026-10-27）：** 优化 release 已完成 22 MB MP4 正文真实拖放、完整 30 秒播放、连续进度手势和播放中移除；1/8/20 MiB SHA 回读、64 MiB 媒体解码/清理与非法边界通过。本轮一次完整前端回归 1367 pass / 0 fail / 8 skip、172/172 文件，六库完整性与隔离清理完成，正常 release 恢复。Windows 安全桌面中断后续真实输入：release 原生选择器/其余媒体矩阵及完整工作日志物理表面未完成，不用前轮 debug 或后台 IPC 替代。既有改动保留，本轮无产品源码修改。B7 仍进行中，Windows 仍估 2–3 轮，新增阻断则 3–4 轮；Mac 专有项另计，未提交/推送。 见 [最新检查点](performance-evidence/b7-windows-release-worklog-20261027/README.md) 和 [接管入口](performance-windows-handoff.md)。
-
-创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
-
-**Mac 交接时（2026-10-27）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归通过，历史目录 schema 3、记忆库 schema 4。B7 进行中：最新前端 1359 pass；Rust 本轮未改未重跑，上一轮 957 pass / 23 ignored。新增原生文本 delta 修复、1000 消息 50 Hz 的 10k/50k 流式和 32 次 PDF worker 循环证据。** 接续先读 [最新 B7 结果](performance-evidence/b7-macos-20261027/index.html) 和 [Mac 接续说明](performance-remediation-handoff.md)，用户指定下一阶段由 Windows 接管，按 [Windows 接管入口](performance-windows-handoff.md) 获取完整施工分支、建立本机基线，优先补 Windows 启动所有权/WebView2 与 GUI 审批/SSE/日志链路，再按第 11 节补齐未验项；Mac 专有待验继续保留。不要切回旧 main 重做已有修改。
-
-源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
-
-旧回执中的“下一批”“未推送”“未发布”、盘符路径与并行安排只描述当时状态；当前执行位置使用 Mac 的实际 clone，是否分派任务遵循接手会话规则。当前验收范围以 [验收待办](verification-backlog.md) 和接续说明为准。
-
-目标：先修复会中断任务、阻断功能或破坏数据完整性的问题，再减少启动、流式聊天、后台采集、渲染和数据库的实际工作量。每项改动必须同时证明行为仍然正确、工作量下降和对应环境的实际表现；不以微测结果承诺整机提速，不以删除功能换取性能。
+本文保留原设计、依赖、门槛与执行回执，不能把历史基线、轮次或“下一步”当成新的施工指令。严格跨平台/硬件 V2 未全过，现存未验事项只在 [验收待办](verification-backlog.md) 维护；不重复复制各轮进度。
 
 ## 1. 已确认的基线与施工边界
 
-- 接续入口：先核对实际 checkout、分支、工作区、HEAD、远端和 `package.json` / `Cargo.toml` 版本。当前发布源码基线为 `fee4d70` / 0.4.21；Mac 使用本机 clone，不复制 Windows 链接工作树的 `.git`。
+- 接续入口：先核对实际 checkout、分支、工作区、HEAD、远端和 `package.json` / `Cargo.toml` 版本。本方案实施时的发布源码基线为 `fee4d70` / 0.4.21；当前已发布 0.4.22，见交付入口；Mac 使用本机 clone，不复制 Windows 链接工作树的 `.git`。
 - 原审计基线（历史）：`codex/optional-windows-component`，`d92a9c872b01300a27d90a675cfa9247bfd2fd2b`，0.4.20。B1–B5 施工分支为 `codex/yume-performance-remediation`，不是要求 Mac 回退的目标。
 - Windows 开发路径（历史）：`C:/Users/chenglingxiao/.codex/worktrees/build-v0418-9081/deskmate-public-release`。旧 `E:/Codex/工作伙伴/deskmate-public-release` 是保留旧改动的元数据仓；不 reset/clean，不移动 `.git`。
 - 本方案在仓库 `docs/performance-remediation-plan.md` 维护；原审计证据保持原样。每个小步更新 `docs/verification-backlog.md` 和实际受影响的现行契约，未验事项继续保留。
@@ -417,7 +396,7 @@ macOS 单独待验：单实例/恢复语义、WebKit PDF worker/CSP、媒体/二
 | #19 到期扫描/FTS 扫描 | M19a/b/c | B6 | 大，三步 | 部分索引→读过滤/维护→显式稳定 rowid |
 | #20 删除递归全扫 | D20a/b | B5 | 中，两步 | 不变不写→闭包一次处理；独立快照不漏擦除 |
 
-历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5；Mac 已完成 B6 H18a/H18b/H18c 与 M19a/M19b/M19c 的代码及自动回归。B7 本机全套通过（最新前端 1359 pass / 172 文件；Rust 上一轮 957 pass / 23 ignored，本轮未改未重跑），另有真实 OpenCode 宿主测试和隔离 debug App 的部分原生证据；状态仍为进行中。接续按 [B7 最新结果](performance-evidence/b7-macos-20261027/index.html) 和其中链接的原逐项矩阵补 V1/V2，不重做已保存迁移或把 QA 当生产/跨平台验收。
+历史执行回执见下文；当前交付与未验范围统一见 [Windows 状态](performance-windows-handoff.md) 和 [验收待办](verification-backlog.md)。
 
 
 ## 历史回执：B1 开工（2026-10-22）
