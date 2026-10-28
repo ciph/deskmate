@@ -804,7 +804,7 @@ test("cold initialization preserves the history view opened while the native pro
   await waitFor(() => expect(invoke.mock.calls.filter(([command]) => command === "history_chat_selected").length).toBe(2));
 });
 
-test.each(["idle", "stop", "stop-error"] as const)("catalog refresh preserves local reply controls through %s", async (terminal) => {
+test.each(["idle", "stop", "Aborted", "AbortError", "MessageAbortedError"] as const)("catalog refresh preserves local reply controls through %s", async (terminal) => {
   render(<ChatApp />);
   const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
   fireEvent.change(input, { target: { value: "普通流式问题" } });
@@ -821,8 +821,8 @@ test.each(["idle", "stop", "stop-error"] as const)("catalog refresh preserves lo
   expect(screen.getByRole("button", { name: "停" })).toBeDefined();
 
   catalogRow = nativeEntry;
-  if (terminal === "stop-error") deferredAbort = async () => {
-    eventHandler?.({ type: "session.error", properties: { sessionID: "ses_fixed", error: { name: "Aborted" } } });
+  if (terminal !== "idle" && terminal !== "stop") deferredAbort = async () => {
+    eventHandler?.({ type: "session.error", properties: { sessionID: "ses_fixed", error: { name: terminal } } });
     await new Promise(resolve => setTimeout(resolve, 20));
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_fixed", messageID: "late-error", type: "text", text: "错误后的迟到正文",
@@ -838,8 +838,27 @@ test.each(["idle", "stop", "stop-error"] as const)("catalog refresh preserves lo
   expect(document.activeElement).toBe(input);
   expect((input as HTMLTextAreaElement).value).toBe("保留这份草稿");
   expect(screen.queryByText("错误后的迟到正文")).toBeNull();
+  expect(screen.queryByText(/Aborted|AbortError/) === null).toBe(true);
   fireEvent.click(screen.getByRole("button", { name: "发送" }));
   await waitFor(() => expect(promptCount).toBe(2));
+});
+
+test.each([false, true])("real failures stay visible when local Stop is %s", async (stopping) => {
+  render(<ChatApp />);
+  const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.change(input, { target: { value: "ordinary request" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptCount).toBe(1));
+  const fail = () => eventHandler?.({ type: "session.error", properties: { sessionID: "ses_fixed",
+    error: { name: stopping ? "APIError" : "MessageAbortedError", data: { message: "unexpected upstream failure" } },
+  } });
+  deferredAbort = async () => { fail(); await new Promise(resolve => setTimeout(resolve, 20)); };
+  await act(async () => {
+    if (stopping) fireEvent.click(screen.getByRole("button", { name: "停" }));
+    else fail();
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  expect(screen.queryByText(/unexpected upstream failure/) !== null).toBe(true);
 });
 
 test("a completed local reply does not grant control over a later external run", async () => {

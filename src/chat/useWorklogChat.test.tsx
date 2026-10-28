@@ -5,7 +5,7 @@ import * as events from "@tauri-apps/api/event";
 import * as opencode from "../lib/opencode";
 const invoke = mock<(command: string, args?: unknown) => Promise<unknown>>(() => Promise.resolve(null));
 let changed: (() => void) | undefined;
-const getSessionMessages = mock<(_session: string) => Promise<readonly { parts: readonly unknown[] }[]>>(() => Promise.resolve([]));
+const getSessionMessages = mock<(_session: string, _directory?: string) => Promise<readonly { parts: readonly unknown[] }[]>>(() => Promise.resolve([]));
 mock.module("@tauri-apps/api/core", () => ({ ...core, invoke }));
 mock.module("@tauri-apps/api/event", () => ({ ...events, listen: (_event: string, callback: () => void) => { changed = callback; return Promise.resolve(() => {}); } }));
 mock.module("../lib/opencode", () => ({ ...opencode, getSessionMessages }));
@@ -25,8 +25,26 @@ test("opening a native session restores its rejected journal receipt without ano
   getSessionMessages.mockResolvedValue([{ parts: [toolOutput("rejected")] }]);
   const hook = renderHook(() => useWorklogChat("reopened"));
   await act(async () => {});
-  expect(getSessionMessages).toHaveBeenCalledWith("reopened");
+  expect(getSessionMessages).toHaveBeenCalledWith("reopened", undefined);
   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
+});
+
+test("receipt recovery reads the selected native directory", async () => {
+  renderHook(() => useWorklogChat("reopened", "C:/project-b"));
+  await act(async () => {});
+  expect(getSessionMessages).toHaveBeenCalledWith("reopened", "C:/project-b");
+});
+
+test("revisiting a session cannot publish its previous recovery after switching directories", async () => {
+  let finish: (value: readonly { parts: readonly unknown[] }[]) => void = () => {};
+  getSessionMessages.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+  const hook = renderHook(({ directory }: { directory: string }) => useWorklogChat("same-id", directory), {
+    initialProps: { directory: "C:/first" },
+  });
+  hook.rerender({ directory: "C:/second" });
+  hook.rerender({ directory: "C:/first" });
+  await act(async () => { finish([{ parts: [toolOutput("rejected")] }]); });
+  expect(hook.result.current.operations).toEqual([]);
 });
 
 test("a late history recovery cannot publish receipts into another session", async () => {

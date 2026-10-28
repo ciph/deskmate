@@ -127,6 +127,8 @@ This uses a transient response wrapper, not a change to the persistent `HistoryM
 
 Terminal presentation refreshes the selected capability before dropping this request's local control scope; view/request and refresh sequencing reject stale results. Terminal text flushes and resets the incremental buffer so late deltas cannot append to a completed response. Scope is cleared on cancellation/navigation; a completed reply cannot lend control to a later external run. The Windows event-replay and native-stream evidence is in the [B7 Stop/focus report](../../performance-evidence/b7-windows-stop-focus-20261027/README.md).
 
+An abort event for the exact request currently being stopped by this chat completes cancellation without appending an error bubble. Unsolicited aborts and other service errors remain visible; a local Stop does not suppress errors from another request.
+
 ## Local product replies and scoped recovery (implementation clarification)
 
 New deterministic local replies use `HistoryMessage.localOnly = true`. Their auxiliary record remains in the existing `history.json`, with `localLink` carrying the complete native identity and a `local_<SHA-256(composite key)>` storage ID. It contains only local product text, never a copy of native messages, parts or tool state. Import excludes these auxiliary records from organizer rows. Reads merge tagged local text by the exact composite identity; writes cannot replace another project's note or the original untagged legacy record. The renderer labels these local replies explicitly. No native API replay or direct native database mutation is used.

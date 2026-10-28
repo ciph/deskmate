@@ -197,6 +197,7 @@ export default function ChatApp() {
   const catalogEntryRef = useRef<UnifiedHistoryRow | null>(null);
   const catalogRefreshSequence = useRef(0);
   const replyRequestRef = useRef<{ readonly requestId: string | null; readonly catalogKey?: string } | null>(null);
+  const stoppingReplyRef = useRef<typeof replyRequestRef.current>(null);
   const settlingReplyKeyRef = useRef<string | undefined>(undefined);
   const viewGenerationRef = useRef(0);
   const localReplySnapshotRef = useRef(false);
@@ -300,7 +301,7 @@ export default function ChatApp() {
       void unlisten.then((off) => off());
     };
   }, [currentSessionId, currentDirectory]);
-  const worklog = useWorklogChat(currentSessionId);
+  const worklog = useWorklogChat(currentSessionId, currentDirectory ?? undefined);
   const [memoryNotice, setMemoryNotice] = useState<string | null>(null);
   const t = dict(lang);
   // Latest dict for use inside stable callbacks (SSE handler, task listener).
@@ -765,6 +766,10 @@ export default function ChatApp() {
       }
       case "session.error": {
         if (replyRequestRef.current === null || (props.sessionID && props.sessionID !== sessionRef.current)) return;
+        const err = props.error as
+          { name?: string; data?: { message?: string } } | undefined;
+        const stoppedHere = stoppingReplyRef.current === replyRequestRef.current
+          && ["Aborted", "AbortError", "MessageAbortedError"].includes(err?.name ?? "");
         const generation = viewGenerationRef.current;
         const key = replyRequestRef.current.catalogKey;
         petActivity.sessionError(props.sessionID);
@@ -777,8 +782,7 @@ export default function ChatApp() {
           settlingReplyKeyRef.current = undefined;
           setStatus("ready");
         })();
-        const err = props.error as
-          { name?: string; data?: { message?: string } } | undefined;
+        if (stoppedHere) break;
         const detail = err?.data?.message || err?.name || "unknown error";
         setMessages((prev) => [
           ...prev,
@@ -1282,6 +1286,7 @@ export default function ChatApp() {
     if (!sessionID || isCancelling || sessionOwnedByWorkbench || readOnlyHistory || historyLoading) return;
     const generation = viewGenerationRef.current;
     const request = replyRequestRef.current;
+    stoppingReplyRef.current = request;
     setIsCancelling(true);
     setMemoryNotice(null);
     try {
@@ -1299,6 +1304,7 @@ export default function ChatApp() {
       const unknown = error instanceof SessionAbortError && error.code === "UNKNOWN";
       setMemoryNotice(unknown ? t.chatStopUnknown : t.chatStopFailed);
     } finally {
+      if (stoppingReplyRef.current === request) stoppingReplyRef.current = null;
       setIsCancelling(false);
     }
   };
