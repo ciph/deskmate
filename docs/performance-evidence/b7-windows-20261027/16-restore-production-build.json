@@ -1,0 +1,12 @@
+{
+  "command": "bun run build",
+  "startedAt": "2026-10-27T12:18:46.7683338+08:00",
+  "finishedAt": "2026-10-27T12:18:52.9837590+08:00",
+  "exitCode": 1,
+  "qaEntryAbsent": false,
+  "htmlEntries": [
+    "chat.html",
+    "pet.html",
+    "settings.html"
+  ]
+}

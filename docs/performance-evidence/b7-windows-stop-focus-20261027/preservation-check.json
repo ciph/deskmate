@@ -1,0 +1,6 @@
+{
+  "time": "2026-10-27T13:08:02.6261266+08:00",
+  "previousDevClean": true,
+  "oldMainStatusMatches": true,
+  "note": "Status comparison, not pre/post file hashes; no writes performed in either old checkout"
+}

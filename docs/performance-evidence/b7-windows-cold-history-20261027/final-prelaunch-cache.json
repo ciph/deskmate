@@ -1,0 +1,18 @@
+[
+  {
+    "path": "opencode-home/xdg-config/opencode/node_modules",
+    "exists": false
+  },
+  {
+    "path": "workspace/.opencode/node_modules",
+    "exists": false
+  },
+  {
+    "path": "history-catalog.sqlite",
+    "exists": false
+  },
+  {
+    "path": "sidecar.log",
+    "exists": false
+  }
+]

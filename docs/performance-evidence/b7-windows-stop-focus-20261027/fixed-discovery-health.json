@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "samples": [
+    {
+      "path": "/session",
+      "status": 200,
+      "ms": 6.5,
+      "sessions": [
+        {
+          "id": "ses_e84488b63ffeJfi3r1mI4njin0",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        },
+        {
+          "id": "ses_winb7focus4000020261027",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        },
+        {
+          "id": "ses_winb7focus3000020261027",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        },
+        {
+          "id": "ses_winb7focus5000020261027",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        },
+        {
+          "id": "ses_winb7focus1000020261027",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        }
+      ]
+    },
+    {
+      "path": "/session?directory=c%3A%2Fusers%2Fchenglingxiao%2Fappdata%2Froaming%2Fcom.deskmate.unifiedhistoryqa.winb720261027c%2Fworkspace",
+      "status": 200,
+      "ms": 5.600000001490116,
+      "sessions": [
+        {
+          "id": "ses_e84488b63ffeJfi3r1mI4njin0",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        },
+        {
+          "id": "ses_winb7focus4000020261027",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        },
+        {
+          "id": "ses_winb7focus3000020261027",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        },
+        {
+          "id": "ses_winb7focus5000020261027",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        },
+        {
+          "id": "ses_winb7focus1000020261027",
+          "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c\\workspace"
+        }
+      ]
+    }
+  ]
+}

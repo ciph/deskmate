@@ -1,0 +1,48 @@
+{
+  "exitCode": 0,
+  "sourceHashes": [
+    {
+      "Algorithm": "SHA256",
+      "Hash": "D1A6E73215FD152C5D26D44907D05CA373D18FD3C6EF2E7C34E807EEA1C84D23",
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatApp.tsx"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "DF1F42B2FA37912A5CCB59F75746891E5B7DD7C2B8DC8DC94EFA6C3021D9C7BA",
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\HistoryOrganizer.tsx"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B68525DB4221C6D982D10DE9DB683D853037D1553E926FD69B3127B46DFE63A7",
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\unifiedHistory.ts"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "72AB596B100AE0CB4A3DCA9FF7CD5B49FB7AA6A071A2B257042C856604490EA3",
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\src\\history\\native_api.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F5C17FF48D7C724396DF866205CDC85D9215A165E13B9F58F2A17A4DC1F82866",
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\src\\history\\maintenance.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "9A57E591C1D0FF54E174383D289E02D4C285BBEC3DBD83FCFC26686ACFFD410F",
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\src\\history\\commands.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "D8B8C4ED47AEBACA2A55784CB3825ECF3E5E8CC7B02F0D4DAB1DF42972883224",
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\src\\history\\catalog_query.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "CA75448327D1D7987116A7AF1DC599C745C0190D504995C16FC09C241BD81478",
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\src\\history\\catalog_sql.rs"
+    }
+  ],
+  "time": "2026-10-27T13:42:19.5820143+08:00",
+  "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+  "binarySha256": "9FC073EF9E0065BE8141D19CE871726D3F2428A17C7B80D3A9B46FFBF63696C7"
+}

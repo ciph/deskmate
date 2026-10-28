@@ -1,0 +1,314 @@
+{
+  "entries": [
+    {
+      "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+      "businessDate": "2026-10-27",
+      "project": "B7 合成验收",
+      "originalText": "请记录 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。",
+      "text": "完成 B7 附件和物理拖放验收。",
+      "status": "done",
+      "sourceSessionId": "ses_e83489dffffepPRvAJzPXGkYh9",
+      "sourceMessageId": "msg_16f39e7b47b84c62b9ff2f707452430e",
+      "revision": 1,
+      "createdAt": "2026-10-27T09:38:44.414013200+00:00",
+      "updatedAt": "2026-10-27T09:38:44.414013200+00:00"
+    }
+  ],
+  "reports": [
+    {
+      "id": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "currentVersionId": "a2199969-ade6-4dd0-96f4-6c7eb5007e0e",
+      "revision": 1,
+      "stale": false,
+      "sourceDeleted": false,
+      "updatedAt": "2026-10-27T09:40:54.244190900+00:00"
+    }
+  ],
+  "runs": [
+    {
+      "id": "274dd301-565c-44b6-b6be-d21104b2519b",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "occurrenceKey": "manual:8ad9b415-32e0-9fdc-3c0b-af94c1f5de92",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e834410a8ffecPcSVFoQ42mC2V",
+      "baseReportRevision": null,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+          "revision": 1
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          },
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "[done] 完成 B7 附件和物理拖放验收。"
+        }
+      ],
+      "modelId": "yume/b7-local",
+      "resultReportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "errorCode": null,
+      "createdAt": "2026-10-27T09:40:53.693778500+00:00",
+      "updatedAt": "2026-10-27T09:40:54.244190900+00:00"
+    }
+  ],
+  "schedules": [],
+  "provider": {
+    "mode": "success",
+    "delayMs": 0,
+    "pendingTool": null,
+    "requests": [
+      {
+        "at": "2026-10-27T09:38:19.821Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": "worklog_record",
+        "invokedInput": {
+          "mode": "direct",
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "完成 B7 附件和物理拖放验收。",
+          "status": "done"
+        }
+      },
+      {
+        "at": "2026-10-27T09:38:44.568Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": null,
+        "invokedInput": null
+      },
+      {
+        "at": "2026-10-27T09:38:47.046Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": "worklog_query",
+        "invokedInput": {
+          "start": "2026-10-27",
+          "end": "2026-10-27"
+        }
+      },
+      {
+        "at": "2026-10-27T09:39:40.491Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": null,
+        "invokedInput": null
+      },
+      {
+        "at": "2026-10-27T09:39:49.984Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": "worklog_update",
+        "invokedInput": {
+          "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+          "expectedRevision": 1,
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "完成 B7 附件、物理拖放和历史恢复验收。",
+          "status": "done"
+        }
+      },
+      {
+        "at": "2026-10-27T09:40:16.473Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": null,
+        "invokedInput": null
+      },
+      {
+        "at": "2026-10-27T09:40:18.798Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": "worklog_generate_report",
+        "invokedInput": {
+          "kind": "daily",
+          "periodStart": "2026-10-27",
+          "periodEnd": "2026-10-27"
+        }
+      },
+      {
+        "at": "2026-10-27T09:40:53.766Z",
+        "tools": [],
+        "toolResult": false,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": null,
+        "invokedInput": null
+      },
+      {
+        "at": "2026-10-27T09:40:53.876Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": null,
+        "invokedInput": null
+      },
+      {
+        "at": "2026-10-27T09:41:27.677Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": "worklog_update",
+        "invokedInput": {
+          "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+          "expectedRevision": 1,
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "完成 B7 附件、物理拖放和历史恢复验收。",
+          "status": "done"
+        }
+      }
+    ],
+    "modelRequests": []
+  }
+}

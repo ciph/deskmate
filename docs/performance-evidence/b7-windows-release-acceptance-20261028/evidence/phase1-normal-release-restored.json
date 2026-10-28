@@ -1,0 +1,8 @@
+{
+  "sha256": "C4C240E698609BD51FB4140C5D9E7AFB5B5DFCBFB399D64E2DD53A700ECEE638",
+  "method": "Restore exact previously successful default release binary; no new build",
+  "qaRetainedAt": "output/b7-release-worklog/yume.release-qa.exe",
+  "pass": true,
+  "time": "2026-10-28T10:15:07.6624229+08:00",
+  "productionIdentityRun": false
+}

@@ -1,9 +1,11 @@
 use tauri::{Emitter, Manager};
 use super::{catalog::CatalogStore, catalog_import, catalog_model::*, catalog_query::*, native_api::{authorize_history_window, NativeHistoryClient}, HistoryState};
 
-pub(crate) fn store(app: &tauri::AppHandle) -> Result<CatalogStore, String> {
+pub(crate) fn store<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<CatalogStore, String> {
+    // WebView2 can invoke the workspace picker before the host setup has finished.
+    let state = app.try_state::<super::maintenance::HistoryMaintenance>().ok_or("history_state_unavailable")?;
     Ok(CatalogStore::open(&app.path().app_data_dir().map_err(|_| "history_catalog_unavailable")?.join("history-catalog.sqlite"))?
-        .track_associations(app.state::<super::maintenance::HistoryMaintenance>().associations.clone()))
+        .track_associations(state.associations.clone()))
 }
 pub(crate) fn client(app: &tauri::AppHandle) -> Result<NativeHistoryClient, String> {
     NativeHistoryClient::new(&crate::sidecar_url(app), &crate::sidecar_auth_header(app)).map_err(|error| error.to_string())
@@ -100,10 +102,10 @@ pub(crate) fn apply_ownership(app: &tauri::AppHandle, rows: &mut [CatalogEntry])
     Ok(())
 }
 pub(crate) fn initialize(app: &tauri::AppHandle) -> Result<(), String> {
-    let state = app.state::<super::maintenance::HistoryMaintenance>();
-    let history = app.state::<HistoryState>();
-    let index = app.state::<super::NativeSessionIndex>();
-    let runs = app.state::<crate::agent::AgentRunState>();
+    let state = app.try_state::<super::maintenance::HistoryMaintenance>().ok_or("history_state_unavailable")?;
+    let history = app.try_state::<HistoryState>().ok_or("history_state_unavailable")?;
+    let index = app.try_state::<super::NativeSessionIndex>().ok_or("history_state_unavailable")?;
+    let runs = app.try_state::<crate::agent::AgentRunState>().ok_or("history_state_unavailable")?;
     let mut initialized = state.initialized.lock().map_err(|_| "history_state_unavailable")?;
     let retry = super::catalog_cache::ImportInputs {
         history: &history, index: &index, runs: &runs, associations: &state.associations,
@@ -115,15 +117,27 @@ pub(crate) fn initialize(app: &tauri::AppHandle) -> Result<(), String> {
     Ok(())
 }
 
+fn wait_for_host_history<R: tauri::Runtime>(app: &tauri::AppHandle<R>, budget: std::time::Duration) -> Result<(), String> {
+    let deadline = std::time::Instant::now() + budget;
+    // AgentRunState is registered after the history and native index are loaded.
+    while app.try_state::<crate::agent::AgentRunState>().is_none() {
+        if std::time::Instant::now() >= deadline { return Err("history_state_unavailable".into()); }
+        std::thread::sleep(std::time::Duration::from_millis(10));
+    }
+    Ok(())
+}
+
 #[tauri::command]
 pub(crate) async fn history_catalog_list(window: tauri::WebviewWindow, app: tauri::AppHandle, query: CatalogQuery, refresh: Option<bool>) -> Result<CatalogPage, String> {
     authorize_history_window(window.label()).map_err(|error| error.to_string())?;
     tauri::async_runtime::spawn_blocking(move || {
+        wait_for_host_history(&app, std::time::Duration::from_secs(10))?;
         initialize(&app)?;
         let store = store(&app)?;
         if refresh.unwrap_or(false) { super::maintenance::schedule_refresh(app.clone()); }
         let errors = app.state::<super::maintenance::HistoryMaintenance>().errors.lock().map_err(|_| "history_state_unavailable")?.clone();
         let mut page = store.page(query, errors)?;
+        page.refreshing = app.state::<super::maintenance::HistoryMaintenance>().refreshing.load(std::sync::atomic::Ordering::Acquire);
         // Workbench leases only switch Workbench/Unowned, never Agent visibility.
         // Derive current capabilities for returned rows without persisting leases.
         for row in &mut page.items {
@@ -229,6 +243,11 @@ pub(crate) async fn history_catalog_access(window: tauri::WebviewWindow, app: ta
 }
 
 pub(super) fn refresh_history(app: &tauri::AppHandle) -> Result<Vec<String>, String> {
+    if let Err(error) = super::maintenance::wait_for_native_directory(app) {
+        let store = store(app)?;
+        for directory in store.directories()? { super::reconcile::mark_unavailable(&store, &directory)?; }
+        return Err(error);
+    }
     let runs = app.state::<crate::agent::AgentRunState>();
     let mut errors = {
         let _operation = runs.lock_operation()?;
@@ -255,4 +274,31 @@ pub(crate) fn refresh_after_ready(app: tauri::AppHandle) {
         })();
         if let Err(error) = refreshed { eprintln!("history startup refresh: {error}"); }
     });
+}
+
+#[cfg(test)]
+mod startup_tests {
+    use tauri::Manager;
+
+    #[test]
+    fn early_catalog_access_returns_not_ready_instead_of_panicking() {
+        let app = tauri::test::mock_builder()
+            .build(tauri::test::mock_context(tauri::test::noop_assets()))
+            .unwrap();
+        assert_eq!(super::store(app.handle()).err().as_deref(), Some("history_state_unavailable"));
+    }
+
+    #[test]
+    fn early_list_waits_for_host_state_and_has_a_bounded_failure() {
+        let app = tauri::test::mock_builder()
+            .build(tauri::test::mock_context(tauri::test::noop_assets()))
+            .unwrap();
+        assert_eq!(super::wait_for_host_history(app.handle(), std::time::Duration::ZERO), Err("history_state_unavailable".into()));
+        let handle = app.handle().clone();
+        let waiter = std::thread::spawn(move || super::wait_for_host_history(&handle, std::time::Duration::from_secs(2)));
+        let root = tempfile::tempdir().unwrap();
+        let runs = crate::agent::AgentRunState::load(crate::agent::RunStore::new(root.path().to_owned())).unwrap();
+        app.manage(runs);
+        assert_eq!(waiter.join().unwrap(), Ok(()));
+    }
 }

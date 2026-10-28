@@ -90,7 +90,7 @@ function installOpenCodeTransport(): void {
       return Promise.resolve(makeJsonResponse({ ses_fixed: { type: abortStatus } }));
     }
     if (url.endsWith("/session/ses_fixed/message")) {
-      if (submissionRead) return submissionRead();
+      if (submissionRead && submittedMessageId) return submissionRead();
       if (promptTransport === "lost_unknown") return Promise.reject(new Error("sidecar offline"));
       if (promptTransport === "lost_confirmed" && submittedMessageId) {
         return Promise.resolve(makeJsonResponse([{ info: {

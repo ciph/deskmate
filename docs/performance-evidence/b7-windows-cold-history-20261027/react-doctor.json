@@ -1,0 +1,5 @@
+{
+  "exitCode": 0,
+  "time": "2026-10-27T14:05:52.9167963+08:00",
+  "command": "npx react-doctor@latest --verbose --scope changed"
+}

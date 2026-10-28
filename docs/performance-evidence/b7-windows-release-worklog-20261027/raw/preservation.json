@@ -1,0 +1,16 @@
+{
+  "beforeCount": 754,
+  "unchanged": 749,
+  "changedExpected": [
+    "AGENTS.md",
+    "docs/performance-evidence/README.md",
+    "docs/performance-remediation-plan.md",
+    "docs/performance-windows-handoff.md",
+    "docs/verification-backlog.md"
+  ],
+  "unexpectedChanges": [],
+  "previousReportFilesVerified": 605,
+  "previousReportsUnchanged": true,
+  "productSourceChangedThisRound": false,
+  "time": "2026-10-27T11:48:32.364Z"
+}

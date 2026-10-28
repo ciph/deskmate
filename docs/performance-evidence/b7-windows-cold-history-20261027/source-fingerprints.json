@@ -1,0 +1,87 @@
+[
+  {
+    "file": "src/chat/ChatApp.tsx",
+    "baselineSha256": "22578e5fa9b3b44baccc841fcc73037f0a18227c39b1f84bd200641bacebbc3a",
+    "currentSha256": "d1a6e73215fd152c5d26d44907d05ca373d18fd3c6ef2e7c34e807eea1c84d23"
+  },
+  {
+    "file": "src/chat/sharedConversation.ts",
+    "baselineSha256": "4d62940b2ff8645800b722a706020d19507fc616a598b3994e49020c8acd7002",
+    "currentSha256": "fcf27dd6851c697215cdd0d0064884fe97fcb39608e77243997564c2eddae2cb"
+  },
+  {
+    "file": "src/chat/chatFixedReply.test.tsx",
+    "baselineSha256": "b8997a0ce1f32b0eb1c820a777293e9e0b8bc68231bf9877a175bb98dcabb3d1",
+    "currentSha256": "a6d20230599d29683e5dc95ed6f3b866e82e2c1a254aea6e9bf82c7c8c3fa811"
+  },
+  {
+    "file": "src/chat/sharedConversation.test.ts",
+    "baselineSha256": "4072b4409878373a1470389c5c461474fdaa32de37d1339668f5c97c596782d0",
+    "currentSha256": "bf53f9c334ae26f04a98a0c12eba78308f070500c0842f7d72928e09b361048a"
+  },
+  {
+    "file": "src/chat/HistoryOrganizer.tsx",
+    "baselineSha256": "3833819a17a0a7bcfb8df0f767190ac573caaaa67fde641cf5dbbc0c43816aef",
+    "currentSha256": "df1f42b2fa37912a5ccb59f75746891e5b7dd7c2b8dc8dc94efa6c3021d9c7ba"
+  },
+  {
+    "file": "src/chat/HistoryOrganizer.test.tsx",
+    "baselineSha256": "b1710bd834f5717cd18bc93e9a07e6098275ebbe319c9cc298119281abd8f262",
+    "currentSha256": "ae2f82b462938f61a32748427eced4bafa4ad80398962560b5ba021f017f00f8"
+  },
+  {
+    "file": "src/lib/unifiedHistory.ts",
+    "baselineSha256": "6c70146def764b4d061888bc3fa375b0250e8bada5874d715c8e915875d668e3",
+    "currentSha256": "b68525db4221c6d982d10de9db683d853037d1553e926fd69b3127b46dfe63a7"
+  },
+  {
+    "file": "src-tauri/src/history/native_api.rs",
+    "baselineSha256": "c07717a9c25af47492958ea1b232271598553fd3592b0d05834740767ed73266",
+    "currentSha256": "72ab596b100ae0cb4a3dca9ff7cd5b49fb7aa6a071a2b257042c856604490ea3"
+  },
+  {
+    "file": "src-tauri/src/history/native_api_tests.rs",
+    "baselineSha256": "23879b5a4ecd887459a2ca5a3ef9013180ad02446df75173a3e2addce0627bba",
+    "currentSha256": "847941feaae0dd0b69e1c3848ea96166d003887d119f35ee6e978badd1e7cf7e"
+  },
+  {
+    "file": "src-tauri/src/history/maintenance.rs",
+    "baselineSha256": "29593b2df30eaa88024c0ebe3fc2450aa4874cf98a5a1f9ec376a57f7ec66d51",
+    "currentSha256": "629756717a342dc66cbb59629254359de6cd998f7506bb092dc5477392697128"
+  },
+  {
+    "file": "src-tauri/src/history/commands.rs",
+    "baselineSha256": "ab32738dbeda5a960d3003f532395b2c1bcf148890fd06b0a0031992d1355068",
+    "currentSha256": "d2d7590827a530fc71b357ad484aabf476e7cfcf435aca9e7f8034a3ce521493"
+  },
+  {
+    "file": "src-tauri/src/history/catalog_query.rs",
+    "baselineSha256": "21d78678c33d334867e223e1872e3a1ec00a94600f70f596afb9d7b93b20d9db",
+    "currentSha256": "d8b8c4ed47aebaca2a55784cb3825ecf3e5e8cc7b02f0d4dab1df42972883224"
+  },
+  {
+    "file": "src-tauri/src/history/catalog_sql.rs",
+    "baselineSha256": "0faf4c9a63e4669734d0908d397d16afe20fd2d8856ccc00c8d8468ef173355d",
+    "currentSha256": "ca75448327d1d7987116a7af1dc599c745c0190d504995c16fc09c241bd81478"
+  },
+  {
+    "file": "package.json",
+    "baselineSha256": "79d323fad6e56cfb69a322061da2d91ddd3b7402334c7cb82551767c5278ef6d",
+    "currentSha256": "79d323fad6e56cfb69a322061da2d91ddd3b7402334c7cb82551767c5278ef6d"
+  },
+  {
+    "file": "bun.lock",
+    "baselineSha256": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029",
+    "currentSha256": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029"
+  },
+  {
+    "file": "src-tauri/Cargo.lock",
+    "baselineSha256": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8",
+    "currentSha256": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8"
+  },
+  {
+    "file": "src-tauri/tauri.conf.json",
+    "baselineSha256": "c500bc7e3c321d82a0cca3a93bb1ba8a8bbb74542e649abded70c2d0107dc2af",
+    "currentSha256": "c500bc7e3c321d82a0cca3a93bb1ba8a8bbb74542e649abded70c2d0107dc2af"
+  }
+]

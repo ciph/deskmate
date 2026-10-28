@@ -1,0 +1,35 @@
+{
+  "label": "before",
+  "base": "http://127.0.0.1:50050",
+  "pid": 33292,
+  "events": [
+    {
+      "event": "healthy",
+      "ms": 1027.673
+    },
+    {
+      "event": "native-ready",
+      "ms": 1547.7074
+    },
+    {
+      "event": "session",
+      "ms": 1989.8279,
+      "id": "ses_e8394b8c0ffeX4fsYSrUqEIiY6"
+    },
+    {
+      "event": "prompt",
+      "ms": 2127.8052
+    },
+    {
+      "event": "native-done",
+      "ms": 5787.6719,
+      "code": 0
+    }
+  ],
+  "pass": true,
+  "cleanup": {
+    "engineGone": true,
+    "portClosed": true,
+    "providerClosed": true
+  }
+}

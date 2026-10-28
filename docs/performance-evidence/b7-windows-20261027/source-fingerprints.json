@@ -1,0 +1,38 @@
+[
+  {
+    "path": "src/chat/ChatApp.tsx",
+    "sha256": "22578e5fa9b3b44baccc841fcc73037f0a18227c39b1f84bd200641bacebbc3a"
+  },
+  {
+    "path": "src/chat/attachments.ts",
+    "sha256": "70cf50f266ee4d3f2e6f2da5fdac14b03514864abcab545038fd56789f6ee03c"
+  },
+  {
+    "path": "src-tauri/src/lib.rs",
+    "sha256": "a534294ffa916e4ba764c8228d0a881aadcdba194ef146778ecb3397659486ba"
+  },
+  {
+    "path": "bun.lock",
+    "sha256": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029"
+  },
+  {
+    "path": "src-tauri/Cargo.lock",
+    "sha256": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8"
+  },
+  {
+    "path": "public/workbench/index.html",
+    "sha256": "7c94db070472edc113ee66cb36f9563b790a9c694877a697034627a1314e1881"
+  },
+  {
+    "path": "public/workbench/ghostty-vt.wasm",
+    "sha256": "b9579e2993a3fc6edde73121141ad6b2eaa94bdc3e43d46fd496177d12e503af"
+  },
+  {
+    "path": "src-tauri/src/windows_startup.rs",
+    "sha256": "f2354b94113211e08717957766b87cc4fc3db8e19c873306848f262cfc6b8cf1"
+  },
+  {
+    "path": "src-tauri/src/windows_startup_tests.rs",
+    "sha256": "c329161e6c1dda114173234f1daed2ae38e364b028a39968a8507d313b68c0b1"
+  }
+]

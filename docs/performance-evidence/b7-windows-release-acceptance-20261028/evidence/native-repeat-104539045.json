@@ -1,0 +1,98 @@
+﻿{
+    "results":  [
+                    {
+                        "iteration":  0,
+                        "secondaryPid":  330876,
+                        "exitCode":  0,
+                        "elapsedMs":  477.59310000000005,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  1,
+                        "secondaryPid":  344420,
+                        "exitCode":  0,
+                        "elapsedMs":  366.44230000000005,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  2,
+                        "secondaryPid":  341064,
+                        "exitCode":  0,
+                        "elapsedMs":  444.7225,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  3,
+                        "secondaryPid":  349096,
+                        "exitCode":  0,
+                        "elapsedMs":  383.1171,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  4,
+                        "secondaryPid":  340756,
+                        "exitCode":  0,
+                        "elapsedMs":  360.14500000000004,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  5,
+                        "secondaryPid":  349428,
+                        "exitCode":  0,
+                        "elapsedMs":  421.1318,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  6,
+                        "secondaryPid":  342576,
+                        "exitCode":  0,
+                        "elapsedMs":  339.40270000000004,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  7,
+                        "secondaryPid":  305864,
+                        "exitCode":  0,
+                        "elapsedMs":  344.70160000000004,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  8,
+                        "secondaryPid":  337564,
+                        "exitCode":  0,
+                        "elapsedMs":  350.36560000000003,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    },
+                    {
+                        "iteration":  9,
+                        "secondaryPid":  338272,
+                        "exitCode":  0,
+                        "elapsedMs":  335.33140000000003,
+                        "hostPreserved":  true,
+                        "sidecarPreserved":  true
+                    }
+                ],
+    "owner":  {
+                  "version":  1,
+                  "identifier":  "com.deskmate.unifiedhistoryqa.winb7release20261027a",
+                  "host":  {
+                               "pid":  341736,
+                               "created":  134376274203483184,
+                               "executable":  "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\release\\yume.exe"
+                           },
+                  "sidecar":  {
+                                  "pid":  341312,
+                                  "created":  134376274831734862,
+                                  "executable":  "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\release\\resources\\opencode\\opencode.exe"
+                              }
+              }
+}

@@ -1,0 +1,1555 @@
+{
+  "runtime": "1.3.14",
+  "budget": 120000,
+  "results": [
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\agent-qa\\client.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\agent-qa\\permissions-evidence.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\bundled-personas.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\check-package-resources.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\macos-release.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 8
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\pack-figure2d.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\pack-personas.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\pack-position.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\pack-rig2d.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 14,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\persona-asset-policy.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\prepare-opencode.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\prepare-persona-envelopes.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\test-frontend.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\workbench-ownership.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\workbench-qa\\provider.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\workbench-routing.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\workbench-theme.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\worklog-qa\\provider-models.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\worklog\\bridge.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 10,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\scripts\\worklog\\full-flow.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ArtifactCard.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\AttachmentTray.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatKeyboardNavigation.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatMessageRow.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatNavigation.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatText.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\HistoryOrganizer.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 16,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\HistoryPanel.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\LocalResourceTray.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\MediaPreview.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ToolApprovalCards.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\WorklogReceipt.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\WorkspaceTask.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\attachmentApi.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\attachmentApiLeak.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\attachmentBinaryUpload.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 29,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\attachmentState.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 94,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\attachments.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\attachmentsPdfLifecycle.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 17,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\binaryUploadTestHelpers.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 0,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatAttachmentFlow.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatAttachmentFlowHarness.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 0,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatAttachmentLifecycle.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatAttachmentLifecycleHarness.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 0,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatAttachmentSend.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatAttachmentSendHarness.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 0,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatFixedReply.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 24,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatMemory.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatPersona.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatPetActivity.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\chatWorklogPrompt.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\currentInformation.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\dragDropConfig.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\localResources.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\memoryActions.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\messagePersona.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\nativeResourceFlow.test.tsx",
+      "status": "failed",
+      "code": 1,
+      "signal": null,
+      "pass": 9,
+      "fail": 1,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\pdfPageText.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\petActivity.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 20,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\providerConnection.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\sharedConversation.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\streamText.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 10,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\toolPart.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useAgentHistoryView.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useAgentRun.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 17,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useChatAttachments.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useChatAttachmentsGate.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 13,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useChatAttachmentsHarness.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 0,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useChatAttachmentsPreviewLifecycle.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 16,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useChatAttachmentsUtils.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 21,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useHistoryOrganizerRequest.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useLocalResources.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 16,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\usePersonaAvatar.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useToolPermissions.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\useWorklogChat.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\webSearchSites.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\worklogActions.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\devtools.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\horoscope\\date.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\horoscope\\generator.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\localAiUsage.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\memory.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\nativeHistoryEvents.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\opencode.directory.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\opencode.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\packs.events.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\petState.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\pomodoro.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\settings.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\toolPermissions.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\unifiedHistory.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\userAvatar.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\lib\\worklog.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\GifPetView.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\GlbPetView.visibility.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetAnimation.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetApp.glbMood.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetApp.loading.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetApp.reload.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetPomodoro.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetRendererActions.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetRendererEnvelope.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetRendererResources.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\PetRendererVisibility.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\figure2d.contract.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 65,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\figure2d.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 24,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\frameGate.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\gifGeometry.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\gifState.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 20,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\mouseFollow.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\personaAssets.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\personaAvatar.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\personaCatalog.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 16,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\petLayout.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\petSleep.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 10,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\petWindowGeometry.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\rig2d\\assets.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\rig2d\\config.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\rig2d\\renderer.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\sandaimeAsset.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\useGifPassthrough.lifecycle.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 14,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\useGifPassthrough.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\useGifState.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\useGifVisibility.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\usePetInteraction.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 10,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\usePetSleep.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\variantEnvelope.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\variantEnvelopeAsset.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\xiaozhuNidaime.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\pet\\xiaozhuSandaime.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\AiProviderConnection.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\AiProviderDisclosure.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\AiProviderList.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\AiProviderShortcuts.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\AiTab.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\AiUsage.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\MemoryTab.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 18,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\PersonaPackNavigation.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\PersonaPacks.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\PersonaPacksLoading.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\SettingsKeyboardNavigation.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 22,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\ToolPermissionsTab.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\UpdateFooter.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 27,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\UserAvatarControl.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\UserAvatarSettings.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\WidgetSettings.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\WindowsComponentControl.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\WorklogWidget.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\aiProviderModel.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\modelManufacturer.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 20,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\settingsPrimitives.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\theme.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\updateErrors.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\updateState.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\widgets\\HoroscopeWidget.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\widgets\\PomodoroWidget.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\widgets\\TimePicker.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\widgets\\useDailyHoroscope.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\widgets\\usePomodoro.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\widgets\\usePomodoroErrors.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\worklog\\ReportEditor.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\worklog\\ReportSchedulePanel.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\worklog\\WeekWheel.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 17,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\worklog\\WorklogTab.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 13,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\worklog\\reportExport.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\settings\\worklog\\worklogWeek.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\testing\\harness.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\ui\\Avatar.test.tsx",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\workbench\\history-shortcut.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\workbench\\session-route.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\workbench\\theme-sync.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\vite.config.test.ts",
+      "status": "passed",
+      "code": 0,
+      "signal": null,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    }
+  ],
+  "unfinished": []
+}

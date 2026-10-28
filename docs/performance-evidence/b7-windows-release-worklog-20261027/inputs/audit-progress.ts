@@ -1,0 +1,17 @@
+import {readFileSync,writeFileSync,existsSync} from 'node:fs';
+import {join} from 'node:path';
+const raw='E:/Codex/工作伙伴/reports/yume-b7-release-worklog-20261027';
+const read=(n:string)=>JSON.parse(readFileSync(join(raw,n),'utf8').replace(/^\uFEFF/,''));
+const hash=(p:string)=>new Bun.CryptoHasher('sha256').update(readFileSync(p)).digest('hex');
+const text=readFileSync(join(raw,'frontend-full-retry.log'),'utf8');
+const files=[...text.matchAll(/(passed|failed): (.*?) \((\d+) pass, (\d+) fail, (\d+) skip; exit (\d+)\)/g)].map(m=>({file:m[2].replaceAll('\\','/'),pass:+m[3],fail:+m[4],skip:+m[5],exit:+m[6]}));
+const totals=files.reduce((s,x)=>({pass:s.pass+x.pass,fail:s.fail+x.fail,skip:s.skip+x.skip}),{pass:0,fail:0,skip:0});
+if(files.length!==172||totals.fail||files.some(f=>f.exit)||read('frontend-full-retry-receipt.json').exitCode!==0)throw Error('Full suite failed');
+writeFileSync(join(raw,'frontend-regression.json'),JSON.stringify({method:'one complete serial run, no substitutions',files:files.length,...totals,receipt:read('frontend-full-retry-receipt.json'),results:files},null,2));
+const initial=read('before/hashes.json');
+const changed=initial.filter((f:any)=>!existsSync(f.path)||hash(f.path)!==f.sha256).map((f:any)=>f.path);
+const allowed=['AGENTS.md','docs/performance-windows-handoff.md','docs/performance-remediation-plan.md','docs/verification-backlog.md','docs/performance-evidence/README.md'];
+if(changed.some((p:string)=>!allowed.includes(p)))throw Error('Unexpected existing-change edit '+JSON.stringify(changed));
+const previous=initial.filter((f:any)=>f.path.startsWith('docs/performance-evidence/b7-windows-'));
+writeFileSync(join(raw,'preservation.json'),JSON.stringify({beforeCount:initial.length,unchanged:initial.length-changed.length,changedExpected:changed,unexpectedChanges:[],previousReportFilesVerified:previous.length,previousReportsUnchanged:true,productSourceChangedThisRound:false,time:new Date().toISOString()},null,2));
+console.log(JSON.stringify({files:files.length,...totals,preserved:initial.length-changed.length,previousReportFiles:previous.length}));

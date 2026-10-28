@@ -1,0 +1,10 @@
+{
+  "features": "default",
+  "command": "bun run tauri build --no-bundle",
+  "binarySha256": "C4C240E698609BD51FB4140C5D9E7AFB5B5DFCBFB399D64E2DD53A700ECEE638",
+  "exitCode": 0,
+  "startedAt": "2026-10-27T19:41:24.9901613+08:00",
+  "finishedAt": "2026-10-27T19:47:49.1751603+08:00",
+  "productionIdentityRun": false,
+  "profile": "release"
+}

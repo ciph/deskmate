@@ -1,0 +1,18 @@
+{
+  "helperProcesses": [],
+  "identity": "com.deskmate.unifiedhistoryqa.winb7gui20261027a",
+  "listeners": [],
+  "time": "2026-10-27T15:41:16.7527237+08:00",
+  "credentialCleared": true,
+  "roots": [
+    {
+      "deleted": true,
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7gui20261027a"
+    },
+    {
+      "deleted": true,
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7gui20261027a"
+    }
+  ],
+  "productionIdentityRun": false
+}

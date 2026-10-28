@@ -1,8 +1,88 @@
 # 当前验收与待办
 
+## 2026-10-28 Windows release 附件与日志检查点
+
+B7 仍进行中，当前 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b / 0.4.21。复用经 SHA 核验的隔离 release QA：原生 MP4 选择器、MP3/WAV/文件夹双区域拖放、坏视频回退、发送与重启后历史恢复通过；日志记录、冲突草稿、日报周报、版本采用、复制与导出、计划编辑/暂停、失败后真实重试、关联删除和浅深色固定窗口均有物理证据。构造的最近漏周重启后运行中暂停并取消，服务延迟期过后未归档；不宣称客户端收到了迟到响应。十次普通二次启动通过，活跃工具期间仍待验。本轮无产品源码修改，835 项原有文件内容保留；正常 release 已校验恢复。
+
+六库完整性检查均 ok，但随后发现宿主快照后新建的侧车，不能将检查称为所有进程停止后；该侧车已按父进程/出生时间/路径核验停止，隔离根和临时端口清理完成。详见 [本轮证据](performance-evidence/b7-windows-release-acceptance-20261028/README.md) 与 [结果](performance-evidence/b7-windows-release-acceptance-20261028/summary.json)。继续活跃工具二次启动、Aborted 文案、其余恢复/迁移、PDF 堆/RSS、硬件/生产对照、历史回执恢复新增读取的性能和最终完整门禁；真实模型意图和 Mac 单列。Windows 估计尚需 2–3 轮，出现新阻断为 3–4 轮；未提交、推送、安装或发布。以下历史记录保留当时状态。
+
+
+### 2026-10-27 Windows release 附件阶段检查点
+
+优化 release 已完成 22 MB MP4 正文真实拖放、完整 30 秒播放、连续进度手势和播放中移除；1/8/20 MiB SHA 回读、64 MiB 媒体解码/清理与非法边界通过。本轮一次完整前端回归 1367 pass / 0 fail / 8 skip、172/172 文件，六库完整性与隔离清理完成，正常 release 恢复。Windows 安全桌面中断后续真实输入：release 原生选择器/其余媒体矩阵及完整工作日志物理表面未完成，不用前轮 debug 或后台 IPC 替代。既有改动保留，本轮无产品源码修改。B7 仍进行中，Windows 仍估 2–3 轮，新增阻断则 3–4 轮；Mac 专有项另计，未提交/推送。
+
+当前入口 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b / 0.4.21，历史 schema 3、记忆 schema 4。见 [阶段 HTML](performance-evidence/b7-windows-release-worklog-20261027/index.html)、[方法、系统阻断与余项](performance-evidence/b7-windows-release-worklog-20261027/README.md)、[结果](performance-evidence/b7-windows-release-worklog-20261027/summary.json)。
+
+下一步从 release MP4 原生选择器继续，完成 MP3/WAV/文件夹/坏视频的正文与输入区、切会话/重加/发送/历史，再完成日志编辑/冲突、版本/来源、复制/导出/同名、计划、失败重试/运行中暂停、关联删除、重启和浅深色固定窗口滚动。通过后再推进活跃工具二次启动、Aborted 文案、剩余恢复、PDF 内存、硬件/生产对照与最终门禁。历史回执恢复新增读取并入性能复核；真实模型意图与 Mac 范围仍单列。QA 缓存已按 SHA 保存，但旧 PID/HWND/端口作废；复测必须重建临时会话并重新观察窗口。前次记录保留当时范围。
+
+### 2026-10-27 Windows 附件、工作日志与迁移恢复（前次）
+
+MP4/MP3/WAV/文件夹与坏视频物理拖放、MP4 原生选择器及播放、1/8/20 MiB 二进制与 64 MiB 媒体原生 IPC 通过；工作日志五工具、报告版本和漏期补偿重启去重通过。修复回执拒绝被空查询覆盖及历史重开不恢复回执，并修正 QA provider 参数包装。历史旧库受控失败完整回滚、修复夹具后原生升级/重启及中文记忆导出通过。最终前端组合覆盖 1367 pass / 8 skip（全套后修正测试桩并复跑受影响 28 项），Rust 迁移定向 32 pass，类型与正常构建通过，6 库完整性和隔离清理完成。B7 仍进行中，Windows 预计再需 2–3 轮，新增阻断则 3–4 轮；Mac 专有项另计，未提交/推送。
+
+当前仍为 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b / 0.4.21，历史 schema 3、记忆 schema 4。见 [最新 HTML](performance-evidence/b7-windows-attachments-20261027/index.html)、[完整证据与限制](performance-evidence/b7-windows-attachments-20261027/README.md)、[结果](performance-evidence/b7-windows-attachments-20261027/summary.json)。
+
+下一步优先附件 release 与完整日志物理表面（编辑/版本/导出/删除/失败重试与取消）；再做活跃工具二次启动、Aborted 文案、余下恢复、PDF 内存/硬件/生产对照及最终全套。历史恢复新增消息读取需并入性能复核。五工具为本机合成模型强制选工具，不等于真实模型意图通过；本轮原生构建为 debug，不能关闭 release 与 Mac 门禁。前次记录以下保留，不覆盖当时失败与边界。
+
+### 2026-10-27 Windows Tao 绘制与审批 SSE（前次）
+
+Tao 绘制重入已复现并修复，原生回归 25 次通过；审批 SSE 响应头等待与正文空闲期限分离，真实故障注入从旧版 40 秒未就绪恢复到约 4.1 秒重连，旧连接已关闭。物理审批取消/允许一次、缩放/截图、最小化恢复及桌宠重开通过；Rust 974 pass / 24 ignored，正常构建恢复。B7 仍进行中，预计 Windows 还需 3–4 轮，Mac 专有项另计，未提交/推送。
+
+仍在 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b 叠加改动。版本 0.4.21、历史 schema 3、记忆 schema 4 保持。见 [HTML](performance-evidence/b7-windows-tao-sse-20261027/index.html)、[完整证据与边界](performance-evidence/b7-windows-tao-sse-20261027/README.md)、[结果](performance-evidence/b7-windows-tao-sse-20261027/summary.json)。
+
+Tao 使用固定 0.35.3 源码的最小本地补丁，仅外层 flush 结束绘制周期；应用依赖版本未升级。审批流复用已锁定的 reqwest/Tokio/rustls，保留原解析器、8 MiB 上限与目录/会话/generation 隔离。响应头 3 秒、正文空闲 45 秒；停止及换代能中断等待，停止后不能重新置为连接。
+
+本次还补工作日志 record/query/拒绝区分的隔离传输合同；该合同使用合成宿主回执，不关闭完整五工具/到期 GUI 门禁。原现场 Tao 外部触发源、旧 SSE 服务端停顿原因未追溯证明。QA 见一次可恢复正文断流，重连与后续审批成功，不宣称零断流。前端源码本轮未改，沿用前次 1361 pass / 8 skip，不计为本轮重跑。所有 QA 根、凭据与进程清理，正常 EXE 已恢复。
+
+下一步：物理拖放/更多媒体与二进制、取消 Aborted 文案、日志五工具/到期、迁移失败恢复和活跃工具二次启动，再补 PDF 内存/硬件/生产对照与最终收口。Mac 验证与 Windows 证据分开。
+
+
 核对日期：2026-10-27，YUME 0.4.21 / OpenCode 1.18.21。这里集中现行命令及历史记录里尚无完成证据的事项；不是新增功能授权、发布授权或一次新的实机通过声明。各次测试的实际结果继续保存在带基线的原记录。
 
 ## 当前验证入口
+
+### 2026-10-27 Windows 原生 GUI 与发送焦点
+
+继续在 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b 叠加现有改动，版本 0.4.21、历史 schema 3、记忆 schema 4 不变，未提交/推送。最新入口：[HTML](performance-evidence/b7-windows-native-gui-20261027/index.html)、[方法/边界](performance-evidence/b7-windows-native-gui-20261027/README.md)、[结果](performance-evidence/b7-windows-native-gui-20261027/summary.json)。
+
+用户授权临时 Windows MCP 1.3.24，SHA 与仓库固定清单一致；仅子进程 DPI 环境修正后截图/真实鼠标可用，无安装或全局配置修改。原 Computer Use 截图超时未修复。物理 Enter 发送发现 textarea disabled 丢失焦点，改为 readOnly，保留准备锁和防重复发送。最终新 1000 消息首次 10k 的 104 个流式采样 Stop 全可见、失焦 0、1000 旧节点保留，完整原生全文 SHA 匹配，中文草稿保留。实际鼠标 Stop（97/500 分片）及续聊通过；原生 TXT/PDF/WAV picker、发送/历史重开、WAV 播放器走到结束、工作台接管/小窗只读/释放、历史置顶/中文改名/归档/恢复通过。
+
+最终前端 **1361 pass / 0 fail / 8 skip，172/172 文件**，类型检查、正常 Windows debug/no-bundle 构建通过，Doctor changed 82 分无新增报告。Rust 未改未重跑，先前 970 pass / 24 ignored 保留为基线。五个隔离 SQLite 完整性通过，虚拟凭据/进程/临时 MCP/provider/两个 QA 根/三个端口清理，正常 dist/EXE 已恢复，未运行生产身份。
+
+**B7 仍进行中**：早期 Tao flush_paint_messages 绘制断言崩溃一次，后续未复现，根因未定；取消仍显示 Aborted；宿主 permission SSE 曾记录 os error 10060。下一轮先隔离复现崩溃与审批/SSE 故障恢复，再推进物理拖放/其他媒体与二进制、日志五工具/到期、迁移恢复、活跃工具二次启动、PDF 内存、硬件/生产对照及 Mac 专有范围。修复前失焦、旧 dist 无效复测、完整套件旧 disabled 断言失败均保留，不能当通过。
+
+### 2026-10-27 Windows 冷启动历史与多窗口（前次）
+
+继续在 `E:\Codex\工作伙伴\deskmate-windows-b7` / `codex/yume-performance-b6` / `db07e5b` 叠加现有改动，未提交/推送。最新入口：[HTML](performance-evidence/b7-windows-cold-history-20261027/index.html)、[方法/边界](performance-evidence/b7-windows-cold-history-20261027/README.md)、[结果](performance-evidence/b7-windows-cold-history-20261027/summary.json)。产品 0.4.21、历史 schema 3、记忆 schema 4 和依赖未变。
+
+已定位首次项目插件依赖初始化晚于全局健康检查，原 5 秒历史读取预算误报超时。现用独立 120 秒后台项目就绪预算，普通读取仍为 5 秒；等待不持有 Agent 操作锁，就绪按引擎 generation 缓存。还修复 WebView2 早期 IPC 的 state 未注册 panic/短暂报错、初次会话创建关闭历史视图、发现中误显示空态。最终全新身份冷启动 **66.16 秒**、热重启 **2.03 秒**自动显示两条各 1000 消息的会话，无错误或面板关闭。首次依赖安装仍慢，时间为 React 就绪后 DOM 探针测量；不是启动性能提升或 p95 声明。60 秒候选失败与早期 panic 原件保留。
+
+复测通过后，真实 chat/workbench/settings 多窗口接管/只读、越权拒绝、目录改名同步、并发 pin+rename、归档恢复和释放通过。Sky 原生 UIA 搜索 2→1→2 通过；截图捕获超时、鼠标几何信息不可用，不能算物理 GUI/视觉通过。1000 消息 10k 全文 SHA、Stop/续聊、旧节点/焦点/草稿回归通过。
+
+最终完整前端 **1360 pass / 0 fail / 8 skip，172 文件**；Rust **970 pass / 0 fail / 24 ignored**；三套类型、标准前端与正常 Windows debug/no-bundle 编译通过。Doctor changed scope 无新增诊断，同 7 文件前后均 81 分/12 条既有诊断，不能与前次 4 文件 83 分直接比较。25 个 SQLite 完整性通过，五个身份凭据/进程/数据根和两个端口已清理，正常 dist/EXE 恢复；未运行生产身份。旧 E 主仓状态与 C 工作树保留，先前报告原件保留（首批 README 早已有后续链接，哈希例外见复核回执）。
+
+**B7 仍进行中**：继续物理 GUI picker/drop、媒体/二进制、审批/SSE 故障恢复、日志五工具/到期、迁移恢复和活跃工具二次启动；PDF 内存/硬件/生产对照与 Mac 专有范围保留。下方为先前记录，不覆盖原失败与当时边界。
+
+### 2026-10-27 Windows Stop/焦点修复及存储接续
+
+`E:\Codex\工作伙伴\deskmate-windows-b7` / `codex/yume-performance-b6` / `db07e5b`，未提交/推送。[HTML](performance-evidence/b7-windows-stop-focus-20261027/index.html)、[方法/边界](performance-evidence/b7-windows-stop-focus-20261027/README.md)、[结果](performance-evidence/b7-windows-stop-focus-20261027/summary.json)。本节补充下方首批记录，**B7 仍进行中**。
+
+- 已关闭复现机制：真实 `history-catalog-changed` 在 `unowned/running/send=false/active_task` 时卸载当前流式 composer，导致 Stop、焦点丢失。现在仅保留本视图匹配完整 key 的当前回复控制，终态刷新后撤销范围，迟到 delta 不再追加最终正文；外部运行与其他权限边界保留。
+- 新鲜 1000 消息的 10k/50k、Stop/继续、重启后另一首轮 10k 通过；每个完整流式 30/30 样本 Stop 可见，原输入节点/焦点/草稿及 1000 旧节点保持，native 全文与代码块一致。原首轮没有事件时序，不声称追溯证明了其具体触发源。
+- 最终前端 **172 文件 / 1358 pass / 0 fail / 8 skip**，三套类型检查、标准前端/正常配置 Windows debug 编译通过。Doctor changed-scope 4 文件无诊断，评分 83。Rust 未改、本轮未重跑；先前 966 pass / 24 ignored 为基线。
+- 存储新增真实 IPC 验收：两条合成记忆完整导出、忘记目标后搜索为 0、保留项重启后仍导出、最后清空；删除 1004 条 native 消息会话后列表抑制/native 404/重启 tombstone 保持。两个身份十个 SQLite 完整性通过，已忘记合成标记不在 memory DB/现存 WAL/SHM 字节中。不是物理磁盘安全擦除、GUI 对话框、并发多窗口或迁移恢复验收。
+- **新增/保留待验：冷启动最早历史发现 `history_native_timeout`，刷新也曾超时，后续可用；尚未定位原因。** 发送阶段现有 textarea disabled 会失去发送前焦点，与本次流式期间节点卸载分开记录。GUI picker/drop、媒体/二进制、审批/SSE/恢复、日志五工具/到期、历史多窗口、记忆迁移、活跃工具二次启动及硬件/PDF 内存/生产对照仍待验。原失败、错误探针断言和完整套件首次终态失败保留。
+- QA 进程/端口/虚拟凭据/专属根已清理；标准 dist 无 QA JS，最后 EXE 为正常配置 debug 编译件；没有安装或运行生产身份。
+
+### 2026-10-27 Windows 接管首批
+
+起点 `db07e5b`，新 clone `E:\Codex\工作伙伴\deskmate-windows-b7`，分支 `codex/yume-performance-b6`。**Windows 基线通过，B7 进行中。** [HTML](performance-evidence/b7-windows-20261027/index.html)、[完整边界](performance-evidence/b7-windows-20261027/README.md)、[结果](performance-evidence/b7-windows-20261027/summary.json)。旧主仓改动保留，本批没有产品代码或版本/schema 修改，未提交/推送/安装/发布。
+
+- 已验：冻结依赖/固定工作台、类型检查、前端 172 文件 / 1353 pass / 8 skip、Rust 966 pass / 24 ignored、生产检查/正常配置 Windows debug 编译；真实 OpenCode 恢复/归档故障/批准/拒绝/取消/后续任务；QA 三次近同时启动、空闲和流式中各十次二次启动、真实孤儿回收；WebView2 PDF 四类各 8 次，32 worker 全部结束；50k 流式终态、Stop/继续；1000 消息 50k 全文/代码块/焦点/旧节点。
+- **新增待定位：首次进入新导入 1000 消息会话的 10k 流式，Stop 不可见且输入焦点丢失，探针提前终止；native 全文正确。** 同一会话稳定后 1002→1004 消息复查通过，不能替代原场景，也不证明原因。优先补冷启动/新导入会话的 catalog ownership、SSE、composer 节点时序，确认真实终态再衡量延迟。
+- 仍待验：活跃工具任务二次启动；Windows 原生 picker/drop、媒体/二进制发送与历史重开；GUI 审批/SSE 断流/恢复、日志五工具/到期、历史删除/多窗口、记忆导出/忘记/重开。PDF heap 仅两个读数，未证明收敛；2D/3D、隐藏/睡眠、DPI/高刷、GPU/能耗与同机生产对照继续待验。Sky 原生捕获三次超时，不把 CDP 样本当视觉验收。Mac 专有缺口及 M19c/C16/R06/D20 成本保留。
+- QA 五个 SQLite 完整性通过；进程、端口、虚拟凭据和专属数据根已清理，生产 dist 恢复。首次环境失败/复跑与首次 10k 异常均保留。
+
+### Mac 移交安排（保留原记录）
 
 **2026-10-27 Windows 接管安排**：本轮代码与 Mac 证据已完成保存，按用户要求推送 `codex/yume-performance-b6` 供 Windows 接续；见 [Windows 接管入口](performance-windows-handoff.md)。先建立 Windows 本机基线，再验首实例/并发/孤儿、WebView2、GUI 审批/SSE/日志与存储。此安排不新增测试通过声明；下方 Mac 尚未验证的范围继续保留。
 

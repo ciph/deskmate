@@ -3,17 +3,37 @@ use std::{collections::{HashMap, HashSet}, sync::{atomic::{AtomicBool, AtomicU64
 use tauri::{Emitter, Manager};
 use super::{catalog_model::*, commands, HistoryState};
 
+// A fresh native project may install plugin dependencies even after global health is ready.
+// This budget applies only to background bootstrap, never interactive history reads.
+const PROJECT_BOOTSTRAP_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(120);
+
 #[derive(Default)]
 pub(crate) struct HistoryMaintenance {
     pub(super) initialized: Mutex<super::catalog_cache::ImportCache>,
     pub(super) associations: std::sync::Arc<super::catalog_cache::Revision>,
     pub(super) errors: Mutex<Vec<String>>,
-    refreshing: AtomicBool,
+    pub(super) refreshing: AtomicBool,
+    native_ready_generation: Mutex<Option<u64>>,
     refresh_requested: AtomicBool,
     cleanup_started: AtomicBool,
     chat_selection: AtomicU64,
     // Keep drafts protected even while their native window is hidden.
     pub(crate) used: Mutex<HashMap<String, HashSet<String>>>,
+}
+
+pub(super) fn wait_for_native_directory(app: &tauri::AppHandle) -> Result<(), String> {
+    let state = app.state::<HistoryMaintenance>();
+    let generation = crate::sidecar_generation(app)?;
+    if *state.native_ready_generation.lock().map_err(|_| "history_state_unavailable")? == Some(generation) { return Ok(()); }
+    // Background-only bootstrap, outside the Agent operation lock; ordinary reads keep their short deadlines.
+    if !crate::agent::managed_sidecar_ready(app)? { return Err("history_native_unavailable".into()); }
+    let generation = crate::sidecar_generation(app)?;
+    commands::client(app)?.wait_for_directory(&commands::workspace(app)?, PROJECT_BOOTSTRAP_TIMEOUT)
+        .map_err(|error| error.to_string())?;
+    let sidecar = app.state::<crate::Sidecar>();
+    let _generation = sidecar.generation_guard(generation)?.ok_or("history_native_unavailable")?;
+    *state.native_ready_generation.lock().map_err(|_| "history_state_unavailable")? = Some(generation);
+    Ok(())
 }
 
 pub(crate) fn protect(app: &tauri::AppHandle, owner: &str, key: &str) -> Result<(), String> {
@@ -68,6 +88,7 @@ pub(crate) fn schedule_refresh(app: tauri::AppHandle) {
             let _ = app.emit("history-catalog-changed", ());
         }
         state.refreshing.store(false, Ordering::Release);
+        let _ = app.emit("history-catalog-changed", ());
         // A request arriving between the last check and release still gets a pass.
         if state.refresh_requested.load(Ordering::Acquire) { schedule_refresh(app.clone()); }
     });

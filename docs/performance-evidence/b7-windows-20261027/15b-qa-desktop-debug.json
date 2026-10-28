@@ -1,0 +1,7 @@
+{
+  "exitCode": 0,
+  "binarySha256": "89E5E2851FF41B099FD0EEAD83BDAECDE2DAF36DAB640871A7BD85446EE74B70",
+  "identity": "com.deskmate.unifiedhistoryqa.winb720261027a",
+  "additionalArgs": "QA-only localhost debug port 9237 and precise memory counters",
+  "time": "2026-10-27T12:03:35.5439737+08:00"
+}

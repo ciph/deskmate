@@ -1,0 +1,2194 @@
+{
+  "rawLogSha256": "e6b734653adb006a423c71a09d852a239cf81276b4ecc278f7d5529717a35c92",
+  "rawLogPath": "E:\\Codex\\工作伙伴\\reports\\yume-b7-native-gui-20261027\\windows-mcp-calls.jsonl",
+  "calls": [
+    {
+      "time": "2026-10-27T06:55:40.684Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:55:46.954Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:55:47.022Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "2169516",
+      "failed": false,
+      "screenshot": "control-native-before.png"
+    },
+    {
+      "time": "2026-10-27T06:56:11.489Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "2169516",
+      "failed": false,
+      "screenshot": "control-native-annotated.png"
+    },
+    {
+      "time": "2026-10-27T06:56:34.274Z",
+      "name": "ui_find",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:56:42.061Z",
+      "name": "mouse_control",
+      "action": "click",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T06:56:42.101Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "2169516",
+      "failed": false,
+      "screenshot": "control-native-menu.png"
+    },
+    {
+      "time": "2026-10-27T06:57:12.474Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:57:12.565Z",
+      "name": "ui_find",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:57:21.606Z",
+      "name": "mouse_control",
+      "action": "click",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:57:21.634Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "2169516",
+      "failed": false,
+      "screenshot": "control-native-menu-click.png"
+    },
+    {
+      "time": "2026-10-27T06:57:55.196Z",
+      "name": "window_management",
+      "action": "list",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:58:00.250Z",
+      "name": "ui_find",
+      "handle": "2169516",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T06:58:25.155Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:58:25.187Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:58:30.296Z",
+      "name": "ui_find",
+      "handle": "2169516",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T06:58:41.183Z",
+      "name": "window_management",
+      "action": "restore",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:58:41.193Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:58:46.244Z",
+      "name": "ui_find",
+      "handle": "2169516",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T06:59:27.443Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T06:59:27.457Z",
+      "name": "window_management",
+      "action": "ensure_visible",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:00:45.726Z",
+      "name": "window_management",
+      "action": "close",
+      "handle": "2169516",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:01:22.334Z",
+      "name": "app",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:01:40.015Z",
+      "name": "ui_find",
+      "handle": "14883912",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:01:40.038Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "14883912",
+      "failed": false,
+      "screenshot": "control-fresh.png"
+    },
+    {
+      "time": "2026-10-27T07:01:53.324Z",
+      "name": "window_management",
+      "action": "set_bounds",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:01:53.347Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:01:53.432Z",
+      "name": "ui_find",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:01:53.463Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "14883912",
+      "failed": false,
+      "screenshot": "control-sized.png"
+    },
+    {
+      "time": "2026-10-27T07:02:15.846Z",
+      "name": "mouse_control",
+      "action": "click",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:02:16.146Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:02:16.155Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "14883912",
+      "failed": false,
+      "screenshot": "control-input-verified.png"
+    },
+    {
+      "time": "2026-10-27T07:03:29.166Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:03:29.203Z",
+      "name": "window_management",
+      "action": "set_bounds",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:03:29.421Z",
+      "name": "ui_find",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:03:49.520Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "14883912",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:04:29.341Z",
+      "name": "window_management",
+      "action": "set_bounds",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:04:29.352Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:04:29.420Z",
+      "name": "ui_find",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:04:29.448Z",
+      "name": "mouse_control",
+      "action": "click",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:04:29.508Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:04:29.595Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:04:29.616Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "14883912",
+      "failed": false,
+      "screenshot": "control-complete.png"
+    },
+    {
+      "time": "2026-10-27T07:05:24.901Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "14883912",
+      "failed": false,
+      "screenshot": "control-complete-settled.png"
+    },
+    {
+      "time": "2026-10-27T07:06:36.515Z",
+      "name": "window_management",
+      "action": "set_bounds",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:06:36.524Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:06:36.588Z",
+      "name": "ui_find",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:06:36.614Z",
+      "name": "mouse_control",
+      "action": "click",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:06:36.618Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:06:36.670Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:06:36.778Z",
+      "name": "ui_snapshot",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:06:46.048Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "14883912",
+      "failed": false,
+      "screenshot": "control-physical-pass.png"
+    },
+    {
+      "time": "2026-10-27T07:06:46.069Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "4398022",
+      "failed": false,
+      "screenshot": "yume-chat-initial.png"
+    },
+    {
+      "time": "2026-10-27T07:06:46.235Z",
+      "name": "ui_snapshot",
+      "handle": "4398022",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:07:10.599Z",
+      "name": "ui_find",
+      "handle": "4398022",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:07:10.606Z",
+      "name": "screenshot_control",
+      "action": "list_monitors",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:09:12.106Z",
+      "name": "screenshot_control",
+      "action": "list_monitors",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:09:12.155Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "4398022",
+      "failed": false,
+      "screenshot": "yume-chat-dpi-corrected.png"
+    },
+    {
+      "time": "2026-10-27T07:09:12.281Z",
+      "name": "ui_find",
+      "handle": "4398022",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:10:40.524Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "4398022",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:10:40.578Z",
+      "name": "ui_find",
+      "handle": "4398022",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:10:40.613Z",
+      "name": "mouse_control",
+      "action": "click",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:10:40.858Z",
+      "name": "ui_find",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:10:40.878Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "204066",
+      "failed": false,
+      "screenshot": "settings-initial.png"
+    },
+    {
+      "time": "2026-10-27T07:10:52.038Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:10:57.161Z",
+      "name": "ui_find",
+      "handle": "204066",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:11:15.171Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:11:15.202Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "204066",
+      "failed": false,
+      "screenshot": "settings-after-activation.png"
+    },
+    {
+      "time": "2026-10-27T07:11:15.569Z",
+      "name": "ui_snapshot",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:12:02.622Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:12:02.738Z",
+      "name": "ui_find",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:12:02.760Z",
+      "name": "mouse_control",
+      "action": "click",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:12:07.830Z",
+      "name": "ui_find",
+      "handle": "204066",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:12:19.463Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "204066",
+      "failed": false,
+      "screenshot": "settings-after-ai-click.png"
+    },
+    {
+      "time": "2026-10-27T07:12:19.668Z",
+      "name": "ui_find",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:12:19.671Z",
+      "name": "mouse_control",
+      "action": "get_position",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:14:35.728Z",
+      "name": "window_management",
+      "action": "move",
+      "handle": "4398022",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:14:35.734Z",
+      "name": "window_management",
+      "action": "move",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:14:35.763Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:14:41.222Z",
+      "name": "ui_find",
+      "handle": "204066",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:14:57.766Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:14:57.788Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "204066",
+      "failed": false,
+      "screenshot": "gui-settings-ready.png"
+    },
+    {
+      "time": "2026-10-27T07:14:57.790Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "4398022",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:15:14.094Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:15:14.112Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "204066",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:15:14.142Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "204066",
+      "failed": false,
+      "screenshot": "gui-ai-tab.png"
+    },
+    {
+      "time": "2026-10-27T07:16:12.676Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "204066",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:17:33.245Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:17:33.251Z",
+      "name": "window_management",
+      "action": "move",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:17:33.257Z",
+      "name": "window_management",
+      "action": "move",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:17:33.290Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:17:33.313Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:17:33.318Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:17:33.319Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:17:33.360Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "region-ai-settings.png"
+    },
+    {
+      "time": "2026-10-27T07:22:06.279Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:06.311Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:06.321Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:06.326Z",
+      "name": "mouse_control",
+      "action": "get_position",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:15.594Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:15.596Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:15.633Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "region-ai-after-click.png"
+    },
+    {
+      "time": "2026-10-27T07:22:15.675Z",
+      "name": "ui_find",
+      "handle": "662570",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:22:20.170Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:20.185Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:24.798Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:24.800Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:24.831Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "region-provider-open.png"
+    },
+    {
+      "time": "2026-10-27T07:22:29.139Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:29.153Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:36.001Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:36.003Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "662570",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:36.030Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "provider-verified.png"
+    },
+    {
+      "time": "2026-10-27T07:22:36.054Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:36.057Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:36.100Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "chat-initial-region.png"
+    },
+    {
+      "time": "2026-10-27T07:22:44.820Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:44.839Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:48.935Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:48.938Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:48.975Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-open-native.png"
+    },
+    {
+      "time": "2026-10-27T07:22:53.394Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:53.403Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:53.417Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:58.004Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:58.006Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:22:58.036Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-search-10000-native.png"
+    },
+    {
+      "time": "2026-10-27T07:23:04.438Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:23:04.452Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:23:17.215Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:23:17.218Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:23:17.253Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-1000-open-native.png"
+    },
+    {
+      "time": "2026-10-27T07:24:03.820Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:03.840Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:03.850Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:03.871Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:11.402Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:11.406Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:11.409Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:11.439Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "10k-stream-stop-focus-native.png"
+    },
+    {
+      "time": "2026-10-27T07:24:20.388Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:20.390Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:24:20.420Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "10k-after-native.png"
+    },
+    {
+      "time": "2026-10-27T07:24:22.909Z",
+      "name": "ui_snapshot",
+      "handle": "138568",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:06.178Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:06.183Z",
+      "name": "window_management",
+      "action": "move",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:06.186Z",
+      "name": "window_management",
+      "action": "move",
+      "handle": "5446962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:06.211Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:06.227Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:11.874Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:11.876Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:11.914Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "fixed-history-open.png"
+    },
+    {
+      "time": "2026-10-27T07:28:31.335Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:31.343Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:43.307Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:43.326Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:43.333Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:43.336Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:47.942Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:52.598Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:52.600Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "16915286",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:28:52.626Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "10k-fixed-stream-draft.png"
+    },
+    {
+      "time": "2026-10-27T07:30:51.733Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:30:51.741Z",
+      "name": "window_management",
+      "action": "move",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:30:51.749Z",
+      "name": "window_management",
+      "action": "move",
+      "handle": "1056400",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:30:51.777Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:30:51.797Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:04.711Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:04.714Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:04.751Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "rebuilt-history.png"
+    },
+    {
+      "time": "2026-10-27T07:31:31.498Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:31.530Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:44.129Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:44.145Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:44.163Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:44.169Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:48.196Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:57.345Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:57.348Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:31:57.376Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "10k-fixed-final-stream.png"
+    },
+    {
+      "time": "2026-10-27T07:32:42.396Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:42.410Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:42.416Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:42.424Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:42.429Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:44.248Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:44.563Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:44.565Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:44.594Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "stop-before-click-native.png"
+    },
+    {
+      "time": "2026-10-27T07:32:44.597Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:44.612Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:45.315Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:45.317Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:45.341Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "stop-after-click-native.png"
+    },
+    {
+      "time": "2026-10-27T07:32:55.151Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:55.161Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:55.167Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:56.677Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:56.679Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:32:56.710Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "continue-after-stop-native.png"
+    },
+    {
+      "time": "2026-10-27T07:33:14.453Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:14.462Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:22.947Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:45.705Z",
+      "name": "ui_find",
+      "handle": "466708",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:55.067Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "466708",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:55.219Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "466708",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:55.225Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "466708",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:56.038Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:56.040Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:33:56.077Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "native-picker-text-selected.png"
+    },
+    {
+      "time": "2026-10-27T07:34:06.539Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:06.562Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:06.573Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:06.577Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:08.088Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:08.090Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:08.127Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "native-picker-text-sent.png"
+    },
+    {
+      "time": "2026-10-27T07:34:08.129Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:08.145Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:19.183Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:37.354Z",
+      "name": "window_management",
+      "action": "set_bounds",
+      "handle": "662712",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:37.357Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662712",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:37.359Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "662712",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:37.409Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "workbench-handoff-native.png"
+    },
+    {
+      "time": "2026-10-27T07:34:37.431Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:37.433Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:37.467Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "chat-readonly-workbench-native.png"
+    },
+    {
+      "time": "2026-10-27T07:34:50.687Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "662712",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:50.696Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "662712",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:51.704Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:51.706Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:34:51.728Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "workbench-release-native.png"
+    },
+    {
+      "time": "2026-10-27T07:35:48.625Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "handle": "269962",
+      "failed": false,
+      "screenshot": "printwindow-control-after.png"
+    },
+    {
+      "time": "2026-10-27T07:36:25.819Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:25.832Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:26.423Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:41.911Z",
+      "name": "ui_find",
+      "handle": "401290",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:49.667Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "401290",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:49.837Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "401290",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:49.842Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "401290",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:51.355Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:51.356Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:36:51.379Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "pdf-audio-selected-native.png"
+    },
+    {
+      "time": "2026-10-27T07:37:04.170Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:04.182Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:04.491Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:04.493Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:04.515Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "audio-playing-native.png"
+    },
+    {
+      "time": "2026-10-27T07:37:04.518Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:04.523Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:04.534Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:04.539Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:06.051Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:06.052Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:06.083Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "pdf-audio-sent-native.png"
+    },
+    {
+      "time": "2026-10-27T07:37:33.081Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:33.101Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:52.044Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:52.069Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:52.376Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:52.377Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:37:52.422Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-final-before-menu.png"
+    },
+    {
+      "time": "2026-10-27T07:38:14.004Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:14.007Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:14.043Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-final-loaded.png"
+    },
+    {
+      "time": "2026-10-27T07:38:20.307Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:20.317Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:20.485Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:20.486Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:20.524Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-menu-native.png"
+    },
+    {
+      "time": "2026-10-27T07:38:28.416Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:28.438Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:28.745Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:28.751Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:28.914Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:28.919Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:29.132Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:29.134Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:29.168Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-rename-dialog-native.png"
+    },
+    {
+      "time": "2026-10-27T07:38:37.313Z",
+      "name": "keyboard_control",
+      "action": "press",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:37.344Z",
+      "name": "keyboard_control",
+      "action": "type",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:37.351Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:37.370Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:37.625Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:37.630Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:37.792Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:37.797Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:38.115Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:38.120Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:38.527Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:38.528Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:38.571Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-archived-native.png"
+    },
+    {
+      "time": "2026-10-27T07:38:44.628Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:44.654Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:44.817Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:44.819Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:44.855Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-restore-menu-native.png"
+    },
+    {
+      "time": "2026-10-27T07:38:52.079Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:52.101Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:52.412Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:52.417Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:52.734Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:52.738Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:53.455Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:53.457Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:38:53.487Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-reopen-attachments-native.png"
+    },
+    {
+      "time": "2026-10-27T07:39:04.671Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:39:04.685Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:39:06.192Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:39:06.194Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "269962",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:39:06.218Z",
+      "name": "screenshot_control",
+      "action": "capture",
+      "failed": false,
+      "screenshot": "history-reopened-final.png"
+    },
+    {
+      "time": "2026-10-27T07:39:29.256Z",
+      "name": "window_management",
+      "action": "get_state",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:39:50.545Z",
+      "name": "window_management",
+      "action": "close",
+      "handle": "14883912",
+      "failed": true
+    },
+    {
+      "time": "2026-10-27T07:40:00.237Z",
+      "name": "window_management",
+      "action": "find",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:40:00.389Z",
+      "name": "ui_find",
+      "handle": "14883912",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:40:10.578Z",
+      "name": "window_management",
+      "action": "activate",
+      "handle": "15736154",
+      "failed": false
+    },
+    {
+      "time": "2026-10-27T07:40:10.609Z",
+      "name": "mouse_control",
+      "action": "click",
+      "handle": "15736154",
+      "failed": false
+    }
+  ],
+  "note": "Compact metadata only; raw logs preserved locally. Tool success alone is not a GUI pass; use screenshots and native data checks."
+}

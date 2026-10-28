@@ -1,0 +1,105 @@
+{
+  "status": "B7 in progress; physical acceptance blocked by Windows SecureDesktopActive",
+  "date": "2026-10-27",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "branch": "codex/yume-performance-b6",
+  "version": "0.4.21",
+  "schemas": {
+    "history": 3,
+    "memory": 4
+  },
+  "productSourceChangedThisRound": false,
+  "qaBuild": {
+    "startedAt": "2026-10-27T19:19:08.3590370+08:00",
+    "profile": "release",
+    "binarySha256": "A2CA7F279B6F4C6C76DABE7AFAE33D9BF853BDE4A1EA8C71009EE443D76DB977",
+    "panic": "unwind",
+    "exitCode": 0,
+    "finishedAt": "2026-10-27T19:26:40.8899889+08:00",
+    "identity": "com.deskmate.unifiedhistoryqa.winb7release20261027a",
+    "lto": "fat"
+  },
+  "normalBuild": {
+    "features": "default",
+    "command": "bun run tauri build --no-bundle",
+    "binarySha256": "C4C240E698609BD51FB4140C5D9E7AFB5B5DFCBFB399D64E2DD53A700ECEE638",
+    "exitCode": 0,
+    "startedAt": "2026-10-27T19:41:24.9901613+08:00",
+    "finishedAt": "2026-10-27T19:47:49.1751603+08:00",
+    "productionIdentityRun": false,
+    "profile": "release"
+  },
+  "releaseCheckpoint": {
+    "time": "2026-10-27T11:37:05.877Z",
+    "buildSha256": "A2CA7F279B6F4C6C76DABE7AFAE33D9BF853BDE4A1EA8C71009EE443D76DB977",
+    "pass": true,
+    "physical": {
+      "MP4BodyDrop": true,
+      "completePlaybackMs": 30042,
+      "seek": "one continuous physical polyline; two seeking events and one seeked event, not six independent seeks",
+      "resumedAt": 8.224069,
+      "removedAt": 14.973985,
+      "removedNode": true
+    },
+    "binary": {
+      "checks": 11,
+      "ordinaryMiB": [
+        1,
+        8,
+        20
+      ],
+      "allSHAReadbacksMatch": true,
+      "mediaMiB": 64,
+      "decoder": "programmatic WebView2 decoder; not physical UI",
+      "ownedCopyRemoved": true,
+      "nonChatDenied": true
+    },
+    "pending": [
+      "release picker",
+      "composer/body MP3 WAV folder invalid-media matrix",
+      "session switch/readd/send/history",
+      "all complete worklog physical surfaces"
+    ],
+    "interruption": "Windows MCP get_foreground returned SecureDesktopActive at the next picker action; no secure-desktop input attempted",
+    "scope": "Partial release checkpoint, not B7 completion; all product changes from previous rounds preserved"
+  },
+  "frontend": {
+    "files": 172,
+    "pass": 1367,
+    "fail": 0,
+    "skip": 8,
+    "method": "one complete serial run, no substitutions"
+  },
+  "integrity": {
+    "databases": 6,
+    "resourcesAfterRemoval": 0
+  },
+  "cleanup": {
+    "productionIdentityRun": false,
+    "credentialCleared": true,
+    "roots": [
+      {
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7release20261027a",
+        "deleted": true
+      },
+      {
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7release20261027a",
+        "deleted": true
+      }
+    ],
+    "time": "2026-10-27T19:41:08.8237683+08:00",
+    "listeners": [],
+    "identity": "com.deskmate.unifiedhistoryqa.winb7release20261027a",
+    "helperProcesses": []
+  },
+  "remaining": {
+    "priority": "release attachment native picker and remaining media/drop/history matrix, then complete physical worklog editors/versions/export/delete/retry/cancel",
+    "afterward": "active-tool secondary launches, Aborted wording, remaining recovery, PDF heap/RSS, hardware/production comparison, receipt-recovery performance, final gate",
+    "windowsRounds": "2–3 focused rounds; 3–4 if new defects; this interrupted physical phase remains in that estimate",
+    "mac": "separate platform gates"
+  },
+  "committed": false,
+  "pushed": false,
+  "installed": false,
+  "published": false
+}

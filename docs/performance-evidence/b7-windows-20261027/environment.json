@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-10-27T11:37:02.5466263+08:00",
+  "os": "Microsoft Windows 10 专业版",
+  "osVersion": "10.0.19045",
+  "osBuild": "19045",
+  "cpu": [
+    {
+      "Name": "AMD Ryzen 7 7700 8-Core Processor              ",
+      "NumberOfCores": 8,
+      "NumberOfLogicalProcessors": 16
+    }
+  ],
+  "gpu": [
+    {
+      "Name": "NVIDIA GeForce RTX 5060",
+      "DriverVersion": "32.0.15.7688",
+      "CurrentHorizontalResolution": 2560,
+      "CurrentVerticalResolution": 1440,
+      "CurrentRefreshRate": 60
+    },
+    {
+      "Name": "AMD Radeon(TM) Graphics",
+      "DriverVersion": "31.0.24002.92",
+      "CurrentHorizontalResolution": null,
+      "CurrentVerticalResolution": null,
+      "CurrentRefreshRate": null
+    }
+  ],
+  "webview2": [
+    "155.0.4283.62",
+    "SetupMetrics"
+  ],
+  "bun": "1.3.14",
+  "node": "v24.14.1",
+  "rustc": "rustc 1.94.1 (e408947bf 2026-03-25)",
+  "cargo": "cargo 1.94.1 (29ea6fb6a 2026-03-24)",
+  "note": "Display DPI and native runtime behavior pending explicit QA measurement"
+}

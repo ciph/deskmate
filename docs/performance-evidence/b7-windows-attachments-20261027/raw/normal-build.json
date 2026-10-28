@@ -1,0 +1,9 @@
+{
+  "identity": "com.deskmate.desktop",
+  "startedAt": "2026-10-27T18:13:21.6800920+08:00",
+  "features": "default; no worklog-qa",
+  "binarySha256": "BD8679909680F40E8E2D9615219476B51DAD0BE204F1F0A7853D8A7628B263B4",
+  "finishedAt": "2026-10-27T18:14:29.8198213+08:00",
+  "productionIdentityRun": false,
+  "exitCode": 0
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "B7-video-30s.mp4",
+    "sha256": "1509F2A1570C460579BE69E11A1AD1B035B4E44FCCA5A83306FA33406B24CCF2",
+    "matchesRetainedSource": true
+  },
+  {
+    "name": "B7-audio-10s.mp3",
+    "sha256": "E756256CEF609EC9E1C89FCDD4B95762C5F06D337C95EB80DAFBC08E82ACEED2",
+    "matchesRetainedSource": true
+  },
+  {
+    "name": "B7-audio-8s.wav",
+    "sha256": "278CC96ACAD05257CB61E11DF3FE64FF0CBB6A1D02594CF6EDD1ED9F6DEECBA7",
+    "matchesRetainedSource": true
+  },
+  {
+    "name": "B7-bad-video.mp4",
+    "sha256": "4F9A5B33DB4339C14ED336727B26B6422D1C7FB896ED88A850072DBB3665BA96",
+    "matchesRetainedSource": true
+  },
+  {
+    "name": "folder/B7-synthetic-note.txt",
+    "sha256": "9150FF5C79D7F73DD934DF24FD754C9777384F18F8A6D0A9534B26798BB97816",
+    "matchesRetainedSource": true
+  },
+  {
+    "name": "folder/B7-synthetic-data.json",
+    "sha256": "76C01CD47FD145EF773266585D7C3DD6481FEF31B4C809D1F7C961535BC5CDB4",
+    "matchesRetainedSource": true
+  }
+]

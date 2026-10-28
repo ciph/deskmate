@@ -1,0 +1,202 @@
+[
+  {
+    "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027d",
+    "databases": [
+      {
+        "file": "chat-resources.sqlite3",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      },
+      {
+        "file": "deskmate-memory.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 4
+      },
+      {
+        "file": "history-catalog.sqlite",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 3
+      },
+      {
+        "file": "yume-worklog.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 2
+      },
+      {
+        "file": "opencode-home/xdg-data/opencode/opencode.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      }
+    ]
+  },
+  {
+    "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+    "databases": [
+      {
+        "file": "chat-resources.sqlite3",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      },
+      {
+        "file": "deskmate-memory.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 4
+      },
+      {
+        "file": "history-catalog.sqlite",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 3
+      },
+      {
+        "file": "yume-worklog.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 2
+      },
+      {
+        "file": "opencode-home/xdg-data/opencode/opencode.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      }
+    ]
+  },
+  {
+    "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027f",
+    "databases": [
+      {
+        "file": "chat-resources.sqlite3",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      },
+      {
+        "file": "deskmate-memory.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 4
+      },
+      {
+        "file": "history-catalog.sqlite",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 3
+      },
+      {
+        "file": "yume-worklog.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 2
+      },
+      {
+        "file": "opencode-home/xdg-data/opencode/opencode.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      }
+    ]
+  },
+  {
+    "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027g",
+    "databases": [
+      {
+        "file": "chat-resources.sqlite3",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      },
+      {
+        "file": "deskmate-memory.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 4
+      },
+      {
+        "file": "history-catalog.sqlite",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 3
+      },
+      {
+        "file": "yume-worklog.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 2
+      },
+      {
+        "file": "opencode-home/xdg-data/opencode/opencode.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      }
+    ]
+  },
+  {
+    "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027h",
+    "databases": [
+      {
+        "file": "chat-resources.sqlite3",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      },
+      {
+        "file": "deskmate-memory.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 4
+      },
+      {
+        "file": "history-catalog.sqlite",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 3
+      },
+      {
+        "file": "yume-worklog.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 2
+      },
+      {
+        "file": "opencode-home/xdg-data/opencode/opencode.db",
+        "integrity": [
+          "ok"
+        ],
+        "schemaVersion": 0
+      }
+    ]
+  }
+]

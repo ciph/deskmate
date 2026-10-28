@@ -14,6 +14,8 @@ use tauri::Manager;
 
 #[path = "events_refresh.rs"]
 mod refresh;
+#[path = "events_transport.rs"]
+mod transport;
 use refresh::ActiveRefresh;
 pub(crate) use refresh::{RefreshChanges, RefreshScope};
 
@@ -106,10 +108,15 @@ impl PermissionEvents {
         std::thread::spawn(move || {
             while !worker.stopped.load(Ordering::Relaxed) {
                 if let Err(error) = worker.read(&base) {
-                    eprintln!("permission stream: {error}");
+                    if !worker.stopped.load(Ordering::Relaxed) {
+                        eprintln!("permission stream: {error}");
+                    }
                 }
                 if let Ok(mut state) = worker.state.lock() {
                     state.disconnect();
+                }
+                if worker.stopped.load(Ordering::Relaxed) {
+                    break;
                 }
                 std::thread::sleep(Duration::from_secs(1));
             }
@@ -129,6 +136,9 @@ impl PermissionEvents {
             return Err("permission_generation_changed".into());
         }
         let mut state = self.state.lock().map_err(|_| "permission_stream_lock")?;
+        if self.stopped.load(Ordering::Relaxed) {
+            return Err("permission_stream_stopped".into());
+        }
         state.disconnect();
         state.generation = Some(generation);
         state.connected = true;
@@ -137,18 +147,43 @@ impl PermissionEvents {
 
     fn read(&self, base: &str) -> Result<(), String> {
         let generation = (self.current_generation)()?;
-        let request = ureq::AgentBuilder::new()
-            .timeout_connect(Duration::from_secs(3))
-            .timeout_read(Duration::from_secs(45))
+        // Match the updater's provider without depending on an update check running first.
+        if rustls::crypto::CryptoProvider::get_default().is_none() {
+            let _ = rustls::crypto::ring::default_provider().install_default();
+        }
+        let client = reqwest::Client::builder()
+            .no_proxy()
+            .redirect(reqwest::redirect::Policy::none())
+            .connect_timeout(Duration::from_secs(3))
             .build()
-            .get(&format!("{base}/global/event"));
+            .map_err(|error| error.to_string())?;
+        let request = client
+            .get(format!("{base}/global/event"))
+            .header("Accept", "text/event-stream");
         let request = match crate::sidecar_auth_value() {
-            Some(value) => request.set("Authorization", value),
+            Some(value) => request.header("Authorization", value),
             None => request,
         };
-        let response = request.call().map_err(|error| error.to_string())?;
+        let response = tauri::async_runtime::block_on(self.wait_for_io(
+            generation,
+            "headers",
+            Duration::from_secs(3),
+            request.send(),
+        ))?
+        .error_for_status()
+        .map_err(|error| error.without_url().to_string())?;
+        if response.status() != reqwest::StatusCode::OK {
+            return Err("permission_stream_http_status".into());
+        }
         self.begin_connection(generation)?;
-        self.read_frames(BufReader::new(response.into_reader()), generation)
+        self.read_frames(
+            BufReader::new(transport::ResponseReader::new(
+                self.clone(),
+                response,
+                generation,
+            )),
+            generation,
+        )
     }
 
     fn read_frames(&self, mut reader: impl BufRead, generation: u64) -> Result<(), String> {
@@ -603,3 +638,7 @@ mod scoped_tests;
 #[cfg(test)]
 #[path = "events_refresh_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "events_transport_tests.rs"]
+mod transport_tests;

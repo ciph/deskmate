@@ -1,0 +1,591 @@
+{
+  "cdpAndReactReadyMs": 954,
+  "elapsedMs": 66005,
+  "result": {
+    "ok": false,
+    "discoveredAt": 64990.90000000037,
+    "trace": [
+      {
+        "at": 0.599999999627471,
+        "kind": "open-history"
+      },
+      {
+        "at": 0.6999999992549419,
+        "kind": "dom",
+        "history": false,
+        "rows": 0,
+        "notice": [],
+        "empty": false
+      },
+      {
+        "at": 197.2999999988824,
+        "kind": "catalog",
+        "ms": 196.59999999962747,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 254.90000000037253,
+        "kind": "dom",
+        "history": true,
+        "rows": 0,
+        "notice": [],
+        "loading": "true",
+        "empty": false
+      },
+      {
+        "at": 1034.9000000003725,
+        "kind": "catalog",
+        "ms": 4.800000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 2070,
+        "kind": "catalog",
+        "ms": 4.400000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 3108.699999999255,
+        "kind": "catalog",
+        "ms": 4.400000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 4159.4000000003725,
+        "kind": "catalog",
+        "ms": 5.5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 5212.0999999996275,
+        "kind": "catalog",
+        "ms": 5.300000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 6262.799999998882,
+        "kind": "catalog",
+        "ms": 6.299999998882413,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 7309.5,
+        "kind": "catalog",
+        "ms": 5.200000001117587,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 8357,
+        "kind": "catalog",
+        "ms": 6.900000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 9398.799999998882,
+        "kind": "catalog",
+        "ms": 4.299999998882413,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 10438.5,
+        "kind": "catalog",
+        "ms": 5.300000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 11489.599999999627,
+        "kind": "catalog",
+        "ms": 5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 12533,
+        "kind": "catalog",
+        "ms": 5.5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 13584.400000000373,
+        "kind": "catalog",
+        "ms": 4.899999998509884,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 14630,
+        "kind": "catalog",
+        "ms": 5.300000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 15682.599999999627,
+        "kind": "catalog",
+        "ms": 5.699999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 16731.699999999255,
+        "kind": "catalog",
+        "ms": 6,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 17786.5,
+        "kind": "catalog",
+        "ms": 4.599999999627471,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 18839.900000000373,
+        "kind": "catalog",
+        "ms": 4.5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 19888.799999998882,
+        "kind": "catalog",
+        "ms": 4.299999998882413,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 20938.900000000373,
+        "kind": "catalog",
+        "ms": 4.400000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 21986.299999998882,
+        "kind": "catalog",
+        "ms": 4.299999998882413,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 23041.799999998882,
+        "kind": "catalog",
+        "ms": 4.099999999627471,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 24094.5,
+        "kind": "catalog",
+        "ms": 5.099999999627471,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 25144.699999999255,
+        "kind": "catalog",
+        "ms": 4.900000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 26192.199999999255,
+        "kind": "catalog",
+        "ms": 4.199999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 27240.400000000373,
+        "kind": "catalog",
+        "ms": 3.800000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 28286.400000000373,
+        "kind": "catalog",
+        "ms": 4.100000001490116,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 29337.900000000373,
+        "kind": "catalog",
+        "ms": 4.5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 30391,
+        "kind": "catalog",
+        "ms": 6.300000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 31445.199999999255,
+        "kind": "catalog",
+        "ms": 5.699999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 32495.900000000373,
+        "kind": "catalog",
+        "ms": 5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 33547.09999999963,
+        "kind": "catalog",
+        "ms": 4.699999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 34598.199999999255,
+        "kind": "catalog",
+        "ms": 4.900000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 35648.59999999963,
+        "kind": "catalog",
+        "ms": 4.199999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 36697,
+        "kind": "catalog",
+        "ms": 4.700000001117587,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 37743.79999999888,
+        "kind": "catalog",
+        "ms": 4.399999998509884,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 38797,
+        "kind": "catalog",
+        "ms": 4.900000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 39849.699999999255,
+        "kind": "catalog",
+        "ms": 4.199999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 40901.59999999963,
+        "kind": "catalog",
+        "ms": 4.199999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 41950.90000000037,
+        "kind": "catalog",
+        "ms": 4.300000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 42996.40000000037,
+        "kind": "catalog",
+        "ms": 4.300000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 44051.09999999963,
+        "kind": "catalog",
+        "ms": 4.5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 45103.79999999888,
+        "kind": "catalog",
+        "ms": 5.5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 46153.59999999963,
+        "kind": "catalog",
+        "ms": 4.599999999627471,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 47204.699999999255,
+        "kind": "catalog",
+        "ms": 5.199999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 48256.79999999888,
+        "kind": "catalog",
+        "ms": 4.599999999627471,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 49306.29999999888,
+        "kind": "catalog",
+        "ms": 4.199999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 50356.40000000037,
+        "kind": "catalog",
+        "ms": 4.100000001490116,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 51404.5,
+        "kind": "catalog",
+        "ms": 4.099999999627471,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 52450.5,
+        "kind": "catalog",
+        "ms": 5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 53487.79999999888,
+        "kind": "catalog",
+        "ms": 4.5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 54537.199999999255,
+        "kind": "catalog",
+        "ms": 4.699999999254942,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 55591.59999999963,
+        "kind": "catalog",
+        "ms": 4.300000000745058,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 56645.5,
+        "kind": "catalog",
+        "ms": 4.5,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 57702.5,
+        "kind": "catalog",
+        "ms": 6,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 58749.59999999963,
+        "kind": "catalog",
+        "ms": 5.400000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 59789.59999999963,
+        "kind": "catalog",
+        "ms": 6.099999999627471,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 60848,
+        "kind": "catalog",
+        "ms": 8.400000000372529,
+        "total": 0,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 61459.29999999888,
+        "kind": "dom",
+        "history": true,
+        "rows": 0,
+        "notice": [
+          "history_native_timeout"
+        ],
+        "loading": "true",
+        "empty": false
+      },
+      {
+        "at": 61880.40000000037,
+        "kind": "catalog",
+        "ms": 5.600000001490116,
+        "total": 0,
+        "errors": [
+          "history_native_timeout"
+        ],
+        "refreshing": true
+      },
+      {
+        "at": 62935.59999999963,
+        "kind": "catalog",
+        "ms": 5.900000000372529,
+        "total": 0,
+        "errors": [
+          "history_native_timeout"
+        ],
+        "refreshing": true
+      },
+      {
+        "at": 63986.90000000037,
+        "kind": "catalog",
+        "ms": 4.900000000372529,
+        "total": 0,
+        "errors": [
+          "history_native_timeout"
+        ],
+        "refreshing": true
+      },
+      {
+        "at": 64392,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [
+          "history_native_timeout"
+        ],
+        "loading": "true",
+        "empty": false
+      },
+      {
+        "at": 64442.29999999888,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [],
+        "loading": "false",
+        "empty": false
+      },
+      {
+        "at": 64494.5,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [],
+        "loading": "true",
+        "empty": false
+      },
+      {
+        "at": 64553.5,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [],
+        "loading": "false",
+        "empty": false
+      },
+      {
+        "at": 64990.90000000037,
+        "kind": "catalog",
+        "ms": 5.100000001490116,
+        "total": 2,
+        "errors": [],
+        "refreshing": false
+      }
+    ],
+    "body": "会话历史\n新会话\n筛选\n会话\n已归档\n2 段会话\n今天\nB7 Windows 1000 messages 50000\n13:46\n### Synthetic reply 999 **Scope:** isolated QA data. - Check state - Keep evidence ```ts const round = 999; ``` | Item | Status | | --- | --- | | B7 | Complete\nworkspace\nB7 Windows 1000 messages 10000\n13:46\n### Synthetic reply 999 **Scope:** isolated QA data. - Check state - Keep evidence ```ts const round = 999; ``` | Item | Status | | --- | --- | | B7 | Complete\nworkspace"
+  }
+}

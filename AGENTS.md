@@ -1,5 +1,16 @@
 # YUME 仓库 AI 工作入口
 
+## 2026-10-28 Windows release 附件与日志检查点
+
+B7 仍进行中，当前 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b / 0.4.21。复用经 SHA 核验的隔离 release QA：原生 MP4 选择器、MP3/WAV/文件夹双区域拖放、坏视频回退、发送与重启后历史恢复通过；日志记录、冲突草稿、日报周报、版本采用、复制与导出、计划编辑/暂停、失败后真实重试、关联删除和浅深色固定窗口均有物理证据。构造的最近漏周重启后运行中暂停并取消，服务延迟期过后未归档；不宣称客户端收到了迟到响应。十次普通二次启动通过，活跃工具期间仍待验。本轮无产品源码修改，835 项原有文件内容保留；正常 release 已校验恢复。
+
+六库完整性检查均 ok，但随后发现宿主快照后新建的侧车，不能将检查称为所有进程停止后；该侧车已按父进程/出生时间/路径核验停止，隔离根和临时端口清理完成。详见 [本轮证据](docs/performance-evidence/b7-windows-release-acceptance-20261028/README.md) 与 [结果](docs/performance-evidence/b7-windows-release-acceptance-20261028/summary.json)。继续活跃工具二次启动、Aborted 文案、其余恢复/迁移、PDF 堆/RSS、硬件/生产对照、历史回执恢复新增读取的性能和最终完整门禁；真实模型意图和 Mac 单列。Windows 估计尚需 2–3 轮，出现新阻断为 3–4 轮；未提交、推送、安装或发布。以下历史记录保留当时状态。
+
+
+## Windows 当前工作入口（2026-10-27）
+
+当前入口 E:\Codex\工作伙伴\deskmate-windows-b7，分支 codex/yume-performance-b6，基线 db07e5b；旧 E 主仓与 C 工作树保留。优化 release 已完成 22 MB MP4 正文真实拖放、完整 30 秒播放、连续进度手势和播放中移除；1/8/20 MiB SHA 回读、64 MiB 媒体解码/清理与非法边界通过。本轮一次完整前端回归 1367 pass / 0 fail / 8 skip、172/172 文件，六库完整性与隔离清理完成，正常 release 恢复。Windows 安全桌面中断后续真实输入：release 原生选择器/其余媒体矩阵及完整工作日志物理表面未完成，不用前轮 debug 或后台 IPC 替代。既有改动保留，本轮无产品源码修改。B7 仍进行中，Windows 仍估 2–3 轮，新增阻断则 3–4 轮；Mac 专有项另计，未提交/推送。 先读 [最新检查点](docs/performance-evidence/b7-windows-release-worklog-20261027/README.md) 与 [Windows 接管入口](docs/performance-windows-handoff.md)。以下 Mac 交接保留来源状态。
+
 ## 性能整改接续（2026-10-27）
 
 下一阶段由 Windows 电脑接管。继续性能整改时，先读 [Windows 接管入口](docs/performance-windows-handoff.md)、[Mac 已完成记录](docs/performance-remediation-handoff.md)、[完整施工计划](docs/performance-remediation-plan.md) 和 [验收待办](docs/verification-backlog.md)。B1–B5 已随 Windows 0.4.21 发布；Mac 分支 `codex/yume-performance-b6` 已完成 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归，历史目录 schema 3、记忆库 schema 4，B7 已完成本机完整自动检查与部分 Mac QA 原生链路，并修复 PDF WebKit 兼容、附件历史标签与导航提示问题；已补媒体/二进制上传、1000 消息 50 Hz 流式与 32 次 PDF 生命周期循环，并修复原生文本 delta 不显示（3069953），当前仍为进行中。从 [B7 最新证据](docs/performance-evidence/b7-macos-20261027/index.html) 接续，Windows 先拉取 `origin/codex/yume-performance-b6` 并建立本机基线，再补启动所有权/WebView2、GUI 审批/SSE/日志与存储链路；Mac 专有 GUI、PDF 堆/RSS 与硬件待验保留。先核对本机分支、未提交改动及远端，保留本机改动，从该分支完整提交链接续，不切回旧 main 丢掉进度。后续实施及时更新这些入口，保留平台待验边界。

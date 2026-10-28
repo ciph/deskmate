@@ -1,0 +1,98 @@
+{
+  "rows": [
+    {
+      "name": "ordinary-1048576",
+      "size": 1048576,
+      "pass": true,
+      "stagedMs": 19.69999999552965,
+      "expectedSha": "4e29ad18ab9f42d7c233500771a39d7c852b200baf328fd00fbbe3fecea1eb56",
+      "actualSha": "4e29ad18ab9f42d7c233500771a39d7c852b200baf328fd00fbbe3fecea1eb56"
+    },
+    {
+      "name": "ordinary-8388608",
+      "size": 8388608,
+      "pass": true,
+      "stagedMs": 114.80000000447035,
+      "expectedSha": "b16bd32b101132fd0102461bc75ea65442c37293ac881ae953486c8ac26a7388",
+      "actualSha": "b16bd32b101132fd0102461bc75ea65442c37293ac881ae953486c8ac26a7388"
+    },
+    {
+      "name": "ordinary-20971520",
+      "size": 20971520,
+      "pass": true,
+      "stagedMs": 307.80000000447035,
+      "expectedSha": "3e872f2c5008f32b024a9cb02112280e7ef9e2f1bb54a417f685dd96537fa504",
+      "actualSha": "3e872f2c5008f32b024a9cb02112280e7ef9e2f1bb54a417f685dd96537fa504"
+    },
+    {
+      "name": "ordinary-over-20MiB",
+      "pass": true,
+      "error": "attachment item exceeds 20 MiB"
+    },
+    {
+      "name": "empty",
+      "pass": true,
+      "error": "attachment data must not be empty"
+    },
+    {
+      "name": "size-mismatch",
+      "pass": true,
+      "error": "attachment size does not match data"
+    },
+    {
+      "name": "spoof-image",
+      "pass": true,
+      "error": "attachment image signature does not match mime"
+    },
+    {
+      "name": "json-array-body",
+      "pass": true,
+      "error": "upload_binary_body_required"
+    },
+    {
+      "name": "aggregate-over-20MiB",
+      "pass": true,
+      "error": "attachment session exceeds 20 MiB"
+    },
+    {
+      "name": "media-over-64MiB-host",
+      "pass": true,
+      "error": "resource_upload_size_limit"
+    },
+    {
+      "name": "media-mime-mismatch",
+      "pass": true,
+      "error": "resource_upload_unsupported"
+    }
+  ],
+  "transport": [
+    {
+      "command": "stage_chat_attachment_binary",
+      "isArrayBuffer": true,
+      "size": 1048576
+    },
+    {
+      "command": "stage_chat_attachment_binary",
+      "isArrayBuffer": true,
+      "size": 8388608
+    },
+    {
+      "command": "stage_chat_attachment_binary",
+      "isArrayBuffer": true,
+      "size": 20971520
+    }
+  ],
+  "media": {
+    "id": "1a07c54c-63fc-423d-af9a-97a057af5006",
+    "name": "B7-64MiB.wav",
+    "kind": "audio",
+    "mime": "audio/wav",
+    "size": 67108864,
+    "previewUrl": "http://chat-resource.localhost/1a07c54c-63fc-423d-af9a-97a057af5006",
+    "stagedMs": 1078.2999999970198,
+    "sha256": "ba1ff6174a3be9a7a478522f45284706defa187636f374113963b71ef829dad5"
+  },
+  "started": "2026-10-27T11:34:36.922Z",
+  "finished": "2026-10-27T11:34:42.015Z",
+  "pass": true
+}

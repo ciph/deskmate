@@ -1,0 +1,120 @@
+{
+  "existingFiles": [
+    {
+      "path": "AGENTS.md",
+      "before": "8720210c55811ed4c8ef73e84c571dc8a7afd6b2ab5807dab99e014e61c7fd07",
+      "after": "93c1b5be90eb260d624bc8c1362549b24bf0b69f6f07a1333032c3c0b413de3f",
+      "unchanged": false
+    },
+    {
+      "path": "docs/migrations/opencode-native/unified-history-contract.md",
+      "before": "e762b10fb571861074c32406ebfd42fd542e13c1850ed716dceec68bfa2295bf",
+      "after": "e762b10fb571861074c32406ebfd42fd542e13c1850ed716dceec68bfa2295bf",
+      "unchanged": true
+    },
+    {
+      "path": "docs/performance-evidence/README.md",
+      "before": "726f5e40f1efe6b64a918af1cba96e391a14f1921e7e612dc322f4e4b152ecf7",
+      "after": "c4b07ef82b0b4deb15693aed6081351d53c7e63a0215817d1a874a4b75289f7d",
+      "unchanged": false
+    },
+    {
+      "path": "docs/performance-remediation-plan.md",
+      "before": "dee6c765f37be070d2017e9f082276824a671287c96ee61bb011ed1f1dbb1449",
+      "after": "f0f76b28931d5bdb3d6a77d691ce65a7997a9fd9f1285e127c0dae3866f7160a",
+      "unchanged": false
+    },
+    {
+      "path": "docs/performance-windows-handoff.md",
+      "before": "4cd698af73d11852e78adae49f432c7b3a85af707180df9ccf44b103f9f89ef3",
+      "after": "20f9fb15f55b279df8d18e31e5bd8feb3809d2621388d05cd14c4ef70f506697",
+      "unchanged": false
+    },
+    {
+      "path": "docs/verification-backlog.md",
+      "before": "4b60272aae425ca16901a374ac7241887e1eb6149290a44821191b968cc9bad7",
+      "after": "d41ebc77e4f20af407b8155fd8a1ea1c3f85aa93214de13b9e8b854e2f936fb9",
+      "unchanged": false
+    },
+    {
+      "path": "src-tauri/src/history/catalog_query.rs",
+      "before": "d8b8c4ed47aebaca2a55784cb3825ecf3e5e8cc7b02f0d4dab1df42972883224",
+      "after": "d8b8c4ed47aebaca2a55784cb3825ecf3e5e8cc7b02f0d4dab1df42972883224",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/catalog_sql.rs",
+      "before": "ca75448327d1d7987116a7af1dc599c745c0190d504995c16fc09c241bd81478",
+      "after": "ca75448327d1d7987116a7af1dc599c745c0190d504995c16fc09c241bd81478",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/commands.rs",
+      "before": "d2d7590827a530fc71b357ad484aabf476e7cfcf435aca9e7f8034a3ce521493",
+      "after": "d2d7590827a530fc71b357ad484aabf476e7cfcf435aca9e7f8034a3ce521493",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/maintenance.rs",
+      "before": "629756717a342dc66cbb59629254359de6cd998f7506bb092dc5477392697128",
+      "after": "629756717a342dc66cbb59629254359de6cd998f7506bb092dc5477392697128",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/native_api.rs",
+      "before": "72ab596b100ae0cb4a3dca9ff7cd5b49fb7aa6a071a2b257042c856604490ea3",
+      "after": "72ab596b100ae0cb4a3dca9ff7cd5b49fb7aa6a071a2b257042c856604490ea3",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/native_api_tests.rs",
+      "before": "847941feaae0dd0b69e1c3848ea96166d003887d119f35ee6e978badd1e7cf7e",
+      "after": "847941feaae0dd0b69e1c3848ea96166d003887d119f35ee6e978badd1e7cf7e",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/ChatApp.tsx",
+      "before": "d1a6e73215fd152c5d26d44907d05ca373d18fd3c6ef2e7c34e807eea1c84d23",
+      "after": "b93001eefd85804c8956f216ea648ed4f098f6fb39c5ef70075d457d012f6efa",
+      "unchanged": false
+    },
+    {
+      "path": "src/chat/HistoryOrganizer.test.tsx",
+      "before": "ae2f82b462938f61a32748427eced4bafa4ad80398962560b5ba021f017f00f8",
+      "after": "ae2f82b462938f61a32748427eced4bafa4ad80398962560b5ba021f017f00f8",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/HistoryOrganizer.tsx",
+      "before": "df1f42b2fa37912a5ccb59f75746891e5b7dd7c2b8dc8dc94efa6c3021d9c7ba",
+      "after": "df1f42b2fa37912a5ccb59f75746891e5b7dd7c2b8dc8dc94efa6c3021d9c7ba",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/chatFixedReply.test.tsx",
+      "before": "a6d20230599d29683e5dc95ed6f3b866e82e2c1a254aea6e9bf82c7c8c3fa811",
+      "after": "81f2618a2f84312a94f45e9416ed1e5499a67343c4578b2566e88ede958677a5",
+      "unchanged": false
+    },
+    {
+      "path": "src/chat/sharedConversation.test.ts",
+      "before": "bf53f9c334ae26f04a98a0c12eba78308f070500c0842f7d72928e09b361048a",
+      "after": "bf53f9c334ae26f04a98a0c12eba78308f070500c0842f7d72928e09b361048a",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/sharedConversation.ts",
+      "before": "fcf27dd6851c697215cdd0d0064884fe97fcb39608e77243997564c2eddae2cb",
+      "after": "fcf27dd6851c697215cdd0d0064884fe97fcb39608e77243997564c2eddae2cb",
+      "unchanged": true
+    },
+    {
+      "path": "src/lib/unifiedHistory.ts",
+      "before": "b68525db4221c6d982d10de9db683d853037d1553e926fd69b3127b46dfe63a7",
+      "after": "b68525db4221c6d982d10de9db683d853037d1553e926fd69b3127b46dfe63a7",
+      "unchanged": true
+    }
+  ],
+  "oldChangesPatchSha256": "0f7994f045e7e5e3e1337118eeb655cfe5b0ac19354a0005ab062298df56dee0",
+  "note": "Existing changes retained; this turn changes ChatApp textarea locking, adds one send-focus regression and updates the native resource lock assertion, plus current handoff documents."
+}

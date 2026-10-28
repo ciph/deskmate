@@ -1,0 +1,81 @@
+{
+  "time": "2026-10-27T14:17:25.5867570+08:00",
+  "roots": [
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027d",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027d",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027d",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7cold20261027d",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027f",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027f",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027f",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7cold20261027f",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027g",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027g",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7cold20261027g",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027h",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027h",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027h",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7cold20261027h",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    }
+  ],
+  "listeners": [],
+  "portsClosed": true,
+  "providerPid": 99092,
+  "providerProcessGone": true,
+  "providerStop": "Ctrl-C to owned PTY session; Windows exit 1",
+  "noProductionIdentityRun": true
+}

@@ -1,0 +1,108 @@
+{
+  "items": [
+    {
+      "key": "native:16:managed-local-v196:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7gui20261027a/workspace27:ses_winb7focus1000120261027",
+      "identity": {
+        "kind": "native",
+        "sidecarId": "managed-local-v1",
+        "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7gui20261027a/workspace",
+        "sessionId": "ses_winb7focus1000120261027"
+      },
+      "title": "B7 物理验收 保留附件",
+      "userTitle": "B7 物理验收 保留附件",
+      "source": "workbench",
+      "created": 1793086114189,
+      "updated": 1793086625685,
+      "pinned": true,
+      "archived": false,
+      "availability": "available",
+      "ownership": "unowned",
+      "runtime": "idle",
+      "tombstone": null,
+      "hasRecords": true,
+      "displayTitle": "B7 物理验收 保留附件",
+      "capabilities": {
+        "open": true,
+        "openWorkbench": true,
+        "send": true,
+        "rename": true,
+        "pin": true,
+        "archive": true,
+        "delete": true,
+        "readOnlyReason": null
+      }
+    },
+    {
+      "key": "native:16:managed-local-v196:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7gui20261027a/workspace27:ses_winb7focus5000020261027",
+      "identity": {
+        "kind": "native",
+        "sidecarId": "managed-local-v1",
+        "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7gui20261027a/workspace",
+        "sessionId": "ses_winb7focus5000020261027"
+      },
+      "title": "B7 Windows 1000 messages 50000",
+      "userTitle": null,
+      "source": "workbench",
+      "created": 1793084479760,
+      "updated": 1793086134955,
+      "pinned": false,
+      "archived": false,
+      "availability": "available",
+      "ownership": "unowned",
+      "runtime": "idle",
+      "tombstone": null,
+      "hasRecords": true,
+      "displayTitle": "B7 Windows 1000 messages 50000",
+      "capabilities": {
+        "open": true,
+        "openWorkbench": true,
+        "send": true,
+        "rename": true,
+        "pin": true,
+        "archive": true,
+        "delete": true,
+        "readOnlyReason": null
+      }
+    },
+    {
+      "key": "native:16:managed-local-v196:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7gui20261027a/workspace27:ses_winb7focus1000020261027",
+      "identity": {
+        "kind": "native",
+        "sidecarId": "managed-local-v1",
+        "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7gui20261027a/workspace",
+        "sessionId": "ses_winb7focus1000020261027"
+      },
+      "title": "B7 Windows 1000 messages 10000",
+      "userTitle": null,
+      "source": "workbench",
+      "created": 1793084477845,
+      "updated": 1793085856321,
+      "pinned": false,
+      "archived": false,
+      "availability": "available",
+      "ownership": "unowned",
+      "runtime": "idle",
+      "tombstone": null,
+      "hasRecords": true,
+      "displayTitle": "B7 Windows 1000 messages 10000",
+      "capabilities": {
+        "open": true,
+        "openWorkbench": true,
+        "send": true,
+        "rename": true,
+        "pin": true,
+        "archive": true,
+        "delete": true,
+        "readOnlyReason": null
+      }
+    }
+  ],
+  "total": 3,
+  "hasMore": false,
+  "directories": [
+    "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7gui20261027a/workspace"
+  ],
+  "offline": false,
+  "errors": [],
+  "refreshing": false
+}

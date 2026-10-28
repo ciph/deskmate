@@ -115,7 +115,8 @@ describe("native audio video and folder integration", () => {
     fireEvent.click(send);
     await waitFor(() => expect(invoke.mock.calls.filter(([command]) => command === "prepare_chat_resources")).toHaveLength(1));
     expect(send.disabled).toBe(true);
-    expect(input.disabled).toBe(true);
+    expect(input.readOnly).toBe(true);
+    expect(input.disabled).toBe(false);
     for (const name of ["附件", "移除 voice.mp3"]) {
       expect((screen.getByRole("button", { name }) as HTMLButtonElement).disabled).toBe(true);
     }

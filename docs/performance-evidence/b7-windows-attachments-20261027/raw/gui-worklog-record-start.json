@@ -1,0 +1,13 @@
+{
+  "text": "小著\n在的,说吧\n跟小著说点什么吧 (｡•̀ᴗ-)✧\n文件夹\n⌄\nb7-local\n⌄\n发送",
+  "focus": true,
+  "active": "<body>\n    <div id=\"root\"><div class=\"chat-root\" data-theme=\"dark\"><header class=\"chat-header\" data-tauri-drag-region=\"\"><span class=\"chat-title\">小著</span><span class=\"chat-status chat-status-ready\">在的,说吧</span><button class=\"chat-iconbtn\" aria-label=\"在工作台打开\" title=\"在工作台打开\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" fill=\"currentColor\" viewBox=\"0 0 256 256\" class=\"app-icon app-icon-18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M104,40H56A16,16,0,0,0,40,56v48a16,16,0,0,0,1",
+  "inputs": [
+    {
+      "tag": "TEXTAREA",
+      "placeholder": "输入消息,Enter 发送",
+      "disabled": false,
+      "value": ""
+    }
+  ]
+}

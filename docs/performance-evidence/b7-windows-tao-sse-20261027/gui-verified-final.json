@@ -1,0 +1,31 @@
+{
+  "text": "YUME\n设置\n通用\nAI\n工具权限\n小组件\n快捷键\n桌宠\n记忆\n关于\nAI 供应商\n添加供应商\nWindows B7 Local\nWindows B7 Local\n当前使用\n删除\n名称\nBase URL\n模型 ID（可选）\nAPI Key\n\n自动列表不保证逐个模型有调用权限。可填写模型 ID（逗号分隔）逐个测试；每次测试可能产生少量费用。\n\n验证中…\n模型\n默认\nAI 用量 · Windows B7 Local\n刷新\n\n暂时无法读取用量\n\nv0.4.21",
+  "focus": true,
+  "active": "<body>\n    <div id=\"root\"><div class=\"set-root\" data-theme=\"dark\"><header class=\"set-titlebar\" data-tauri-drag-region=\"\"><div class=\"set-title-cluster\"><span class=\"set-brand-badge\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" viewBox=\"0 0 256 256\" class=\"app-icon app-icon-16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M212,80a28,28,0,1,0,28,28A28,28,0,0,0,212,80Zm0,40a12,12,0,1,1,12-12A12,12,0,0,1,212,120ZM72,108a28,28,0,1,0-28,28A28,28,0,0,0,72,108ZM44,",
+  "inputs": [
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": true,
+      "value": "Windows B7 Local"
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": true,
+      "value": "http://127.0.0.1:53816/v1"
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": true,
+      "value": "model-a"
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": true,
+      "value": "[redacted]"
+    }
+  ]
+}

@@ -24,6 +24,14 @@ pub(crate) fn authorize_history_window(label: &str) -> Result<(), NativeApiError
 }
 
 impl NativeHistoryClient {
+    /// Global health precedes project bootstrap (including local plugin dependencies).
+    pub(crate) fn wait_for_directory(&self, directory: &str, budget: Duration) -> Result<(), NativeApiError> {
+        let _: HashMap<String, NativeStatus> = decode(
+            self.request("GET", directory, "/session/status")?.timeout(budget).call(),
+        )?;
+        Ok(())
+    }
+
     /// Presence of any native message preserves the session, including file-only,
     /// tool-only, or a user message that has not received an assistant response.
     pub(crate) fn has_messages(&self, directory: &str, id: &str) -> Result<bool, NativeApiError> {

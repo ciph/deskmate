@@ -1,0 +1,3507 @@
+{
+  "initialRows": 1002,
+  "stableOldNodes": 1002,
+  "trace": [
+    {
+      "at": 1.1000000014901161,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 109.20000000298023,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 217.10000000149012,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 324.20000000298023,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 433.30000000074506,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 540,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 647.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 756.8000000007451,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 864.8000000007451,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 974.1000000014901,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1081.7000000029802,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1190.2000000029802,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1295.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1403.6000000014901,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1510.4000000022352,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1617.9000000022352,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1724.800000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1832.4000000022352,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 1940,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2047.6000000014901,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2154.800000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2262.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2368.60000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2475.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2582.900000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2689.800000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2798.10000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 2904.10000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3012.60000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3120.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3228.7000000029802,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3337.800000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3443.300000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3548.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3657.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3764.400000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3872.900000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 3980.900000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4088.10000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4196.10000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4304,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4411.800000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4521.10000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4628.900000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4735.20000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4843.60000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 4951.10000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5061,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5169.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5278.60000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5386.60000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5493.60000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5601,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5709.300000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5817.400000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 5927.10000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6034.20000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6141.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6249,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6354.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6461.400000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6569.70000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6676.70000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6784.900000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 6890.300000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7001.70000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7108.20000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7215.800000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7323.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7431.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7537.70000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7644.20000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7752.400000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7861.300000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 7970.400000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8078.800000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8187.300000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8293.800000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8401.900000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8509.5,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8616.60000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8722.70000000298,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8831.900000002235,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 8939.60000000149,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 9047.300000000745,
+      "rows": 1002,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7 physical draft 中文",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 9959
+    },
+    {
+      "at": 9183.300000000745,
+      "rows": 1003,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 9959
+    },
+    {
+      "at": 9287.60000000149,
+      "rows": 1003,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 9959
+    },
+    {
+      "at": 9404.70000000298,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 94
+    },
+    {
+      "at": 9528.20000000298,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 694
+    },
+    {
+      "at": 9643.60000000149,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 1193
+    },
+    {
+      "at": 9746.400000002235,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 1794
+    },
+    {
+      "at": 9849,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 2394
+    },
+    {
+      "at": 9955.20000000298,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 2794
+    },
+    {
+      "at": 10072.60000000149,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 3394
+    },
+    {
+      "at": 10176.20000000298,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 3894
+    },
+    {
+      "at": 10292.300000000745,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 4394
+    },
+    {
+      "at": 10398.800000000745,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 4894
+    },
+    {
+      "at": 10506.300000000745,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 5494
+    },
+    {
+      "at": 10608.400000002235,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 5993
+    },
+    {
+      "at": 10720.800000000745,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 6694
+    },
+    {
+      "at": 10825.20000000298,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 6993
+    },
+    {
+      "at": 10964.5,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7_CO",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 7694
+    },
+    {
+      "at": 11070.20000000298,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 8393
+    },
+    {
+      "at": 11174.60000000149,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 8994
+    },
+    {
+      "at": 11278.5,
+      "rows": 1004,
+      "sameInput": true,
+      "focus": true,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 9394
+    },
+    {
+      "at": 11383.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 12
+    },
+    {
+      "at": 11491,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 11598.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 11704.60000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 11811.60000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 11919.10000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12027.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12134.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12240.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12349.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12458.60000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12566.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12674.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12783,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12891.900000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 12999,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13106.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13213.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13323.900000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13432.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13539.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13646.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13754.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13862.60000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 13972.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14078.60000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14184.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14293.60000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14401.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14509.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14618.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14727.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14837.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 14945.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15052.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15159.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15267.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15376.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15482.900000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15589.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15699.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15808.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 15916.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16026.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16133.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16242.900000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16351.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16460.900000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16569.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16676.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16785.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 16894.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17000.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17109.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17217.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17324.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17433,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17542.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17651.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17759.10000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17867,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 17975.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18082.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18190,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18298.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18405.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18513.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18622.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18731.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18839.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 18948.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19057.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19166,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19274.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19379.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19488.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19596.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19704.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19812.10000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 19919.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20028.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20136.60000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20245.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20354.70000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20462.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20570.800000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20680,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20789.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 20897.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21005.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21111.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21219.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21327.10000000149,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21435.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21542,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21650.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21758.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21866.5,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 21974.300000000745,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 22080.400000002235,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 22188.20000000298,
+      "rows": 1005,
+      "sameInput": true,
+      "focus": false,
+      "draft": "B7_CONTINUE 中文草稿",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 12
+    },
+    {
+      "at": 22293.300000000745,
+      "rows": 1006,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 12
+    },
+    {
+      "at": 22402.20000000298,
+      "rows": 1006,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 12
+    },
+    {
+      "at": 22507.10000000149,
+      "rows": 1006,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 12
+    },
+    {
+      "at": 22612.300000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": true,
+      "stopVisible": true,
+      "tail": 17
+    },
+    {
+      "at": 22723.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 22830.300000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 22938.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23048.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23155.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23264.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23373.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23481.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23590.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23699.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23807.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 23915.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24025.300000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24130.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24238.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24346.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24455.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24563.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24671.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24780,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24887,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 24996.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25104.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25213.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25323.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25432.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25541,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25648.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25754.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25863.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 25973.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26081.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26189.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26295.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26402.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26511.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26620.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26727.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26834.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 26942.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27052.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27156.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27270.300000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27379,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27486.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27595.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27702.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27810.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 27918.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28027.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28137.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28246.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28355.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28463.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28573.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28681.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28791.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 28897.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29006.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29115.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29224.300000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29332.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29442,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29549.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29659,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29766.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29874.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 29982.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30090.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30198.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30305,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30414.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30520.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30628.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30737,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30845.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 30951.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31060.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31168.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31276.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31383.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31493.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31600.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31708.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31816,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 31924.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32033.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32143.20000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32250.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32357.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32465.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32574.300000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32683.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32791.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 32900.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33009.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33118.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33225.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33333.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33441.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33549.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33657.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33767.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33878,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 33987.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34095.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34203,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34311.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34418.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34527.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34634.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34742,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34849.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 34958.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35067.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35176.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35286,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35394.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35502.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35610.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35720,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35829,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 35938.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36046,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36153.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36259.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36366.70000000298,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36476,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36584.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36694.400000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36802.300000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 36910.300000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 37018.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 37127,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 37236.10000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 37344.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 37452.900000002235,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 37559.60000000149,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 37666.800000000745,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    },
+    {
+      "at": 37775.5,
+      "rows": 1007,
+      "sameInput": true,
+      "focus": true,
+      "draft": "",
+      "stop": false,
+      "stopVisible": false,
+      "tail": 17
+    }
+  ],
+  "finalText": "B7_LOCAL_REPLY_OK"
+}

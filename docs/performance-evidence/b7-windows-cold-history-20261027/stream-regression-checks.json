@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "initialMessages": 1000,
+  "preservedOldNodes": 1000,
+  "focusAndDraftPreserved": true,
+  "composerIdentityPreserved": true,
+  "stopClicked": true,
+  "normal": {
+    "messages": 1002,
+    "characters": 10000,
+    "sha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1",
+    "expectedSha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1"
+  },
+  "continuedAfterStop": {
+    "messages": 1004,
+    "reply": "B7_LOCAL_REPLY_OK"
+  },
+  "provider": [
+    {
+      "id": 0,
+      "at": "2026-10-27T06:13:29.694Z",
+      "size": 10000,
+      "plannedHz": 50,
+      "plannedChunks": 500,
+      "emitted": 500,
+      "aborted": false,
+      "done": true,
+      "expectedChars": 10000,
+      "expectedSha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1"
+    },
+    {
+      "id": 1,
+      "at": "2026-10-27T06:13:42.189Z",
+      "size": 50000,
+      "plannedHz": 50,
+      "plannedChunks": 500,
+      "emitted": 153,
+      "aborted": true,
+      "done": false,
+      "expectedChars": 50000,
+      "expectedSha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+    },
+    {
+      "id": 2,
+      "at": "2026-10-27T06:15:08.194Z",
+      "size": 0,
+      "plannedHz": 50,
+      "plannedChunks": 1,
+      "emitted": 1,
+      "aborted": false,
+      "done": true,
+      "expectedChars": 17,
+      "expectedSha256": "df4e678db4ca9340e1b7be02ac789bafea0f9158cee9999e3b36adbb264dadd4"
+    }
+  ]
+}

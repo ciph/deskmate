@@ -83,7 +83,7 @@ import { useAgentRun } from "./useAgentRun";
 import { useAgentHistoryView } from "./useAgentHistoryView";
 import { HistoryOrganizer } from "./HistoryOrganizer";
 import { catalogAccess, catalogLoad, saveLocalMessages, type UnifiedHistoryRow } from "../lib/unifiedHistory";
-import { validateSharedConversation, loadSharedConversation, conversationReadOnlyReason } from "./sharedConversation";
+import { validateSharedConversation, loadSharedConversation, conversationReadOnlyReason, canControlRunningReply } from "./sharedConversation";
 import { useHistoryOrganizerRequest } from "./useHistoryOrganizerRequest";
 import { toOpenCodeToolPart } from "./toolPart";
 import { containsProviderApiKey } from "./providerKeyGuard";
@@ -195,6 +195,9 @@ export default function ChatApp() {
   const composerAnchor = useRef<HTMLElement>(null);
   const folderLockedRef = useRef(true);
   const catalogEntryRef = useRef<UnifiedHistoryRow | null>(null);
+  const catalogRefreshSequence = useRef(0);
+  const replyRequestRef = useRef<{ readonly requestId: string | null; readonly catalogKey?: string } | null>(null);
+  const settlingReplyKeyRef = useRef<string | undefined>(undefined);
   const viewGenerationRef = useRef(0);
   const localReplySnapshotRef = useRef(false);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -327,19 +330,21 @@ export default function ChatApp() {
   } = useAgentHistoryView(agent.projection.active?.sessionId ?? null);
   const canContinueAgentHistory = agentHistoryId !== null && agentHistoryArchive?.agentDetails?.status !== "active"
     && catalogEntry?.ownership === "agent" && !catalogEntry.archived && catalogEntry.availability === "available";
-  const readOnlyHistory = catalogEntry !== null && !catalogEntry.capabilities.send && !canContinueAgentHistory;
+  const controlsCurrentReply = canControlRunningReply(catalogEntry, status === "busy" ? replyRequestRef.current?.catalogKey ?? settlingReplyKeyRef.current : undefined);
+  const readOnlyHistory = catalogEntry !== null && !catalogEntry.capabilities.send && !canContinueAgentHistory && !controlsCurrentReply;
   const refreshSelectedConversation = useCallback(async (key: string) => {
     const displayed = catalogEntryRef.current;
     const generation = viewGenerationRef.current;
     if (!displayed || displayed.key !== key) return;
+    const sequence = ++catalogRefreshSequence.current;
     try {
       const entry = await catalogAccess(key);
-      if (generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key) return;
+      if (generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key || sequence !== catalogRefreshSequence.current) return;
       if (entry.key !== key || JSON.stringify(entry.identity) !== JSON.stringify(displayed.identity)) throw new Error("history identity changed");
       catalogEntryRef.current = entry;
       setCatalogEntry(entry);
     } catch (cause) {
-      if (generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key) return;
+      if (generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key || sequence !== catalogRefreshSequence.current) return;
       const unavailable: UnifiedHistoryRow = { ...displayed, availability: "unavailable", runtime: "unknown",
         capabilities: { ...displayed.capabilities, send: false, readOnlyReason: "native_unavailable" } };
       catalogEntryRef.current = unavailable;
@@ -382,7 +387,6 @@ export default function ChatApp() {
   /** mirror of `messages` for persisting history outside render. */
   const messagesRef = useRef<ChatMessage[]>([]);
   const fixedReplySequenceRef = useRef(0);
-  const replyRequestRef = useRef<{ readonly requestId: string | null } | null>(null);
   const messageParentsRef = useRef(new Map<string, string>());
   const [streamText] = useState(() => createStreamTextBuffer((updates) => {
     setMessages((previous) => {
@@ -447,6 +451,7 @@ export default function ChatApp() {
     streamText.flush();
     streamText.reset();
     replyRequestRef.current = null;
+    settlingReplyKeyRef.current = undefined;
   };
 
   const updateAssistantTool = (messageID: string, activity: ToolActivity) => {
@@ -472,10 +477,12 @@ export default function ChatApp() {
     );
   };
 
-  const completeReplyPresentation = () => {
+  const completeReplyPresentation = async () => {
+    const generation = viewGenerationRef.current;
+    const request = replyRequestRef.current;
     streamText.flush();
+    streamText.reset();
     setIsPersonaTyping(false);
-    setStatus("ready");
     setMessages((prev) =>
       prev.map((message) => {
         if (!isTextChatMessage(message) || !message.activity) return message;
@@ -483,6 +490,12 @@ export default function ChatApp() {
         return activity === message.activity ? message : { ...message, activity };
       }),
     );
+    // Refresh the cached running capability before removing the local control exception.
+    if (request?.catalogKey) await refreshSelectedConversation(request.catalogKey);
+    if (generation === viewGenerationRef.current && request === replyRequestRef.current) {
+      if (request) replyRequestRef.current = { requestId: request.requestId };
+      setStatus("ready");
+    }
   };
 
   const waitForFixedReplyStart = async (sequence: number): Promise<boolean> => {
@@ -503,7 +516,7 @@ export default function ChatApp() {
     };
   }, [petActivity, streamText]);
 
-  const resetSession = useCallback(async (preserveComposer = false): Promise<boolean> => {
+  const resetSession = useCallback(async (preserveComposer = false, preserveView = false): Promise<boolean> => {
     streamText.flush();
     streamText.reset();
     const generation = ++viewGenerationRef.current;
@@ -558,7 +571,7 @@ export default function ChatApp() {
     messagePersonasRef.current.clear();
     setMessages([]);
     if (!preserveComposer) setInput("");
-    setView("chat");
+    if (!preserveView) setView("chat");
     setStatus("ready");
     return true;
   }, [cleanupAttachmentSession, resetAttachmentSession, petActivity, streamText]);
@@ -631,7 +644,8 @@ export default function ChatApp() {
           return;
         }
         stopSettingsListener = settingsListener;
-        await resetSession();
+        // Native project initialization can finish after the user opens history.
+        await resetSession(false, true);
         if (closed) return;
         setStatus("ready");
       } catch (error: unknown) {
@@ -746,15 +760,23 @@ export default function ChatApp() {
         if (typeof props.sessionID === "string") {
           void worklog.recover(props.sessionID);
         }
-        completeReplyPresentation();
+        void completeReplyPresentation();
         break;
       }
       case "session.error": {
         if (replyRequestRef.current === null || (props.sessionID && props.sessionID !== sessionRef.current)) return;
+        const generation = viewGenerationRef.current;
+        const key = replyRequestRef.current.catalogKey;
         petActivity.sessionError(props.sessionID);
         cancelReplyPresentation();
+        settlingReplyKeyRef.current = key;
         setIsPersonaTyping(false);
-        setStatus("ready");
+        void (async () => {
+          if (key) await refreshSelectedConversation(key);
+          if (generation !== viewGenerationRef.current || replyRequestRef.current !== null || settlingReplyKeyRef.current !== key) return;
+          settlingReplyKeyRef.current = undefined;
+          setStatus("ready");
+        })();
         const err = props.error as
           { name?: string; data?: { message?: string } } | undefined;
         const detail = err?.data?.message || err?.name || "unknown error";
@@ -1065,7 +1087,7 @@ export default function ChatApp() {
         return true;
       }
     }
-    replyRequestRef.current = { requestId: userMessageId };
+    replyRequestRef.current = { requestId: userMessageId, catalogKey: displayed.key };
     const matchesSubmission = () => generation === viewGenerationRef.current
       && sessionID === sessionRef.current && replyRequestRef.current?.requestId === userMessageId;
     const isCurrentSubmission = () => matchesSubmission() && petActivity.isCurrent(petScope);
@@ -1264,6 +1286,8 @@ export default function ChatApp() {
     setMemoryNotice(null);
     try {
       await abortSession(sessionID, sessionDirectory());
+      if (sessionRef.current !== sessionID || generation !== viewGenerationRef.current || request !== replyRequestRef.current) return;
+      if (request?.catalogKey) await refreshSelectedConversation(request.catalogKey);
       if (sessionRef.current !== sessionID || generation !== viewGenerationRef.current || request !== replyRequestRef.current) return;
       petActivity.cancel();
       fixedReplySequenceRef.current += 1;
@@ -1638,7 +1662,7 @@ export default function ChatApp() {
                 <textarea
                   className="chat-input"
                   value={input}
-                  disabled={isSubmitting}
+                  readOnly={isSubmitting}
                   placeholder={t.chatInputPlaceholder}
                   rows={2}
                   onChange={(e) => {

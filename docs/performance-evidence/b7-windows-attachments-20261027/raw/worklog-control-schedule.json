@@ -1,0 +1,12 @@
+{
+  "name": "worklog_schedule_report",
+  "input": {
+    "kind": "weekly",
+    "weekdaySet": [
+      5
+    ],
+    "localTime": "17:00",
+    "enabled": true
+  },
+  "time": "2026-10-27T09:41:39.735Z"
+}

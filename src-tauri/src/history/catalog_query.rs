@@ -25,6 +25,7 @@ impl From<CatalogEntry> for CatalogRow {
 pub(crate) struct CatalogPage {
     pub items: Vec<CatalogRow>, pub total: usize, pub has_more: bool,
     pub directories: Vec<String>, pub offline: bool, pub errors: Vec<String>,
+    pub refreshing: bool,
 }
 #[derive(Deserialize)]
 #[serde(tag = "action", rename_all = "snake_case")]
@@ -59,6 +60,6 @@ pub(crate) fn page(mut rows: Vec<CatalogEntry>, query: CatalogQuery, directories
     rows.sort_by(|a,b| b.pinned.cmp(&a.pinned).then(b.updated.cmp(&a.updated)).then(a.key().cmp(&b.key())));
     let total = rows.len(); let offset = query.offset.unwrap_or(0); let limit = query.limit.unwrap_or(50).clamp(1, 200);
     let items: Vec<_> = rows.into_iter().skip(offset).take(limit).map(CatalogRow::from).collect();
-    CatalogPage { has_more: offset.saturating_add(items.len()) < total, items, total, directories, offline, errors }
+    CatalogPage { has_more: offset.saturating_add(items.len()) < total, items, total, directories, offline, errors, refreshing: false }
 }
 

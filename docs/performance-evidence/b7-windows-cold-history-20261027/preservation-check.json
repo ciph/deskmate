@@ -1,0 +1,60 @@
+{
+  "time": "2026-10-27T06:24:20.196Z",
+  "branch": "codex/yume-performance-b6",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "version": "0.4.21",
+  "oldMainStatusMatches": true,
+  "previousDevClean": true,
+  "oldMainVersion": "0.4.3",
+  "previousDevVersion": "0.4.21",
+  "preservedFiles": [
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\sharedConversation.ts",
+      "unchanged": true
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\sharedConversation.test.ts",
+      "unchanged": true
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\bun.lock",
+      "unchanged": true
+    },
+    {
+      "file": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\Cargo.lock",
+      "unchanged": true
+    }
+  ],
+  "priorFrozenEvidence": [
+    {
+      "name": "b7-windows-20261027",
+      "files": 53,
+      "mismatches": [
+        {
+          "file": "README.md",
+          "expected": "d6d3885468ae08ac797a4aacec28074552cf420e56ce8fced11ea9a855259515",
+          "current": "7c09bd8e7cec359fb4abc90202a2fd733c5cfd15b3159c1d95a2d05c4d3cf3e0"
+        }
+      ],
+      "annotations": [
+        {
+          "file": "README.md",
+          "expected": "d6d3885468ae08ac797a4aacec28074552cf420e56ce8fced11ea9a855259515",
+          "current": "7c09bd8e7cec359fb4abc90202a2fd733c5cfd15b3159c1d95a2d05c4d3cf3e0",
+          "withoutPriorStopFocusPointerMatches": true
+        }
+      ],
+      "unchanged": false,
+      "payloadPreserved": true
+    },
+    {
+      "name": "b7-windows-stop-focus-20261027",
+      "files": 128,
+      "mismatches": [],
+      "annotations": [],
+      "unchanged": true,
+      "payloadPreserved": true
+    }
+  ],
+  "note": "Old checkout preservation compares matching porcelain/all status, not pre/post file hashes; neither old checkout was written. Prior Stop/composer changes in ChatApp and chatFixedReply are extended, with real native regression passing. First report README has a prior Stop/focus follow-up pointer absent from its original manifest; removing only that paragraph reproduces the original hash. No old report was rewritten in this task."
+}

@@ -1,0 +1,6 @@
+{
+  "exitCode": 1,
+  "command": "bun run test:frontend",
+  "finishedAt": "2026-10-27T12:48:16.6311842+08:00",
+  "startedAt": "2026-10-27T12:45:37.8088711+08:00"
+}

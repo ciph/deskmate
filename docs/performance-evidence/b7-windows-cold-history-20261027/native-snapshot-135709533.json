@@ -1,0 +1,74 @@
+{
+  "processes": [
+    {
+      "pid": 39792,
+      "created": 134375539562615037,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\yume.exe"
+    },
+    {
+      "pid": 110212,
+      "created": 134375541384761533,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\resources\\opencode\\opencode.exe"
+    },
+    {
+      "pid": 101728,
+      "created": 134375539564903234,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 85052,
+      "created": 134375539566466429,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 106392,
+      "created": 134375539567755162,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 99144,
+      "created": 134375539567774334,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 26752,
+      "created": 134375539568159757,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 104600,
+      "created": 134375539569326287,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 103740,
+      "created": 134375539574692817,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 103320,
+      "created": 134375539575997021,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 34140,
+      "created": 134375541385225070,
+      "executable": "C:\\WINDOWS\\system32\\conhost.exe"
+    }
+  ],
+  "ownership": {
+    "version": 1,
+    "identifier": "com.deskmate.unifiedhistoryqa.winb7cold20261027g",
+    "host": {
+      "pid": 39792,
+      "created": 134375539562615037,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\yume.exe"
+    },
+    "sidecar": {
+      "pid": 110212,
+      "created": 134375541384761533,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\resources\\opencode\\opencode.exe"
+    }
+  },
+  "time": "2026-10-27T13:57:09.5352473+08:00"
+}

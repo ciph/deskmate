@@ -1,0 +1,290 @@
+[
+  {
+    "step": 0,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 0,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":30074,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-0.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 1,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 1,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":33902,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-1.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 2,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 2,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":22042,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-2.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 3,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 3,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":33924,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-3.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 4,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 4,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":22042,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-4.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 5,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 5,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":33902,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-5.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 6,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 6,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":22042,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-6.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 7,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 7,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":33924,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-7.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 8,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 8,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":22042,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-8.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 9,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 9,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":33902,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-9.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 10,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 10,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":22042,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-10.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 11,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 11,
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":33924,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-paint-11.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  }
+]

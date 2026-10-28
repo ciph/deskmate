@@ -1,8 +1,17 @@
 # YUME 性能整改施工方案
 
+## 2026-10-28 Windows release 附件与日志检查点
+
+B7 仍进行中，当前 E:\Codex\工作伙伴\deskmate-windows-b7 / codex/yume-performance-b6 / db07e5b / 0.4.21。复用经 SHA 核验的隔离 release QA：原生 MP4 选择器、MP3/WAV/文件夹双区域拖放、坏视频回退、发送与重启后历史恢复通过；日志记录、冲突草稿、日报周报、版本采用、复制与导出、计划编辑/暂停、失败后真实重试、关联删除和浅深色固定窗口均有物理证据。构造的最近漏周重启后运行中暂停并取消，服务延迟期过后未归档；不宣称客户端收到了迟到响应。十次普通二次启动通过，活跃工具期间仍待验。本轮无产品源码修改，835 项原有文件内容保留；正常 release 已校验恢复。
+
+六库完整性检查均 ok，但随后发现宿主快照后新建的侧车，不能将检查称为所有进程停止后；该侧车已按父进程/出生时间/路径核验停止，隔离根和临时端口清理完成。详见 [本轮证据](performance-evidence/b7-windows-release-acceptance-20261028/README.md) 与 [结果](performance-evidence/b7-windows-release-acceptance-20261028/summary.json)。继续活跃工具二次启动、Aborted 文案、其余恢复/迁移、PDF 堆/RSS、硬件/生产对照、历史回执恢复新增读取的性能和最终完整门禁；真实模型意图和 Mac 单列。Windows 估计尚需 2–3 轮，出现新阻断为 3–4 轮；未提交、推送、安装或发布。以下历史记录保留当时状态。
+
+
+**Windows 当前（2026-10-27）：** 优化 release 已完成 22 MB MP4 正文真实拖放、完整 30 秒播放、连续进度手势和播放中移除；1/8/20 MiB SHA 回读、64 MiB 媒体解码/清理与非法边界通过。本轮一次完整前端回归 1367 pass / 0 fail / 8 skip、172/172 文件，六库完整性与隔离清理完成，正常 release 恢复。Windows 安全桌面中断后续真实输入：release 原生选择器/其余媒体矩阵及完整工作日志物理表面未完成，不用前轮 debug 或后台 IPC 替代。既有改动保留，本轮无产品源码修改。B7 仍进行中，Windows 仍估 2–3 轮，新增阻断则 3–4 轮；Mac 专有项另计，未提交/推送。 见 [最新检查点](performance-evidence/b7-windows-release-worklog-20261027/README.md) 和 [接管入口](performance-windows-handoff.md)。
+
 创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
 
-**当前（2026-10-27）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归通过，历史目录 schema 3、记忆库 schema 4。B7 进行中：最新前端 1359 pass；Rust 本轮未改未重跑，上一轮 957 pass / 23 ignored。新增原生文本 delta 修复、1000 消息 50 Hz 的 10k/50k 流式和 32 次 PDF worker 循环证据。** 接续先读 [最新 B7 结果](performance-evidence/b7-macos-20261027/index.html) 和 [Mac 接续说明](performance-remediation-handoff.md)，用户指定下一阶段由 Windows 接管，按 [Windows 接管入口](performance-windows-handoff.md) 获取完整施工分支、建立本机基线，优先补 Windows 启动所有权/WebView2 与 GUI 审批/SSE/日志链路，再按第 11 节补齐未验项；Mac 专有待验继续保留。不要切回旧 main 重做已有修改。
+**Mac 交接时（2026-10-27）：B1–B5 已进入远端 `main`，Windows v0.4.21 已发布；Mac 分支 `codex/yume-performance-b6` 的 H18a/H18b/H18c 与 M19a/M19b/M19c 代码及自动回归通过，历史目录 schema 3、记忆库 schema 4。B7 进行中：最新前端 1359 pass；Rust 本轮未改未重跑，上一轮 957 pass / 23 ignored。新增原生文本 delta 修复、1000 消息 50 Hz 的 10k/50k 流式和 32 次 PDF worker 循环证据。** 接续先读 [最新 B7 结果](performance-evidence/b7-macos-20261027/index.html) 和 [Mac 接续说明](performance-remediation-handoff.md)，用户指定下一阶段由 Windows 接管，按 [Windows 接管入口](performance-windows-handoff.md) 获取完整施工分支、建立本机基线，优先补 Windows 启动所有权/WebView2 与 GUI 审批/SSE/日志链路，再按第 11 节补齐未验项；Mac 专有待验继续保留。不要切回旧 main 重做已有修改。
 
 源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
 
@@ -335,6 +344,12 @@ QA：冻结时钟覆盖边界、立即到期、远未来、集中到期、关闭
 QA：1k/10k/100k 行固定一批 UPDATE/DELETE 的 FTS 定位不全扫、不随全库线性增长；VACUUM 后 UUID↔rowid 仍一致；重复/冲突/回滚/重开/迁移失败不漏搜不误删。保留 active-only、真正擦除、secure_delete、WAL checkpoint(TRUNCATE)、批量遗忘后的 compact；用已知敏感哨兵检验原表、FTS、来源/关联和可控数据库文件残留，保留现有隐私测试。不得以 external-content FTS 改造悄悄削弱删除保证。
 
 ## 11. B7：验证、退出条件与回退
+
+2026-10-27 Windows 最新接续：冷启动历史误超时及早期 state/视图竞态已修复，最终全新身份和热重启通过；已推进真实多窗口目录/所有权、UIA 搜索，并复测 1000 消息 10k/Stop/续聊。前端 1360 pass / 8 skip、Rust 970 pass / 24 ignored，正常构建通过，QA 清理完成。物理 GUI/视觉、完整故障恢复/迁移、硬件及 Mac 专有范围继续保留。见 [最新证据](performance-evidence/b7-windows-cold-history-20261027/README.md)。以下保留先前原始记录。
+
+2026-10-27 Windows 前次修复：已用真实目录事件与 native 能力复现首次流式 composer 卸载，限定本视图当前回复保留控制并刷新终态能力。新 1000 消息的 10k、50k、Stop/继续、重启后另一首轮 10k 均通过；完整前端 1358 pass / 8 skip，类型/标准生产前端/正常 Windows debug 构建通过。历史删除、native 404、记忆导出/忘记与重启持续性新增通过。详见 [最新证据](performance-evidence/b7-windows-stop-focus-20261027/README.md)。冷启动历史发现仍有超时，GUI、多窗口、迁移、内存/硬件及 Mac 专有范围未关闭；B7 仍进行中。以下首批回写为先前记录，原失败证据保留。
+
+2026-10-27 Windows 首批回写：从 `db07e5b` 在独立 clone 接管，Windows 类型/固定工作台/前端 1353 pass + 8 skip/Rust 966 pass + 24 ignored/生产配置检查及 debug 编译通过。新增真实引擎恢复、QA 启动所有权/孤儿、WebView2 PDF 32 次、50k 长会话/Stop 证据。首次 1000 消息 10k composer/焦点异常未关闭，稳定后的 1002 消息复查不能替代；先复现定位再继续 GUI/存储/硬件。**B7 进行中，V1/V2 未达全部退出条件。** 以 [Windows 本轮方法与边界](performance-evidence/b7-windows-20261027/README.md) 及 [结果](performance-evidence/b7-windows-20261027/summary.json) 为准，下面门槛保持不变。
 
 ### V1｜集成检查与 Windows 原生全链路（中）
 

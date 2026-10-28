@@ -1,0 +1,23 @@
+{
+  "video": [
+    {
+      "Name": "NVIDIA GeForce RTX 5060",
+      "DriverVersion": "32.0.15.7688",
+      "Status": "OK",
+      "CurrentHorizontalResolution": 2560,
+      "CurrentVerticalResolution": 1440
+    },
+    {
+      "Name": "AMD Radeon(TM) Graphics",
+      "DriverVersion": "31.0.24002.92",
+      "Status": "OK",
+      "CurrentHorizontalResolution": null,
+      "CurrentVerticalResolution": null
+    }
+  ],
+  "build": "19045",
+  "sessionId": 1,
+  "time": "2026-10-27T14:45:39.5872854+08:00",
+  "session": " USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME\r\n>chenglingxiao         console             1  Active      none   2026/10/27 9:52\r\n",
+  "os": "Microsoft Windows 10 专业版"
+}

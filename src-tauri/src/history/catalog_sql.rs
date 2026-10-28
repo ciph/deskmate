@@ -64,7 +64,7 @@ fn read_page(connection: &Connection, query: CatalogQuery, errors: Vec<String>) 
             items.push(CatalogRow::from(decode_row(&row.get::<_, String>(0).map_err(db_error)?, &row.get::<_, String>(1).map_err(db_error)?)?));
         }
     }
-    Ok(CatalogPage { has_more: offset.saturating_add(items.len()) < total, items, total, directories, offline, errors })
+    Ok(CatalogPage { has_more: offset.saturating_add(items.len()) < total, items, total, directories, offline, errors, refreshing: false })
 }
 
 #[cfg(test)]

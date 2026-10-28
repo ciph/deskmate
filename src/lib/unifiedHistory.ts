@@ -44,6 +44,7 @@ export interface CatalogQuery {
   readonly limit?: number;
 }
 export interface CatalogPage {
+  readonly refreshing?: boolean;
   readonly items: readonly UnifiedHistoryRow[];
   readonly total: number;
   readonly hasMore: boolean;

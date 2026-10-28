@@ -1,0 +1,22 @@
+[
+  {
+    "path": "scripts/worklog-qa/provider.js",
+    "sha256": "e35b9c69fe8f074331825ea2f3ff3d9fc2f5b2ab06ff7b60333a174ded4bb615"
+  },
+  {
+    "path": "scripts/worklog-qa/provider-models.test.ts",
+    "sha256": "840bd4db65b0eaf91b7669cbe90ec3046713904e7dd0512b08af057e8f2d1866"
+  },
+  {
+    "path": "src/chat/useWorklogChat.ts",
+    "sha256": "2f0fb7c0bd1b290632fc6b7b06a88d5b3b28f096adfd9b20874b8d8ee6145557"
+  },
+  {
+    "path": "src/chat/useWorklogChat.test.tsx",
+    "sha256": "ebb796080138a04336ebb6ca6c6c7d3d00021e51450e8fb889a368fd8f3391a2"
+  },
+  {
+    "path": "src/chat/chatPetActivity.test.tsx",
+    "sha256": "8dd9c3a3da9d62061e55c08d0e188e934ba924ae38be37a17506d58a2f0aeab5"
+  }
+]

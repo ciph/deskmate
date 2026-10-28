@@ -1,0 +1,13 @@
+{
+  "entries": [],
+  "reports": [],
+  "runs": [],
+  "schedules": [],
+  "provider": {
+    "mode": "success",
+    "delayMs": 0,
+    "pendingTool": "worklog_record",
+    "requests": [],
+    "modelRequests": []
+  }
+}

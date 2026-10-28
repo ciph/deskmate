@@ -52,6 +52,7 @@ export function HistoryOrganizer({ onOpen, onClose, onNewChat, onDeleted, onChan
   }), [filters, invalidDates]);
   const state = useHistoryOrganizer(query, copy, onDeleted, onChanged, !invalidDates);
   const items = state.page?.items ?? EMPTY_ROWS;
+  const refreshing = state.loading || state.page?.refreshing === true;
   const previews = useHistoryPreviews(items, results);
   const labels = useMemo(() => projectLabels(items, copy, state.page?.directories), [items, copy, state.page?.directories]);
   const groups = useMemo(() => groupedRows(items, now, copy), [items, now, copy]);
@@ -177,8 +178,8 @@ export function HistoryOrganizer({ onOpen, onClose, onNewChat, onDeleted, onChan
     {state.page?.offline && <p className="history-organizer-warning history-organizer-status" role="status">{copy.offline}</p>}
     {state.error && <div className="history-organizer-error" role="alert">{state.error} <button disabled={state.loading} onClick={() => { void state.refresh(true); }}>{copy.retry}</button></div>}
     {!!state.page?.errors.length && !state.error && <p className="history-organizer-warning history-organizer-status" role="status">{state.page.errors.join(" · ")}</p>}
-    <div ref={results} className="history-organizer-results" aria-busy={state.loading} onScroll={() => setMenuKey(null)}>
-      {state.loading && !state.page && <p className="history-organizer-status" role="status">{copy.loading}</p>}
+    <div ref={results} className="history-organizer-results" aria-busy={refreshing} onScroll={() => setMenuKey(null)}>
+      {refreshing && !items.length && <p className="history-organizer-status" role="status">{copy.loading}</p>}
       {!invalidDates && groups.map(group => <section key={group.name} aria-label={group.name}>
         <h3 className="history-organizer-group-title">{group.name}</h3>
         <ul className="history-organizer-list">{group.rows.map(row => <HistoryOrganizerRow key={row.key} row={row} copy={copy} language={language}
@@ -186,7 +187,7 @@ export function HistoryOrganizer({ onOpen, onClose, onNewChat, onDeleted, onChan
           group={group.name} now={now} busy={state.busyKey !== null} menuOpen={menuKey === row.key} onMenuChange={open => setMenuKey(open ? row.key : null)}
           onOpen={open} onMutate={state.mutate} />)}</ul>
       </section>)}
-      {!state.loading && !invalidDates && !items.length && <div className="history-organizer-empty">
+      {!refreshing && !invalidDates && !items.length && <div className="history-organizer-empty">
         <p>{state.page?.offline ? copy.offlineEmpty : filtered ? copy.noResults : copy.empty}</p>
         {filtered && <button type="button" onClick={clearQuery}>{copy.clearQuery}</button>}
       </div>}

@@ -27,7 +27,7 @@ export function useWorklogChat(sessionId: string | null) {
     if (session !== sessionRef.current) return;
     try {
       const receipt = await verifyWorklogReceipt(operation.requestId);
-      if (session !== sessionRef.current) return;
+      if (session !== sessionRef.current || !receipt) return;
       const run = receipt?.entityKind === "run" ? (await listRuns()).find((item) => item.id === receipt.entityId) : undefined;
       const schedule = receipt?.entityKind === "schedule" ? (await listSchedules()).find((item) => item.id === receipt.entityId) : undefined;
       if (session !== sessionRef.current) return;
@@ -58,7 +58,7 @@ export function useWorklogChat(sessionId: string | null) {
     if (!output) return;
     const { requestId } = output;
     const existing = operationsRef.current.find((item) => item.requestId === requestId);
-    const operation = existing ?? { messageId: part.messageID, requestId, receipt: null, error: output.error, undoable: part.tool === "worklog_record" };
+    const operation = existing ? { ...existing, error: output.error ?? existing.error } : { messageId: part.messageID, requestId, receipt: null, error: output.error, undoable: part.tool === "worklog_record" };
     update(operation);
     if (!output.error) void refresh(operation);
   }, [refresh, update]);
@@ -72,6 +72,10 @@ export function useWorklogChat(sessionId: string | null) {
       if (error instanceof Error) console.warn("Work journal receipt recovery unavailable");
     }
   }, [acceptTool]);
+
+  useEffect(() => {
+    if (sessionId) void recover(sessionId);
+  }, [sessionId, recover]);
 
   const save = useCallback(async (messageId: string, text: string) => {
     const session = sessionRef.current;

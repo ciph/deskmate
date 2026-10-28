@@ -1,0 +1,18 @@
+{
+  "roots": [
+    {
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7taosse20261027a",
+      "deleted": true
+    },
+    {
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7taosse20261027a",
+      "deleted": true
+    }
+  ],
+  "productionIdentityRun": false,
+  "helperProcesses": [],
+  "identity": "com.deskmate.unifiedhistoryqa.winb7taosse20261027a",
+  "time": "2026-10-27T16:48:28.4986524+08:00",
+  "listeners": [],
+  "credentialCleared": true
+}

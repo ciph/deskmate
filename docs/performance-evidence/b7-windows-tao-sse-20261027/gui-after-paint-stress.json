@@ -1,0 +1,13 @@
+{
+  "text": "小著\n在的,说吧\nB7_APPROVAL_ALLOW 请访问合成测试地址\n\nB7_APPROVAL_COMPLETED\n\n文件夹\n⌄\nmodel-a\n⌄\n发送",
+  "focus": true,
+  "active": "<textarea class=\"chat-input\" placeholder=\"输入消息,Enter 发送\" rows=\"2\"></textarea>",
+  "inputs": [
+    {
+      "tag": "TEXTAREA",
+      "placeholder": "输入消息,Enter 发送",
+      "disabled": false,
+      "value": ""
+    }
+  ]
+}

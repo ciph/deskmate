@@ -25,6 +25,32 @@ function parseStatus(text: string): ProviderStatus {
 
 afterAll(() => child.kill());
 
+test("wraps all five worklog tool inputs in both JSON and streaming responses", async () => {
+  const post = (url: string, value: unknown) => new Promise<{ status: number; body: string }>((resolve, reject) => {
+    const payload = JSON.stringify(value);
+    const request = httpRequest(url, { method: "POST", headers: { "content-type": "application/json", "content-length": Buffer.byteLength(payload) } }, response => {
+      const chunks: Buffer[] = [];
+      response.on("data", chunk => chunks.push(chunk));
+      response.on("end", () => resolve({ status: response.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") }));
+    });
+    request.on("error", reject);
+    request.end(payload);
+  });
+  for (const name of ["worklog_record", "worklog_query", "worklog_update", "worklog_generate_report", "worklog_schedule_report"]) {
+    for (const stream of [false, true]) {
+      const input = { mode: "direct", text: "合成工作记录" };
+      const control = await post(receipt.controlUrl, { mode: "success", nextTool: { name, input } });
+      expect(control.status).toBe(200);
+      const response = await post(`${receipt.baseUrl}/chat/completions`, { stream, messages: [], tools: [{ type: "function", function: { name } }] });
+      const raw = response.body;
+      const body = JSON.parse(stream ? raw.split("\n")[0].slice(6) : raw);
+      const call = (stream ? body.choices[0].delta : body.choices[0].message).tool_calls[0];
+      expect(call.function.name).toBe(name);
+      expect(JSON.parse(call.function.arguments)).toEqual({ input });
+    }
+  }
+});
+
 test("records bounded model discovery receipt", async () => {
   const request = (url: string) => new Promise<{ status: number; body: string }>((resolve, reject) => {
     get(url, (response) => { const chunks: Buffer[] = []; response.on("data", (chunk) => chunks.push(chunk)); response.on("end", () => resolve({ status: response.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") })); }).on("error", reject);

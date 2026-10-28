@@ -1,0 +1,211 @@
+{
+  "stage": "recovered",
+  "method": "actual native IPC plus readonly SQLite",
+  "catalog": {
+    "ok": true,
+    "value": {
+      "items": [
+        {
+          "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e83489dffffepPRvAJzPXGkYh9",
+          "identity": {
+            "kind": "native",
+            "sidecarId": "managed-local-v1",
+            "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace",
+            "sessionId": "ses_e83489dffffepPRvAJzPXGkYh9"
+          },
+          "title": "YUME chat",
+          "userTitle": null,
+          "source": "light_chat",
+          "created": 1793093755392,
+          "updated": 1793095039079,
+          "pinned": false,
+          "archived": false,
+          "availability": "available",
+          "ownership": "unowned",
+          "runtime": "idle",
+          "tombstone": null,
+          "hasRecords": true,
+          "displayTitle": "YUME chat",
+          "capabilities": {
+            "open": true,
+            "openWorkbench": true,
+            "send": true,
+            "rename": true,
+            "pin": true,
+            "archive": true,
+            "delete": true,
+            "readOnlyReason": null
+          }
+        },
+        {
+          "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e834410a8ffecPcSVFoQ42mC2V",
+          "identity": {
+            "kind": "native",
+            "sidecarId": "managed-local-v1",
+            "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace",
+            "sessionId": "ses_e834410a8ffecPcSVFoQ42mC2V"
+          },
+          "title": "Work journal report",
+          "userTitle": null,
+          "source": "workbench",
+          "created": 1793094053719,
+          "updated": 1793094053802,
+          "pinned": false,
+          "archived": false,
+          "availability": "available",
+          "ownership": "unowned",
+          "runtime": "idle",
+          "tombstone": null,
+          "hasRecords": true,
+          "displayTitle": "Work journal report",
+          "capabilities": {
+            "open": true,
+            "openWorkbench": true,
+            "send": true,
+            "rename": true,
+            "pin": true,
+            "archive": true,
+            "delete": true,
+            "readOnlyReason": null
+          }
+        },
+        {
+          "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e8352a372ffek1cSJfO4mjYZBY",
+          "identity": {
+            "kind": "native",
+            "sidecarId": "managed-local-v1",
+            "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace",
+            "sessionId": "ses_e8352a372ffek1cSJfO4mjYZBY"
+          },
+          "title": "YUME chat",
+          "userTitle": null,
+          "source": "workbench",
+          "created": 1793093098637,
+          "updated": 1793093343339,
+          "pinned": false,
+          "archived": false,
+          "availability": "available",
+          "ownership": "unowned",
+          "runtime": "idle",
+          "tombstone": null,
+          "hasRecords": true,
+          "displayTitle": "YUME chat",
+          "capabilities": {
+            "open": true,
+            "openWorkbench": true,
+            "send": true,
+            "rename": true,
+            "pin": true,
+            "archive": true,
+            "delete": true,
+            "readOnlyReason": null
+          }
+        }
+      ],
+      "total": 3,
+      "hasMore": false,
+      "directories": [
+        "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace"
+      ],
+      "offline": false,
+      "errors": [],
+      "refreshing": false
+    }
+  },
+  "memory": {
+    "schemaVersion": 1,
+    "appVersion": "0.4.21",
+    "exportedAt": "2026-10-27T10:09:02Z",
+    "memories": [
+      {
+        "id": "b7-native-migration",
+        "scope": "global",
+        "personaId": null,
+        "type": "preference",
+        "memoryKey": null,
+        "content": "B7 原生迁移合成记录 保留中文内容",
+        "status": "active",
+        "confidence": 1,
+        "importance": 3,
+        "sensitivity": "normal",
+        "sourceKind": "explicit",
+        "validFrom": "2026-10-27T00:00:00Z",
+        "expiresAt": null,
+        "createdAt": "2026-10-27T00:00:00Z",
+        "updatedAt": "2026-10-27T00:00:00Z",
+        "revision": 1,
+        "supersedesId": null,
+        "sources": [],
+        "linkedTaskIds": [],
+        "context": null
+      }
+    ],
+    "relationships": []
+  },
+  "history": {
+    "version": {
+      "user_version": 3
+    },
+    "integrity": [
+      {
+        "integrity_check": "ok"
+      }
+    ],
+    "rows": [
+      {
+        "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e832a9970ffer1esDRjsZTavXf",
+        "metadata": "{\"identity\":{\"kind\":\"native\",\"sidecarId\":\"managed-local-v1\",\"directory\":\"c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace\",\"sessionId\":\"ses_e832a9970ffer1esDRjsZTavXf\"},\"title\":\"YUME chat\",\"userTitle\":null,\"source\":\"light_chat\",\"created\":1793095722639,\"updated\":1793095722639,\"pinned\":false,\"archived\":false,\"availability\":\"available\",\"ownership\":\"unowned\",\"runtime\":\"idle\",\"tombstone\":null,\"hasRecords\":false}"
+      },
+      {
+        "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e832a99a7ffe80VFdzAKOYGuhO",
+        "metadata": "{\"identity\":{\"kind\":\"native\",\"sidecarId\":\"managed-local-v1\",\"directory\":\"c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace\",\"sessionId\":\"ses_e832a99a7ffe80VFdzAKOYGuhO\"},\"title\":\"Work journal report\",\"userTitle\":null,\"source\":\"workbench\",\"created\":1793095722584,\"updated\":1793095722584,\"pinned\":false,\"archived\":false,\"availability\":\"available\",\"ownership\":\"unowned\",\"runtime\":\"idle\",\"tombstone\":null,\"hasRecords\":false}"
+      },
+      {
+        "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e832cf8b5ffe6KQ7TwiQhAIJTW",
+        "metadata": "{\"identity\":{\"kind\":\"native\",\"sidecarId\":\"managed-local-v1\",\"directory\":\"c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace\",\"sessionId\":\"ses_e832cf8b5ffe6KQ7TwiQhAIJTW\"},\"title\":\"YUME chat\",\"userTitle\":null,\"source\":\"light_chat\",\"created\":1793095567178,\"updated\":1793095567178,\"pinned\":false,\"archived\":false,\"availability\":\"available\",\"ownership\":\"unowned\",\"runtime\":\"idle\",\"tombstone\":{\"requestedAt\":1793095723174,\"remoteDeleted\":true},\"hasRecords\":false}"
+      },
+      {
+        "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e83372e74ffeYm9NBIxUTHmSnw",
+        "metadata": "{\"identity\":{\"kind\":\"native\",\"sidecarId\":\"managed-local-v1\",\"directory\":\"c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace\",\"sessionId\":\"ses_e83372e74ffeYm9NBIxUTHmSnw\"},\"title\":\"YUME chat\",\"userTitle\":null,\"source\":\"light_chat\",\"created\":1793094898059,\"updated\":1793094898059,\"pinned\":false,\"archived\":false,\"availability\":\"unavailable\",\"ownership\":\"unowned\",\"runtime\":\"unknown\",\"tombstone\":{\"requestedAt\":1793094958001,\"remoteDeleted\":true},\"hasRecords\":false}"
+      },
+      {
+        "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e834410a8ffecPcSVFoQ42mC2V",
+        "metadata": "{\"identity\":{\"kind\":\"native\",\"sidecarId\":\"managed-local-v1\",\"directory\":\"c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace\",\"sessionId\":\"ses_e834410a8ffecPcSVFoQ42mC2V\"},\"title\":\"Work journal report\",\"userTitle\":null,\"source\":\"workbench\",\"created\":1793094053719,\"updated\":1793094053802,\"pinned\":false,\"archived\":false,\"availability\":\"available\",\"ownership\":\"unowned\",\"runtime\":\"idle\",\"tombstone\":null,\"hasRecords\":true}"
+      },
+      {
+        "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e83489dffffepPRvAJzPXGkYh9",
+        "metadata": "{\"identity\":{\"kind\":\"native\",\"sidecarId\":\"managed-local-v1\",\"directory\":\"c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace\",\"sessionId\":\"ses_e83489dffffepPRvAJzPXGkYh9\"},\"title\":\"YUME chat\",\"userTitle\":null,\"source\":\"light_chat\",\"created\":1793093755392,\"updated\":1793095039079,\"pinned\":false,\"archived\":false,\"availability\":\"available\",\"ownership\":\"unowned\",\"runtime\":\"idle\",\"tombstone\":null,\"hasRecords\":true}"
+      },
+      {
+        "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e834e48e5ffejeL2LgOTC5UIoh",
+        "metadata": "{\"identity\":{\"kind\":\"native\",\"sidecarId\":\"managed-local-v1\",\"directory\":\"c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace\",\"sessionId\":\"ses_e834e48e5ffejeL2LgOTC5UIoh\"},\"title\":\"YUME chat\",\"userTitle\":null,\"source\":\"light_chat\",\"created\":1793093383962,\"updated\":1793093383962,\"pinned\":false,\"archived\":false,\"availability\":\"unavailable\",\"ownership\":\"unowned\",\"runtime\":\"unknown\",\"tombstone\":{\"requestedAt\":1793093430526,\"remoteDeleted\":true},\"hasRecords\":false}"
+      },
+      {
+        "key": "native:16:managed-local-v1104:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace30:ses_e8352a372ffek1cSJfO4mjYZBY",
+        "metadata": "{\"identity\":{\"kind\":\"native\",\"sidecarId\":\"managed-local-v1\",\"directory\":\"c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7attachments20261027a/workspace\",\"sessionId\":\"ses_e8352a372ffek1cSJfO4mjYZBY\"},\"title\":\"YUME chat\",\"userTitle\":null,\"source\":\"workbench\",\"created\":1793093098637,\"updated\":1793093343339,\"pinned\":false,\"archived\":false,\"availability\":\"available\",\"ownership\":\"unowned\",\"runtime\":\"idle\",\"tombstone\":null,\"hasRecords\":true}"
+      }
+    ],
+    "projection": [
+      {
+        "name": "entry_projection"
+      }
+    ]
+  },
+  "memoryDb": {
+    "version": {
+      "user_version": 4
+    },
+    "integrity": [
+      {
+        "integrity_check": "ok"
+      }
+    ],
+    "rows": [
+      {
+        "id": "b7-native-migration",
+        "content": "B7 原生迁移合成记录 保留中文内容"
+      }
+    ]
+  },
+  "time": "2026-10-27T10:09:02.267Z"
+}

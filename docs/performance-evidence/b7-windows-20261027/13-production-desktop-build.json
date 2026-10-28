@@ -1,0 +1,10 @@
+{
+  "name": "13-production-desktop-build",
+  "command": "bun run tauri build --debug --no-bundle --config output/b7-qa/production-build.json",
+  "startedAt": "2026-10-27T11:56:34.6876345+08:00",
+  "finishedAt": "2026-10-27T11:57:49.5054075+08:00",
+  "exitCode": 0,
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "log": "E:\\Codex\\工作伙伴\\reports\\yume-b7-windows-20261027\\13-production-desktop-build.log",
+  "binarySha256": "5287A41C8C0B8AA1841EE23C579C86E3892C857D7E5E6CFAC49829C620B1C6D0"
+}

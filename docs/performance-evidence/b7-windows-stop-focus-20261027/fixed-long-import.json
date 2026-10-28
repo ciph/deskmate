@@ -1,0 +1,30 @@
+[
+  {
+    "sessionId": "ses_winb7focus1000020261027",
+    "count": 1000,
+    "exitCode": 0,
+    "ms": 1446.6213,
+    "fixtureSha256": "29b2db3632b67184311438325e0ea4ace2e4428b1635d7f43dd3fd2eeabb5b06"
+  },
+  {
+    "sessionId": "ses_winb7focus5000020261027",
+    "count": 1000,
+    "exitCode": 0,
+    "ms": 1445.3799000000001,
+    "fixtureSha256": "ce261a9f2376b8a52a6178bbecf35c4f725a0348cc3d13ce99118e7c29471dbe"
+  },
+  {
+    "sessionId": "ses_winb7focus3000020261027",
+    "count": 1000,
+    "exitCode": 0,
+    "ms": 1167.5463999999997,
+    "fixtureSha256": "b99d9ac853bd7d8b882ac6b5c8a306e5f575d3454fbd10b4322695c5c6fd56c0"
+  },
+  {
+    "sessionId": "ses_winb7focus4000020261027",
+    "count": 1000,
+    "exitCode": 0,
+    "ms": 1433.3530999999994,
+    "fixtureSha256": "cc75a22cb886e153288cb3ada01889e0e2d4d08e46b80ff31ea43a5e25dee915"
+  }
+]

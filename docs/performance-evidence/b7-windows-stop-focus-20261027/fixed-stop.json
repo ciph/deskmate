@@ -1,0 +1,566 @@
+{
+  "ok": true,
+  "trace": [
+    {
+      "at": 57.29999999888241,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 116.19999999925494,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 300.5,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 1016,
+      "kind": "dom",
+      "composer": true,
+      "sameInput": true,
+      "focus": false,
+      "stop": false,
+      "notices": [],
+      "tailChars": 119
+    },
+    {
+      "at": 1215.199999999255,
+      "kind": "dom",
+      "composer": true,
+      "sameInput": true,
+      "focus": false,
+      "stop": true,
+      "notices": [],
+      "tailChars": 119
+    },
+    {
+      "at": 1422.5999999996275,
+      "kind": "dom",
+      "composer": true,
+      "sameInput": true,
+      "focus": true,
+      "stop": true,
+      "notices": [],
+      "tailChars": 95
+    },
+    {
+      "at": 3917.0999999996275,
+      "kind": "native-access",
+      "entry": {
+        "key": "native:16:managed-local-v193:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb720261027c/workspace27:ses_winb7focus3000020261027",
+        "identity": {
+          "kind": "native",
+          "sidecarId": "managed-local-v1",
+          "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb720261027c/workspace",
+          "sessionId": "ses_winb7focus3000020261027"
+        },
+        "title": "B7 Windows 1000 messages 30000",
+        "userTitle": null,
+        "source": "workbench",
+        "created": 1793076813181,
+        "updated": 1793077066166,
+        "pinned": false,
+        "archived": false,
+        "availability": "available",
+        "ownership": "unowned",
+        "runtime": "running",
+        "tombstone": null,
+        "hasRecords": true,
+        "displayTitle": "B7 Windows 1000 messages 30000",
+        "capabilities": {
+          "open": true,
+          "openWorkbench": true,
+          "send": false,
+          "rename": true,
+          "pin": true,
+          "archive": true,
+          "delete": false,
+          "readOnlyReason": "active_task"
+        }
+      }
+    },
+    {
+      "at": 3917.0999999996275,
+      "kind": "replay-catalog-event"
+    },
+    {
+      "at": 3918.199999999255,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 4589.699999999255,
+      "kind": "dom",
+      "composer": true,
+      "sameInput": true,
+      "focus": true,
+      "stop": false,
+      "notices": [],
+      "tailChars": 12
+    }
+  ],
+  "result": {
+    "name": "fixed-stop",
+    "initialRows": 1000,
+    "finalRows": 1003,
+    "stableOldNodes": 1000,
+    "firstAt": 408.90000000037253,
+    "elapsedMs": 10260.900000000373,
+    "updates": [
+      {
+        "at": 397.40000000037253,
+        "chars": 95
+      },
+      {
+        "at": 469,
+        "chars": 395
+      },
+      {
+        "at": 531.5,
+        "chars": 695
+      },
+      {
+        "at": 582.9000000003725,
+        "chars": 995
+      },
+      {
+        "at": 623.1000000014901,
+        "chars": 1194
+      },
+      {
+        "at": 686.3000000007451,
+        "chars": 1395
+      },
+      {
+        "at": 720.2000000011176,
+        "chars": 1695
+      },
+      {
+        "at": 796.5,
+        "chars": 2095
+      },
+      {
+        "at": 870.5,
+        "chars": 2395
+      },
+      {
+        "at": 947.4000000003725,
+        "chars": 2795
+      },
+      {
+        "at": 1016,
+        "chars": 3095
+      },
+      {
+        "at": 1069.6000000014901,
+        "chars": 3395
+      },
+      {
+        "at": 1129.6000000014901,
+        "chars": 3795
+      },
+      {
+        "at": 1196,
+        "chars": 4095
+      },
+      {
+        "at": 1269.7000000011176,
+        "chars": 4495
+      },
+      {
+        "at": 1346.9000000003725,
+        "chars": 4795
+      },
+      {
+        "at": 1400.1000000014901,
+        "chars": 5095
+      },
+      {
+        "at": 1471.800000000745,
+        "chars": 5395
+      },
+      {
+        "at": 1520.6000000014901,
+        "chars": 5695
+      },
+      {
+        "at": 1578.7000000011176,
+        "chars": 5994
+      },
+      {
+        "at": 1675.6000000014901,
+        "chars": 6295
+      },
+      {
+        "at": 1719.300000000745,
+        "chars": 6695
+      },
+      {
+        "at": 1770.7000000011176,
+        "chars": 6895
+      },
+      {
+        "at": 1820.4000000003725,
+        "chars": 7195
+      },
+      {
+        "at": 1883.7000000011176,
+        "chars": 7495
+      },
+      {
+        "at": 1947.1000000014901,
+        "chars": 7795
+      },
+      {
+        "at": 1997,
+        "chars": 7995
+      },
+      {
+        "at": 2046.4000000003725,
+        "chars": 8295
+      },
+      {
+        "at": 2099.4000000003725,
+        "chars": 8595
+      },
+      {
+        "at": 2170.9000000003725,
+        "chars": 8894
+      },
+      {
+        "at": 2232.5,
+        "chars": 9195
+      },
+      {
+        "at": 2273.4000000003725,
+        "chars": 9395
+      },
+      {
+        "at": 2322,
+        "chars": 9695
+      },
+      {
+        "at": 2380.10000000149,
+        "chars": 9994
+      },
+      {
+        "at": 2446.7000000011176,
+        "chars": 10294
+      },
+      {
+        "at": 2520.300000000745,
+        "chars": 10694
+      },
+      {
+        "at": 2585.2000000011176,
+        "chars": 10995
+      },
+      {
+        "at": 2629.5,
+        "chars": 11195
+      },
+      {
+        "at": 2696.7000000011176,
+        "chars": 11595
+      },
+      {
+        "at": 2752.60000000149,
+        "chars": 11795
+      },
+      {
+        "at": 2796.5,
+        "chars": 12095
+      },
+      {
+        "at": 2872.60000000149,
+        "chars": 12395
+      },
+      {
+        "at": 2933.7000000011176,
+        "chars": 12695
+      },
+      {
+        "at": 2986.7000000011176,
+        "chars": 12995
+      },
+      {
+        "at": 3020.300000000745,
+        "chars": 13094
+      },
+      {
+        "at": 3073.300000000745,
+        "chars": 13395
+      },
+      {
+        "at": 3147.10000000149,
+        "chars": 13795
+      },
+      {
+        "at": 3200.2000000011176,
+        "chars": 14095
+      },
+      {
+        "at": 3272.5,
+        "chars": 14395
+      },
+      {
+        "at": 3347.5,
+        "chars": 14795
+      },
+      {
+        "at": 3419.2000000011176,
+        "chars": 15095
+      },
+      {
+        "at": 3472.60000000149,
+        "chars": 15495
+      },
+      {
+        "at": 3551.800000000745,
+        "chars": 12
+      }
+    ],
+    "sampleWindows": [
+      {
+        "at": 1741.5,
+        "busy": true,
+        "textChars": 6695
+      },
+      {
+        "at": 2006.800000000745,
+        "busy": true,
+        "textChars": 7995
+      },
+      {
+        "at": 2265.7000000011176,
+        "busy": true,
+        "textChars": 9195
+      },
+      {
+        "at": 2541,
+        "busy": true,
+        "textChars": 10694
+      },
+      {
+        "at": 2806.60000000149,
+        "busy": true,
+        "textChars": 12095
+      },
+      {
+        "at": 3066.300000000745,
+        "busy": true,
+        "textChars": 13094
+      },
+      {
+        "at": 3339.4000000003725,
+        "busy": true,
+        "textChars": 14395
+      },
+      {
+        "at": 3591.60000000149,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 3865.5,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 4139.4000000003725,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 4392.700000001118,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 4665.800000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 4940.9000000003725,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 5192.800000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 5465.10000000149,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 5739.5,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 5992.700000001118,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 6264.5,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 6539.5,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 6793.10000000149,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 7065.10000000149,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 7339.10000000149,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 7592.60000000149,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 7865.5,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 8144.4000000003725,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 8416.5,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 8690.300000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 8942.400000000373,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 9215.200000001118,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 9490,
+        "busy": false,
+        "textChars": 12
+      }
+    ],
+    "input": {
+      "n": 30,
+      "p50": 24.800000000745058,
+      "p95": 32.20000000111759,
+      "max": 65,
+      "samples": [
+        15.699999999254942,
+        16.899999998509884,
+        24.800000000745058,
+        16.199999999254942,
+        17.200000001117587,
+        25.300000000745058,
+        23.200000001117587,
+        32.20000000111759,
+        25.09999999962747,
+        17.800000000745058,
+        31,
+        24.600000001490116,
+        16.300000000745058,
+        30.899999998509884,
+        25.699999999254942,
+        18,
+        31.09999999962747,
+        26.200000001117587,
+        17.699999999254942,
+        30.600000001490116,
+        25.799999998882413,
+        18.299999998882413,
+        31.200000001117587,
+        65,
+        29.100000001490116,
+        24.09999999962747,
+        17,
+        31.200000001117587,
+        25.40000000037253,
+        17.199999999254942
+      ]
+    },
+    "scroll": {
+      "n": 30,
+      "p50": 33.40000000037253,
+      "p95": 33.5,
+      "max": 35.100000001490116,
+      "samples": [
+        33.5,
+        35.100000001490116,
+        33.5,
+        33.5,
+        33.399999998509884,
+        32.29999999888241,
+        28,
+        33.29999999888241,
+        33.40000000037253,
+        33.40000000037253,
+        33.5,
+        33.5,
+        33.40000000037253,
+        33.30000000074506,
+        33.20000000111759,
+        33.30000000074506,
+        33.5,
+        33.40000000037253,
+        33.40000000037253,
+        33.5,
+        33.30000000074506,
+        33.40000000037253,
+        33.399999998509884,
+        12.299999998882413,
+        33.399999998509884,
+        33.40000000037253,
+        33.40000000037253,
+        33.29999999888241,
+        33.40000000037253,
+        33.5
+      ]
+    },
+    "focusPreserved": true,
+    "draftRestored": true,
+    "stopClicked": true,
+    "busy": false,
+    "tailText": "出错了: Aborted",
+    "codeText": "",
+    "method": "live production DOM; 5 warmup pairs +30 paired samples spaced 200 ms; input/scroll to second rAF; remote debug connected without Inspector UI"
+  },
+  "final": {
+    "rows": 1003,
+    "composer": true,
+    "sameInput": true,
+    "focus": true,
+    "stop": false,
+    "text": "出错了: Aborted"
+  }
+}

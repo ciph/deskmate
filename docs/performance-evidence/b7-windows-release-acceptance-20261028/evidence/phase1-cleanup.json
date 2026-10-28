@@ -1,0 +1,18 @@
+{
+  "productionIdentityRun": false,
+  "credentialCleared": true,
+  "time": "2026-10-28T10:15:07.1688245+08:00",
+  "identity": "com.deskmate.unifiedhistoryqa.winb7release20261027a",
+  "listeners": [],
+  "roots": [
+    {
+      "deleted": true,
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7release20261027a"
+    },
+    {
+      "deleted": true,
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7release20261027a"
+    }
+  ],
+  "helperProcesses": []
+}

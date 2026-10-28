@@ -34,6 +34,9 @@ base64 = "0.22"
 chrono = "0.4"
 url = "2"
 ureq = { version = "2", features = ["json"] }
+reqwest = { version = "0.13", default-features = false }
+rustls = { version = "0.23", default-features = false, features = ["ring"] }
+tokio = { version = "1", features = ["time"] }
 keyring = { version = "3", features = ["windows-native", "apple-native"] }
 chacha20poly1305 = { version = "0.11", optional = true, features = ["getrandom", "zeroize"] }
 zip = { version = "8", default-features = false, features = ["deflate"] }
@@ -63,6 +66,9 @@ strip = true
 # panic=abort prevents objc2::exception::catch from catching those exceptions and
 # turns a cancelled media request into termination of the whole application.
 panic = "unwind"
+
+[patch.crates-io]
+tao = { path = "vendor/tao" }
 
 [[bin]]
 name = "recover-external-ai"

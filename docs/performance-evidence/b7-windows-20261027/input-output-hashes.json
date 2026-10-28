@@ -1,0 +1,18 @@
+[
+  {
+    "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\bun.lock",
+    "Hash": "334AC7FB44E967944973C979ECAA218ACA96FD19028EAB36A89EA3F2BCBA1029"
+  },
+  {
+    "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\Cargo.lock",
+    "Hash": "0E3244A9852C50E04AAD939D205FBB08FEC8D3FEDAB33862CB796427529087D8"
+  },
+  {
+    "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\public\\workbench\\index.html",
+    "Hash": "7C94DB070472EDC113EE66CB36F9563B790A9C694877A697034627A1314E1881"
+  },
+  {
+    "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\public\\workbench\\ghostty-vt.wasm",
+    "Hash": "B9579E2993A3FC6EDDE73121141AD6B2EAA94BDC3E43D46FD496177D12E503AF"
+  }
+]

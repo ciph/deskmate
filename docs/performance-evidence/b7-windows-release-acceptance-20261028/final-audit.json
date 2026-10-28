@@ -1,0 +1,16 @@
+{
+  "baselineFiles": 835,
+  "expectedChangedFiles": [
+    "AGENTS.md",
+    "docs/performance-evidence/README.md",
+    "docs/performance-remediation-plan.md",
+    "docs/performance-windows-handoff.md",
+    "docs/verification-backlog.md"
+  ],
+  "evidenceFiles": 44,
+  "evidenceHashesMatch": true,
+  "linksValid": true,
+  "temporaryTokenAbsent": true,
+  "normalReleaseSha256": "c4c240e698609bd51fb4140c5d9e7afb5b5dfcbfb399d64e2dd53a700ecee638",
+  "time": "2026-10-28T02:56:22.726Z"
+}

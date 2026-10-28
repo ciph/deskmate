@@ -1,0 +1,13 @@
+{
+  "text": "小著\n在的,说吧\n请记录今天 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。\n\n合成模型工具回执：{\"version\":1,\"status\":\"rejected\",\"error\":{\"code\":\"BRIDGE_IO_ERROR\",\"message\":\"Work journal input must be an object\"}}\n\n请记录 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。\n\n合成模型工具回执：{\"requestId\":\"9584b687-0934-4b18-2ee0-79afc4fd4403\",\"result\":{\"receipt\":{\"businessDate\":\"2026-10-27\",\"entityId\":\"ce755513-642c-4d29-8038-6e4ab22b3dc2\",\"entityKind\":\"entry\",\"operationId\":\"9584b687-0934-4b18-2ee0-79afc4fd4403\",\"revision\":1,\"status\":\"committed\"}},\"status\":\"completed\",\"version\":1}\n\n查询今天 2026-10-27 的工作记录。\n\n合成模型工具回执：{\"requestId\":\"6a4f8e53-f6f3-fe20-d2fa-2483c69315a1\",\"result\":{\"entries\":[{\"businessDate\":\"2026-10-27\",\"createdAt\":\"2026-10-27T09:38:44.414013200+00:00\",\"id\":\"ce755513-642c-4d29-8038-6e4ab22b3dc2\",\"originalText\":\"请记录 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。\",\"project\":\"B7 合成验收\",\"revision\":1,\"sourceMessageId\":\"msg_16f39e7b47b84c62b9ff2f707452430e\",\"sourceSessionId\":\"ses_e83489dffffepPRvAJzPXGkYh9\",\"status\":\"done\",\"text\":\"完成 B7 附件和物理拖放验收。\",\"updatedAt\":\"2026-10-27T09:38:44.414013200+00:00\"}],\"reports\":[]},\"status\":\"completed\",\"version\":1}\n\n请将刚才 2026-10-27 的 B7 合成验收记录改为：完成 B7 附件、物理拖放和历史恢复验收。状态仍为已完成。\n\n合成模型工具回执：{\"error\":{\"code\":\"NEEDS_EXPLICIT_REQUEST\",\"message\":\"Use an explicit work journal request or the work records controls\"},\"requestId\":\"ae0e8d01-25f2-2d08-3217-8d2de99cbedf\",\"status\":\"rejected\",\"version\":1}\n\n请根据已保存的工作记录生成 2026-10-27 的日报。\n\n合成模型工具回执：{\"requestId\":\"8ad9b415-32e0-9fdc-3c0b-af94c1f5de92\",\"result\":{\"receipt\":{\"businessDate\":\"2026-10-27\",\"entityId\":\"274dd301-565c-44b6-b6be-d21104b2519b\",\"entityKind\":\"run\",\"operationId\":\"8ad9b415-32e0-9fdc-3c0b-af94c1f5de92\",\"revision\":1,\"status\":\"committed\"}},\"status\":\"completed\",\"version\":1}\n\n正在确认保存结果，尚未确认成功\n查看工作日志\n查询结果\n已保存到工作日志 · 2026-10-27\n查看工作日志\n撤销\n报告已归档 · 2026-10-27\n查看工作日志\n文件夹\n⌄\nb7-local\n⌄\n发送",
+  "focus": true,
+  "active": "<textarea class=\"chat-input\" placeholder=\"输入消息,Enter 发送\" rows=\"2\"></textarea>",
+  "inputs": [
+    {
+      "tag": "TEXTAREA",
+      "placeholder": "输入消息,Enter 发送",
+      "disabled": false,
+      "value": ""
+    }
+  ]
+}

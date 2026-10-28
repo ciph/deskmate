@@ -1,0 +1,30 @@
+[
+  {
+    "path": "src/chat/ChatApp.tsx",
+    "sha256": "b93001eefd85804c8956f216ea648ed4f098f6fb39c5ef70075d457d012f6efa"
+  },
+  {
+    "path": "src/chat/chatFixedReply.test.tsx",
+    "sha256": "81f2618a2f84312a94f45e9416ed1e5499a67343c4578b2566e88ede958677a5"
+  },
+  {
+    "path": "src/chat/nativeResourceFlow.test.tsx",
+    "sha256": "c6ea6eafba9a44c66332c52265202cf9a0fc1d8087fce9627cdcee4fc41dec44"
+  },
+  {
+    "path": "package.json",
+    "sha256": "79d323fad6e56cfb69a322061da2d91ddd3b7402334c7cb82551767c5278ef6d"
+  },
+  {
+    "path": "bun.lock",
+    "sha256": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029"
+  },
+  {
+    "path": "src-tauri/Cargo.toml",
+    "sha256": "796badeb736adada6b2b8f842188e472075f5f2f57ac9a30377dce8d81c1b2c5"
+  },
+  {
+    "path": "src-tauri/Cargo.lock",
+    "sha256": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "root": "E:\\Codex\\工作伙伴\\deskmate-windows-b7",
+  "branch": "codex/yume-performance-b6",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "version": "0.4.21",
+  "preservedFiles": 754,
+  "identity": "com.deskmate.unifiedhistoryqa.winb7release20261027a",
+  "mode": "release / fat LTO / panic unwind",
+  "time": "2026-10-27T11:19:08.328Z"
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "pid": 237168,
+    "created": 134375693443425376,
+    "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\yume.exe"
+  },
+  {
+    "pid": 241980,
+    "created": 134375693464931886,
+    "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\resources\\opencode\\opencode.exe"
+  },
+  {
+    "pid": 244548,
+    "created": 134375693445049055,
+    "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+  },
+  {
+    "pid": 240280,
+    "created": 134375693445943526,
+    "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+  },
+  {
+    "pid": 233452,
+    "created": 134375693447496936,
+    "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+  },
+  {
+    "pid": 237620,
+    "created": 134375693447708870,
+    "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+  },
+  {
+    "pid": 225972,
+    "created": 134375693448029973,
+    "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+  },
+  {
+    "pid": 243188,
+    "created": 134375693448807659,
+    "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+  },
+  {
+    "pid": 240560,
+    "created": 134375693456782699,
+    "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+  },
+  {
+    "pid": 237876,
+    "created": 134375693463067848,
+    "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+  },
+  {
+    "pid": 244308,
+    "created": 134375693465316573,
+    "executable": "C:\\WINDOWS\\system32\\conhost.exe"
+  }
+]

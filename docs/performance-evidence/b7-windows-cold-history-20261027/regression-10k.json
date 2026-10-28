@@ -1,0 +1,22 @@
+{
+  "ok": false,
+  "error": "TypeError: Failed to fetch dynamically imported module: http://tauri.localhost/b7-qa.js",
+  "trace": [
+    {
+      "at": 1685.800000000745,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 1686.300000000745,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 1686.5,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 1686.800000000745,
+      "kind": "catalog-event"
+    }
+  ]
+}

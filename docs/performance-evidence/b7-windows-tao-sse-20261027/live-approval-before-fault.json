@@ -1,0 +1,24 @@
+{
+  "label": "before-fault",
+  "base": "http://127.0.0.1:51511",
+  "pid": 181200,
+  "events": [
+    {
+      "event": "healthy",
+      "ms": 927.0792000000001
+    },
+    {
+      "event": "sse-request",
+      "ms": 1398.46,
+      "attempt": 1
+    }
+  ],
+  "binary": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\deps\\yume_lib-7c57d07baf708583.exe",
+  "failure": "Error: native reader exited before readiness",
+  "cleanup": {
+    "engineGone": true,
+    "portClosed": true,
+    "providerClosed": true,
+    "proxyClosed": true
+  }
+}

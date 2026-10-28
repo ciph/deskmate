@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-27",
+  "status": "B7 in progress",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "branch": "codex/yume-performance-b6",
+  "version": "0.4.21",
+  "schema": {
+    "history": 3,
+    "memory": 4
+  },
+  "committed": false,
+  "pushed": false,
+  "changes": [
+    "scripts/worklog-qa/provider.js",
+    "scripts/worklog-qa/provider-models.test.ts",
+    "src/chat/useWorklogChat.ts",
+    "src/chat/useWorklogChat.test.tsx",
+    "src/chat/chatPetActivity.test.tsx"
+  ],
+  "physical": {
+    "fileDrop": [
+      "MP4",
+      "MP3",
+      "WAV",
+      "folder",
+      "invalid MP4"
+    ],
+    "picker": "MP4",
+    "playback": "MP4 complete 30-second native-picker playback; physical replay/6 rapid seeks/removal; MP3 and WAV play/pause/seek/ended",
+    "history": "four sent resource cards restored; playing video paused/unloaded on session switch",
+    "audioAudibility": "not tested; synthetic silent sources"
+  },
+  "binary": {
+    "ordinaryMiB": [
+      1,
+      8,
+      20
+    ],
+    "mediaMiB": 64,
+    "sha256Readback": true,
+    "settingsWindowDenied": true,
+    "invalidCases": "empty, size mismatch, spoofed PNG, JSON array, 20 MiB+1 per item and aggregate, 64 MiB+1, MIME/extension mismatch",
+    "method": "actual WebView2 production upload modules and Rust IPC; not physical picker for binary buffers"
+  },
+  "worklog": {
+    "fiveTools": true,
+    "transport": "forced tool selection from local synthetic OpenAI-compatible provider; actual sidecar, host operations and physical approvals",
+    "receiptStateFix": true,
+    "historyReceiptRestore": true,
+    "weeklyCatchup": {
+      "latestOnly": true,
+      "attempts": 1,
+      "sameRunAfterRestart": true
+    },
+    "versions": {
+      "manualPreserved": true,
+      "generatedCandidate": true,
+      "adoptionCreatesNewManualSnapshot": true,
+      "staleRevisionRejected": true
+    },
+    "remaining": "complete worklog physical editor/version/export/delete/retry/cancel surfaces and real-model intent cases"
+  },
+  "migration": {
+    "nativeHistory": "v2 failure on injected invalid metadata rolls back; setup abort is expected controlled failure; fixture repaired then native v3 and repeated restart pass",
+    "nativeMemory": "synthetic v3 -> v4, Chinese content export preserved",
+    "automated": {
+      "pass": 32,
+      "fail": 0
+    },
+    "limits": "native disk-full/process interruption and user-facing repair flow not claimed"
+  },
+  "validation": {
+    "frontend": {
+      "pass": 1367,
+      "fail": 0,
+      "skip": 8
+    },
+    "frontendMethod": "full run 171/172 then corrected delayed-submission test fixture and reran affected 28 tests; combined final coverage 172 files",
+    "typecheck": true,
+    "reactDoctor": {
+      "score": 81,
+      "files": 13,
+      "newIssues": 0
+    },
+    "qaBuild": {
+      "identity": "com.deskmate.unifiedhistoryqa.winb7attachments20261027a",
+      "startedAt": "2026-10-27T18:05:04.3878889+08:00",
+      "exitCode": 0,
+      "binarySha256": "9894BC03A999CE816386B9C00E4C9676F03A9F33F69AB9487B578F2B86BC2763",
+      "finishedAt": "2026-10-27T18:05:37.7445479+08:00"
+    },
+    "normalBuild": {
+      "identity": "com.deskmate.desktop",
+      "startedAt": "2026-10-27T18:13:21.6800920+08:00",
+      "features": "default; no worklog-qa",
+      "binarySha256": "BD8679909680F40E8E2D9615219476B51DAD0BE204F1F0A7853D8A7628B263B4",
+      "finishedAt": "2026-10-27T18:14:29.8198213+08:00",
+      "productionIdentityRun": false,
+      "exitCode": 0
+    },
+    "sqlite": 6
+  },
+  "cleanup": {
+    "time": "2026-10-27T18:13:19.3357001+08:00",
+    "productionIdentityRun": false,
+    "helperProcesses": [],
+    "listeners": [],
+    "credentialCleared": true,
+    "identity": "com.deskmate.unifiedhistoryqa.winb7attachments20261027a",
+    "roots": [
+      {
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a",
+        "deleted": true
+      },
+      {
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a",
+        "deleted": true
+      }
+    ]
+  },
+  "remainingWindowsRounds": {
+    "estimate": "2–3 focused rounds; 3–4 if additional defects appear",
+    "round1": "finish attachment release matrix and full worklog physical surfaces/error/cancel/export/delete",
+    "round2": "active-tool secondary launch, cancellation wording, remaining recovery and PDF heap/RSS/hardware/production comparisons",
+    "round3": "final full regression, evidence audit and delivery gate if needed"
+  },
+  "mac": "platform-specific acceptance remains separate"
+}

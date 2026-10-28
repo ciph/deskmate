@@ -1,0 +1,517 @@
+{
+  "at": 1793093292934,
+  "text": "小著\n在的,说吧\n跟小著说点什么吧 (｡•̀ᴗ-)✧\nB7-video-30s.mp4\n视频 · 22 MB\nB7-audio-10s.mp3\n音频 · 157 KB\nB7-audio-8s.wav\n音频 · 1.5 MB\n文件夹\n⌄\nb7-local\n⌄\n发送",
+  "dpr": 1.25,
+  "focus": true,
+  "media": [
+    {
+      "tag": "VIDEO",
+      "name": "预览 B7-video-30s.mp4",
+      "src": "http://chat-resource.localhost/22759d67-18c3-42d4-ad3f-4bd6cb9c0c9f",
+      "duration": 30,
+      "currentTime": 0,
+      "ended": false,
+      "paused": true,
+      "readyState": 4,
+      "rect": {
+        "x": 24.600000381469727,
+        "y": 366.3999938964844,
+        "width": 313,
+        "height": 176.0625,
+        "top": 366.3999938964844,
+        "right": 337.6000003814697,
+        "bottom": 542.4624938964844,
+        "left": 24.600000381469727
+      }
+    },
+    {
+      "tag": "AUDIO",
+      "name": "预览 B7-audio-10s.mp3",
+      "src": "http://chat-resource.localhost/473d29f3-d65b-4f8a-82cf-978932fdd0bb",
+      "duration": 10,
+      "currentTime": 10,
+      "ended": true,
+      "paused": true,
+      "readyState": 4,
+      "rect": {
+        "x": 367.20001220703125,
+        "y": 366.3999938964844,
+        "width": 313,
+        "height": 36,
+        "top": 366.3999938964844,
+        "right": 680.2000122070312,
+        "bottom": 402.3999938964844,
+        "left": 367.20001220703125
+      }
+    },
+    {
+      "tag": "AUDIO",
+      "name": "预览 B7-audio-8s.wav",
+      "src": "http://chat-resource.localhost/a060cf86-5864-4249-ad81-f7662a83a8b3",
+      "duration": 8,
+      "currentTime": 6.50865,
+      "ended": false,
+      "paused": true,
+      "readyState": 4,
+      "rect": {
+        "x": 24.600000381469727,
+        "y": 614.8624877929688,
+        "width": 338.3999938964844,
+        "height": 36,
+        "top": 614.8624877929688,
+        "right": 362.9999942779541,
+        "bottom": 650.8624877929688,
+        "left": 24.600000381469727
+      }
+    }
+  ],
+  "buttons": [
+    {
+      "text": "",
+      "aria": "在工作台打开",
+      "disabled": false,
+      "rect": {
+        "x": 571.2000122070312,
+        "y": 8.800000190734863,
+        "width": 28,
+        "height": 28,
+        "top": 8.800000190734863,
+        "right": 599.2000122070312,
+        "bottom": 36.80000019073486,
+        "left": 571.2000122070312
+      }
+    },
+    {
+      "text": "",
+      "aria": "历史",
+      "disabled": false,
+      "rect": {
+        "x": 607.2000122070312,
+        "y": 8.800000190734863,
+        "width": 28,
+        "height": 28,
+        "top": 8.800000190734863,
+        "right": 635.2000122070312,
+        "bottom": 36.80000019073486,
+        "left": 607.2000122070312
+      }
+    },
+    {
+      "text": "",
+      "aria": "设置",
+      "disabled": false,
+      "rect": {
+        "x": 643.2000122070312,
+        "y": 8.800000190734863,
+        "width": 28,
+        "height": 28,
+        "top": 8.800000190734863,
+        "right": 671.2000122070312,
+        "bottom": 36.80000019073486,
+        "left": 643.2000122070312
+      }
+    },
+    {
+      "text": "",
+      "aria": "关闭",
+      "disabled": false,
+      "rect": {
+        "x": 679.2000122070312,
+        "y": 8.800000190734863,
+        "width": 28,
+        "height": 28,
+        "top": 8.800000190734863,
+        "right": 707.2000122070312,
+        "bottom": 36.80000019073486,
+        "left": 679.2000122070312
+      }
+    },
+    {
+      "text": "",
+      "aria": "移除 B7-video-30s.mp4",
+      "disabled": false,
+      "rect": {
+        "x": 309.6000061035156,
+        "y": 327,
+        "width": 28,
+        "height": 28,
+        "top": 327,
+        "right": 337.6000061035156,
+        "bottom": 355,
+        "left": 309.6000061035156
+      }
+    },
+    {
+      "text": "",
+      "aria": "移除 B7-audio-10s.mp3",
+      "disabled": false,
+      "rect": {
+        "x": 652.2000122070312,
+        "y": 327,
+        "width": 28,
+        "height": 28,
+        "top": 327,
+        "right": 680.2000122070312,
+        "bottom": 355,
+        "left": 652.2000122070312
+      }
+    },
+    {
+      "text": "",
+      "aria": "移除 B7-audio-8s.wav",
+      "disabled": false,
+      "rect": {
+        "x": 335,
+        "y": 575.4625244140625,
+        "width": 28,
+        "height": 28,
+        "top": 575.4625244140625,
+        "right": 363,
+        "bottom": 603.4625244140625,
+        "left": 335
+      }
+    },
+    {
+      "text": "",
+      "aria": "附件",
+      "disabled": false,
+      "rect": {
+        "x": 15.600000381469727,
+        "y": 715.9000244140625,
+        "width": 30,
+        "height": 28,
+        "top": 715.9000244140625,
+        "right": 45.60000038146973,
+        "bottom": 743.9000244140625,
+        "left": 15.600000381469727
+      }
+    },
+    {
+      "text": "文件夹⌄",
+      "aria": "文件夹",
+      "disabled": false,
+      "rect": {
+        "x": 47.60000228881836,
+        "y": 715.4000244140625,
+        "width": 71.4000015258789,
+        "height": 29,
+        "top": 715.4000244140625,
+        "right": 119.00000381469727,
+        "bottom": 744.4000244140625,
+        "left": 47.60000228881836
+      }
+    },
+    {
+      "text": "b7-local⌄",
+      "aria": "b7-local",
+      "disabled": false,
+      "rect": {
+        "x": 605.75,
+        "y": 715.4000244140625,
+        "width": 58.650001525878906,
+        "height": 29,
+        "top": 715.4000244140625,
+        "right": 664.4000015258789,
+        "bottom": 744.4000244140625,
+        "left": 605.75
+      }
+    },
+    {
+      "text": "发送",
+      "aria": null,
+      "disabled": false,
+      "rect": {
+        "x": 666.4000244140625,
+        "y": 717.4000244140625,
+        "width": 38,
+        "height": 28,
+        "top": 717.4000244140625,
+        "right": 704.4000244140625,
+        "bottom": 745.4000244140625,
+        "left": 666.4000244140625
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "pause",
+      "time": 1793093219210,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 30,
+      "trusted": true
+    },
+    {
+      "type": "ended",
+      "time": 1793093219210,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 30,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093236027,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 0,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093236027,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 0,
+      "trusted": true
+    },
+    {
+      "type": "seeked",
+      "time": 1793093236035,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 0.000121,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093237277,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 9.925271,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093237294,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 4.137228,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093237294,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 4.137228,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093237294,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 4.137228,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093237294,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 4.137228,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093237294,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 4.137228,
+      "trusted": true
+    },
+    {
+      "type": "seeked",
+      "time": 1793093237318,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 4.137418,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093251510,
+      "name": "预览 B7-video-30s.mp4",
+      "position": 18.33107,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093271577,
+      "name": "预览 B7-audio-10s.mp3",
+      "position": 0,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093272843,
+      "name": "预览 B7-audio-10s.mp3",
+      "position": 7.896365,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093272843,
+      "name": "预览 B7-audio-10s.mp3",
+      "position": 7.896365,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093272843,
+      "name": "预览 B7-audio-10s.mp3",
+      "position": 7.896365,
+      "trusted": true
+    },
+    {
+      "type": "seeked",
+      "time": 1793093272844,
+      "name": "预览 B7-audio-10s.mp3",
+      "position": 7.896365,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093274045,
+      "name": "预览 B7-audio-10s.mp3",
+      "position": 7.903894,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093276218,
+      "name": "预览 B7-audio-10s.mp3",
+      "position": 10,
+      "trusted": true
+    },
+    {
+      "type": "ended",
+      "time": 1793093276218,
+      "name": "预览 B7-audio-10s.mp3",
+      "position": 10,
+      "trusted": true
+    },
+    {
+      "type": "play",
+      "time": 1793093290577,
+      "name": "预览 B7-audio-8s.wav",
+      "position": 0,
+      "trusted": true
+    },
+    {
+      "type": "pause",
+      "time": 1793093291810,
+      "name": "预览 B7-audio-8s.wav",
+      "position": 6.50865,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093291810,
+      "name": "预览 B7-audio-8s.wav",
+      "position": 6.50865,
+      "trusted": true
+    },
+    {
+      "type": "seeking",
+      "time": 1793093291810,
+      "name": "预览 B7-audio-8s.wav",
+      "position": 6.50865,
+      "trusted": true
+    },
+    {
+      "type": "seeked",
+      "time": 1793093291811,
+      "name": "预览 B7-audio-8s.wav",
+      "position": 6.50865,
+      "trusted": true
+    }
+  ]
+}

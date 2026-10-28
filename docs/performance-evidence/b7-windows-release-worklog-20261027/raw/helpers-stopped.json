@@ -1,0 +1,14 @@
+[
+  {
+    "stopped": true,
+    "pid": 257528,
+    "created": 134375736495504915,
+    "executable": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\npm\\node_modules\\bun\\bin\\bun.exe"
+  },
+  {
+    "stopped": true,
+    "pid": 253236,
+    "created": 134375741050114290,
+    "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-release-worklog\\DragSource.exe"
+  }
+]
