@@ -1,5 +1,9 @@
 # YUME 仓库 AI 工作入口
 
+## 2026-10-28 Windows v0.4.22 已发布
+
+用户要求的三个 B7 提交 `8702347`、`36a3c2e`、`2e90c94` 已完整推送；新增发布准备提交 `1901fb8`，tag `v0.4.22` 固定于该源码。[Windows Release](https://github.com/ciph/deskmate/releases/tag/v0.4.22) 已公开为 latest，发布工作流六项通过，三个资产的内容/版本/SHA、更新签名及公开匿名下载回读已核验。见 [发布回执](docs/performance-evidence/release-v0.4.22-windows/README.md)。当前产品版本 0.4.22，历史 schema 3、记忆 schema 4。本机已过验收未重跑，仅执行现有 tag 发布门禁；重复分支检查取消。Mac 未发包，安装/GUI 升级及其他未验范围已写入发布说明。旧主仓与其他工作树保持，以下为历史交付记录。
+
 ## 2026-10-28 Windows 本机整改交付收尾
 
 当前入口仍是 `E:\Codex\工作伙伴\deskmate-windows-b7` / `codex/yume-performance-b6` / 0.4.21。原有改动已提交 `8702347`，本轮 Stop 取消误报与日志回执会话/目录作用域修复已提交 `36a3c2e`。完整前端 1373 pass、Rust 974 pass，0 fail；8 skip / 24 ignored 保留。补齐真实 1000 历史的 10k/50k 流式、活跃工具二次启动、PDF 堆/RSS、三种宠物隐藏恢复、同 DPI 多屏及 10 分钟空闲记录；隔离进程与数据已清理，正常 release 已恢复。

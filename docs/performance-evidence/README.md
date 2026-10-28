@@ -1,5 +1,9 @@
 # 性能整改便携证据
 
+## 2026-10-28 Windows v0.4.22 已公开
+
+[发布回执](release-v0.4.22-windows/README.md) · [公开 Release](https://github.com/ciph/deskmate/releases/tag/v0.4.22)。源码 `1901fb8` 完整包含三个 B7 保存提交；六项发布 CI 成功，三个 Windows 资产的版本/内容/签名/SHA 和匿名完整下载回读通过。复用已有本机验收，取消重复分支检查；未安装到日常身份、未发 Mac 包，未验范围如实保留。以下本机报告的“未推送/未发布”是其形成时的历史状态。
+
 ## 2026-10-28 Windows 本机整改交付
 
 [完整报告](b7-windows-closeout-20261028/README.md) · [HTML](b7-windows-closeout-20261028/index.html) · [结构化结果](b7-windows-closeout-20261028/summary.json) · [20 项审计矩阵](b7-windows-closeout-20261028/audit-matrix.json) · [SHA 清单](b7-windows-closeout-20261028/evidence-manifest.json)。原有改动保存为 `8702347`，本轮 Stop 取消误报与日志回执作用域修复为 `36a3c2e`。前端 1373 pass / 8 skip、Rust 974 pass / 24 ignored，均 0 fail；新增真实长流式、活跃工具二次启动、PDF 内存、宠物隐藏恢复、同 DPI 多屏及十分钟空闲记录。正常 release 和清理已核验。

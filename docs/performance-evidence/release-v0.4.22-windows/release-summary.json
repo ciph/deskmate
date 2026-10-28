@@ -1,0 +1,30 @@
+{
+  "version": "0.4.22",
+  "repository": "ciph/deskmate",
+  "releaseCommit": "1901fb8fd46346acfd5e34661f707f7aafde7eab",
+  "releaseUrl": "https://github.com/ciph/deskmate/releases/tag/v0.4.22",
+  "publishedAt": "2026-10-28T04:48:00Z",
+  "latest": true,
+  "releaseRunId": 40630310481,
+  "allSixReleaseJobsPassed": true,
+  "preservedCommits": [
+    "8702347",
+    "36a3c2e",
+    "2e90c94"
+  ],
+  "packageVerified": true,
+  "publicAnonymousDownloadVerified": true,
+  "installerBytes": 117637151,
+  "installerSha256": "b904c00c43bcb4077481a31bc1edc5edd1c33aee733c931aa68deeb163d67682",
+  "authenticodeStatus": "NotSigned",
+  "installedOrGuiUpgradeTested": false,
+  "macosPublished": false,
+  "existingV0420DraftUnchanged": true,
+  "localFullTestsRepeated": false,
+  "duplicateBranchRunsCancelled": [
+    40630311491,
+    40630310885
+  ],
+  "unverifiedScopesRecordedInReleaseNotes": true,
+  "verificationCompletedAt": "2026-10-28T04:48:48.206Z"
+}
