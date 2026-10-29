@@ -1,0 +1,3398 @@
+{
+  "method": "same machine, 125% DPI, 900x950 physical window, 1000 history messages, 50Hz/500 chunks; second rAF, 5 warmup + 30 active sample pairs. No p99 claim.",
+  "streams": [
+    {
+      "chars": 10000,
+      "baseline": {
+        "input": {
+          "n": 30,
+          "p50": 26.5,
+          "p95": 30.600000023841858,
+          "max": 33.900000005960464,
+          "samples": [
+            29.599999994039536,
+            27.099999994039536,
+            23.599999994039536,
+            27.900000005960464,
+            29.799999982118607,
+            30.5,
+            12.700000017881393,
+            28.799999982118607,
+            27.80000001192093,
+            29.700000017881393,
+            24.099999994039536,
+            17.80000001192093,
+            19.30000001192093,
+            16.400000005960464,
+            26.5,
+            23.400000005960464,
+            27.599999994039536,
+            11.599999994039536,
+            18.19999998807907,
+            33.900000005960464,
+            29,
+            25.19999998807907,
+            23.400000005960464,
+            30.30000001192093,
+            29.299999982118607,
+            14.5,
+            30.600000023841858,
+            28.299999982118607,
+            18.30000001192093,
+            17.599999994039536
+          ]
+        },
+        "scroll": {
+          "n": 30,
+          "p50": 33.5,
+          "p95": 45.599999994039536,
+          "max": 49.19999998807907,
+          "samples": [
+            33.30000001192093,
+            39.19999998807907,
+            29.100000023841858,
+            33.400000005960464,
+            33.400000005960464,
+            30.5,
+            33.79999998211861,
+            34.80000001192093,
+            33.5,
+            45.599999994039536,
+            27.599999994039536,
+            33.29999998211861,
+            34.599999994039536,
+            33.30000001192093,
+            40.5,
+            33.19999998807907,
+            39.099999994039536,
+            49.19999998807907,
+            33.5,
+            27.69999998807907,
+            34.099999994039536,
+            42.30000001192093,
+            32.5,
+            33.19999998807907,
+            33.70000001788139,
+            33.5,
+            29.5,
+            45.5,
+            40.79999998211861,
+            33.099999994039536
+          ]
+        }
+      },
+      "candidate": {
+        "input": {
+          "n": 30,
+          "p50": 32,
+          "p95": 32.900000005960464,
+          "max": 33,
+          "samples": [
+            8.400000005960464,
+            31.5,
+            5.5999999940395355,
+            32,
+            32.900000005960464,
+            31.700000017881393,
+            32.099999994039536,
+            32.80000001192093,
+            32.30000001192093,
+            32,
+            25.099999994039536,
+            32.599999994039536,
+            32.70000001788139,
+            33,
+            32.79999998211861,
+            32.599999994039536,
+            32.099999994039536,
+            31.69999998807907,
+            23.799999982118607,
+            32.20000001788139,
+            9.399999976158142,
+            31.400000005960464,
+            31.5,
+            32.400000005960464,
+            12.399999976158142,
+            18.19999998807907,
+            32.5,
+            32.19999998807907,
+            8.299999982118607,
+            31.400000005960464
+          ]
+        },
+        "scroll": {
+          "n": 30,
+          "p50": 33.5,
+          "p95": 38.400000005960464,
+          "max": 39,
+          "samples": [
+            34.5,
+            34,
+            34.70000001788139,
+            33.20000001788139,
+            33.29999998211861,
+            33.599999994039536,
+            33.5,
+            33.099999994039536,
+            33.19999998807907,
+            39,
+            33.099999994039536,
+            33.19999998807907,
+            32.900000005960464,
+            33.69999998807907,
+            33,
+            33.10000002384186,
+            33.400000005960464,
+            35,
+            33.20000001788139,
+            34.599999994039536,
+            34.5,
+            34.69999998807907,
+            33.099999994039536,
+            34.400000005960464,
+            38.400000005960464,
+            33.400000005960464,
+            33.80000001192093,
+            34.30000001192093,
+            34.30000001192093,
+            33.400000005960464
+          ]
+        },
+        "before": {
+          "starts": 7,
+          "maxRunning": 1,
+          "maxPendingPerMessage": 1,
+          "parseMs": 11.099999994039536,
+          "failures": 0,
+          "cacheBytes": 66778,
+          "mountedRows": 11,
+          "logicalMessages": 1000,
+          "navigation": 29
+        },
+        "after": {
+          "starts": 85,
+          "maxRunning": 1,
+          "maxPendingPerMessage": 1,
+          "parseMs": 80.19999995827675,
+          "failures": 0,
+          "cacheBytes": 1738386,
+          "mountedRows": 9,
+          "logicalMessages": 1002,
+          "navigation": 28
+        },
+        "peakRows": 13,
+        "peakNavigation": 30,
+        "firstAt": 1285.2999999821186,
+        "terminalFormatMs": 5.5,
+        "focusPreserved": true,
+        "draftRestored": true,
+        "busy": false,
+        "sampleWindows": [
+          {
+            "at": 2595.2999999821186,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 2838.9000000059605,
+            "busy": true,
+            "textChars": 1556
+          },
+          {
+            "at": 3114.5999999940395,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 3355.199999988079,
+            "busy": true,
+            "textChars": 2056
+          },
+          {
+            "at": 3621,
+            "busy": true,
+            "textChars": 2316
+          },
+          {
+            "at": 3888.699999988079,
+            "busy": true,
+            "textChars": 2596
+          },
+          {
+            "at": 4154.799999982119,
+            "busy": true,
+            "textChars": 2875
+          },
+          {
+            "at": 4421.0999999940395,
+            "busy": true,
+            "textChars": 3136
+          },
+          {
+            "at": 4688.5999999940395,
+            "busy": true,
+            "textChars": 3416
+          },
+          {
+            "at": 4955.699999988079,
+            "busy": true,
+            "textChars": 3675
+          },
+          {
+            "at": 5229.0999999940395,
+            "busy": true,
+            "textChars": 3956
+          },
+          {
+            "at": 5487.9000000059605,
+            "busy": true,
+            "textChars": 4196
+          },
+          {
+            "at": 5754.799999982119,
+            "busy": true,
+            "textChars": 4496
+          },
+          {
+            "at": 6020.9000000059605,
+            "busy": true,
+            "textChars": 4715
+          },
+          {
+            "at": 6288,
+            "busy": true,
+            "textChars": 4996
+          },
+          {
+            "at": 6554.699999988079,
+            "busy": true,
+            "textChars": 5256
+          },
+          {
+            "at": 6822,
+            "busy": true,
+            "textChars": 5555
+          },
+          {
+            "at": 7089,
+            "busy": true,
+            "textChars": 5815
+          },
+          {
+            "at": 7363.5,
+            "busy": true,
+            "textChars": 6056
+          },
+          {
+            "at": 7621.699999988079,
+            "busy": true,
+            "textChars": 6336
+          },
+          {
+            "at": 7894.4000000059605,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 8139.5,
+            "busy": true,
+            "textChars": 6876
+          },
+          {
+            "at": 8405.90000000596,
+            "busy": true,
+            "textChars": 7156
+          },
+          {
+            "at": 8671.799999982119,
+            "busy": true,
+            "textChars": 7416
+          },
+          {
+            "at": 8941.299999982119,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 9202.5,
+            "busy": true,
+            "textChars": 7896
+          },
+          {
+            "at": 9454.699999988079,
+            "busy": true,
+            "textChars": 8196
+          },
+          {
+            "at": 9721.5,
+            "busy": true,
+            "textChars": 8456
+          },
+          {
+            "at": 9995.5,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 10239.299999982119,
+            "busy": true,
+            "textChars": 8996
+          }
+        ]
+      },
+      "streamingMinIntervalMs": 125.0,
+      "parsing": [
+        {
+          "kind": "start",
+          "id": 14,
+          "version": 1,
+          "at": 6637.199999988079,
+          "chars": 20,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 14,
+          "version": 1,
+          "at": 6639.299999982119,
+          "chars": 20,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 14,
+          "version": 3,
+          "at": 6762.5999999940395,
+          "chars": 120,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 14,
+          "version": 3,
+          "at": 6763.5,
+          "chars": 120,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.6000000238418579
+        },
+        {
+          "kind": "start",
+          "id": 14,
+          "version": 5,
+          "at": 6888,
+          "chars": 240,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 14,
+          "version": 5,
+          "at": 6889.199999988079,
+          "chars": 240,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 14,
+          "version": 8,
+          "at": 7013.199999988079,
+          "chars": 380,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 14,
+          "version": 8,
+          "at": 7014.0999999940395,
+          "chars": 380,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.7000000178813934
+        },
+        {
+          "kind": "start",
+          "id": 14,
+          "version": 11,
+          "at": 7138.199999988079,
+          "chars": 520,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 14,
+          "version": 11,
+          "at": 7138.9000000059605,
+          "chars": 520,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5
+        },
+        {
+          "kind": "start",
+          "id": 16,
+          "version": 1,
+          "at": 7215.4000000059605,
+          "chars": 161,
+          "streaming": false,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 16,
+          "version": 1,
+          "at": 7218.199999988079,
+          "chars": 161,
+          "streaming": false,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 17,
+          "version": 1,
+          "at": 7218.199999988079,
+          "chars": 161,
+          "streaming": false,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 17,
+          "version": 1,
+          "at": 7219,
+          "chars": 161,
+          "streaming": false,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 18,
+          "version": 1,
+          "at": 7219,
+          "chars": 161,
+          "streaming": false,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 18,
+          "version": 1,
+          "at": 7220,
+          "chars": 161,
+          "streaming": false,
+          "terminal": false,
+          "parseMs": 0.7999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 19,
+          "version": 1,
+          "at": 7220,
+          "chars": 161,
+          "streaming": false,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 19,
+          "version": 1,
+          "at": 7221.0999999940395,
+          "chars": 161,
+          "streaming": false,
+          "terminal": false,
+          "parseMs": 0.5
+        },
+        {
+          "kind": "start",
+          "id": 20,
+          "version": 1,
+          "at": 7221.0999999940395,
+          "chars": 163,
+          "streaming": false,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 20,
+          "version": 1,
+          "at": 7221.699999988079,
+          "chars": 163,
+          "streaming": false,
+          "terminal": false,
+          "parseMs": 0.5
+        },
+        {
+          "kind": "start",
+          "id": 26,
+          "version": 1,
+          "at": 7464.799999982119,
+          "chars": 820,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 26,
+          "version": 1,
+          "at": 7469,
+          "chars": 820,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.3999999761581421
+        },
+        {
+          "kind": "start",
+          "id": 26,
+          "version": 4,
+          "at": 7594.199999988079,
+          "chars": 960,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 26,
+          "version": 4,
+          "at": 7597.9000000059605,
+          "chars": 960,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 26,
+          "version": 7,
+          "at": 7723.799999982119,
+          "chars": 1100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 26,
+          "version": 7,
+          "at": 7724.4000000059605,
+          "chars": 1100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.29999998211860657
+        },
+        {
+          "kind": "start",
+          "id": 37,
+          "version": 1,
+          "at": 7980.9000000059605,
+          "chars": 1340,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 37,
+          "version": 1,
+          "at": 7984.699999988079,
+          "chars": 1340,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 37,
+          "version": 3,
+          "at": 8106.5,
+          "chars": 1460,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 37,
+          "version": 3,
+          "at": 8107.199999988079,
+          "chars": 1460,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 37,
+          "version": 6,
+          "at": 8232,
+          "chars": 1600,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 37,
+          "version": 6,
+          "at": 8232.5,
+          "chars": 1600,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 1,
+          "at": 8498.40000000596,
+          "chars": 1860,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 1,
+          "at": 8501.699999988079,
+          "chars": 1860,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 4,
+          "at": 8631.59999999404,
+          "chars": 2020,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 4,
+          "at": 8632.5,
+          "chars": 2020,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.800000011920929
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 6,
+          "at": 8761,
+          "chars": 2120,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 6,
+          "at": 8762.699999988079,
+          "chars": 2120,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 9,
+          "at": 8886.799999982119,
+          "chars": 2260,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 9,
+          "at": 8887.40000000596,
+          "chars": 2260,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 11,
+          "at": 9013.199999988079,
+          "chars": 2380,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 11,
+          "at": 9014.199999988079,
+          "chars": 2380,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 14,
+          "at": 9138.799999982119,
+          "chars": 2520,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 14,
+          "at": 9139.40000000596,
+          "chars": 2520,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 17,
+          "at": 9269.199999988079,
+          "chars": 2660,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 17,
+          "at": 9270.299999982119,
+          "chars": 2660,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 19,
+          "at": 9396,
+          "chars": 2760,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 19,
+          "at": 9396.90000000596,
+          "chars": 2760,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.7000000178813934
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 21,
+          "at": 9523.5,
+          "chars": 2880,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 21,
+          "at": 9524.40000000596,
+          "chars": 2880,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 23,
+          "at": 9662.299999982119,
+          "chars": 3020,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 23,
+          "at": 9663.40000000596,
+          "chars": 3020,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.8999999761581421
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 25,
+          "at": 9792.699999988079,
+          "chars": 3140,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 25,
+          "at": 9793.40000000596,
+          "chars": 3140,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 28,
+          "at": 9917.90000000596,
+          "chars": 3280,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 28,
+          "at": 9918.799999982119,
+          "chars": 3280,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.8999999761581421
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 31,
+          "at": 10046.59999999404,
+          "chars": 3420,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 31,
+          "at": 10047.799999982119,
+          "chars": 3420,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 33,
+          "at": 10175.799999982119,
+          "chars": 3540,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 33,
+          "at": 10176.90000000596,
+          "chars": 3540,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1
+        },
+        {
+          "kind": "start",
+          "id": 48,
+          "version": 36,
+          "at": 10301.09999999404,
+          "chars": 3680,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 48,
+          "version": 36,
+          "at": 10301.699999988079,
+          "chars": 3680,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 1,
+          "at": 10382.59999999404,
+          "chars": 3760,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 1,
+          "at": 10386.199999988079,
+          "chars": 3760,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 3,
+          "at": 10508.40000000596,
+          "chars": 3880,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 3,
+          "at": 10509.199999988079,
+          "chars": 3880,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 6,
+          "at": 10634.09999999404,
+          "chars": 4020,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 6,
+          "at": 10635.199999988079,
+          "chars": 4020,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 8,
+          "at": 10761.199999988079,
+          "chars": 4100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 8,
+          "at": 10763.799999982119,
+          "chars": 4100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 11,
+          "at": 10886.199999988079,
+          "chars": 4240,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 11,
+          "at": 10886.90000000596,
+          "chars": 4240,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.7000000178813934
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 14,
+          "at": 11013.299999982119,
+          "chars": 4380,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 14,
+          "at": 11014.5,
+          "chars": 4380,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.0999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 16,
+          "at": 11146,
+          "chars": 4500,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 16,
+          "at": 11147.199999988079,
+          "chars": 4500,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 19,
+          "at": 11275.40000000596,
+          "chars": 4660,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 19,
+          "at": 11276.299999982119,
+          "chars": 4660,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.7999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 21,
+          "at": 11405.199999988079,
+          "chars": 4780,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 21,
+          "at": 11406.199999988079,
+          "chars": 4780,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.800000011920929
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 24,
+          "at": 11531.09999999404,
+          "chars": 4920,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 24,
+          "at": 11531.90000000596,
+          "chars": 4920,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 27,
+          "at": 11660,
+          "chars": 5060,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 27,
+          "at": 11660.799999982119,
+          "chars": 5060,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 29,
+          "at": 11789.59999999404,
+          "chars": 5180,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 29,
+          "at": 11790.5,
+          "chars": 5180,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.800000011920929
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 32,
+          "at": 11914.59999999404,
+          "chars": 5320,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 32,
+          "at": 11915.59999999404,
+          "chars": 5320,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.800000011920929
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 34,
+          "at": 12044.699999988079,
+          "chars": 5420,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 34,
+          "at": 12046.5,
+          "chars": 5420,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 37,
+          "at": 12173.799999982119,
+          "chars": 5560,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 37,
+          "at": 12174.799999982119,
+          "chars": 5560,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.8999999761581421
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 39,
+          "at": 12305.5,
+          "chars": 5660,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 39,
+          "at": 12306.699999988079,
+          "chars": 5660,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 59,
+          "version": 42,
+          "at": 12434.59999999404,
+          "chars": 5820,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 59,
+          "version": 42,
+          "at": 12435.5,
+          "chars": 5820,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.800000011920929
+        },
+        {
+          "kind": "start",
+          "id": 70,
+          "version": 1,
+          "at": 12531.90000000596,
+          "chars": 5920,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 70,
+          "version": 1,
+          "at": 12536.299999982119,
+          "chars": 5920,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.7999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 70,
+          "version": 3,
+          "at": 12659.699999988079,
+          "chars": 6020,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 70,
+          "version": 3,
+          "at": 12660.699999988079,
+          "chars": 6020,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 70,
+          "version": 6,
+          "at": 12785.199999988079,
+          "chars": 6160,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 70,
+          "version": 6,
+          "at": 12786.199999988079,
+          "chars": 6160,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 70,
+          "version": 9,
+          "at": 12910.299999982119,
+          "chars": 6300,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 70,
+          "version": 9,
+          "at": 12913.5,
+          "chars": 6300,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.5
+        },
+        {
+          "kind": "start",
+          "id": 81,
+          "version": 1,
+          "at": 13282,
+          "chars": 6660,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 81,
+          "version": 1,
+          "at": 13285.299999982119,
+          "chars": 6660,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.7999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 81,
+          "version": 4,
+          "at": 13414.299999982119,
+          "chars": 6800,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 81,
+          "version": 4,
+          "at": 13415.299999982119,
+          "chars": 6800,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.8999999761581421
+        },
+        {
+          "kind": "start",
+          "id": 81,
+          "version": 6,
+          "at": 13542,
+          "chars": 6880,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 81,
+          "version": 6,
+          "at": 13543.59999999404,
+          "chars": 6880,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 92,
+          "version": 1,
+          "at": 13582.199999988079,
+          "chars": 6940,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 92,
+          "version": 1,
+          "at": 13586.40000000596,
+          "chars": 6940,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.800000011920929
+        },
+        {
+          "kind": "start",
+          "id": 92,
+          "version": 4,
+          "at": 13707.199999988079,
+          "chars": 7080,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 92,
+          "version": 4,
+          "at": 13708.09999999404,
+          "chars": 7080,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.800000011920929
+        },
+        {
+          "kind": "start",
+          "id": 92,
+          "version": 7,
+          "at": 13832.59999999404,
+          "chars": 7220,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 92,
+          "version": 7,
+          "at": 13833.40000000596,
+          "chars": 7220,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.7000000178813934
+        },
+        {
+          "kind": "start",
+          "id": 92,
+          "version": 9,
+          "at": 13958.09999999404,
+          "chars": 7320,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 92,
+          "version": 9,
+          "at": 13959.09999999404,
+          "chars": 7320,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1
+        },
+        {
+          "kind": "start",
+          "id": 103,
+          "version": 1,
+          "at": 14332.09999999404,
+          "chars": 7680,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 103,
+          "version": 1,
+          "at": 14336.59999999404,
+          "chars": 7680,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1
+        },
+        {
+          "kind": "start",
+          "id": 103,
+          "version": 4,
+          "at": 14458.699999988079,
+          "chars": 7820,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 103,
+          "version": 4,
+          "at": 14459.799999982119,
+          "chars": 7820,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 103,
+          "version": 7,
+          "at": 14588.40000000596,
+          "chars": 7960,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 103,
+          "version": 7,
+          "at": 14589.799999982119,
+          "chars": 7960,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 103,
+          "version": 10,
+          "at": 14713.5,
+          "chars": 8100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 103,
+          "version": 10,
+          "at": 14714.59999999404,
+          "chars": 8100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 103,
+          "version": 12,
+          "at": 14839.5,
+          "chars": 8200,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 103,
+          "version": 12,
+          "at": 14840.5,
+          "chars": 8200,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 103,
+          "version": 15,
+          "at": 14965.299999982119,
+          "chars": 8340,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 103,
+          "version": 15,
+          "at": 14966.40000000596,
+          "chars": 8340,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1
+        },
+        {
+          "kind": "start",
+          "id": 103,
+          "version": 17,
+          "at": 15095.09999999404,
+          "chars": 8460,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 103,
+          "version": 17,
+          "at": 15096.799999982119,
+          "chars": 8460,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.5
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 1,
+          "at": 15381.699999988079,
+          "chars": 8760,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 1,
+          "at": 15385.09999999404,
+          "chars": 8760,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 3,
+          "at": 15508.40000000596,
+          "chars": 8860,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 3,
+          "at": 15509.799999982119,
+          "chars": 8860,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.0999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 6,
+          "at": 15638.5,
+          "chars": 9000,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 6,
+          "at": 15639.59999999404,
+          "chars": 9000,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 9,
+          "at": 15767.59999999404,
+          "chars": 9160,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 9,
+          "at": 15768.799999982119,
+          "chars": 9160,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.0999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 11,
+          "at": 15896.799999982119,
+          "chars": 9300,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 11,
+          "at": 15898.59999999404,
+          "chars": 9300,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.7000000178813934
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 13,
+          "at": 16021.799999982119,
+          "chars": 9420,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 13,
+          "at": 16023.699999988079,
+          "chars": 9420,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 15,
+          "at": 16155.40000000596,
+          "chars": 9500,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 15,
+          "at": 16156.5,
+          "chars": 9500,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.0999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 18,
+          "at": 16286,
+          "chars": 9660,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 18,
+          "at": 16287.5,
+          "chars": 9660,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 21,
+          "at": 16411.19999998808,
+          "chars": 9800,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 21,
+          "at": 16412.69999998808,
+          "chars": 9800,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 23,
+          "at": 16546.09999999404,
+          "chars": 9900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 23,
+          "at": 16548.90000000596,
+          "chars": 9900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.7000000178813934
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 26,
+          "at": 16672.19999998808,
+          "chars": 10000,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 26,
+          "at": 16674.29999998212,
+          "chars": 10000,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.7999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 114,
+          "version": 27,
+          "at": 16698,
+          "chars": 10000,
+          "streaming": false,
+          "terminal": true
+        },
+        {
+          "kind": "finish",
+          "id": 114,
+          "version": 27,
+          "at": 16700.19999998808,
+          "chars": 10000,
+          "streaming": false,
+          "terminal": true,
+          "parseMs": 1.9000000059604645
+        }
+      ]
+    },
+    {
+      "chars": 50000,
+      "baseline": {
+        "input": {
+          "n": 30,
+          "p50": 27.80000001192093,
+          "p95": 34,
+          "max": 37.400000005960464,
+          "samples": [
+            25,
+            12.599999994039536,
+            29.400000005960464,
+            23.100000023841858,
+            29.099999994039536,
+            28.799999982118607,
+            29.700000017881393,
+            29.5,
+            22.5,
+            28.700000017881393,
+            18.799999982118607,
+            32.30000001192093,
+            29.700000017881393,
+            28.899999976158142,
+            16.900000005960464,
+            12.199999988079071,
+            28.299999982118607,
+            25.400000005960464,
+            8.700000017881393,
+            22.30000001192093,
+            16.400000005960464,
+            34,
+            27.799999982118607,
+            28.599999994039536,
+            29.399999976158142,
+            30.100000023841858,
+            25.5,
+            11.799999982118607,
+            27.80000001192093,
+            37.400000005960464
+          ]
+        },
+        "scroll": {
+          "n": 30,
+          "p50": 33.5,
+          "p95": 43.19999998807907,
+          "max": 46.599999994039536,
+          "samples": [
+            33.099999994039536,
+            33.400000005960464,
+            33.29999998211861,
+            26.099999994039536,
+            31.80000001192093,
+            33.400000005960464,
+            33.599999994039536,
+            35.099999994039536,
+            33.70000001788139,
+            35.599999994039536,
+            33.599999994039536,
+            28.599999994039536,
+            37.29999998211861,
+            40.70000001788139,
+            33.5,
+            35.5,
+            46.599999994039536,
+            25.400000005960464,
+            39.5,
+            33.30000001192093,
+            33.5,
+            28.599999994039536,
+            23.599999994039536,
+            34,
+            33.400000005960464,
+            43.19999998807907,
+            30.69999998807907,
+            33.80000001192093,
+            38.900000005960464,
+            23.299999982118607
+          ]
+        }
+      },
+      "candidate": {
+        "input": {
+          "n": 30,
+          "p50": 31.69999998807907,
+          "p95": 33.20000001788139,
+          "max": 36.80000001192093,
+          "samples": [
+            13,
+            32.69999998807907,
+            8.300000011920929,
+            32.19999998807907,
+            14.299999982118607,
+            31.30000001192093,
+            32.400000005960464,
+            32.5,
+            8.800000011920929,
+            32.099999994039536,
+            8.600000023841858,
+            32.30000001192093,
+            14.099999994039536,
+            32.29999998211861,
+            13.599999994039536,
+            31.69999998807907,
+            6.9000000059604645,
+            32.099999994039536,
+            2,
+            32.400000005960464,
+            6.799999982118607,
+            32.70000001788139,
+            32.5,
+            31.69999998807907,
+            3.4000000059604645,
+            23.69999998807907,
+            31.799999982118607,
+            33.20000001788139,
+            31.099999994039536,
+            36.80000001192093
+          ]
+        },
+        "scroll": {
+          "n": 30,
+          "p50": 34.19999998807907,
+          "p95": 34.80000001192093,
+          "max": 41.599999994039536,
+          "samples": [
+            34.19999998807907,
+            33.5,
+            34.19999998807907,
+            34.20000001788139,
+            34.20000001788139,
+            33.400000005960464,
+            33.5,
+            34.19999998807907,
+            34.39999997615814,
+            33.70000001788139,
+            34.19999998807907,
+            34.099999994039536,
+            34.400000005960464,
+            34,
+            34.5,
+            34.19999998807907,
+            34.19999998807907,
+            34.599999994039536,
+            32.79999998211861,
+            33.900000005960464,
+            34.10000002384186,
+            41.599999994039536,
+            34.80000001192093,
+            33.900000005960464,
+            34.5,
+            33.400000005960464,
+            34.30000001192093,
+            33.69999998807907,
+            34.70000001788139,
+            29.599999994039536
+          ]
+        },
+        "before": {
+          "starts": 172,
+          "maxRunning": 1,
+          "maxPendingPerMessage": 1,
+          "parseMs": 259.2999999523163,
+          "failures": 0,
+          "cacheBytes": 114416,
+          "mountedRows": 11,
+          "logicalMessages": 1000,
+          "navigation": 29
+        },
+        "after": {
+          "starts": 234,
+          "maxRunning": 1,
+          "maxPendingPerMessage": 1,
+          "parseMs": 431.6999997496605,
+          "failures": 0,
+          "cacheBytes": 6537358,
+          "mountedRows": 9,
+          "logicalMessages": 1002,
+          "navigation": 28
+        },
+        "peakRows": 13,
+        "peakNavigation": 30,
+        "firstAt": 336.09999999403954,
+        "terminalFormatMs": 12.299999982118607,
+        "focusPreserved": true,
+        "draftRestored": true,
+        "busy": false,
+        "sampleWindows": [
+          {
+            "at": 1644,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 1891.5,
+            "busy": true,
+            "textChars": 7996
+          },
+          {
+            "at": 2165.2999999821186,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 2408.0999999940395,
+            "busy": true,
+            "textChars": 10495
+          },
+          {
+            "at": 2676.0999999940395,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 2925.899999976158,
+            "busy": true,
+            "textChars": 13096
+          },
+          {
+            "at": 3191.2999999821186,
+            "busy": true,
+            "textChars": 14396
+          },
+          {
+            "at": 3458,
+            "busy": true,
+            "textChars": 15696
+          },
+          {
+            "at": 3731.699999988079,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 3975.2999999821186,
+            "busy": true,
+            "textChars": 18395
+          },
+          {
+            "at": 4248.399999976158,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 4491.299999982119,
+            "busy": true,
+            "textChars": 20796
+          },
+          {
+            "at": 4759.399999976158,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 5008.0999999940395,
+            "busy": true,
+            "textChars": 23396
+          },
+          {
+            "at": 5276.799999982119,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 5525.5,
+            "busy": true,
+            "textChars": 26096
+          },
+          {
+            "at": 5800.0999999940395,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 6041.699999988079,
+            "busy": true,
+            "textChars": 28695
+          },
+          {
+            "at": 6323,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 6558.199999988079,
+            "busy": true,
+            "textChars": 31096
+          },
+          {
+            "at": 6833.5,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 7074.899999976158,
+            "busy": true,
+            "textChars": 33796
+          },
+          {
+            "at": 7357.899999976158,
+            "busy": true,
+            "textChars": 35196
+          },
+          {
+            "at": 7625.699999988079,
+            "busy": true,
+            "textChars": 36596
+          },
+          {
+            "at": 7903.5999999940395,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 8151.0999999940395,
+            "busy": true,
+            "textChars": 38996
+          },
+          {
+            "at": 8408.59999999404,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 8674.799999982119,
+            "busy": true,
+            "textChars": 41796
+          },
+          {
+            "at": 8942.799999982119,
+            "busy": true,
+            "textChars": 0
+          },
+          {
+            "at": 9208.59999999404,
+            "busy": true,
+            "textChars": 44496
+          }
+        ]
+      },
+      "streamingMinIntervalMs": 125,
+      "parsing": [
+        {
+          "kind": "start",
+          "id": 318,
+          "version": 1,
+          "at": 179744.40000000596,
+          "chars": 100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 318,
+          "version": 1,
+          "at": 179744.90000000596,
+          "chars": 100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.19999998807907104
+        },
+        {
+          "kind": "start",
+          "id": 330,
+          "version": 1,
+          "at": 179834.29999998212,
+          "chars": 500,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 330,
+          "version": 1,
+          "at": 179838,
+          "chars": 500,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.29999998211860657
+        },
+        {
+          "kind": "start",
+          "id": 330,
+          "version": 4,
+          "at": 179964.19999998808,
+          "chars": 1100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 330,
+          "version": 4,
+          "at": 179964.79999998212,
+          "chars": 1100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 330,
+          "version": 6,
+          "at": 180092.79999998212,
+          "chars": 1700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 330,
+          "version": 6,
+          "at": 180093.69999998808,
+          "chars": 1700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.3999999761581421
+        },
+        {
+          "kind": "start",
+          "id": 330,
+          "version": 9,
+          "at": 180218,
+          "chars": 2400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 330,
+          "version": 9,
+          "at": 180218.5,
+          "chars": 2400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 341,
+          "version": 1,
+          "at": 180585.19999998808,
+          "chars": 4100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 341,
+          "version": 1,
+          "at": 180588.90000000596,
+          "chars": 4100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.6000000238418579
+        },
+        {
+          "kind": "start",
+          "id": 341,
+          "version": 4,
+          "at": 180710.79999998212,
+          "chars": 4900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 341,
+          "version": 4,
+          "at": 180711.59999999404,
+          "chars": 4900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 0.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 341,
+          "version": 6,
+          "at": 180842.90000000596,
+          "chars": 5400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 341,
+          "version": 6,
+          "at": 180844.59999999404,
+          "chars": 5400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 352,
+          "version": 1,
+          "at": 181101.90000000596,
+          "chars": 6800,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 352,
+          "version": 1,
+          "at": 181105.5,
+          "chars": 6800,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 352,
+          "version": 4,
+          "at": 181231.5,
+          "chars": 7500,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 352,
+          "version": 4,
+          "at": 181238.69999998808,
+          "chars": 7500,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.0999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 352,
+          "version": 6,
+          "at": 181357.69999998808,
+          "chars": 8000,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 352,
+          "version": 6,
+          "at": 181358.90000000596,
+          "chars": 8000,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.100000023841858
+        },
+        {
+          "kind": "start",
+          "id": 363,
+          "version": 1,
+          "at": 181618.69999998808,
+          "chars": 9300,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 363,
+          "version": 1,
+          "at": 181622.69999998808,
+          "chars": 9300,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 363,
+          "version": 4,
+          "at": 181744,
+          "chars": 10000,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 363,
+          "version": 4,
+          "at": 181745.40000000596,
+          "chars": 10000,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 363,
+          "version": 7,
+          "at": 181869,
+          "chars": 10700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 363,
+          "version": 7,
+          "at": 181870.90000000596,
+          "chars": 10700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.800000011920929
+        },
+        {
+          "kind": "start",
+          "id": 374,
+          "version": 1,
+          "at": 182135.40000000596,
+          "chars": 11900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 374,
+          "version": 1,
+          "at": 182138.79999998212,
+          "chars": 11900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 374,
+          "version": 4,
+          "at": 182260.5,
+          "chars": 12700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 374,
+          "version": 4,
+          "at": 182262.19999998808,
+          "chars": 12700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 374,
+          "version": 6,
+          "at": 182394.5,
+          "chars": 13100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 374,
+          "version": 6,
+          "at": 182396.40000000596,
+          "chars": 13100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 374,
+          "version": 9,
+          "at": 182519.5,
+          "chars": 13900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 374,
+          "version": 9,
+          "at": 182521.19999998808,
+          "chars": 13900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 374,
+          "version": 11,
+          "at": 182645.69999998808,
+          "chars": 14400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 374,
+          "version": 11,
+          "at": 182647.19999998808,
+          "chars": 14400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 374,
+          "version": 14,
+          "at": 182771.40000000596,
+          "chars": 15100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 374,
+          "version": 14,
+          "at": 182773.19999998808,
+          "chars": 15100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 374,
+          "version": 16,
+          "at": 182900.09999999404,
+          "chars": 15700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 374,
+          "version": 16,
+          "at": 182902.79999998212,
+          "chars": 15700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.399999976158142
+        },
+        {
+          "kind": "start",
+          "id": 385,
+          "version": 1,
+          "at": 183186,
+          "chars": 17100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 385,
+          "version": 1,
+          "at": 183189.5,
+          "chars": 17100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 385,
+          "version": 4,
+          "at": 183311.19999998808,
+          "chars": 17800,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 385,
+          "version": 4,
+          "at": 183313.19999998808,
+          "chars": 17800,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 1.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 385,
+          "version": 7,
+          "at": 183436.69999998808,
+          "chars": 18500,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 385,
+          "version": 7,
+          "at": 183438.79999998212,
+          "chars": 18500,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2
+        },
+        {
+          "kind": "start",
+          "id": 396,
+          "version": 1,
+          "at": 183702.59999999404,
+          "chars": 19800,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 396,
+          "version": 1,
+          "at": 183706.29999998212,
+          "chars": 19800,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 396,
+          "version": 3,
+          "at": 183828.5,
+          "chars": 20400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 396,
+          "version": 3,
+          "at": 183831.09999999404,
+          "chars": 20400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 396,
+          "version": 6,
+          "at": 183958.09999999404,
+          "chars": 21100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 396,
+          "version": 6,
+          "at": 183960.59999999404,
+          "chars": 21100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 407,
+          "version": 1,
+          "at": 184219.19999998808,
+          "chars": 22400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 407,
+          "version": 1,
+          "at": 184223.19999998808,
+          "chars": 22400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.5999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 407,
+          "version": 3,
+          "at": 184348.40000000596,
+          "chars": 22900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 407,
+          "version": 3,
+          "at": 184362.09999999404,
+          "chars": 22900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 407,
+          "version": 6,
+          "at": 184477.40000000596,
+          "chars": 23700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 407,
+          "version": 6,
+          "at": 184479.69999998808,
+          "chars": 23700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 418,
+          "version": 1,
+          "at": 184736.5,
+          "chars": 24900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 418,
+          "version": 1,
+          "at": 184740.40000000596,
+          "chars": 24900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2
+        },
+        {
+          "kind": "start",
+          "id": 418,
+          "version": 4,
+          "at": 184862.19999998808,
+          "chars": 25700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 418,
+          "version": 4,
+          "at": 184864.79999998212,
+          "chars": 25700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.2999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 418,
+          "version": 7,
+          "at": 184991.09999999404,
+          "chars": 26400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 418,
+          "version": 7,
+          "at": 184993.90000000596,
+          "chars": 26400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.7000000178813934
+        },
+        {
+          "kind": "start",
+          "id": 429,
+          "version": 1,
+          "at": 185252.90000000596,
+          "chars": 27400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 429,
+          "version": 1,
+          "at": 185257.29999998212,
+          "chars": 27400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3
+        },
+        {
+          "kind": "start",
+          "id": 429,
+          "version": 4,
+          "at": 185378.90000000596,
+          "chars": 28100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 429,
+          "version": 4,
+          "at": 185396.09999999404,
+          "chars": 28100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.5
+        },
+        {
+          "kind": "start",
+          "id": 429,
+          "version": 6,
+          "at": 185512,
+          "chars": 28700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 429,
+          "version": 6,
+          "at": 185514.29999998212,
+          "chars": 28700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 440,
+          "version": 1,
+          "at": 185769.29999998212,
+          "chars": 30200,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 440,
+          "version": 1,
+          "at": 185772.79999998212,
+          "chars": 30200,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.7999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 440,
+          "version": 4,
+          "at": 185894.59999999404,
+          "chars": 30900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 440,
+          "version": 4,
+          "at": 185897.79999998212,
+          "chars": 30900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3
+        },
+        {
+          "kind": "start",
+          "id": 440,
+          "version": 6,
+          "at": 186024.40000000596,
+          "chars": 31400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 440,
+          "version": 6,
+          "at": 186028.40000000596,
+          "chars": 31400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 451,
+          "version": 1,
+          "at": 186286.40000000596,
+          "chars": 32800,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 451,
+          "version": 1,
+          "at": 186290,
+          "chars": 32800,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 2.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 451,
+          "version": 3,
+          "at": 186411.40000000596,
+          "chars": 33300,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 451,
+          "version": 3,
+          "at": 186414.69999998808,
+          "chars": 33300,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3
+        },
+        {
+          "kind": "start",
+          "id": 451,
+          "version": 6,
+          "at": 186537.09999999404,
+          "chars": 34000,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 451,
+          "version": 6,
+          "at": 186540.59999999404,
+          "chars": 34000,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.300000011920929
+        },
+        {
+          "kind": "start",
+          "id": 462,
+          "version": 2,
+          "at": 186576.5,
+          "chars": 34200,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 462,
+          "version": 2,
+          "at": 186579.79999998212,
+          "chars": 34200,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.0999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 462,
+          "version": 4,
+          "at": 186709.40000000596,
+          "chars": 34700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 462,
+          "version": 4,
+          "at": 186714.5,
+          "chars": 34700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 4.5
+        },
+        {
+          "kind": "start",
+          "id": 462,
+          "version": 7,
+          "at": 186839.5,
+          "chars": 35400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 462,
+          "version": 7,
+          "at": 186843.19999998808,
+          "chars": 35400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 462,
+          "version": 10,
+          "at": 186964.69999998808,
+          "chars": 36200,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 462,
+          "version": 10,
+          "at": 186968.79999998212,
+          "chars": 36200,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.7999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 462,
+          "version": 12,
+          "at": 187095.40000000596,
+          "chars": 36600,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 462,
+          "version": 12,
+          "at": 187103.29999998212,
+          "chars": 36600,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 4.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 473,
+          "version": 1,
+          "at": 187353.09999999404,
+          "chars": 38100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 473,
+          "version": 1,
+          "at": 187356.79999998212,
+          "chars": 38100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3
+        },
+        {
+          "kind": "start",
+          "id": 473,
+          "version": 3,
+          "at": 187500.29999998212,
+          "chars": 38700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 473,
+          "version": 3,
+          "at": 187505.79999998212,
+          "chars": 38700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 5.299999982118607
+        },
+        {
+          "kind": "start",
+          "id": 484,
+          "version": 1,
+          "at": 187886.69999998808,
+          "chars": 40800,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 484,
+          "version": 1,
+          "at": 187891.29999998212,
+          "chars": 40800,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 4.200000017881393
+        },
+        {
+          "kind": "start",
+          "id": 484,
+          "version": 3,
+          "at": 188037.29999998212,
+          "chars": 41400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 484,
+          "version": 3,
+          "at": 188040.79999998212,
+          "chars": 41400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.2999999821186066
+        },
+        {
+          "kind": "start",
+          "id": 495,
+          "version": 1,
+          "at": 188420.5,
+          "chars": 43500,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 495,
+          "version": 1,
+          "at": 188424.19999998808,
+          "chars": 43500,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.5
+        },
+        {
+          "kind": "start",
+          "id": 495,
+          "version": 3,
+          "at": 188573.19999998808,
+          "chars": 44100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 495,
+          "version": 3,
+          "at": 188577.29999998212,
+          "chars": 44100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 1,
+          "at": 188920.59999999404,
+          "chars": 45900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 1,
+          "at": 188953.29999998212,
+          "chars": 45900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 5.4000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 3,
+          "at": 189050.09999999404,
+          "chars": 46500,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 3,
+          "at": 189056.69999998808,
+          "chars": 46500,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 6.200000017881393
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 5,
+          "at": 189177.69999998808,
+          "chars": 47100,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 5,
+          "at": 189181.90000000596,
+          "chars": 47100,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 3.9000000059604645
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 8,
+          "at": 189307.09999999404,
+          "chars": 47900,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 8,
+          "at": 189312.59999999404,
+          "chars": 47900,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 5.200000017881393
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 10,
+          "at": 189434.79999998212,
+          "chars": 48400,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 10,
+          "at": 189439.19999998808,
+          "chars": 48400,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 4.0999999940395355
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 13,
+          "at": 189560.09999999404,
+          "chars": 49200,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 13,
+          "at": 189566.79999998212,
+          "chars": 49200,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 5.699999988079071
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 15,
+          "at": 189685.29999998212,
+          "chars": 49700,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 15,
+          "at": 189691.69999998808,
+          "chars": 49700,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 6.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 17,
+          "at": 189813.69999998808,
+          "chars": 50000,
+          "streaming": true,
+          "terminal": false
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 17,
+          "at": 189847.09999999404,
+          "chars": 50000,
+          "streaming": true,
+          "terminal": false,
+          "parseMs": 7.199999988079071
+        },
+        {
+          "kind": "start",
+          "id": 506,
+          "version": 18,
+          "at": 189847.09999999404,
+          "chars": 50000,
+          "streaming": false,
+          "terminal": true
+        },
+        {
+          "kind": "finish",
+          "id": 506,
+          "version": 18,
+          "at": 189855.19999998808,
+          "chars": 50000,
+          "streaming": false,
+          "terminal": true,
+          "parseMs": 7.700000017881393
+        }
+      ]
+    }
+  ],
+  "integrity": [
+    {
+      "size": 10000,
+      "count": 1002,
+      "chars": 10000,
+      "sha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1",
+      "emitted": 500,
+      "expectedSha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1"
+    },
+    {
+      "size": 50000,
+      "count": 1002,
+      "chars": 50000,
+      "sha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea",
+      "emitted": 500,
+      "expectedSha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+    }
+  ],
+  "finalFormat": {
+    "coldCache": true,
+    "formatMs": 0.20000001788139343,
+    "terminalWorkerParseMs": 4.5999999940395355,
+    "visibleEnd": true,
+    "longTasks": [],
+    "before": {
+      "starts": 714,
+      "maxRunning": 1,
+      "maxPendingPerMessage": 1,
+      "parseMs": 647.7000002861023,
+      "failures": 0,
+      "cacheBytes": 0,
+      "mountedRows": 13,
+      "logicalMessages": 1014,
+      "navigation": 30
+    },
+    "after": {
+      "starts": 794,
+      "maxRunning": 1,
+      "maxPendingPerMessage": 1,
+      "parseMs": 851.5000003576279,
+      "failures": 0,
+      "cacheBytes": 8240032,
+      "mountedRows": 9,
+      "logicalMessages": 1016,
+      "navigation": 28
+    }
+  }
+}

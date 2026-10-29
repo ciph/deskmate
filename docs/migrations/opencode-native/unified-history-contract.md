@@ -4,6 +4,14 @@ Current contract; catalog storage updated 2026-10-25 on the local YUME 0.4.21 / 
 
 This is the current entry for shared history, empty-session visibility, routing and data/rollback rules. Original receipts are retained in [the archive](../../archive/README.md); historical test counts and package paths below are dated evidence, not a new acceptance run.
 
+## Long transcript view (2026-10-29)
+
+The initial body remains a complete native snapshot. Its whitelist worklog outcome projection shares that read; it does not duplicate tool input/output into the catalog. Subscriptions are established before loading, and `(catalog key, canonical directory, session ID, view generation)` guards every application of asynchronous state. A cursorless snapshot cannot safely replay arbitrary relative deltas. Reconnects and detected gaps reconcile body and receipts together; ordinary idle only verifies known operation IDs.
+
+The transcript and navigation rail use dynamic virtualization with eight overscan rows on each side. Data and native persistence remain complete. Stable message IDs own measurement and horizontal-scroll state. Focus, playing media and selected ranges retain their rows; a trusted select-all inside the transcript may temporarily mount the whole selection. Composer, Stop, approval controls and the drop entry remain outside the virtual list. Navigation uses message indices, including targets that are not mounted.
+
+Full CommonMark/GFM parsing and streaming completion run in one local Worker per window. There is at most one running parse and one latest pending version per mounted message, with a 125 ms streaming cadence and immediate first/final work. Raw text remains visible while formatting catches up. Complete-document parsing preserves cross-block references; stable block fingerprints reuse React output. A 16 MiB session cache is disposable and is cleared on view departure. One controlled Worker restart is allowed; a second failure presents copyable raw text with an explicit formatting notice. Raw HTML and unsafe URL policies are unchanged. The first body read and full parsing inside the Worker remain linear work, not pagination or a new incremental Markdown grammar.
+
 ## Identity and discovery
 
 - Native identity is `(sidecarId, canonical directory, sessionId)`. The persisted catalog lives inside one application data namespace. `managed-local-v1` identifies that namespace's managed OpenCode data store; it survives process, port, credential and application restarts. Another data store must receive a different identity. Never use a process ID or a transient port as identity.

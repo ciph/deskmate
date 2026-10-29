@@ -1,0 +1,918 @@
+{
+  "physical-stop-focus-failure": {
+    "focused": "BODY",
+    "value": "物理验收草稿 KEEP_DRAFT",
+    "stop": false,
+    "aborted": false,
+    "count": "1008"
+  },
+  "physical-stop-fixed": {
+    "focused": "TEXTAREA",
+    "value": "物理验收草稿 KEEP_DRAFT",
+    "stop": false,
+    "aborted": false,
+    "count": "1010"
+  },
+  "physical-continue-fixed": {
+    "count": "1012",
+    "stop": false,
+    "reply": true,
+    "input": "",
+    "focused": "TEXTAREA"
+  },
+  "physical-copy-roundtrip": {
+    "same": true,
+    "chars": 2324
+  },
+  "physical-code-scroll": {
+    "left": 1812.800048828125,
+    "width": 4158,
+    "focused": "PRE"
+  },
+  "physical-code-unmounted": {
+    "codePresent": false,
+    "active": "第 10 轮：Synthetic question 18",
+    "pins": "0",
+    "rows": 13
+  },
+  "physical-code-scroll-restored": {
+    "left": 1812.800048828125,
+    "active": "第 1 轮：Synthetic question 0"
+  },
+  "physical-focus-pinned": {
+    "codePresent": true,
+    "focused": "PRE",
+    "pins": "1",
+    "top": 612
+  },
+  "physical-table-scroll": {
+    "left": 42.400001525878906,
+    "width": 348,
+    "full": 391
+  },
+  "physical-selection-messages": {
+    "selectedChars": 2740,
+    "selectedStart": "Synthetic question 0\nLong History interaction fixture\nSelect this para",
+    "selectedEnd": "E_TABLE_WIDE_TABLE_\tmiddle\ttail\nFinal paragraph.\n\nSynthetic question 2",
+    "retained": "3",
+    "rows": 12
+  },
+  "physical-selection-scroll-diagnostic": {
+    "chars": 2740,
+    "pins": "3",
+    "rows": 14,
+    "events": [
+      {
+        "at": 864101.6999999881,
+        "chars": 0
+      },
+      {
+        "at": 864101.8999999762,
+        "chars": 0,
+        "focus": true,
+        "active": "BODY"
+      },
+      {
+        "at": 870565.3999999762,
+        "chars": 2740,
+        "anchor": "prt_lh_interactions_0_0",
+        "focus": "prt_lh_interactions_2_0"
+      },
+      {
+        "at": 870565.3999999762,
+        "chars": 2740,
+        "focus": true,
+        "active": "BODY",
+        "nodes": [
+          {
+            "connected": true,
+            "row": "prt_lh_interactions_0_0"
+          },
+          {
+            "connected": true,
+            "row": "prt_lh_interactions_2_0"
+          }
+        ]
+      }
+    ],
+    "mutations": []
+  },
+  "physical-select-all": {
+    "chars": 3959,
+    "all": "true",
+    "rows": 20,
+    "focused": "DIV",
+    "events": [
+      {
+        "at": 717562.2999999821,
+        "chars": 3959
+      }
+    ]
+  },
+  "physical-select-all-scroll": {
+    "chars": 3959,
+    "all": "true",
+    "rows": 20,
+    "focused": "DIV",
+    "events": [
+      {
+        "at": 717562.2999999821,
+        "chars": 3959
+      }
+    ]
+  },
+  "physical-media-added": {
+    "media": [
+      {
+        "tag": "AUDIO",
+        "src": "http://chat-resource.localhost/a3385728-9899-449f-9595-f4c88ac1e0b8",
+        "duration": 60,
+        "paused": true
+      }
+    ],
+    "text": "b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic streaming payload\nconst b7 = 123; // synthetic str\n\nItem\tStatus\nB7\tCOMPLETE\n\nB7_STREAM_END_50000\n\nlong-history-tone.wav\n音频 · 1.8 MB\n文件夹\n⌄\nb7-local\n⌄\n发送",
+    "buttons": [
+      "第 504 轮：B7STOP B7STARTUP",
+      "第 505 轮：B7STOP B7STARTUP",
+      "第 506 轮：物理验收草稿 KEEPDRAFT",
+      "第 507 轮：B750K format convergence",
+      "第 508 轮：B750K format convergence",
+      "移除 long-history-tone.wav",
+      "附件",
+      "文件夹",
+      "b7-local"
+    ]
+  },
+  "physical-media-play": {
+    "paused": false,
+    "time": 1.012883,
+    "ready": 4
+  },
+  "physical-media-remove": {
+    "media": 0,
+    "remove": false
+  },
+  "physical-media-sent": {
+    "media": [
+      {
+        "row": "msg_5233055caa5c4c77b5ecc997a7173609",
+        "src": "http://chat-resource.localhost/a3385728-9899-449f-9595-f4c88ac1e0b8",
+        "paused": true,
+        "duration": 60
+      }
+    ],
+    "busy": false,
+    "count": "1018"
+  },
+  "physical-media-pinned": {
+    "active": "第 1 轮：Synthetic question 0",
+    "audio": [
+      {
+        "paused": false,
+        "time": 17.04604,
+        "row": "msg_5233055caa5c4c77b5ecc997a7173609",
+        "top": 277583.21875
+      }
+    ],
+    "retained": "1",
+    "rows": 13,
+    "scrollTop": 0
+  },
+  "physical-old-receipts": {
+    "receipts": [
+      "报告已归档",
+      "操作未完成 (NEEDS_EXPLICIT_REQUEST)",
+      "正在确认保存结果，尚未确认成功",
+      "已删除",
+      "正在确认保存结果，尚未确认成功",
+      "正在确认保存结果，尚未确认成功",
+      "正在确认保存结果，尚未确认成功",
+      "正在确认保存结果，尚未确认成功",
+      "正在确认保存结果，尚未确认成功",
+      "正在确认保存结果，尚未确认成功",
+      "正在确认保存结果，尚未确认成功",
+      "正在确认保存结果，尚未确认成功"
+    ],
+    "first": "0"
+  },
+  "physical-scope-b": {
+    "receipts": [
+      "报告已归档",
+      "操作未完成 (SCOPE_B_ONLY)",
+      "正在确认保存结果，尚未确认成功",
+      "已删除",
+      "正在确认保存结果，尚未确认成功"
+    ],
+    "old": false,
+    "rows": [
+      "prt_lh_scope_b_0_0",
+      "msg_lh_scope_b_1",
+      "prt_lh_scope_b_2_0"
+    ]
+  },
+  "physical-scope-a-revisit": {
+    "a": true,
+    "b": false,
+    "rows": [
+      "prt_lh_receipt_0",
+      "msg_lh_receipt_0001",
+      "prt_lh_receipt_2"
+    ]
+  },
+  "final-10k-open": {
+    "name": "10k-open",
+    "metrics": {
+      "starts": 242,
+      "maxRunning": 1,
+      "maxPendingPerMessage": 1,
+      "parseMs": 435.59999972581863,
+      "failures": 0,
+      "cacheBytes": 76352,
+      "mountedRows": 11,
+      "logicalMessages": 10000,
+      "navigation": 29
+    },
+    "display": "block",
+    "spaceStyle": "1.80035e+06px",
+    "spaceRect": 1800354,
+    "scrollTop": 1799742.375,
+    "listRect": {
+      "x": 0.800000011920929,
+      "y": 45.60000228881836,
+      "width": 718.4000244140625,
+      "height": 612.2000122070312,
+      "top": 45.60000228881836,
+      "right": 719.2000244259834,
+      "bottom": 657.8000144958496,
+      "left": 0.800000011920929
+    },
+    "retained": "0",
+    "rows": [
+      {
+        "i": 9989,
+        "text": "Synthetic reply 9989\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -1599.800048828125,
+        "height": 333.8000183105469
+      },
+      {
+        "i": 9990,
+        "text": "Synthetic question 9990",
+        "top": -1265.800048828125,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9991,
+        "text": "Synthetic reply 9991\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -1214.800048828125,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 9992,
+        "text": "Synthetic question 9992",
+        "top": -880.7999877929688,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9993,
+        "text": "Synthetic reply 9993\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -829.7999877929688,
+        "height": 333.8000183105469
+      },
+      {
+        "i": 9994,
+        "text": "Synthetic question 9994",
+        "top": -495.8000183105469,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9995,
+        "text": "Synthetic reply 9995\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -444.8000183105469,
+        "height": 334
+      },
+      {
+        "i": 9996,
+        "text": "Synthetic question 9996",
+        "top": -110.80000305175781,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9997,
+        "text": "Synthetic reply 9997\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -59.79999923706055,
+        "height": 333.8000183105469
+      },
+      {
+        "i": 9998,
+        "text": "Synthetic question 9998",
+        "top": 274.20001220703125,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9999,
+        "text": "Synthetic reply 9999\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": 325.20001220703125,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 10000,
+        "text": "",
+        "top": 659.2000122070312,
+        "height": 12
+      }
+    ],
+    "active": null
+  },
+  "final-10k-head": {
+    "name": "10k-head",
+    "metrics": {
+      "starts": 257,
+      "maxRunning": 1,
+      "maxPendingPerMessage": 1,
+      "parseMs": 443.7999997138977,
+      "failures": 0,
+      "cacheBytes": 219514,
+      "mountedRows": 12,
+      "logicalMessages": 10000,
+      "navigation": 28
+    },
+    "display": "block",
+    "spaceStyle": "1.80072e+06px",
+    "spaceRect": 1800716,
+    "scrollTop": 0,
+    "listRect": {
+      "x": 0.800000011920929,
+      "y": 45.60000228881836,
+      "width": 718.4000244140625,
+      "height": 612.2000122070312,
+      "top": 45.60000228881836,
+      "right": 719.2000244259834,
+      "bottom": 657.8000144958496,
+      "left": 0.800000011920929
+    },
+    "retained": "0",
+    "rows": [
+      {
+        "i": 0,
+        "text": "Synthetic question 0",
+        "top": 59.60000228881836,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 1,
+        "text": "Synthetic reply 1\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 110.5999984741211,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 2,
+        "text": "Synthetic question 2",
+        "top": 444.6000061035156,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 3,
+        "text": "Synthetic reply 3\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 495.6000061035156,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 4,
+        "text": "Synthetic question 4",
+        "top": 829.6000366210938,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5,
+        "text": "Synthetic reply 5\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 880.6000366210938,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 6,
+        "text": "Synthetic question 6",
+        "top": 1214.5999755859375,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 7,
+        "text": "Synthetic reply 7\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 1265.5999755859375,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 8,
+        "text": "Synthetic question 8",
+        "top": 1599.5999755859375,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9,
+        "text": "Synthetic reply 9\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 1650.5999755859375,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 10,
+        "text": "Synthetic question 10",
+        "top": 1984.5999755859375,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 11,
+        "text": "Synthetic reply 11\n\nScope: isolated QA data.\n\nCheck state\nKe",
+        "top": 2035.5999755859375,
+        "height": 333.8999938964844
+      }
+    ],
+    "active": "第 1 轮：Synthetic question 0"
+  },
+  "final-10k-middle": {
+    "name": "10k-middle",
+    "metrics": {
+      "starts": 267,
+      "maxRunning": 1,
+      "maxPendingPerMessage": 1,
+      "parseMs": 450.89999982714653,
+      "failures": 0,
+      "cacheBytes": 315014,
+      "mountedRows": 20,
+      "logicalMessages": 10000,
+      "navigation": 36
+    },
+    "display": "block",
+    "spaceStyle": "1.80113e+06px",
+    "spaceRect": 1801127,
+    "scrollTop": 902212,
+    "listRect": {
+      "x": 0.800000011920929,
+      "y": 45.60000228881836,
+      "width": 718.4000244140625,
+      "height": 612.2000122070312,
+      "top": 45.60000228881836,
+      "right": 719.2000244259834,
+      "bottom": 657.8000144958496,
+      "left": 0.800000011920929
+    },
+    "retained": "0",
+    "rows": [
+      {
+        "i": 5002,
+        "text": "Synthetic question 5002",
+        "top": -1481.4000244140625,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5003,
+        "text": "Synthetic reply 5003\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -1430.4000244140625,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5004,
+        "text": "Synthetic question 5004",
+        "top": -1096.4000244140625,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5005,
+        "text": "Synthetic reply 5005\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -1045.4000244140625,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5006,
+        "text": "Synthetic question 5006",
+        "top": -711.4000244140625,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5007,
+        "text": "Synthetic reply 5007\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -660.4000244140625,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5008,
+        "text": "Synthetic question 5008",
+        "top": -326.3999938964844,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5009,
+        "text": "Synthetic reply 5009\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -275.3999938964844,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5010,
+        "text": "Synthetic question 5010",
+        "top": 58.60000228881836,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5011,
+        "text": "Synthetic reply 5011\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": 109.5999984741211,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5012,
+        "text": "Synthetic question 5012",
+        "top": 443.6000061035156,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5013,
+        "text": "Synthetic reply 5013\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": 494.6000061035156,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5014,
+        "text": "Synthetic question 5014",
+        "top": 828.6000366210938,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5015,
+        "text": "Synthetic reply 5015\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": 879.6000366210938,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5016,
+        "text": "Synthetic question 5016",
+        "top": 1213.5999755859375,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5017,
+        "text": "Synthetic reply 5017\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": 1264.5999755859375,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5018,
+        "text": "Synthetic question 5018",
+        "top": 1598.5999755859375,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5019,
+        "text": "Synthetic reply 5019\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": 1649.5999755859375,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 5020,
+        "text": "Synthetic question 5020",
+        "top": 1983.5999755859375,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5021,
+        "text": "Synthetic reply 5021\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": 2034.5999755859375,
+        "height": 333.8999938964844
+      }
+    ],
+    "active": "第 2506 轮：Synthetic question 5010"
+  },
+  "final-10k-tail": {
+    "name": "10k-tail",
+    "metrics": {
+      "starts": 267,
+      "maxRunning": 1,
+      "maxPendingPerMessage": 1,
+      "parseMs": 450.89999982714653,
+      "failures": 0,
+      "cacheBytes": 315014,
+      "mountedRows": 11,
+      "logicalMessages": 10000,
+      "navigation": 28
+    },
+    "display": "block",
+    "spaceStyle": "1.80113e+06px",
+    "spaceRect": 1801127,
+    "scrollTop": 1800515.25,
+    "listRect": {
+      "x": 0.800000011920929,
+      "y": 45.60000228881836,
+      "width": 718.4000244140625,
+      "height": 612.2000122070312,
+      "top": 45.60000228881836,
+      "right": 719.2000244259834,
+      "bottom": 657.8000144958496,
+      "left": 0.800000011920929
+    },
+    "retained": "0",
+    "rows": [
+      {
+        "i": 9989,
+        "text": "Synthetic reply 9989\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -1599.5999755859375,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 9990,
+        "text": "Synthetic question 9990",
+        "top": -1265.5999755859375,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9991,
+        "text": "Synthetic reply 9991\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -1214.5999755859375,
+        "height": 333.8000183105469
+      },
+      {
+        "i": 9992,
+        "text": "Synthetic question 9992",
+        "top": -880.6000366210938,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9993,
+        "text": "Synthetic reply 9993\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -829.6000366210938,
+        "height": 334
+      },
+      {
+        "i": 9994,
+        "text": "Synthetic question 9994",
+        "top": -495.6000061035156,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9995,
+        "text": "Synthetic reply 9995\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -444.6000061035156,
+        "height": 333.8000183105469
+      },
+      {
+        "i": 9996,
+        "text": "Synthetic question 9996",
+        "top": -110.5999984741211,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9997,
+        "text": "Synthetic reply 9997\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": -59.60000228881836,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 9998,
+        "text": "Synthetic question 9998",
+        "top": 274.3999938964844,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9999,
+        "text": "Synthetic reply 9999\n\nScope: isolated QA data.\n\nCheck state\n",
+        "top": 325.3999938964844,
+        "height": 333.8000183105469
+      },
+      {
+        "i": 10000,
+        "text": "",
+        "top": 659.4000244140625,
+        "height": 12
+      }
+    ],
+    "active": "第 5000 轮：Synthetic question 9998"
+  },
+  "final-anchor-before": {
+    "name": "anchor-before",
+    "metrics": {
+      "starts": 277,
+      "maxRunning": 1,
+      "maxPendingPerMessage": 1,
+      "parseMs": 457.7999998033047,
+      "failures": 0,
+      "cacheBytes": 107812,
+      "mountedRows": 14,
+      "logicalMessages": 20,
+      "navigation": 10
+    },
+    "display": "block",
+    "spaceStyle": "4029px",
+    "spaceRect": 4029,
+    "scrollTop": 538.4000244140625,
+    "listRect": {
+      "x": 0.800000011920929,
+      "y": 45.60000228881836,
+      "width": 718.4000244140625,
+      "height": 612.2000122070312,
+      "top": 45.60000228881836,
+      "right": 719.2000244259834,
+      "bottom": 657.8000144958496,
+      "left": 0.800000011920929
+    },
+    "retained": "0",
+    "rows": [
+      {
+        "i": 0,
+        "text": "Synthetic question 0",
+        "top": -478.8000183105469,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 1,
+        "text": "Long History interaction fixture\n\nSelect this paragraph and ",
+        "top": -427.8000183105469,
+        "height": 487.3000183105469
+      },
+      {
+        "i": 2,
+        "text": "Synthetic question 2",
+        "top": 59.20000076293945,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 3,
+        "text": "Synthetic reply 3\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 110.20000457763672,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 4,
+        "text": "Synthetic question 4",
+        "top": 444.20001220703125,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5,
+        "text": "Synthetic reply 5\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 495.20001220703125,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 6,
+        "text": "Synthetic question 6",
+        "top": 829.2000122070312,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 7,
+        "text": "Synthetic reply 7\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 880.2000122070312,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 8,
+        "text": "Synthetic question 8",
+        "top": 1214.2000732421875,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9,
+        "text": "Synthetic reply 9\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 1265.2000732421875,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 10,
+        "text": "Synthetic question 10",
+        "top": 1599.2000732421875,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 11,
+        "text": "Synthetic reply 11\n\nScope: isolated QA data.\n\nCheck state\nKe",
+        "top": 1650.2000732421875,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 12,
+        "text": "Synthetic question 12",
+        "top": 1984.2000732421875,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 13,
+        "text": "Synthetic reply 13\n\nScope: isolated QA data.\n\nCheck state\nKe",
+        "top": 2035.2000732421875,
+        "height": 333.8999938964844
+      }
+    ],
+    "active": "第 2 轮：Synthetic question 2"
+  },
+  "final-anchor-after": {
+    "name": "anchor-after",
+    "metrics": {
+      "starts": 277,
+      "maxRunning": 1,
+      "maxPendingPerMessage": 1,
+      "parseMs": 457.7999998033047,
+      "failures": 0,
+      "cacheBytes": 107812,
+      "mountedRows": 14,
+      "logicalMessages": 20,
+      "navigation": 10
+    },
+    "display": "block",
+    "spaceStyle": "4111px",
+    "spaceRect": 4111,
+    "scrollTop": 620.7999877929688,
+    "listRect": {
+      "x": 0.800000011920929,
+      "y": 45.60000228881836,
+      "width": 518.4000244140625,
+      "height": 612.2000122070312,
+      "top": 45.60000228881836,
+      "right": 519.2000244259834,
+      "bottom": 657.8000144958496,
+      "left": 0.800000011920929
+    },
+    "retained": "0",
+    "rows": [
+      {
+        "i": 0,
+        "text": "Synthetic question 0",
+        "top": -561.2000122070312,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 1,
+        "text": "Long History interaction fixture\n\nSelect this paragraph and ",
+        "top": -510.20001220703125,
+        "height": 568.7999877929688
+      },
+      {
+        "i": 2,
+        "text": "Synthetic question 2",
+        "top": 58.79999923706055,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 3,
+        "text": "Synthetic reply 3\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 109.80000305175781,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 4,
+        "text": "Synthetic question 4",
+        "top": 443.8000183105469,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 5,
+        "text": "Synthetic reply 5\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 494.8000183105469,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 6,
+        "text": "Synthetic question 6",
+        "top": 828.7999877929688,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 7,
+        "text": "Synthetic reply 7\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 879.7999877929688,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 8,
+        "text": "Synthetic question 8",
+        "top": 1213.800048828125,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 9,
+        "text": "Synthetic reply 9\n\nScope: isolated QA data.\n\nCheck state\nKee",
+        "top": 1264.800048828125,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 10,
+        "text": "Synthetic question 10",
+        "top": 1598.800048828125,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 11,
+        "text": "Synthetic reply 11\n\nScope: isolated QA data.\n\nCheck state\nKe",
+        "top": 1649.800048828125,
+        "height": 333.8999938964844
+      },
+      {
+        "i": 12,
+        "text": "Synthetic question 12",
+        "top": 1983.800048828125,
+        "height": 50.79999923706055
+      },
+      {
+        "i": 13,
+        "text": "Synthetic reply 13\n\nScope: isolated QA data.\n\nCheck state\nKe",
+        "top": 2034.800048828125,
+        "height": 333.8999938964844
+      }
+    ],
+    "active": "第 2 轮：Synthetic question 2"
+  }
+}

@@ -1,6 +1,6 @@
 # 当前验收与待办
 
-核对日期：2026-10-28，YUME 0.4.22。B6/B7 本机整改已经交付并随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.22-windows/README.md) 和 [逐项审计](performance-evidence/b7-windows-closeout-20261028/audit-matrix.json) 集中维护完成结论。下表是未验范围，不是自动开始下一轮施工的指令。
+核对日期：2026-10-29，YUME 0.4.22。B6/B7 本机整改已经交付并随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.22-windows/README.md) 和 [逐项审计](performance-evidence/b7-windows-closeout-20261028/audit-matrix.json) 集中维护完成结论。后续长历史施工使用独立记录，尚未升版或发布。下表是未验范围，不是自动开始下一轮施工的指令。
 
 ## 当前验证入口
 
@@ -17,7 +17,7 @@
 | 故障与迁移 | 自动容量限制/事务故障、原生受控失败回滚、重开已验；磁盘实际耗尽、任意中断及完整修复 UI 未穷尽 |
 | 渲染与生命周期 | 三类宠物隐藏恢复、PDF 32 次 worker 清理已验；全部动作极值和长期零泄漏未证明 |
 
-保留原模型与默认 60 fps。长历史全挂载、全文 Markdown、回执全会话读取、R06/D20/M19c 剩余成本见 [交付报告的开发建议](performance-evidence/b7-windows-closeout-20261028/README.md#后续开发建议)，不自动转成无限验收轮次。
+保留原模型与默认 60 fps。长历史全挂载、界面线程全文 Markdown、回执重复全会话读取三条链的本轮实现与验收见[长历史施工交付记录](performance-evidence/long-history-closeout-20261029/README.md)。首次正文仍完整加载，Markdown Worker 仍执行全文解析；R06 全快照比较、D20 全库读取、M19c 硬删除扫描仍保留，见 [B7 交付报告的开发建议](performance-evidence/b7-windows-closeout-20261028/README.md#后续开发建议)。这些边界不自动转成无限验收轮次。
 
 ## 其他既有审计与平台待办
 

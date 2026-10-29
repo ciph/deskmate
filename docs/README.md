@@ -1,6 +1,6 @@
 # YUME 文档入口
 
-最近整理：2026-10-28，YUME 0.4.22 / OpenCode 1.18.21。B6/B7 本机整改已经随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.22-windows/README.md) 和 [未验范围](verification-backlog.md) 为现行入口。历史记录不再用于安排新的验收轮次。
+最近整理：2026-10-29，YUME 0.4.22 / OpenCode 1.18.21。B6/B7 本机整改已经随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.22-windows/README.md) 和 [未验范围](verification-backlog.md) 为现行入口。后续长历史施工未升版、未发布，使用下方独立交付记录。历史记录不再用于安排新的验收轮次。
 
 ## 当前产品与维护契约
 
@@ -27,6 +27,7 @@
 
 | 入口 | 当前责任 |
 | --- | --- |
+| [长历史交互与回执读取施工方案](long-history-construction-plan.md) / [施工交付记录](performance-evidence/long-history-closeout-20261029/README.md) | B0–B4 已完成，G1–G5 通过；三条实现链与收尾文档本地提交，未升版/推送/发布；测量、证据和剩余边界集中维护于交付记录 |
 | [性能整改施工计划](performance-remediation-plan.md) / [Windows 接管入口](performance-windows-handoff.md) / [Mac 施工记录](performance-remediation-handoff.md) / [便携证据](performance-evidence/README.md) | 原 20 项审计的设计、已交付修复与证据；B6/B7 已随 Windows 0.4.22 发布，严格平台/硬件未验范围保留；旧施工顺序不自动重启 |
 | [仓库审计](../AUDIT.md) | 2026-09-30 基线 findings；历史基线不等于当前缺陷均仍存在 |
 | [审计整改方案](audit-remediation-construction-plan.md) / [施工进度](audit-remediation-progress.md) | 运行、记忆库、UI、工作台和历史简化的实施依赖与真实结果 |
