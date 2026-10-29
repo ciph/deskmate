@@ -1633,6 +1633,7 @@ pub fn run() {
             worklog::commands::worklog_list_runs,
             worklog::commands::worklog_retry_run,
             worklog::commands::worklog_get_operation,
+            worklog::commands::worklog_get_operation_states,
             worklog::export::worklog_export_report,
             sidecar_base_url,
             sidecar_auth,

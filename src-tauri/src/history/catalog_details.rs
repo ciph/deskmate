@@ -30,7 +30,7 @@ mod tests {
         ])).unwrap();
         let entry = new_entry(CatalogIdentity::Native { sidecar_id:"managed-local-v1".into(), directory:"c:/project-a".into(), session_id:"ses_same".into() }, "Agent".into(), ConversationSource::Workbench, 1, 2);
         // When the catalog load response is encoded for the renderer.
-        let loaded = CatalogLoaded { origin_run_id: native_origin(&entry, &records), agent_details: for_entry(&entry, &records, None), entry: entry.into(), messages: Vec::new() };
+        let loaded = CatalogLoaded { origin_run_id: native_origin(&entry, &records), agent_details: for_entry(&entry, &records, None), entry: entry.into(), messages: Vec::new(), worklog_outcomes: Vec::new() };
         let value = serde_json::to_value(loaded).unwrap();
         // Then scoped completion and scheduled provenance survive the wire contract.
         assert_eq!(value["agentDetails"]["status"], "completed");

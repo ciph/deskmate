@@ -21,48 +21,40 @@ const toolOutput = (status: "pending" | "rejected") => ({
   }) },
 });
 
-test("opening a native session restores its rejected journal receipt without another reply", async () => {
-  getSessionMessages.mockResolvedValue([{ parts: [toolOutput("rejected")] }]);
-  const hook = renderHook(() => useWorklogChat("reopened"));
+const rejected = [{ messageId: "message", requestId, error: "NEEDS_EXPLICIT_REQUEST", undoable: false }];
+test("opening uses the shared snapshot with zero extra full-session reads", async () => {
+  invoke.mockResolvedValue([]);
+  const hook = renderHook(() => useWorklogChat("reopened", "C:/project-b", "view:1", rejected));
   await act(async () => {});
-  expect(getSessionMessages).toHaveBeenCalledWith("reopened", undefined);
+  expect(getSessionMessages).not.toHaveBeenCalled();
+  expect(invoke).toHaveBeenCalledWith("worklog_get_operation_states", { requestIds: [requestId] });
   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
 });
-
-test("receipt recovery reads the selected native directory", async () => {
-  renderHook(() => useWorklogChat("reopened", "C:/project-b"));
+test("revisiting a directory cannot publish an older batch into the new view", async () => {
+  let finish: (value: unknown) => void = () => {};
+  invoke.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+  invoke.mockResolvedValue([]);
+  const hook = renderHook(({ directory, generation }: { directory: string; generation: number }) => useWorklogChat("same", directory, String(generation), generation === 1 ? rejected : undefined), { initialProps: { directory: "C:/one", generation: 1 } });
   await act(async () => {});
-  expect(getSessionMessages).toHaveBeenCalledWith("reopened", "C:/project-b");
-});
-
-test("revisiting a session cannot publish its previous recovery after switching directories", async () => {
-  let finish: (value: readonly { parts: readonly unknown[] }[]) => void = () => {};
-  getSessionMessages.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
-  const hook = renderHook(({ directory }: { directory: string }) => useWorklogChat("same-id", directory), {
-    initialProps: { directory: "C:/first" },
-  });
-  hook.rerender({ directory: "C:/second" });
-  hook.rerender({ directory: "C:/first" });
-  await act(async () => { finish([{ parts: [toolOutput("rejected")] }]); });
+  hook.rerender({ directory: "C:/two", generation: 2 });
+  hook.rerender({ directory: "C:/one", generation: 3 });
+  await act(async () => { finish([{ requestId, receipt: { operationId: requestId, entityId: "old", entityKind: "entry", revision: 1, status: "committed" }, run: null, schedule: null, entityMissing: false }]); });
   expect(hook.result.current.operations).toEqual([]);
 });
-
-test("a late history recovery cannot publish receipts into another session", async () => {
-  let finish: (value: readonly { parts: readonly unknown[] }[]) => void = () => {};
-  getSessionMessages.mockImplementation(session => session === "old" ? new Promise(resolve => { finish = resolve; }) : Promise.resolve([]));
-  const hook = renderHook(({session}: {session: string}) => useWorklogChat(session), {initialProps: {session: "old"}});
-  hook.rerender({session: "new"});
-  await act(async () => { finish([{parts: [toolOutput("rejected")]}]); });
-  expect(hook.result.current.operations).toEqual([]);
+test("empty history and ordinary idle never read the whole conversation", async () => {
+  const hook = renderHook(() => useWorklogChat("session", "C:/one", "key", []));
+  await act(async () => { await hook.result.current.refreshKnown(); });
+  expect(invoke).not.toHaveBeenCalled();
+  expect(getSessionMessages).not.toHaveBeenCalled();
 });
 
 test("unrelated journal changes do not turn a rejected operation back into pending", async () => {
-  invoke.mockResolvedValue(null);
+  invoke.mockResolvedValue([]);
   const hook = renderHook(() => useWorklogChat("session"));
   await act(async () => { hook.result.current.acceptTool(toolOutput("rejected")); });
   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
   await act(async () => { changed?.(); });
-  expect(invoke).toHaveBeenCalledWith("worklog_get_operation", { requestId });
+  expect(invoke).toHaveBeenCalledWith("worklog_get_operation_states", { requestIds: [requestId] });
   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
 });
 
@@ -73,16 +65,16 @@ test("late empty receipt lookup cannot erase a later rejection", async () => {
   await act(async () => { hook.result.current.acceptTool(toolOutput("pending")); });
   await act(async () => { hook.result.current.acceptTool(toolOutput("rejected")); });
   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
-  await act(async () => { finish(null); });
+  await act(async () => { finish([]); });
   expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
 });
 
 test("a verified host receipt can resolve a previously pending operation", async () => {
-  invoke.mockResolvedValue(null);
+  invoke.mockResolvedValue([]);
   const hook = renderHook(() => useWorklogChat("session"));
   await act(async () => { hook.result.current.acceptTool(toolOutput("pending")); });
   const receipt = { operationId: requestId, entityId: "entry", entityKind: "entry", revision: 1, businessDate: "2026-10-27", status: "committed" as const };
-  invoke.mockResolvedValue(receipt);
+  invoke.mockResolvedValue([{requestId,receipt,run:null,schedule:null,entityMissing:false}]);
   await act(async () => { changed?.(); });
   expect(hook.result.current.operations[0]?.receipt).toEqual(receipt);
   expect(hook.result.current.operations[0]?.error).toBeNull();
@@ -94,7 +86,7 @@ test("an old-session save completes without publishing a receipt into the new ch
   let operationLookups = 0;
   invoke.mockImplementation(async (command) => {
     if (command === "worklog_record") return saveResponse;
-    if (command === "worklog_get_operation") operationLookups += 1;
+    if (command === "worklog_get_operation_states") operationLookups += 1;
     return null;
   });
   const hook = renderHook(({ session }: { readonly session: string }) => useWorklogChat(session), { initialProps: { session: "old-session" } });

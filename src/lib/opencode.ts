@@ -290,11 +290,13 @@ export async function abortSession(sessionID: string, directory?: string): Promi
 export async function subscribeEvents(
   onEvent: (e: OpenCodeEvent) => void,
   directory?: string,
+  onConnected?: (reconnected: boolean) => void,
 ): Promise<() => void> {
   const base = await getBaseUrl();
   const headers = { Accept: "text/event-stream", ...(await authHeaders()) };
   const controller = new AbortController();
   let closed = false;
+  let connected = false;
 
   const parseChunk = (raw: string) => {
     const data = raw
@@ -319,6 +321,8 @@ export async function subscribeEvents(
           signal: controller.signal,
         });
         if (!res.ok || !res.body) throw new Error(`event stream ${res.status}`);
+        onConnected?.(connected);
+        connected = true;
         const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
         let buffer = "";
         for (;;) {

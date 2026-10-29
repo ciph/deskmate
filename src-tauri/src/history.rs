@@ -18,6 +18,7 @@ pub(crate) mod catalog_cache;
 mod catalog_content;
 mod catalog_query;
 mod native_files;
+mod worklog_outcomes;
 pub(crate) mod catalog_preview;
 mod catalog_details;
 pub(crate) mod catalog_local;

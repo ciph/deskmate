@@ -19,7 +19,6 @@ import {
   confirmPromptSubmission,
   createSession,
   promptAsync,
-  subscribeEvents,
   waitForServer,
   SessionAbortError,
   type OpenCodeEvent,
@@ -70,6 +69,7 @@ import { ChatText } from "./ChatText";
 import { createStreamTextBuffer } from "./streamText";
 import { ChatMessageRow, type TextChatMessage, type ToolActivity } from "./ChatMessageRow";
 import { ChatNavigation } from "./ChatNavigation";
+import { createConversationEvents, type ConversationEventScope } from "./conversationEvents";
 import { useWorklogChat, type ChatWorklogOperation } from "./useWorklogChat";
 import { WorklogReceipt, worklogChatCopy } from "./WorklogReceipt";
 import { buildWorklogSystemInstruction, newUserMessageId, registerWorklogTurn, WORKLOG_TOOLS } from "./worklogActions";
@@ -82,7 +82,7 @@ import { INHERIT_MODEL, getConversationModel, resolveConversationModel, setConve
 import { useAgentRun } from "./useAgentRun";
 import { useAgentHistoryView } from "./useAgentHistoryView";
 import { HistoryOrganizer } from "./HistoryOrganizer";
-import { catalogAccess, catalogLoad, saveLocalMessages, type UnifiedHistoryRow } from "../lib/unifiedHistory";
+import { catalogAccess, catalogLoad, saveLocalMessages, type UnifiedHistoryRow, type CatalogLoadResult } from "../lib/unifiedHistory";
 import { validateSharedConversation, loadSharedConversation, conversationReadOnlyReason, canControlRunningReply } from "./sharedConversation";
 import { useHistoryOrganizerRequest } from "./useHistoryOrganizerRequest";
 import { toOpenCodeToolPart } from "./toolPart";
@@ -200,8 +200,18 @@ export default function ChatApp() {
   const stoppingReplyRef = useRef<typeof replyRequestRef.current>(null);
   const settlingReplyKeyRef = useRef<string | undefined>(undefined);
   const viewGenerationRef = useRef(0);
+  const viewGeneration = viewGenerationRef.current;
   const localReplySnapshotRef = useRef(false);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const eventHandlers = useRef<{ deliver: (event: OpenCodeEvent) => void; reconcile: (scope: ConversationEventScope) => Promise<void> }>({ deliver: () => {}, reconcile: async () => {} });
+  const [conversationEvents] = useState(() => createConversationEvents(event => eventHandlers.current.deliver(event), scope => eventHandlers.current.reconcile(scope)));
+  const [worklogSnapshot, setWorklogSnapshot] = useState<{ generation: number; loaded: CatalogLoadResult } | null>(null);
+  const [eventSnapshotRevision, setEventSnapshotRevision] = useState(0);
+  const rememberLoaded = useCallback((loaded: CatalogLoadResult, generation = viewGenerationRef.current) => {
+    if (generation !== viewGenerationRef.current) return;
+    if (loaded.entry.identity.kind === "native") conversationEvents.snapshot({ key: loaded.entry.key, directory: loaded.entry.identity.directory, sessionId: loaded.entry.identity.sessionId, generation }, loaded.entry.runtime === "running");
+    setWorklogSnapshot({ generation, loaded });
+  }, [conversationEvents]);
   const currentDirectory = catalogEntry?.identity.kind === "native" ? catalogEntry.identity.directory : undefined;
   const sessionDirectory = () => catalogEntryRef.current?.identity.kind === "native" ? catalogEntryRef.current.identity.directory : undefined;
 
@@ -301,7 +311,10 @@ export default function ChatApp() {
       void unlisten.then((off) => off());
     };
   }, [currentSessionId, currentDirectory]);
-  const worklog = useWorklogChat(currentSessionId, currentDirectory ?? undefined);
+  const worklog = useWorklogChat(currentSessionId, currentDirectory, `${catalogEntry?.key ?? ""}:${viewGenerationRef.current}`,
+    worklogSnapshot?.generation === viewGenerationRef.current && worklogSnapshot.loaded.entry.key === catalogEntry?.key ? worklogSnapshot.loaded.worklogOutcomes : undefined);
+  const worklogRef = useRef(worklog);
+  useLayoutEffect(() => { worklogRef.current = worklog; }, [worklog]);
   const [memoryNotice, setMemoryNotice] = useState<string | null>(null);
   const t = dict(lang);
   // Latest dict for use inside stable callbacks (SSE handler, task listener).
@@ -328,7 +341,7 @@ export default function ChatApp() {
     open: openHistory,
     openScoped: openScopedAgentHistory,
     leave: leaveAgentHistory,
-  } = useAgentHistoryView(agent.projection.active?.sessionId ?? null);
+  } = useAgentHistoryView(agent.projection.active?.sessionId ?? null, rememberLoaded);
   const canContinueAgentHistory = agentHistoryId !== null && agentHistoryArchive?.agentDetails?.status !== "active"
     && catalogEntry?.ownership === "agent" && !catalogEntry.archived && catalogEntry.availability === "available";
   const controlsCurrentReply = canControlRunningReply(catalogEntry, status === "busy" ? replyRequestRef.current?.catalogKey ?? settlingReplyKeyRef.current : undefined);
@@ -382,6 +395,7 @@ export default function ChatApp() {
   const rolesRef = useRef<Map<string, string>>(new Map());
   const messagePersonasRef = useRef(new Map<string, string>());
   const listRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const followLatestRef = useRef(true);
   const lastScrollUserRef = useRef<string | undefined>(undefined);
   const dragDepthRef = useRef(0);
@@ -666,8 +680,12 @@ export default function ChatApp() {
   }, [loadPersona, resetSession]);
 
   const handleEvent = useCallback((e: OpenCodeEvent) => {
-    if (agentHistoryActiveRef.current) return;
     const props = e.properties ?? {};
+    if (e.type === "message.part.updated") {
+      const part = props.part as { sessionID?: string; type?: string } | undefined;
+      if (part?.type === "tool" && part.sessionID === sessionRef.current) worklogRef.current.acceptTool(part);
+    }
+    if (agentHistoryActiveRef.current) return;
 
     switch (e.type) {
       case "message.updated": {
@@ -711,7 +729,6 @@ export default function ChatApp() {
           streamText.push(part.messageID, part.id, part.text ?? "");
         } else if (part.type === "tool") {
           if (WORKLOG_TOOLS.some((tool) => tool === part.tool)) {
-            worklog.acceptTool(part);
             clearAssistantTool(part.messageID);
             return;
           }
@@ -744,7 +761,7 @@ export default function ChatApp() {
         if (streamText.append(messageID, partID, delta)) {
           setIsPersonaTyping(true);
           petActivity.part({ sessionID, messageID, type: "text" });
-        }
+        } else if (streamText.awaitingSnapshot(messageID, partID)) conversationEvents.markGap();
         break;
       }
       case "session.status": {
@@ -759,7 +776,7 @@ export default function ChatApp() {
         if (props.sessionID !== sessionRef.current || replyRequestRef.current === null) return;
         petActivity.idle(props.sessionID);
         if (typeof props.sessionID === "string") {
-          void worklog.recover(props.sessionID);
+          void worklogRef.current.refreshKnown();
         }
         void completeReplyPresentation();
         break;
@@ -797,18 +814,29 @@ export default function ChatApp() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!currentSessionId || !currentDirectory) return;
-    let closed = false;
-    const subscription = subscribeEvents((event) => {
-      const identity = catalogEntryRef.current?.identity;
-      if (!closed && identity?.kind === "native" && identity.directory === currentDirectory && identity.sessionId === currentSessionId) handleEvent(event);
-    }, currentDirectory);
-    return () => {
-      closed = true;
-      void subscription.then((stop) => stop());
+  useLayoutEffect(() => {
+    eventHandlers.current.deliver = handleEvent;
+    eventHandlers.current.reconcile = async (scope) => {
+      const entry = catalogEntryRef.current;
+      if (!entry || entry.key !== scope.key || viewGenerationRef.current !== scope.generation) return;
+      const loaded = await loadSharedConversation(entry);
+      if (viewGenerationRef.current !== scope.generation || catalogEntryRef.current?.key !== scope.key) return;
+      rememberLoaded(loaded, scope.generation);
+      streamText.reset();
+      streamText.restore(loaded.messages.filter(message => message.role === "assistant" && !message.localOnly));
+      if (loaded.agentDetails) openScopedAgentHistory(loaded);
+      else setMessages(historyChatMessages(loaded));
+      setEventSnapshotRevision(value => value + 1);
     };
-  }, [currentSessionId, currentDirectory, handleEvent]);
+  }, [handleEvent, rememberLoaded, streamText, openScopedAgentHistory]);
+  useEffect(() => {
+    if (historyLoading || !currentSessionId || !currentDirectory || !catalogEntry) return;
+    const scope = { key: catalogEntry.key, directory: currentDirectory, sessionId: currentSessionId, generation: viewGenerationRef.current };
+    void conversationEvents.prepare(scope).then(() => {
+      if (viewGenerationRef.current === scope.generation && catalogEntryRef.current?.key === scope.key) conversationEvents.flush(scope);
+    }).catch(error => console.warn("Conversation events unavailable", error instanceof Error ? error.message : "unavailable"));
+  }, [currentSessionId, currentDirectory, catalogEntry?.key, historyLoading, conversationEvents, eventSnapshotRevision, viewGeneration]);
+  useEffect(() => () => conversationEvents.close(), [conversationEvents]);
 
   useEffect(() => {
     const lastUser = messages.filter((message) => message.role === "user").at(-1)?.id;
@@ -879,6 +907,7 @@ export default function ChatApp() {
         try {
           const loaded = await loadSharedConversation(displayed);
           if (generation !== viewGenerationRef.current) return;
+          rememberLoaded(loaded, generation);
           catalogEntryRef.current = loaded.entry;
           setCatalogEntry(loaded.entry);
           if (loaded.entry.archived || loaded.entry.tombstone || loaded.entry.availability !== "available"
@@ -905,6 +934,7 @@ export default function ChatApp() {
             const key = await invoke<string>("history_catalog_native_key", { directory: run.workspacePath, sessionId: run.sessionId });
             const loaded = await catalogLoad(key);
             if (generation !== viewGenerationRef.current) return;
+            rememberLoaded(loaded, generation);
             openScopedAgentHistory(loaded);
             catalogEntryRef.current = loaded.entry;
             setCatalogEntry(loaded.entry);
@@ -1320,10 +1350,15 @@ export default function ChatApp() {
     cancelReplyPresentation();
     setIsPersonaTyping(false);
     try {
+      if (row.identity.kind === "native") {
+        await conversationEvents.prepare({ key: row.key, directory: row.identity.directory, sessionId: row.identity.sessionId, generation });
+        if (generation !== viewGenerationRef.current) return;
+      } else conversationEvents.close();
       const [loaded, restoredSelection] = await Promise.all([loadSharedConversation(row), getConversationModel(row.key)]);
       if (generation !== viewGenerationRef.current) return;
       const entry = loaded.entry;
       if (entry.key !== row.key) throw new Error("history identity changed");
+      rememberLoaded(loaded, generation);
       if (generation !== viewGenerationRef.current) return;
       modelSelectionRef.current = restoredSelection;
       setModelSelection(restoredSelection);
@@ -1376,7 +1411,7 @@ export default function ChatApp() {
     } finally {
       if (generation === viewGenerationRef.current) setHistoryLoading(false);
     }
-  }, [agent, cleanupAttachmentSession, leaveAgentHistory, openHistory, openScopedAgentHistory, resetAttachmentSession, petActivity, streamText]);
+  }, [agent, cleanupAttachmentSession, leaveAgentHistory, openHistory, openScopedAgentHistory, resetAttachmentSession, petActivity, streamText, conversationEvents, rememberLoaded]);
 
   /** Start a fresh session. */
   const newChat = useCallback(async () => {
@@ -1666,6 +1701,7 @@ export default function ChatApp() {
             <div className="chat-input-wrap">
               <div className="chat-textarea-wrap">
                 <textarea
+                  ref={inputRef}
                   className="chat-input"
                   value={input}
                   readOnly={isSubmitting}
@@ -1705,7 +1741,10 @@ export default function ChatApp() {
                   open={openPicker === "model"} onOpenChange={open => setOpenPicker(open ? "model" : null)} />
                 {status === "busy" || runMatchesConversation(agent.projection.active, catalogEntry) ? (
                   <button className="chat-send chat-abort" type="button"
-                    onClick={() => status === "busy" ? void abort() : void agent.stop()}
+                    onClick={() => {
+                      inputRef.current?.focus({ preventScroll: true });
+                      if (status === "busy") void abort(); else void agent.stop();
+                    }}
                     disabled={isCancelling || agent.isStopping} aria-label={t.chatStop}>
                     {isCancelling || agent.isStopping ? t.chatStopping : t.chatStop}
                   </button>

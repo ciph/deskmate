@@ -184,7 +184,7 @@ pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: taur
             CatalogIdentity::Legacy { history_id } => {
                 let session = app.state::<HistoryState>().0.lock().map_err(|_| "history_state_unavailable")?.iter().find(|session| &session.id == history_id && !session.deleted).ok_or("history_not_found")?.clone();
                 let agent_details = super::catalog_details::for_entry(&entry, &app.state::<crate::agent::AgentRunState>().all_records()?, session.origin_run_id.as_deref());
-                Ok(CatalogLoaded { entry: entry.into(), messages: session.messages.into_iter().map(Into::into).collect(), agent_details, origin_run_id: session.origin_run_id })
+                Ok(CatalogLoaded { entry: entry.into(), messages: session.messages.into_iter().map(Into::into).collect(), agent_details, origin_run_id: session.origin_run_id, worklog_outcomes: Vec::new() })
             }
             CatalogIdentity::Native { directory, session_id, .. } => {
                 let client = client(&app)?;
@@ -196,6 +196,7 @@ pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: taur
                 });
                 super::reconcile::apply_discovery(&store, directory, &[native], statuses.as_ref().ok(), &app.state::<crate::agent::AgentRunState>().all_records()?, false)?;
                 let snapshot = snapshot?;
+                let worklog_outcomes = super::worklog_outcomes::project(&snapshot);
                 let profiles = app.path().app_data_dir().ok().map(|path| super::persona::cached_profiles(&path)).unwrap_or_default();
                 let identities = super::persona::message_personas(&snapshot, &profiles);
                 let files = super::native_files::collect(&snapshot);
@@ -211,7 +212,7 @@ pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: taur
                 let origin_run_id = super::catalog_details::native_origin(&entry, &app.state::<crate::agent::AgentRunState>().all_records()?);
                 let local = app.state::<HistoryState>().0.lock().map_err(|_| "history_state_unavailable")?.clone();
                 let (entry, messages) = super::catalog_local::combine_messages(entry.into(), messages, &local, &workspace(&app)?);
-                Ok(CatalogLoaded { entry, messages: super::native_files::attach(messages, files), agent_details, origin_run_id })
+                Ok(CatalogLoaded { entry, messages: super::native_files::attach(messages, files), agent_details, origin_run_id, worklog_outcomes })
             }
         }
     }).await.map_err(|_| "history_load_unavailable".to_owned())?

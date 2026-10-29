@@ -541,7 +541,9 @@ describe("小著固定名字由来回复", () => {
     });
     expect(document.querySelector(".chat-msg-user .chat-bubble")?.textContent).toBe("解释 **Markdown**");
     expect(document.querySelector(".chat-msg-user strong")).toBeNull();
-    expect(document.querySelector(".chat-msg-assistant strong")?.textContent).toBe("内容");
+    jest.useRealTimers();
+    await waitFor(() => expect(document.querySelector(".chat-msg-assistant strong")?.textContent).toBe("内容"));
+    jest.useFakeTimers();
     expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("这是超过两秒才到的内容");
     expect(document.querySelector(".chat-typing")).not.toBeNull();
 
@@ -578,8 +580,9 @@ describe("小著固定名字由来回复", () => {
       receive({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
       await Promise.resolve();
     });
+    jest.useRealTimers();
     expect(document.querySelector(".chat-typing")).toBeNull();
-    expect(document.querySelector(".chat-msg-assistant strong")).toBeNull();
+    await waitFor(() => expect(document.querySelector(".chat-msg-assistant strong") === null).toBe(true));
     expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("这是超过两秒才到的**内容甲乙");
   });
 
@@ -829,7 +832,12 @@ test.each(["idle", "stop", "Aborted", "AbortError", "MessageAbortedError"] as co
     } } });
   };
   await act(async () => {
-    if (terminal !== "idle") fireEvent.click(screen.getByRole("button", { name: "停" }));
+    if (terminal !== "idle") {
+      const stop = screen.getByRole("button", { name: "停" });
+      // A real pointer/keyboard activation moves focus onto Stop before click.
+      stop.focus();
+      fireEvent.click(stop);
+    }
     else eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
     await new Promise(resolve => setTimeout(resolve, 20));
   });
@@ -899,13 +907,14 @@ test("reopening a running read-only native session continues receiving its live 
   await screen.findByText("载入时的部分");
   expect(screen.queryByPlaceholderText("输入消息,Enter 发送")).toBeNull();
   await act(async () => {
+    localMessages = localMessages.map(message => message.role === "assistant" ? { ...message, text: "重新打开后继续更新的正文" } : message);
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_fixed", messageID: "live-native", type: "text", text: "重新打开后继续更新的正文",
     } } });
     eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
     await new Promise(resolve => setTimeout(resolve, 20));
   });
-  expect(screen.getByText("重新打开后继续更新的正文")).toBeDefined();
+  await waitFor(() => expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("重新打开后继续更新的正文"));
   expect(screen.queryByText("载入时的部分")).toBeNull();
   expect(document.querySelector(".chat-typing")).toBeNull();
 });
@@ -928,6 +937,7 @@ test("switching to another native directory and session rejects the previous str
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_fixed", messageID: "old-message", type: "text", text: "旧会话迟到内容",
     } } });
+    localMessages = localMessages.map(message => message.role === "assistant" ? { ...message, text: "另一会话继续回复" } : message);
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_other", messageID: "other-message", type: "text", text: "另一会话继续回复",
     } } });
@@ -953,6 +963,7 @@ test("native part IDs resume into one assistant row without duplicated restored 
   await screen.findByText("hello world");
   const row = document.querySelector('[data-message-id="m1"]');
   await act(async () => {
+    localMessages = localMessages.map(message => message.partId === "p2" ? { ...message, text: "world!" } : message);
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_fixed", messageID: "m1", id: "p2", type: "text", text: "world!",
     } } });
@@ -962,7 +973,7 @@ test("native part IDs resume into one assistant row without duplicated restored 
     eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
     await new Promise(resolve => setTimeout(resolve, 20));
   });
-  expect(screen.getByText("hello world!")).toBeDefined();
+  await waitFor(() => expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("hello world!"));
   expect(document.querySelectorAll(".chat-msg-assistant")).toHaveLength(1);
   expect(document.querySelector('[data-message-id="m1"]')).toBe(row);
 });
@@ -988,6 +999,7 @@ test("a Stop confirmation for an old generation cannot cancel a newly selected n
   await act(async () => {
     finishAbort?.();
     await Promise.resolve(); await Promise.resolve();
+    localMessages = localMessages.map(message => message.role === "assistant" ? { ...message, text: "other final after old Stop" } : message);
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_other", messageID: "other-message", id: "other-part", type: "text", text: "other final after old Stop",
     } } });

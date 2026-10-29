@@ -36,6 +36,7 @@ pub(crate) enum CatalogMutation {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct CatalogLoaded {
     pub entry: CatalogRow,
+    pub worklog_outcomes: Vec<super::worklog_outcomes::WorklogOutcome>,
     pub messages: Vec<super::native_files::CatalogMessage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub agent_details: Option<super::recovery::AgentHistoryDetails>,

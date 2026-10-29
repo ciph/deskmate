@@ -85,4 +85,15 @@ export const generateReport = (request: GenerateReport): Promise<OperationReceip
 export const listRuns = (): Promise<readonly Run[]> => invoke("worklog_list_runs");
 export const retryRun = (request: RetryRun): Promise<OperationReceipt> => invoke("worklog_retry_run", { request });
 export const getOperation = (requestId: string): Promise<OperationReceipt | null> => invoke("worklog_get_operation", { requestId });
+export type RunSummary = Pick<Run, "id" | "state" | "resultReportId">;
+export type ScheduleSummary = Pick<Schedule, "id" | "nextDueAt">;
+export interface OperationState {
+  readonly requestId: string;
+  readonly receipt: OperationReceipt | null;
+  readonly run: RunSummary | null;
+  readonly schedule: ScheduleSummary | null;
+  readonly entityMissing: boolean;
+}
+export const getOperationStates = (requestIds: readonly string[]): Promise<readonly OperationState[]> =>
+  requestIds.length ? invoke("worklog_get_operation_states", { requestIds }) : Promise.resolve([]);
 export const onWorklogChanged = (handler: () => void): Promise<UnlistenFn> => listen(WORKLOG_CHANGED_EVENT, handler);

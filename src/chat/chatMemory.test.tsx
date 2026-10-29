@@ -1,3 +1,4 @@
+import { eventStreamFixture } from "../testing/eventStreamFixture";
 import { catalogPageFixture, historyArgument, nativeHistoryFixture, registeredHistoryFixture } from "../testing/historyCatalogFixtures";
 // allow: SIZE_OK — chat memory acceptance cases share one end-to-end ChatApp harness.
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
@@ -43,6 +44,7 @@ function jsonResponse(body: unknown): Response {
 function installOpenCodeTransport(): void {
   const fetchMock = mock((input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(String(input)).pathname;
+    if (url === "/event") return Promise.resolve(eventStreamFixture(init?.signal));
     if (url.endsWith("/session") && init?.method === "GET") {
       return Promise.resolve(new Response(null, { status: 200 }));
     }

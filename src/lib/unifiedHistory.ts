@@ -57,6 +57,13 @@ export interface CatalogLoadResult {
   readonly messages: HistoryMessage[];
   readonly agentDetails?: AgentHistoryDetails;
   readonly originRunId?: string;
+  readonly worklogOutcomes?: readonly WorklogOutcome[];
+}
+export interface WorklogOutcome {
+  readonly messageId: string;
+  readonly requestId: string;
+  readonly error: string | null;
+  readonly undoable: boolean;
 }
 export interface CatalogPreview {
   readonly key: string;

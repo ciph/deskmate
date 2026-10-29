@@ -106,7 +106,11 @@ test("native deltas require a known text part and snapshots remain authoritative
   buffer.reset();
   expect(buffer.append("m", "p", "late")).toBe(false);
   buffer.restore([{ messageId: "restored", partId: "p", text: "old" }]);
-  buffer.append("restored", "p", " new");
+  expect(buffer.append("restored", "p", " possibly duplicate")).toBe(false);
+  buffer.push("restored", "p", "ol");
+  expect(buffer.awaitingSnapshot("restored", "p")).toBe(true);
+  buffer.push("restored", "p", "old new");
+  expect(buffer.awaitingSnapshot("restored", "p")).toBe(false);
   buffer.flush();
   expect(publications.at(-1)).toEqual([{ messageId: "restored", text: "old new" }]);
 });
