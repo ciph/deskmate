@@ -574,7 +574,9 @@ describe("小著固定名字由来回复", () => {
       await Promise.resolve();
     });
     await act(async () => { jest.advanceTimersByTime(33); await Promise.resolve(); });
-    expect(scrollTo).toHaveBeenCalledWith({ top: 1000 });
+    // The virtualizer follows size changes. This fixed-height fixture has no
+    // resize, so remaining at the bottom needs no additional scroll command.
+    expect(list.scrollTop).toBe(800);
 
     await act(async () => {
       receive({ type: "session.idle", properties: { sessionID: "ses_fixed" } });

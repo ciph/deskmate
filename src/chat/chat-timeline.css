@@ -1,0 +1,3 @@
+.chat-list.chat-virtual-list { display: block; overflow-anchor: none; }
+.chat-virtual-space { position: relative; width: 100%; min-height: 1px; margin: 0; padding: 0; list-style: none; }
+.chat-virtual-row { position: absolute; top: 0; left: 0; width: 100%; display: flex; flex-direction: column; padding-bottom: 12px; box-sizing: border-box; }

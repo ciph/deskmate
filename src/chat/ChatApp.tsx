@@ -69,6 +69,8 @@ import { ChatText } from "./ChatText";
 import { createStreamTextBuffer } from "./streamText";
 import { ChatMessageRow, type TextChatMessage, type ToolActivity } from "./ChatMessageRow";
 import { ChatNavigation } from "./ChatNavigation";
+import { ChatTimeline, type TimelineControl } from "./ChatTimeline";
+import { createConversationIndex } from "./conversationIndex";
 import { createConversationEvents, type ConversationEventScope } from "./conversationEvents";
 import { useWorklogChat, type ChatWorklogOperation } from "./useWorklogChat";
 import { WorklogReceipt, worklogChatCopy } from "./WorklogReceipt";
@@ -171,6 +173,10 @@ function runMatchesConversation(run: { sessionId: string | null; workspacePath: 
 
 export default function ChatApp() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [indexMessages] = useState(createConversationIndex);
+  const messageIndex = indexMessages(messages);
+  const timelineControl = useRef<TimelineControl | null>(null);
+  const [visibleMessageIndex, setVisibleMessageIndex] = useState(0);
   const [input, setInput] = useState("");
   const [status, setStatus] = useState<Status>("booting");
   const [isPersonaTyping, setIsPersonaTyping] = useState(false);
@@ -839,11 +845,10 @@ export default function ChatApp() {
   useEffect(() => () => conversationEvents.close(), [conversationEvents]);
 
   useEffect(() => {
-    const lastUser = messages.filter((message) => message.role === "user").at(-1)?.id;
+    const lastUser = messageIndex.lastUser;
     if (lastUser !== lastScrollUserRef.current) followLatestRef.current = true;
     lastScrollUserRef.current = lastUser;
-    if (followLatestRef.current) listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
-  }, [messages, view]);
+  }, [messageIndex.lastUser, view]);
 
   // Mirror messages into a ref for history persistence.
   useEffect(() => {
@@ -1520,7 +1525,8 @@ export default function ChatApp() {
     }
     return byMessage;
   }, [worklog.operations]);
-  const messageIds = useMemo(() => new Set(messages.map(message => message.id)), [messages]);
+  const orphanOperations = useMemo(() => worklog.operations.filter(operation => !messageIndex.ids.has(operation.messageId)), [worklog.operations, messageIndex.ids]);
+  const timelineIds = useMemo(() => [...messageIndex.ids, ...(messages.length ? [] : ["$empty"]), ...(isPersonaTyping ? ["$typing"] : []), ...orphanOperations.map(operation => `$receipt:${operation.requestId}`), "$workspace"], [messageIndex.ids, messages.length, isPersonaTyping, orphanOperations]);
 
   const chatBooting = personalizePersonaCopy(t.chatBooting, activePersonaName);
   const chatEmpty = personalizePersonaCopy(t.chatEmpty, activePersonaName);
@@ -1602,17 +1608,19 @@ export default function ChatApp() {
           }} />
       ) : (
         <>
-          <div className="chat-timeline">
-          <div className="chat-list" ref={listRef} onScroll={(event) => {
-            const list = event.currentTarget;
-            followLatestRef.current = list.scrollHeight - list.clientHeight - list.scrollTop < 48;
-          }}>
-            {messages.length === 0 && (
-              <div className="chat-empty">
-                <ChatText text={chatEmpty} format="plain" />
-              </div>
-            )}
-            {messages.map((m) => {
+          <div className="chat-timeline" data-message-count={messages.length}>
+          <ChatTimeline key={`${catalogEntry?.key ?? "new"}:${viewGenerationRef.current}`} ids={timelineIds} listRef={listRef}
+            controlRef={timelineControl} followRef={followLatestRef} onVisible={setVisibleMessageIndex} geometry={`${lang}:${theme}`}
+            renderRow={(index) => {
+              const m = messages[index];
+              if (!m) {
+                const id = timelineIds[index];
+                if (id === "$empty") return <div className="chat-empty"><ChatText text={chatEmpty} format="plain" /></div>;
+                if (id === "$typing") return <div className="chat-typing" role="status" aria-live="polite">{t.chatTyping}</div>;
+                const operation = orphanOperations.find(item => `$receipt:${item.requestId}` === id);
+                if (operation) return <WorklogReceipt operation={operation} language={lang} onUndo={worklog.undo} onRefresh={worklog.refresh} />;
+                return <WorkspaceTask language={lang} agent={agent} historyDetails={agentHistoryArchive?.agentDetails} compact sessionId={currentSessionId} directory={currentDirectory} />;
+              }
               if (m.role === "artifact") {
                 const artifactState = chatAttachments.artifacts.find(
                   (item) => item.artifact.id === m.artifactId,
@@ -1637,17 +1645,8 @@ export default function ChatApp() {
                   operations={operationsByMessage.get(m.id) ?? EMPTY_OPERATIONS}
                   onUndo={worklog.undo} onRefresh={worklog.refresh} />
               );
-            })}
-            {isPersonaTyping && (
-              <div className="chat-typing" role="status" aria-live="polite">
-                {t.chatTyping}
-              </div>
-            )}
-            {worklog.operations.filter((operation) => !messageIds.has(operation.messageId)).map((operation) => <WorklogReceipt key={operation.requestId} operation={operation} language={lang} onUndo={worklog.undo} onRefresh={worklog.refresh} />)}
-            <WorkspaceTask language={lang} agent={agent} historyDetails={agentHistoryArchive?.agentDetails} compact sessionId={currentSessionId} directory={currentDirectory} />
-          </div>
-
-          <ChatNavigation messages={messages} listRef={listRef} lang={lang} onNavigate={() => { followLatestRef.current = false; }} />
+            }} />
+          <ChatNavigation turns={messageIndex.turns} listRef={listRef} controlRef={timelineControl} visibleIndex={visibleMessageIndex} lang={lang} onNavigate={() => { followLatestRef.current = false; }} />
           </div>
           {memoryNotice && (
             <div className="chat-memory-notice" role="status" aria-live="polite">
