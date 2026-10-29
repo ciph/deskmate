@@ -1,0 +1,114 @@
+{
+  "passed": true,
+  "releaseCommit": "b9c5606863ebd60d18a4004a31188ca6b6d100dc",
+  "releaseRunId": 40830633227,
+  "url": "https://github.com/ciph/deskmate/actions/runs/40830633227",
+  "jobs": [
+    {
+      "id": 123303787818,
+      "name": "checks / Rebuild pinned workbench",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-29T06:40:34Z",
+      "completedAt": "2026-10-29T06:42:07Z",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40830633227/job/123303787818"
+    },
+    {
+      "id": 123303788123,
+      "name": "checks / Source checks (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-29T06:40:34Z",
+      "completedAt": "2026-10-29T06:52:50Z",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40830633227/job/123303788123"
+    },
+    {
+      "id": 123303788175,
+      "name": "checks / Source checks (macos-15)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-29T06:40:35Z",
+      "completedAt": "2026-10-29T06:47:29Z",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40830633227/job/123303788175"
+    },
+    {
+      "id": 123307775146,
+      "name": "Prepare draft release",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-29T06:52:53Z",
+      "completedAt": "2026-10-29T06:53:07Z",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40830633227/job/123307775146"
+    },
+    {
+      "id": 123307865732,
+      "name": "macOS unsigned candidate (local signing required)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-29T06:53:11Z",
+      "completedAt": "2026-10-29T07:09:43Z",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40830633227/job/123307865732"
+    },
+    {
+      "id": 123307865823,
+      "name": "Windows signed release",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-29T06:53:11Z",
+      "completedAt": "2026-10-29T07:18:13Z",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40830633227/job/123307865823"
+    }
+  ],
+  "sourceCounts": [
+    {
+      "platform": "windows",
+      "frontendFiles": 178,
+      "frontend": {
+        "pass": 1386,
+        "fail": 0,
+        "skip": 8
+      },
+      "rust": {
+        "pass": 977,
+        "fail": 0,
+        "ignored": 24
+      }
+    },
+    {
+      "platform": "macos",
+      "frontendFiles": 178,
+      "frontend": {
+        "pass": 1392,
+        "fail": 0,
+        "skip": 0
+      },
+      "rust": {
+        "pass": 968,
+        "fail": 0,
+        "ignored": 23
+      }
+    }
+  ],
+  "localTestsReused": true,
+  "localFullTestsRepeated": false,
+  "targetedRetest": {
+    "file": "src/settings/worklog/ReportEditor.test.tsx",
+    "pass": 7,
+    "fail": 0
+  },
+  "duplicateBranchRunsCancelled": [
+    40829586302,
+    40829586550,
+    40830633204,
+    40830633528
+  ],
+  "initialFailure": {
+    "tag": "v0.4.23",
+    "runId": 40829586381,
+    "reason": "ReportEditor tests synchronously read asynchronous Worker-rendered headings",
+    "testOnlyFix": "7830555",
+    "tagPreserved": true,
+    "assetsPublished": false
+  },
+  "checkedAt": "2026-10-29T07:19:23.259Z"
+}

@@ -1,6 +1,6 @@
 # YUME 文档入口
 
-最近整理：2026-10-29，YUME 0.4.22 / OpenCode 1.18.21。B6/B7 本机整改已经随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.22-windows/README.md) 和 [未验范围](verification-backlog.md) 为现行入口。后续长历史施工未升版、未发布，使用下方独立交付记录。历史记录不再用于安排新的验收轮次。
+最近整理：2026-10-29，YUME 0.4.24 / OpenCode 1.18.21。B6/B7 本机整改与长历史 B0–B4 已随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.24-windows/README.md) 和 [未验范围](verification-backlog.md) 为现行入口。长历史验收原件保留候选时点的版本及状态，公开发布以本次回执为准。历史记录不再用于安排新的验收轮次。
 
 ## 当前产品与维护契约
 
@@ -27,7 +27,7 @@
 
 | 入口 | 当前责任 |
 | --- | --- |
-| [长历史交互与回执读取施工方案](long-history-construction-plan.md) / [施工交付记录](performance-evidence/long-history-closeout-20261029/README.md) | B0–B4 已完成，G1–G5 通过；三条实现链与收尾文档本地提交，未升版/推送/发布；测量、证据和剩余边界集中维护于交付记录 |
+| [长历史交互与回执读取施工方案](long-history-construction-plan.md) / [施工交付记录](performance-evidence/long-history-closeout-20261029/README.md) | B0–B4 已完成，G1–G5 通过；四个提交已推送，随 Windows 0.4.24 发布；测量与原始边界保留于交付记录，公开状态见[发布回执](performance-evidence/release-v0.4.24-windows/README.md) |
 | [性能整改施工计划](performance-remediation-plan.md) / [Windows 接管入口](performance-windows-handoff.md) / [Mac 施工记录](performance-remediation-handoff.md) / [便携证据](performance-evidence/README.md) | 原 20 项审计的设计、已交付修复与证据；B6/B7 已随 Windows 0.4.22 发布，严格平台/硬件未验范围保留；旧施工顺序不自动重启 |
 | [仓库审计](../AUDIT.md) | 2026-09-30 基线 findings；历史基线不等于当前缺陷均仍存在 |
 | [审计整改方案](audit-remediation-construction-plan.md) / [施工进度](audit-remediation-progress.md) | 运行、记忆库、UI、工作台和历史简化的实施依赖与真实结果 |
@@ -39,4 +39,4 @@
 
 [历史记录索引](archive/README.md) 保留旧设计、基线、阶段回执与独有证据。旧记录中的“当前 / 下一步 / 未发布”和凭据阻塞不作为今天的状态或操作指令；未完成事项已列入当前验收入口。
 
-发行说明按原版本保留：[0.4.10](release-v0.4.10.md)、[0.4.11](release-v0.4.11.md)、[0.4.12](release-v0.4.12.md)、[0.4.13](release-v0.4.13.md)、[0.4.14](release-v0.4.14.md)、[0.4.15](release-v0.4.15.md)、[0.4.16](release-v0.4.16.md)、[0.4.17](release-v0.4.17.md)、[0.4.18](release-v0.4.18.md)、[0.4.19](release-v0.4.19.md)、[0.4.20](release-v0.4.20.md)、[0.4.21](release-v0.4.21.md)、[0.4.22](release-v0.4.22.md)。其中的测试数和待发布说明对应该次准备时点；公开状态与安装资产须按发布指南重新核验。
+发行说明按原版本保留：[0.4.10](release-v0.4.10.md)、[0.4.11](release-v0.4.11.md)、[0.4.12](release-v0.4.12.md)、[0.4.13](release-v0.4.13.md)、[0.4.14](release-v0.4.14.md)、[0.4.15](release-v0.4.15.md)、[0.4.16](release-v0.4.16.md)、[0.4.17](release-v0.4.17.md)、[0.4.18](release-v0.4.18.md)、[0.4.19](release-v0.4.19.md)、[0.4.20](release-v0.4.20.md)、[0.4.21](release-v0.4.21.md)、[0.4.22](release-v0.4.22.md)、[0.4.23（未发布）](release-v0.4.23.md)、[0.4.24](release-v0.4.24.md)。其中的测试数和待发布说明对应该次准备时点；公开状态与安装资产须按发布指南重新核验。

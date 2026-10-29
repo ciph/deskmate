@@ -1,0 +1,25 @@
+{
+  "releaseCommit": "b9c5606863ebd60d18a4004a31188ca6b6d100dc",
+  "preservedCommits": [
+    "f59a4a0a20985d9006d3b64edfd9332796061d1e",
+    "df9b7135936f72f103e601dace707f44c76e5421",
+    "25bd5b1c13bb89084f02eedda56ce27116b6f8d4",
+    "3b4c4d0db4f5c13aa9fe82fb546b70acf12c303c"
+  ],
+  "changedSinceAcceptance": [
+    "docs/release-v0.4.23.md",
+    "docs/release-v0.4.24.md",
+    "package.json",
+    "src-tauri/Cargo.lock",
+    "src-tauri/Cargo.toml",
+    "src-tauri/tauri.conf.json",
+    "src/settings/worklog/ReportEditor.test.tsx"
+  ],
+  "productLogicUnchanged": true,
+  "testOnlyFix": "7830555",
+  "targetedRetest": "ReportEditor: 7 pass, 0 fail",
+  "localFullTestsRepeated": false,
+  "notesSha256": "4B7061BA31B18881E33FBE319C1497FC618747C7BA10C0788D0F89762285F4FB",
+  "previousFailedTagPreserved": true,
+  "checkedAt": "2026-10-29T14:40:25.2168205+08:00"
+}

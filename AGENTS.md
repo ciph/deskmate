@@ -3,8 +3,8 @@
 ## 当前入口与状态
 
 - 当前 Windows 开发 checkout：`E:\Codex\工作伙伴\deskmate-windows-b7`，分支 `codex/yume-performance-b6`。每次先核对实际路径、分支、Git 状态及 package.json，不能只信聊天 cwd。
-- 最近发布 Windows 0.4.22，发布源码 `1901fb8`；历史 schema 3、记忆 schema 4。[发布回执](docs/performance-evidence/release-v0.4.22-windows/README.md) 与 [B7 交付报告](docs/performance-evidence/b7-windows-closeout-20261028/README.md) 是当前证据入口。
-- B7 本机整改已交付，严格跨平台/硬件 V2 未全部验收。当前边界与后续成本只在 [Windows 状态](docs/performance-windows-handoff.md) 和 [验收待办](docs/verification-backlog.md) 维护，不继续复制历史进度或轮次估计。
+- 最近发布 Windows 0.4.24，发布源码 `b9c5606`；历史 schema 3、记忆 schema 4。[发布回执](docs/performance-evidence/release-v0.4.24-windows/README.md)、[长历史交付](docs/performance-evidence/long-history-closeout-20261029/README.md) 与 [B7 交付报告](docs/performance-evidence/b7-windows-closeout-20261028/README.md) 是当前证据入口。
+- B7 本机整改及长历史 B0–B4 已交付并随 Windows 发布，严格跨平台/硬件 V2 未全部验收。当前边界与后续成本只在 [Windows 状态](docs/performance-windows-handoff.md) 和 [验收待办](docs/verification-backlog.md) 维护，不继续复制历史进度或轮次估计。
 - 旧 `E:\Codex\工作伙伴\deskmate-public-release`、其他工作树和其中的未提交改动保留。不要因为旧项目入口指向它们就切换施工；不 reset/clean，不移动或删除其 `.git`。
 
 ## 开发、清理与验证

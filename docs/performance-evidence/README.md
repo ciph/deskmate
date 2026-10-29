@@ -1,6 +1,6 @@
 # 性能整改便携证据
 
-最新交付为 [Windows 0.4.22 发布回执](release-v0.4.22-windows/README.md)，本机审计结果见 [B7 完整报告](b7-windows-closeout-20261028/README.md) 与 [20 项矩阵](b7-windows-closeout-20261028/audit-matrix.json)。当前待验统一见 [验收待办](../verification-backlog.md)，此页只维护证据索引。
+最新交付为 [Windows 0.4.24 发布回执](release-v0.4.24-windows/README.md)，长历史 B0–B4 见[独立验收](long-history-closeout-20261029/README.md)，本机审计结果见 [B7 完整报告](b7-windows-closeout-20261028/README.md) 与 [20 项矩阵](b7-windows-closeout-20261028/audit-matrix.json)。当前待验统一见 [验收待办](../verification-backlog.md)，此页只维护证据索引。
 
 ## 各轮记录
 
@@ -8,6 +8,8 @@
 
 | 日期 | 证据范围 |
 | --- | --- |
+| 2026-10-29 | [0.4.24 公开资产、CI、签名、匿名回读及 0.4.23 失败修复](release-v0.4.24-windows/README.md) |
+| 2026-10-29 | [长历史 B0–B4、G1–G5 与 Windows 合成数据物理验收](long-history-closeout-20261029/README.md) |
 | 2026-10-28 | [0.4.22 公开资产、CI、签名与下载回读](release-v0.4.22-windows/README.md) |
 | 2026-10-28 | [本机交付、20 项处置、最终检查及限制](b7-windows-closeout-20261028/README.md) |
 | 2026-10-28 | [release 附件与完整日志物理验收](b7-windows-release-acceptance-20261028/README.md) |

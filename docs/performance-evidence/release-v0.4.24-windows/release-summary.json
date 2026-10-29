@@ -1,0 +1,27 @@
+{
+  "version": "0.4.24",
+  "releaseCommit": "b9c5606863ebd60d18a4004a31188ca6b6d100dc",
+  "releaseRunId": 40830633227,
+  "publishedAt": "2026-10-29T07:21:42Z",
+  "publishedAtAsiaShanghai": "2026-10-29T15:21:42+08:00",
+  "url": "https://github.com/ciph/deskmate/releases/tag/v0.4.24",
+  "latest": true,
+  "installerBytes": 117713742,
+  "installerSha256": "55c06cee9603840ea2dc8acbfbfb48100e422b7316d8e94e6d9e1d53d1b7188d",
+  "authenticodeStatus": "NotSigned",
+  "updaterSignatureVerified": true,
+  "anonymousDownloadVerified": true,
+  "originalFourCommits": [
+    "f59a4a0a20985d9006d3b64edfd9332796061d1e",
+    "df9b7135936f72f103e601dace707f44c76e5421",
+    "25bd5b1c13bb89084f02eedda56ce27116b6f8d4",
+    "3b4c4d0db4f5c13aa9fe82fb546b70acf12c303c"
+  ],
+  "testOnlyFix": "7830555",
+  "previousFailedTag": "v0.4.23",
+  "previousFailedTagPreserved": true,
+  "localFullTestsRepeated": false,
+  "targetedRetest": "ReportEditor: 7 pass, 0 fail",
+  "installedOrGuiUpgradeTested": false,
+  "macosPublished": false
+}

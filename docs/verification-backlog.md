@@ -1,6 +1,6 @@
 # 当前验收与待办
 
-核对日期：2026-10-29，YUME 0.4.22。B6/B7 本机整改已经交付并随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.22-windows/README.md) 和 [逐项审计](performance-evidence/b7-windows-closeout-20261028/audit-matrix.json) 集中维护完成结论。后续长历史施工使用独立记录，尚未升版或发布。下表是未验范围，不是自动开始下一轮施工的指令。
+核对日期：2026-10-29，YUME 0.4.24。B6/B7 本机整改与长历史 B0–B4 已交付并随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.24-windows/README.md) 和 [逐项审计](performance-evidence/b7-windows-closeout-20261028/audit-matrix.json) 集中维护完成结论。长历史候选验收使用独立记录，公开资产核验见本次回执。下表是未验范围，不是自动开始下一轮施工的指令。
 
 ## 当前验证入口
 
@@ -10,7 +10,7 @@
 
 | 范围 | 已有证据与剩余边界 |
 | --- | --- |
-| 最终安装与升级 | Windows 0.4.22 包/图标/签名/匿名下载已过；真实安装与跨版本 GUI 自动升级未实测 |
+| 最终安装与升级 | Windows 0.4.24 包/图标/签名/匿名下载已过；真实安装与跨版本 GUI 自动升级未实测 |
 | Mac | CI 源码检查及未签名候选编译已过；最终实机 GUI/恢复、签名安装与更新仍未验，本次未发 Mac 包 |
 | 显示与性能 | 同 125% DPI 多屏、当前版本输入/滚动/PDF 堆与 RSS/十分钟空闲已有记录；混合 DPI、高刷、受控 GPU/功耗前后对照仍缺少 |
 | 真实模型 | 合成 provider 的审批/日志流程通过，不等于真实模型的日志意图与记忆语义准确率 |
@@ -28,7 +28,7 @@
 | 工作台 W1/W2 | 自有源码直接表达行为、固定输入统一验证、重复准备与失败恢复；普通前端绿灯不关闭此项 |
 | 历史 H1/H2/H3 | H2 按 key 查询、变化行写入与导入指纹已于 2026-10-10 完成源码/隔离测试；新正文投影退出及目标安装版性能仍待验。保留 legacy/local-only、墓碑及身份约束 |
 | 综合 V1 | B7 已补隔离 Windows 审批、跨 30 秒归档失败时的控制推进、取消和活跃工具二次启动；完整 Mac、最终安装包及升级/回退仍按范围待验，不能把合成模型当真实语义验收 |
-| CI / Windows | v0.4.22 两平台 Source checks 与发布流程已实际通过，见[发布回执](performance-evidence/release-v0.4.22-windows/README.md)；branch protection required checks 配置未在本轮核验 |
+| CI / Windows | v0.4.24 两平台 Source checks 与发布流程已实际通过，见[发布回执](performance-evidence/release-v0.4.24-windows/README.md)；branch protection required checks 配置未在本轮核验 |
 | 文件清理条件项 | 以[清理执行进度](repository-cleanup-progress.md)为准；Windows 0.4.22 包图标已验，外部作者资产、其余生成链与 Mac 实机条件不因本机清理而关闭 |
 | Windows QA harness 旧边界 | `p5-windows-e2e.ts` 仍需给 MCP 回传 Notepad PID补新建进程/出生时间/可执行文件归属证明，并保证 setup/cleanup 首项失败不跳过其余关闭与临时根移除；本轮已改默认资源路径、平台预检与schema断言，不宣称此脚本已完整 Windows验收。工作记录 capture 新身份/PID/窗口渲染校验也需要实际 Windows 运行 |
 
@@ -41,7 +41,7 @@
 | 历史与 composer | B7 Windows 已补长流式、Stop/焦点、审批与历史重开；旧记录中的全部窗口尺寸/离线/模型组合仍需按场景核对，不能按一项通过整行关闭。360px CSS 压力规则仍没有 360px 原生截图 | [organizer 回执](archive/history/history-organizer-redesign-plan.md#8-施工记录2026-09-27)、[composer 回执](archive/chat/chat-composer-workspace-model-plan.md#10-实施与验收记录2026-09-27) |
 | 设置与原生材质 | 原 P0 中剩余角色包/异常状态、跨窗口主题同步、全部页面语言组合；标题栏真实拖动、不同系统缩放。P1 材质统一/P2 原生 Vibrancy/Mica 应先核对后续样式接入，再确定尚未覆盖的范围和性能对照 | [P0/P1/P2 历史计划](archive/ui/frontend-redesign-phase-2-plan.md#后续验收边界)、[较晚原生检查](archive/ui/yume-latest-integration-review.md#后续macos-原生窗口检查) |
 | 星运 | Windows 原生窗口及日期变更/恢复行为复验；已有本机持久化、四语言和四主题截图保留，不当 Windows 通过 | [首版验收](archive/horoscope/daily-horoscope-implementation-plan.md#12-首版实施验证记录2026-09-30) |
-| 发布与更新 | v0.4.22 Windows 内容、图标、更新签名和匿名下载已核验；真实安装/隔离 A→B、活动任务等待、取消/失败恢复，以及后续 Mac 签名公证与实机链路仍按目标版本验证 | [macOS gate](macos-release.md)、[runtime checks](macos-runtime-checks.md) |
+| 发布与更新 | v0.4.24 Windows 内容、图标、更新签名和匿名下载已核验；真实安装/隔离 A→B、活动任务等待、取消/失败恢复，以及后续 Mac 签名公证与实机链路仍按目标版本验证 | [macOS gate](macos-release.md)、[runtime checks](macos-runtime-checks.md) |
 
 ## 原生迁移能力余项
 
