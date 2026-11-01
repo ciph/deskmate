@@ -7,6 +7,9 @@ use super::manifest::read_manifest;
 use super::paths::{has_allowed_extension, is_safe_filename, is_safe_id};
 use super::{installed_packs, MANIFEST_NAME};
 pub(crate) fn persona_uses_gif(app: &tauri::AppHandle, persona_id: &str) -> bool {
+    if persona_id == "xiaozhu-morph" {
+        return true;
+    }
     if !is_safe_id(persona_id) {
         return false;
     }

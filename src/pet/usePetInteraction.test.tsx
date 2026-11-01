@@ -17,15 +17,25 @@ beforeEach(() => {
   mock.module("@tauri-apps/api/window", () => ({ ...originalTauriWindow, getCurrentWindow: () => ({ startDragging: drag }) }));
 });
 afterEach(() => { cleanup(); restoreTauriModuleFixture(); mock.module("@tauri-apps/api/window", () => originalTauriWindow); });
-function Surface({ active = true, gif = true, identity = "a" }) {
+function Surface({ active = true, gif = true, identity = "a", onActivate, onDragChange }: {active?: boolean;gif?: boolean;identity?: string;onActivate?:()=>void;onDragChange?:(dragging:boolean)=>void}) {
   const root = useRef<HTMLDivElement>(null);
-  const interaction = usePetInteraction({ root, active, gif, identity, onHeldChange: held, onInteract: activate }, lock);
+  const interaction = usePetInteraction({ root, active, gif, identity, onActivate, onDragChange, onHeldChange: held, onInteract: activate }, lock);
   return <div ref={root}><button type="button" onKeyDown={interaction.onKeyDown} onMouseDown={interaction.onMouseDown} onMouseMove={interaction.onMouseMove} onMouseUp={interaction.onMouseUp} onContextMenu={(event) => { if (interaction.hit(event)) { const release = interaction.hold(); void Promise.resolve().then(release); } }}>
     <img alt="pet" className="gif-pet-image" ref={(element) => { if (element) { element.getBoundingClientRect = () => new DOMRect(0, 0, 240, 240); setGifHitPolygon(element, [[60,60],[180,60],[180,180],[60,180]]); } }} />
   </button></div>;
 }
 const body = { button: 0, clientX: 120, clientY: 120, screenX: 120, screenY: 120 };
 const blank = { button: 0, clientX: 220, clientY: 220, screenX: 220, screenY: 220 };
+
+test("morph clicks activate the pet without opening chat; native drag has paired start/end", async () => {
+  const poke = mock(() => {}), changed = mock((_dragging: boolean) => {});
+  const view = render(<Surface onActivate={poke} onDragChange={changed} />); const button = view.getByRole("button");
+  fireEvent.mouseDown(button, body); fireEvent.mouseUp(button, body);
+  expect(poke).toHaveBeenCalledTimes(1); expect(invoke).not.toHaveBeenCalled();
+  fireEvent.mouseDown(button, body); fireEvent.mouseMove(button, blank); await act(async () => {});
+  expect(changed.mock.calls).toEqual([[true], [false]]); expect(poke).toHaveBeenCalledTimes(1);
+  expect(invoke.mock.calls.some(([command]) => command === "toggle_chat")).toBe(false);
+});
 test("blank down/up never opens chat; body down plus body up does", async () => {
   const view = render(<Surface />); const button = view.getByRole("button");
   fireEvent.mouseDown(button, blank); fireEvent.mouseUp(button, blank);
@@ -74,6 +84,23 @@ test("native drag dispatch completion retains lock until the physical button is 
   pressed = false;
   await act(async () => { await new Promise((resolve) => setTimeout(resolve, 55)); });
   expect(lock.mock.calls.at(-1)).toEqual([false]);
+});
+
+test("WebView blur and pointer cancellation do not end an OS-owned drag", async () => {
+  pressed = true;
+  const changed = mock((_dragging: boolean) => {});
+  const view = render(<Surface onDragChange={changed} />);
+  const button = view.getByRole("button");
+  fireEvent.mouseDown(button, body); fireEvent.mouseMove(button, blank);
+  await act(async () => {});
+  window.dispatchEvent(new Event("blur"));
+  window.dispatchEvent(new Event("pointercancel"));
+  expect(changed.mock.calls).toEqual([[true]]);
+  expect(lock.mock.calls.at(-1)).toEqual([true]);
+  pressed = false;
+  await act(async () => { await new Promise(resolve => setTimeout(resolve, 55)); });
+  expect(changed.mock.calls).toEqual([[true], [false]]);
+  expect(invoke.mock.calls.some(([command]) => command === "toggle_chat")).toBe(false);
 });
 test("subthreshold movement remains a click and unmount clears an active hold", async () => {
   const view = render(<Surface />); const button = view.getByRole("button");

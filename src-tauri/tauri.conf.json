@@ -111,9 +111,11 @@
       "resources/personas/xiaozhu/**/*",
       "resources/personas/xiaozhu-nidaime/**/*",
       "resources/personas/xiaozhu-sandaime/**/*",
+      "resources/personas/xiaozhu-morph/**/*",
       "resources/skills/xiaozhu/**/*",
       "resources/skills/xiaozhu-nidaime/**/*",
-      "resources/skills/xiaozhu-sandaime/**/*"
+      "resources/skills/xiaozhu-sandaime/**/*",
+      "resources/skills/xiaozhu-morph/**/*"
     ]
   },
   "plugins": {

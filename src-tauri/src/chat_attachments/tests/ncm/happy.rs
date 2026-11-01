@@ -1,6 +1,14 @@
 use super::*;
 
 #[test]
+fn authorizes_morph_only_with_declared_skill() {
+    assert!(crate::chat_attachments::ncm::is_authorized("xiaozhu-morph", true));
+    for (id, skill) in [("xiaozhu-morph", false), ("xiaozhu-morph-fake", true), ("xiaozhu-morph ", true)] {
+        assert!(!crate::chat_attachments::ncm::is_authorized(id, skill));
+    }
+}
+
+#[test]
 fn authorizes_third_generation_only_with_declared_skill() {
     let persona_id = "xiaozhu-sandaime";
     assert!(crate::chat_attachments::ncm::is_authorized(

@@ -6,6 +6,7 @@ import config from "../src-tauri/tauri.conf.json";
 
 const root = resolve(import.meta.dir, "..");
 const builtinIds = BUILTIN_PACKS.flatMap(pack => pack.personas.map(persona => persona.id)).sort();
+const glbIds = BUILTIN_PACKS.flatMap(pack => pack.personas.filter(persona => (persona.renderType ?? "glb") === "glb").map(persona => persona.id)).sort();
 
 beforeAll(async () => {
   const build = Bun.spawn([process.execPath, "run", "build"], {
@@ -20,10 +21,11 @@ beforeAll(async () => {
 
 test("ships only built-in persona assets when building with optional source packs present", async () => {
   const entries = await readdir(resolve(root, "dist/personas"));
-  expect(entries.sort()).toEqual(builtinIds);
-  for (const id of builtinIds) {
+  expect(entries.sort()).toEqual(glbIds);
+  for (const id of glbIds) {
     expect(await Bun.file(resolve(root, "dist/personas", id, "figure.glb")).exists()).toBe(true);
   }
+  expect(await Bun.file(resolve(root, "dist/persona-avatars/xiaozhu-morph.png")).exists()).toBe(true);
 });
 
 test("excludes development tooling from the production build", async () => {

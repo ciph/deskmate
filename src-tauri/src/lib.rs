@@ -217,6 +217,14 @@ fn toggle_chat(app: tauri::AppHandle) -> Result<bool, String> {
     toggle_chat_impl(&app)
 }
 
+#[tauri::command]
+fn get_chat_visibility(app: tauri::AppHandle) -> Result<bool, String> {
+    app.get_webview_window("chat")
+        .ok_or_else(|| "chat window missing".to_string())?
+        .is_visible()
+        .map_err(|error| error.to_string())
+}
+
 pub(crate) fn toggle_chat_impl(app: &tauri::AppHandle) -> Result<bool, String> {
     let chat = app
         .get_webview_window("chat")
@@ -274,6 +282,7 @@ pub(crate) fn hide_chat_impl(app: &tauri::AppHandle) -> Result<(), String> {
         .get_webview_window("chat")
         .ok_or("chat window missing")?;
     chat.hide().map_err(|e| e.to_string())?;
+    let _ = app.emit("deskmate://chat-visibility", false);
     clear_chat_motion(app);
     if let Some(shown) = app.try_state::<ChatShown>() {
         *shown
@@ -656,6 +665,7 @@ pub(crate) fn show_chat(app: &tauri::AppHandle) -> Result<(), String> {
     settings_window::apply_chat(app, large).map_err(|error| error.to_string())?;
     reposition_chat(app)?;
     chat.show().map_err(|e| e.to_string())?;
+    let _ = app.emit("deskmate://chat-visibility", true);
     chat.set_focus().map_err(|e| e.to_string())?;
     *shown
         .0
@@ -1673,6 +1683,7 @@ pub fn run() {
             chat_attachments::export_chat_artifact,
             chat_attachments::cleanup_chat_session,
             toggle_chat,
+            get_chat_visibility,
             hide_chat,
             show_chat_window,
             history_entry::show_history_organizer,

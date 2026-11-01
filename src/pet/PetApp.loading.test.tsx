@@ -57,6 +57,8 @@ beforeEach(() => {
     if (command === "plugin:window|cursor_position") return { x: -100, y: -100 };
     if (command === "plugin:window|outer_position") return { x: 0, y: 0 };
     if (command === "plugin:window|scale_factor") return 1;
+    if (command === "plugin:window|outer_size") return { width: 288, height: 202 };
+    if (command === "plugin:window|current_monitor") return { name: "test", position: { x: 0, y: 0 }, size: { width: 1200, height: 800 }, scaleFactor: 1, workArea: { position: { x: 0, y: 0 }, size: { width: 1200, height: 760 } } };
     return null;
   }, { shouldMockEvents: true });
 });
@@ -75,6 +77,25 @@ test("settings, GIF and rig2d startup do not request the GLB module", async () =
   expect(view.getByLabelText("包包桌面伙伴")).not.toBeNull();
   expect(glbLoad).toHaveBeenCalledTimes(0);
   expect(instances).toHaveLength(0);
+});
+
+test("morph startup is ready without GLB and preserves explicit chat access", async () => {
+  initialSettings = { ...gifSettings, personaId: "xiaozhu-morph" };
+  const glbLoad = mock(async () => glbModule);
+  const view = render(<PetApp glbLoad={glbLoad} />);
+  await act(async () => {});
+  expect(view.getByLabelText("百变小著桌面伙伴")).not.toBeNull();
+  expect(view.queryByRole("alert")).toBeNull();
+  expect(view.queryByRole("status")).toBeNull();
+  expect(glbLoad).not.toHaveBeenCalled();
+  const button = view.getByRole("button", { name: "百变小著：单击互动，拖动拎起，双击聊天，右键切换形态" });
+  await act(async () => { fireEvent.keyDown(button, { key: " " }); });
+  expect(commands).not.toContain("toggle_chat");
+  await act(async () => { fireEvent.keyDown(button, { key: "Enter" }); });
+  expect(commands.filter(command => command === "toggle_chat")).toHaveLength(1);
+  await change(glbSettings);
+  expect(glbLoad).toHaveBeenCalledTimes(1);
+  expect(view.queryByLabelText("百变小著桌面伙伴")).toBeNull();
 });
 
 test("2D to 3D waits for module and assets, preserving the current mood and sleep clock", async () => {

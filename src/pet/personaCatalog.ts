@@ -44,7 +44,7 @@ interface PersonaBase {
   readonly skills?: readonly PersonaSkillRef[];
 }
 
-export type PersonaEntry = PersonaBase & ({ readonly renderType?: "glb" } | { readonly renderType: "gif" | "rig2d" });
+export type PersonaEntry = PersonaBase & ({ readonly renderType?: "glb" } | { readonly renderType: "gif" | "rig2d" | "morph" });
 
 export interface PackName {
   readonly zh: string;
@@ -80,13 +80,13 @@ const PIXEL_CLIPS: PersonaClips = {
 };
 
 /**
- * All three 小著 generations are bundled, so a fresh install can switch between
+ * The three 小著 generations and the vector shapeshifter are bundled, so a fresh install can switch between
  * them without downloading a character pack.
  */
 export const AI_SUBSTITUTE_PACK: PackManifest = {
   packId: "ai-substitute",
   name: { zh: "小著", en: "Xiaozhu", ja: "小著", ko: "샤오주" },
-  version: "1.2.0",
+  version: "1.3.0",
   builtin: true,
   thumbnail: "/persona-packs/xiaozhu.png",
   personas: [
@@ -119,6 +119,12 @@ export const AI_SUBSTITUTE_PACK: PackManifest = {
         { name: "打招呼", weight: 60 }, { name: "开心", weight: 20 }, { name: "争辩", weight: 20 },
       ],
       skills: [{ id: "xiaozhu-sandaime", file: "ncmdump.md" }],
+    },
+    {
+      id: "xiaozhu-morph",
+      name: { zh: "百变小著", en: "Shapeshifting Xiaozhu", ja: "変身する小著", ko: "변신 샤오주" },
+      renderType: "morph", clips: STANDARD_CLIPS, scale: 1,
+      skills: [{ id: "xiaozhu-morph", file: "ncmdump.md" }],
     },
   ],
 };

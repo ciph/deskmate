@@ -39,7 +39,7 @@ export interface Rig2dPersonaAssets {
   readonly configUrl: string;
   textureUrl(file: string): Promise<string>;
 }
-export type PersonaAssets = GlbPersonaAssets | GifPersonaAssets | Rig2dPersonaAssets;
+export type PersonaAssets = GlbPersonaAssets | GifPersonaAssets | Rig2dPersonaAssets | { readonly renderType: "morph" };
 
 /** Platform calls, injectable so tests need not mock Tauri modules globally. */
 export interface AssetHost {
@@ -82,6 +82,8 @@ async function importedAssets(
     personaId,
   );
   switch (personaById(personaId).renderType) {
+    case "morph":
+      throw new Error("The shapeshifter is a built-in persona");
     case "gif":
       return { renderType: "gif", configUrl: host.convertFileSrc(await host.join(personaRoot, "figure2d.json")),
         animationUrl: async (file) => host.convertFileSrc(await host.join(personaRoot, ...parseGifPath(file).split("/"))) };
@@ -104,6 +106,7 @@ export async function personaAssets(
   host: AssetHost = tauriHost,
 ): Promise<PersonaAssets> {
   const persona = personaById(id);
+  if (persona.renderType === "morph") return { renderType: "morph" };
   return isBuiltinPack(persona.packId)
     ? builtinAssets(persona.id)
     : importedAssets(persona.packId, persona.id, host);

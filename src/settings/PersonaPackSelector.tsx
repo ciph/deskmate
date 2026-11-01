@@ -29,6 +29,9 @@ export function PersonaPackSelector({
           ))}
         </select>
       </div>
+      {selectedPersonaId === "xiaozhu-morph" && <p className="set-help">
+        {language.startsWith("zh") ? "单击戳一下，拖动拎起，双击聊天；右键切换团子、枕头、年糕、幽灵，也可以散步或睡个小觉。" : "Click to poke, drag to pick up, double-click to chat. Right-click to change shape, walk or nap."}
+      </p>}
     </div>
   );
 }

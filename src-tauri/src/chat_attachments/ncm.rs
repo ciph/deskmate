@@ -12,7 +12,7 @@ pub(super) const NCM_SKILL_FILE: &str = "ncmdump.md";
 pub(super) fn is_xiaozhu(persona_id: &str) -> bool {
     matches!(
         persona_id,
-        "xiaozhu" | "xiaozhu-nidaime" | "xiaozhu-sandaime"
+        "xiaozhu" | "xiaozhu-nidaime" | "xiaozhu-sandaime" | "xiaozhu-morph"
     )
 }
 

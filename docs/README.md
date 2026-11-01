@@ -29,6 +29,7 @@
 
 | 入口 | 当前责任 |
 | --- | --- |
+| [第一版养成系统方案](companion-life-v1-plan.md) | 方案草案，未实施：小窝、自主活动、轻互动、独立存档与原 Agent 共存 |
 | [性能整改施工计划](performance-remediation-plan.md) / [Mac 接续说明](performance-remediation-handoff.md) / [便携证据](performance-evidence/README.md) | 2026-10-22 性能审计；B1–B5 已保存、B6/B7 待做，平台待验和交接入口 |
 | [仓库审计](../AUDIT.md) | 2026-09-30 基线 findings；历史基线不等于当前缺陷均仍存在 |
 | [审计整改方案](audit-remediation-construction-plan.md) / [施工进度](audit-remediation-progress.md) | 运行、记忆库、UI、工作台和历史简化的实施依赖与真实结果 |

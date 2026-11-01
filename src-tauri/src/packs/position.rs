@@ -5,6 +5,13 @@ pub(crate) fn persona_gif_envelope(
     app: &tauri::AppHandle,
     persona_id: &str,
 ) -> Option<crate::pet_geometry::GifEnvelope> {
+    if persona_id == "xiaozhu-morph" {
+        return Some(crate::pet_geometry::GifEnvelope {
+            horizontal: 1.0,
+            top: 1.2,
+            bottom: 0.2,
+        });
+    }
     let root = app.path().app_data_dir().ok()?.join("packs");
     for pack in super::installed_packs_in(&root).ok()? {
         if pack.persona_ids.iter().any(|id| id == persona_id) {
