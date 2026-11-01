@@ -19,6 +19,7 @@ import {
   type MotionHost,
 } from "./desktopMotion";
 import { loadMorphPreferences, saveMorphPreferences } from "./preferences";
+import { glassesTransform, type ScreenGrid } from "./pixelSnap";
 
 export interface MorphPetHandle {
   poke(): void;
@@ -82,6 +83,7 @@ export function MorphPetView({
   const svg = useRef<SVGSVGElement>(null),
     body = useRef<SVGPathElement>(null),
     face = useRef<SVGGElement>(null),
+    glasses = useRef<SVGGElement>(null),
     mouth = useRef<SVGPathElement>(null),
     brows = useRef<SVGPathElement>(null),
     shadow = useRef<SVGEllipseElement>(null),
@@ -219,10 +221,31 @@ export function MorphPetView({
       }),
     ];
     for (const subscription of subscriptions) void subscription.catch(fail);
+    // The SVG box only moves on resize or DPI change; measure it then, not every frame.
+    let grid: ScreenGrid | null = null,
+      lastGlasses = "";
+    const regrid = () => {
+      grid = null;
+    };
+    window.addEventListener("resize", regrid);
+    function screenGrid(): ScreenGrid | null {
+      const ratio = window.devicePixelRatio || 1;
+      if (grid?.ratio === ratio) return grid;
+      const box = svg.current?.getBoundingClientRect();
+      if (!box || box.width <= 0) return null;
+      const scale = box.width / 360;
+      grid = { scale, ratio, x: box.left + 180 * scale, y: box.top + 280 * scale };
+      return grid;
+    }
     function draw() {
       const f = engine.frame();
       body.current?.setAttribute("d", f.d);
       face.current?.setAttribute("transform", `translate(${f.face.join(" ")})`);
+      const snapped = glassesTransform(screenGrid(), f.face);
+      if (snapped && snapped !== lastGlasses) {
+        lastGlasses = snapped;
+        glasses.current?.setAttribute("transform", snapped);
+      }
       mouth.current?.setAttribute("d", f.mouth);
       mouth.current?.setAttribute("stroke-width", String(f.mouthStroke));
       brows.current?.setAttribute("d", f.brows);
@@ -306,6 +329,7 @@ export function MorphPetView({
       motion.dispose();
       current.current = null;
       document.removeEventListener("visibilitychange", changed);
+      window.removeEventListener("resize", regrid);
       for (const subscription of subscriptions)
         void subscription
           .then((stop) => stop())
@@ -349,7 +373,7 @@ export function MorphPetView({
           strokeLinejoin="round"
         />
         <g ref={face}>
-          <MorphSignature />
+          <MorphSignature glasses={glasses} />
           <path
             ref={mouth}
             data-morph-mouth="true"

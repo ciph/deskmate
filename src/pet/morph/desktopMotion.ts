@@ -7,6 +7,11 @@ import {
 import type { Companion, Point } from "./engine";
 
 export const morphEnvelope = { horizontal: 1, top: 1.2, bottom: 0.2 };
+/**
+ * Seconds without a native move sample after which the dragging hand counts as still.
+ * Longer than the 40 ms release poll plus IPC so a real throw keeps its speed.
+ */
+const HAND_STILL = 0.12;
 export interface DesktopGeometry {
   position: Point;
   size: { width: number; height: number };
@@ -177,6 +182,11 @@ export function createDesktopMotion(
     tick(dt: number) {
       if (!active || disposed || syncing || !geometry) return;
       engine.update(dt);
+      // The OS reports drag motion only while the hand moves; a quiet window means it stopped.
+      if (dragging && engine.grab && engine.clock - sampledAt > HAND_STILL) {
+        engine.grab.vx = 0;
+        engine.grab.vy = 0;
+      }
       if (dragging || writing) return;
       const position = desktopOrigin(geometry, engine.size, engine);
       if (

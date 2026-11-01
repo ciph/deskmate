@@ -158,6 +158,33 @@ test("four morphs keep one rigid signature; sleep wakes; hidden rendering stops;
   await act(async () => {});
   expect(api.current!.snapshot().form).toBe("ghost");
 });
+test("pixel glasses snap to device pixels while the soft face keeps its smooth offset", async () => {
+  const ratio = Object.getOwnPropertyDescriptor(globalThis, "devicePixelRatio");
+  Object.defineProperty(globalThis, "devicePixelRatio", { configurable: true, value: 1.25 });
+  const rect = spyOn(SVGElement.prototype, "getBoundingClientRect").mockReturnValue({
+    left: 10.3, top: 4.7, width: 213.333, height: 189.63, right: 223.633, bottom: 194.33, x: 10.3, y: 4.7,
+    toJSON: () => ({}),
+  } as DOMRect);
+  try {
+    const view = render(
+      <MorphPetView width={160} state="idle" visible leaving={false} api={createRef()}
+        onLoaded={() => {}} onError={() => {}}
+        host={{ read: async () => geometry, write: async () => {} }} />,
+    );
+    await act(async () => {});
+    await advance(0.5);
+    const glasses = view.container.querySelector("[data-pixel-glasses]")!;
+    const [, , , s] = /translate\((\S+) (\S+)\) scale\((\S+)\)/.exec(glasses.getAttribute("transform") ?? "")!;
+    const cell = 6 * Number(s) * (213.333 / 360) * 1.25;
+    expect(Math.abs(cell - Math.round(cell))).toBeLessThan(1e-3);
+    expect(glasses.getAttribute("shape-rendering")).toBe("crispEdges");
+    expect(view.container.querySelector("[data-morph-signature] ellipse")?.getAttribute("transform")).toBeNull();
+  } finally {
+    rect.mockRestore();
+    if (ratio) Object.defineProperty(globalThis, "devicePixelRatio", ratio);
+    else Reflect.deleteProperty(globalThis, "devicePixelRatio");
+  }
+});
 test("opening chat stops walking and pauses autonomy until it closes", async () => {
   const api = createRef<MorphPetHandle>();
   const view = render(

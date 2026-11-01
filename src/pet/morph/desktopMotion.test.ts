@@ -100,6 +100,46 @@ test("the OS owns drag movement, then release falls within the work area", async
     geometry.area.y + geometry.area.height + 1,
   );
 });
+test("a hand that stops before letting go drops straight down instead of being thrown", async () => {
+  const engine = new Companion({ size: 160, auto: false });
+  let native = { ...geometry };
+  const motion = createDesktopMotion(
+    engine,
+    {
+      read: async () => native,
+      write: async (p) => {
+        native = { ...native, position: p };
+      },
+    },
+    (error) => {
+      throw error;
+    },
+  );
+  await motion.sync();
+  motion.setActive(true);
+  motion.drag(true);
+  for (let n = 1; n <= 10; n++) {
+    native = { ...native, position: { x: -1200 - 20 * n, y: 400 - 18 * n } };
+    motion.tick(1 / 60);
+    motion.moved(native.position);
+  }
+  expect(engine.grab!.vx).toBeLessThan(-100);
+  // Hand rests for 0.3 s: the OS sends no further move events.
+  for (let n = 0; n < 18; n++) motion.tick(1 / 60);
+  expect(engine.grab!.vx).toBe(0);
+  expect(engine.grab!.vy).toBe(0);
+  motion.drag(false);
+  await flush();
+  await flush();
+  expect(engine.state).toBe("falling");
+  expect(engine.vx).toBe(0);
+  const x = engine.x;
+  for (let n = 0; n < 120; n++) {
+    motion.tick(1 / 60);
+    await flush();
+  }
+  expect(Math.abs(engine.x - x)).toBeLessThan(0.5);
+});
 test("a stale geometry read cannot move a disposed pet", async () => {
   let resolve!: (value: DesktopGeometry) => void;
   const waiting = new Promise<DesktopGeometry>((done) => {
