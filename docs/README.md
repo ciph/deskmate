@@ -1,6 +1,6 @@
 # YUME 文档入口
 
-最近整理：2026-10-29，YUME 0.4.24 / OpenCode 1.18.21。B6/B7 本机整改与长历史 B0–B4 已随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.24-windows/README.md) 和 [未验范围](verification-backlog.md) 为现行入口。长历史验收原件保留候选时点的版本及状态，公开发布以本次回执为准。历史记录不再用于安排新的验收轮次。
+最近整理：2026-11-01，YUME 0.5.0 / OpenCode 1.18.21。Windows 0.5.0 新增百变小著，[发布回执](performance-evidence/release-v0.5.0-windows/README.md)。B6/B7 本机整改与长历史 B0–B4 已随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.24-windows/README.md) 和 [未验范围](verification-backlog.md) 为现行入口。长历史验收原件保留候选时点的版本及状态，公开发布以本次回执为准。历史记录不再用于安排新的验收轮次。
 
 ## 当前产品与维护契约
 

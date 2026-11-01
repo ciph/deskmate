@@ -3,9 +3,9 @@
 ## 当前入口与状态
 
 - 当前 Windows 开发 checkout：`E:\Codex\工作伙伴\deskmate-windows-b7`，分支 `codex/yume-performance-b6`。每次先核对实际路径、分支、Git 状态及 package.json，不能只信聊天 cwd。
-- 最近发布 Windows 0.4.24，发布源码 `b9c5606`；历史 schema 3、记忆 schema 4。[发布回执](docs/performance-evidence/release-v0.4.24-windows/README.md)、[长历史交付](docs/performance-evidence/long-history-closeout-20261029/README.md) 与 [B7 交付报告](docs/performance-evidence/b7-windows-closeout-20261028/README.md) 是当前证据入口。
+- 最近发布 Windows 0.5.0（新增百变小著），发布源码 `be66f65`；历史 schema 3、记忆 schema 4。[0.5.0 发布回执](docs/performance-evidence/release-v0.5.0-windows/README.md)、[0.4.24 发布回执](docs/performance-evidence/release-v0.4.24-windows/README.md)、[长历史交付](docs/performance-evidence/long-history-closeout-20261029/README.md) 与 [B7 交付报告](docs/performance-evidence/b7-windows-closeout-20261028/README.md) 是当前证据入口。
 - B7 本机整改及长历史 B0–B4 已交付并随 Windows 发布，严格跨平台/硬件 V2 未全部验收。当前边界与后续成本只在 [Windows 状态](docs/performance-windows-handoff.md) 和 [验收待办](docs/verification-backlog.md) 维护，不继续复制历史进度或轮次估计。
-- 内置桌宠“百变小著”（`xiaozhu-morph`，`src/pet/morph`）已整合进 main，尚未随任何公开版本发布。角色设定、已确认的墨镜/形态约束、原生实测与未验范围见 [百变小著](docs/xiaozhu-morph.md)；改动共享宠物逻辑时检查其他角色。
+- 内置桌宠“百变小著”（`xiaozhu-morph`，`src/pet/morph`）随 Windows 0.5.0 发布；macOS 尚无包含它的版本。角色设定、已确认的墨镜/形态约束、原生实测与未验范围见 [百变小著](docs/xiaozhu-morph.md)；改动共享宠物逻辑时检查其他角色。
 - 旧 `E:\Codex\工作伙伴\deskmate-public-release`、其他工作树和其中的未提交改动保留。不要因为旧项目入口指向它们就切换施工；不 reset/clean，不移动或删除其 `.git`。
 
 ## 开发、清理与验证

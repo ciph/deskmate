@@ -1,0 +1,3 @@
+cf8a9c8c7ef13c3e8de6c06524362cf0d0d4b876d3487a3aa5b55e626152a6c1  latest.json
+bdf71e3c21d5de62b61e23a9e61e08a4059a8483070908c957d0b00c6d88697b  YUME_0.5.0_x64-setup.exe
+e5c3086c46f9b67d88ec902baf481aaa20ed1c7ad0cfb7aaa47efced5106ccb3  YUME_0.5.0_x64-setup.exe.sig

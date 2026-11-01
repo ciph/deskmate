@@ -1,0 +1,18 @@
+{
+    "latestRedirect":  "https://github.com/ciph/deskmate/releases/tag/v0.5.0",
+    "anonymousApiTag":  "v0.5.0",
+    "YUME_0.5.0_x64-setup.exe":  {
+                                     "sha256":  "bdf71e3c21d5de62b61e23a9e61e08a4059a8483070908c957d0b00c6d88697b",
+                                     "matchesDraft":  true
+                                 },
+    "YUME_0.5.0_x64-setup.exe.sig":  {
+                                         "sha256":  "e5c3086c46f9b67d88ec902baf481aaa20ed1c7ad0cfb7aaa47efced5106ccb3",
+                                         "matchesDraft":  true
+                                     },
+    "latest.json":  {
+                        "sha256":  "cf8a9c8c7ef13c3e8de6c06524362cf0d0d4b876d3487a3aa5b55e626152a6c1",
+                        "matchesDraft":  true
+                    },
+    "updaterUrl":  "https://github.com/ciph/deskmate/releases/download/v0.5.0/YUME_0.5.0_x64-setup.exe",
+    "checkedAt":  "2026-11-01T14:11:10.1794274Z"
+}

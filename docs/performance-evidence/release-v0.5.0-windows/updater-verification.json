@@ -1,0 +1,15 @@
+{
+  "version": "0.5.0",
+  "repository": "ciph/deskmate",
+  "bytes": 117779077,
+  "sha256": "bdf71e3c21d5de62b61e23a9e61e08a4059a8483070908c957d0b00c6d88697b",
+  "updaterSignatureVerified": true,
+  "trustedCommentVerified": true,
+  "tamperRejected": true,
+  "manifestVerified": true,
+  "platforms": [
+    "windows-x86_64",
+    "windows-x86_64-nsis"
+  ],
+  "checkedAt": "2026-11-01T14:08:15.227Z"
+}

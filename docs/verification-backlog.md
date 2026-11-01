@@ -8,7 +8,7 @@
 
 ## 百变小著（`xiaozhu-morph`）
 
-2026-11-01 在 0.4.21 分支实现并于 Windows 原生预览（v1–v4）逐版验证，随后整合进 main（0.4.24）。版本记录、命令与原生测量方法见[百变小著](xiaozhu-morph.md#验证与交付边界)。
+2026-11-01 在 0.4.21 分支实现并于 Windows 原生预览（v1–v5）逐版验证，整合进 main 后随 Windows v0.5.0 发布（[回执](performance-evidence/release-v0.5.0-windows/README.md)）；最终安装包未做安装后实测，macOS 未发布。版本记录、命令与原生测量方法见[百变小著](xiaozhu-morph.md#验证与交付边界)。
 
 | 范围 | 已有证据与剩余边界 |
 | --- | --- |

@@ -1,0 +1,32 @@
+{
+    "releaseRunId":  41311399840,
+    "url":  "https://github.com/ciph/deskmate/actions/runs/41311399840",
+    "releaseCommit":  "be66f65dcdb7b91ee6edcba93f30d8978ea83ec4",
+    "passed":  true,
+    "jobs":  [
+                 {
+                     "name":  "checks / Rebuild pinned workbench",
+                     "conclusion":  "success"
+                 },
+                 {
+                     "name":  "checks / Source checks (macos-15)",
+                     "conclusion":  "success"
+                 },
+                 {
+                     "name":  "checks / Source checks (windows-latest)",
+                     "conclusion":  "success"
+                 },
+                 {
+                     "name":  "Prepare draft release",
+                     "conclusion":  "success"
+                 },
+                 {
+                     "name":  "macOS unsigned candidate (local signing required)",
+                     "conclusion":  "success"
+                 },
+                 {
+                     "name":  "Windows signed release",
+                     "conclusion":  "success"
+                 }
+             ]
+}
