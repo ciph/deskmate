@@ -33,6 +33,12 @@
 
 ## 验证与交付边界
 
+### 整合进 main（2026-11-01）
+
+功能分支以普通合并提交 `65b4e29` 整合 main（0.4.24），快进推送到 main；未升版本、未打标签、未发布。代码无冲突，两处文档冲突按 main 现行结构保留并补百变小著条目。合并树上 `bun run typecheck`、`bun run test:frontend` 182/182 文件、`bun run test:rust` 978 通过、`bun run build`、`scripts/check-version.ps1`（0.4.24）及 Windows 原生 debug 构建通过；main 上的 GitHub Actions “Source checks” run `41308747131` 三个作业（windows-latest、macos-15、Rebuild pinned workbench）均成功。React Doctor 以 main 为基准的两个 error 级诊断位于与 main 相同的 `ChatApp.tsx` 和证据脚本，不是整合引入。
+
+预览 v5 位于 `E:/Codex/工作伙伴/design-artifacts/xiaozhu-yume-native-v5-20261101`，使用新独立身份 `com.deskmate.unifiedhistoryqa.xiaozhumorphmain20261101`，避免 main 的历史/记忆 schema 迁移升级 v1–v4 的测试数据。通过真实设置界面选择百变小著；真实系统输入复测（125%、三屏、60 Hz）新增覆盖：键盘 1–4 切换四形态（轮廓宽高各异）、空格戳碰、双击与 Enter 打开/收起聊天（双击 48 次全部切换）、单击不打开聊天、聊天打开时不自主移动、空闲约 24 s 后自动散步（散步时约 59 fps）。静止松手（横向 0 px）、甩出（继续滑行 67–228 px）、透明命中、右键菜单、跨三屏落地和墨镜像素稳定与 v4 一致；该身份默认 0.5x 时墨镜格宽为 4 设备像素（96×32 px）。
+
 ### 实机手感修复版（2026-11-01）
 
 本轮首次在 Windows 原生预览上直接实测：GDI 截屏分析窗口像素，`SetCursorPos`/`mouse_event` 发出真实系统鼠标输入，按窗口句柄读取原生位置。测试机为 3 台显示器、系统缩放 125%（含一台负坐标竖屏）、60 Hz。视觉模型在本机不可用，像素判定全部用确定性计数，不靠截图描述。
