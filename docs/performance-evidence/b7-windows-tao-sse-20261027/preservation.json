@@ -1,0 +1,126 @@
+{
+  "existingFiles": [
+    {
+      "path": "AGENTS.md",
+      "before": "93c1b5be90eb260d624bc8c1362549b24bf0b69f6f07a1333032c3c0b413de3f",
+      "after": "dde4702260cc1350ea0536eefef18c21e9b636e4ce580e7da481e42a1dbfcbb3",
+      "unchanged": false
+    },
+    {
+      "path": "docs/migrations/opencode-native/unified-history-contract.md",
+      "before": "e762b10fb571861074c32406ebfd42fd542e13c1850ed716dceec68bfa2295bf",
+      "after": "e762b10fb571861074c32406ebfd42fd542e13c1850ed716dceec68bfa2295bf",
+      "unchanged": true
+    },
+    {
+      "path": "docs/performance-evidence/README.md",
+      "before": "c4b07ef82b0b4deb15693aed6081351d53c7e63a0215817d1a874a4b75289f7d",
+      "after": "652d2ec9bad760371a3916f341399d1441d218fb06d9cfbd29b368ed1c3a7f7c",
+      "unchanged": false
+    },
+    {
+      "path": "docs/performance-remediation-plan.md",
+      "before": "f0f76b28931d5bdb3d6a77d691ce65a7997a9fd9f1285e127c0dae3866f7160a",
+      "after": "3dd241db5dd4d0a2fbf4c509cb490efeb4e5c32294500a6469f8e7583944bf87",
+      "unchanged": false
+    },
+    {
+      "path": "docs/performance-windows-handoff.md",
+      "before": "20f9fb15f55b279df8d18e31e5bd8feb3809d2621388d05cd14c4ef70f506697",
+      "after": "a061375f6e8e317617adf55de83d395be6cf7e2c2f795b847986e82e3ecec4fe",
+      "unchanged": false
+    },
+    {
+      "path": "docs/verification-backlog.md",
+      "before": "d41ebc77e4f20af407b8155fd8a1ea1c3f85aa93214de13b9e8b854e2f936fb9",
+      "after": "59dc21a30743968e63c2a333a158741b4689732e624b282101b6adbd501bb3bc",
+      "unchanged": false
+    },
+    {
+      "path": "src-tauri/src/history/catalog_query.rs",
+      "before": "d8b8c4ed47aebaca2a55784cb3825ecf3e5e8cc7b02f0d4dab1df42972883224",
+      "after": "d8b8c4ed47aebaca2a55784cb3825ecf3e5e8cc7b02f0d4dab1df42972883224",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/catalog_sql.rs",
+      "before": "ca75448327d1d7987116a7af1dc599c745c0190d504995c16fc09c241bd81478",
+      "after": "ca75448327d1d7987116a7af1dc599c745c0190d504995c16fc09c241bd81478",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/commands.rs",
+      "before": "d2d7590827a530fc71b357ad484aabf476e7cfcf435aca9e7f8034a3ce521493",
+      "after": "d2d7590827a530fc71b357ad484aabf476e7cfcf435aca9e7f8034a3ce521493",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/maintenance.rs",
+      "before": "629756717a342dc66cbb59629254359de6cd998f7506bb092dc5477392697128",
+      "after": "629756717a342dc66cbb59629254359de6cd998f7506bb092dc5477392697128",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/native_api.rs",
+      "before": "72ab596b100ae0cb4a3dca9ff7cd5b49fb7aa6a071a2b257042c856604490ea3",
+      "after": "72ab596b100ae0cb4a3dca9ff7cd5b49fb7aa6a071a2b257042c856604490ea3",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/history/native_api_tests.rs",
+      "before": "847941feaae0dd0b69e1c3848ea96166d003887d119f35ee6e978badd1e7cf7e",
+      "after": "847941feaae0dd0b69e1c3848ea96166d003887d119f35ee6e978badd1e7cf7e",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/ChatApp.tsx",
+      "before": "b93001eefd85804c8956f216ea648ed4f098f6fb39c5ef70075d457d012f6efa",
+      "after": "b93001eefd85804c8956f216ea648ed4f098f6fb39c5ef70075d457d012f6efa",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/HistoryOrganizer.test.tsx",
+      "before": "ae2f82b462938f61a32748427eced4bafa4ad80398962560b5ba021f017f00f8",
+      "after": "ae2f82b462938f61a32748427eced4bafa4ad80398962560b5ba021f017f00f8",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/HistoryOrganizer.tsx",
+      "before": "df1f42b2fa37912a5ccb59f75746891e5b7dd7c2b8dc8dc94efa6c3021d9c7ba",
+      "after": "df1f42b2fa37912a5ccb59f75746891e5b7dd7c2b8dc8dc94efa6c3021d9c7ba",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/chatFixedReply.test.tsx",
+      "before": "81f2618a2f84312a94f45e9416ed1e5499a67343c4578b2566e88ede958677a5",
+      "after": "81f2618a2f84312a94f45e9416ed1e5499a67343c4578b2566e88ede958677a5",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/nativeResourceFlow.test.tsx",
+      "before": "c6ea6eafba9a44c66332c52265202cf9a0fc1d8087fce9627cdcee4fc41dec44",
+      "after": "c6ea6eafba9a44c66332c52265202cf9a0fc1d8087fce9627cdcee4fc41dec44",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/sharedConversation.test.ts",
+      "before": "bf53f9c334ae26f04a98a0c12eba78308f070500c0842f7d72928e09b361048a",
+      "after": "bf53f9c334ae26f04a98a0c12eba78308f070500c0842f7d72928e09b361048a",
+      "unchanged": true
+    },
+    {
+      "path": "src/chat/sharedConversation.ts",
+      "before": "fcf27dd6851c697215cdd0d0064884fe97fcb39608e77243997564c2eddae2cb",
+      "after": "fcf27dd6851c697215cdd0d0064884fe97fcb39608e77243997564c2eddae2cb",
+      "unchanged": true
+    },
+    {
+      "path": "src/lib/unifiedHistory.ts",
+      "before": "b68525db4221c6d982d10de9db683d853037d1553e926fd69b3127b46dfe63a7",
+      "after": "b68525db4221c6d982d10de9db683d853037d1553e926fd69b3127b46dfe63a7",
+      "unchanged": true
+    }
+  ],
+  "previousPatchSha256": "524c2333f9da97b8a9b31787fdfacb3a8b430ca6c9a9278d92ca4070695cc9b4",
+  "unexpectedExistingChanges": 0
+}

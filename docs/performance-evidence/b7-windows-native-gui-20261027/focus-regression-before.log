@@ -1,0 +1,23 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\chatFixedReply.test.tsx:
+769 |   const input = await screen.findByPlaceholderText<HTMLTextAreaElement>("输入消息,Enter 发送");
+770 |   fireEvent.change(input, { target: { value: "普通流式问题" } });
+771 |   input.focus();
+772 |   fireEvent.keyDown(input, { key: "Enter" });
+773 |   await waitFor(() => expect(promptCount).toBe(1));
+774 |   expect(input.readOnly).toBe(true);
+                               ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatFixedReply.test.tsx:774:26)
+(fail) Enter keeps the composer focusable while submission is locked and rejects duplicate sends [67.89ms]
+
+ 0 pass
+ 23 filtered out
+ 1 fail
+ 3 expect() calls
+Ran 1 test across 1 file. [8.71s]

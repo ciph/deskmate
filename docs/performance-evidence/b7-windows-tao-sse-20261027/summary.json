@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-27",
+  "status": "B7 in progress; Tao and SSE recovery fixes verified",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "branch": "codex/yume-performance-b6",
+  "version": "0.4.21",
+  "schema": {
+    "history": 3,
+    "memory": 4
+  },
+  "committed": false,
+  "pushed": false,
+  "tao": {
+    "before": "native nested WM_PAINT reproduces flush_paint_messages assertion",
+    "after": {
+      "unit": 1,
+      "freshProcessRepeats": 25,
+      "fail": 0
+    },
+    "patch": "outer flush alone completes redraw",
+    "originalExternalTrigger": "not proven"
+  },
+  "sse": {
+    "before": "old native test cannot connect in 40.02 seconds with stalled response headers",
+    "headersDeadlineSeconds": 3,
+    "bodyIdleSeconds": 45,
+    "cancellationPollMs": 100,
+    "retryDelaySeconds": 1,
+    "afterReadyMs": 4103.678599999999,
+    "oldSocketClosedMs": 2998.8689999999997,
+    "stalledSocketsAtReady": 0,
+    "heartbeatObserved": true,
+    "livePermissionRejected": true,
+    "originalServerStallTrigger": "not proven"
+  },
+  "checks": {
+    "rust": {
+      "pass": 974,
+      "fail": 0,
+      "ignored": 24
+    },
+    "permissionEvents": {
+      "pass": 23,
+      "fail": 0,
+      "ignored": 1
+    },
+    "frontend": {
+      "rerun": false,
+      "previousPass": 1361,
+      "previousSkip": 8,
+      "sourceUnchanged": true
+    },
+    "normalBuild": {
+      "exitCode": 0,
+      "binarySha256": "8361A72B9A11E60097B7C330D34D0E71E1E7DF8CAE8E3B139BCE16AABEB3C7B2",
+      "time": "2026-10-27T16:50:13.3556424+08:00"
+    },
+    "worklogTransport": "record + natural query + rejected query distinction + cleanup passed; synthetic host acknowledgment"
+  },
+  "physical": {
+    "identity": "com.deskmate.unifiedhistoryqa.winb7taosse20261027a",
+    "pid": 158032,
+    "approvalReject": true,
+    "approvalAllowOnce": true,
+    "providerToolResultsVerified": true,
+    "rapidResizeCaptureCycles": 12,
+    "settledResizeCaptureCycles": 6,
+    "minimizeRestore": true,
+    "closeAndPetReopen": true,
+    "taoPanic": false,
+    "notes": [
+      "Immediate captures can precede WebView repaint; retained rapid frames are not all visual-pass evidence. Settled first/last frames visually checked.",
+      "One body-decoding disconnect observed before cleanup; automatic global stream reconnection recorded and later approval passed. Forced teardown adds another body error.",
+      "OpenCode list encoder rejects missing webfetch metadata.timeout; the SSE fallback delivered real GUI approvals.",
+      "Initial synthetic provider verification failed because fixture returned SSE for nonstream request; fixed fixture, then physically reverified.",
+      "UIA snapshot timed out; bounded native screenshots and real input succeeded."
+    ]
+  },
+  "cleanup": {
+    "roots": [
+      {
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7taosse20261027a",
+        "deleted": true
+      },
+      {
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7taosse20261027a",
+        "deleted": true
+      }
+    ],
+    "productionIdentityRun": false,
+    "helperProcesses": [],
+    "identity": "com.deskmate.unifiedhistoryqa.winb7taosse20261027a",
+    "time": "2026-10-27T16:48:28.4986524+08:00",
+    "listeners": [],
+    "credentialCleared": true
+  },
+  "remainingWindowsRounds": [
+    3,
+    4
+  ],
+  "remaining": [
+    "physical drag/drop and more media/binary scenarios; Stop Aborted wording",
+    "full native five worklog tools/expiry and migration failure recovery",
+    "active-tool second launch and recovery",
+    "PDF memory convergence, hardware/power/mixed-DPI and production comparison",
+    "final evidence and rollback gate; Mac-specific checks require Mac and are counted separately"
+  ]
+}

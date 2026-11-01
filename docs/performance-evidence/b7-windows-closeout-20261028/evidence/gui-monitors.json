@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Found 3 monitors. Primary: display_number=1 (use target=\\u0027primary_screen\\u0027). For other monitors, use target=\\u0027monitor\\u0027 with monitorIndex (0-2). Note: display_number matches Windows Settings, is_primary indicates the main display.\",\"monitors\":[{\"index\":0,\"displayNumber\":1,\"deviceName\":\"\\\\\\\\.\\\\DISPLAY1\",\"width\":2560,\"height\":1440,\"x\":0,\"y\":0,\"isPrimary\":true,\"effectiveDpi\":120,\"scale\":1.25,\"orientation\":\"landscape\",\"workArea\":{\"x\":0,\"y\":0,\"width\":2560,\"height\":1390}},{\"index\":1,\"displayNumber\":2,\"deviceName\":\"\\\\\\\\.\\\\DISPLAY2\",\"width\":2560,\"height\":1440,\"x\":2560,\"y\":0,\"isPrimary\":false,\"effectiveDpi\":120,\"scale\":1.25,\"orientation\":\"landscape\",\"workArea\":{\"x\":2560,\"y\":0,\"width\":2560,\"height\":1390}},{\"index\":2,\"displayNumber\":3,\"deviceName\":\"\\\\\\\\.\\\\DISPLAY3\",\"width\":1440,\"height\":2560,\"x\":-1440,\"y\":-412,\"isPrimary\":false,\"effectiveDpi\":120,\"scale\":1.25,\"orientation\":\"portrait\",\"workArea\":{\"x\":-1440,\"y\":-412,\"width\":1440,\"height\":2510}}],\"virtualScreen\":{\"x\":-1440,\"y\":-412,\"width\":6560,\"height\":2560}}"
+    }
+  ],
+  "isError": false
+}

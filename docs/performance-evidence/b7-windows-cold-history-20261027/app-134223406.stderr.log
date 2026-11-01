@@ -1,0 +1,197 @@
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7cold20261027e
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7cold20261027e
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb7cold20261027e
+
+thread 'main' (90684) panicked at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.11.5\src\lib.rs:734:7:
+state() called before manage() for yume_lib::history::maintenance::HistoryMaintenance
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (90684) panicked at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\panicking.rs:225:5:
+panic in a function that cannot unwind
+stack backtrace:
+   0:     0x7ff7b670f7c2 - std::backtrace_rs::backtrace::win64::trace
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\..\..\backtrace\src\backtrace\win64.rs:85
+   1:     0x7ff7b670f7c2 - std::backtrace_rs::backtrace::trace_unsynchronized
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\..\..\backtrace\src\backtrace\mod.rs:66
+   2:     0x7ff7b670f7c2 - std::sys::backtrace::_print_fmt
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\sys\backtrace.rs:74
+   3:     0x7ff7b670f7c2 - std::sys::backtrace::impl$0::print::impl$0::fmt
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\sys\backtrace.rs:44
+   4:     0x7ff7b671b6a1 - core::fmt::write
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\fmt\mod.rs:0
+   5:     0x7ff7b66e8164 - std::io::default_write_fmt
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\io\mod.rs:639
+   6:     0x7ff7b66e8164 - std::io::Write::write_fmt<std::sys::stdio::windows::Stderr>
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\io\mod.rs:1994
+   7:     0x7ff7b6702bd0 - std::sys::backtrace::BacktraceLock::print
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\sys\backtrace.rs:47
+   8:     0x7ff7b6702bd0 - std::panicking::default_hook::closure$0
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:292
+   9:     0x7ff7b67029e8 - std::panicking::default_hook
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:319
+  10:     0x7ff7b6702f02 - std::panicking::panic_with_hook
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:825
+  11:     0x7ff7b6702cd9 - std::panicking::panic_handler::closure$0
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:691
+  12:     0x7ff7b66fc20f - std::sys::backtrace::__rust_end_short_backtrace<std::panicking::panic_handler::closure_env$0,never$>
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\sys\backtrace.rs:182
+  13:     0x7ff7b66e45ce - std::panicking::panic_handler
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:689
+  14:     0x7ff7b68b7367 - core::panicking::panic_nounwind_fmt
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\intrinsics\mod.rs:2432
+  15:     0x7ff7b68b72e1 - core::panicking::panic_nounwind
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\panicking.rs:225
+  16:     0x7ff7b68b7496 - core::panicking::panic_cannot_unwind
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\panicking.rs:337
+  17:     0x7ff7b6461d36 - webview2_com_sys::Microsoft::Web::WebView2::Win32::impl$772::new::Invoke<webview2_com::callback::WebResourceRequestedEventHandler_Impl,-1>
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-sys-0.38.2\src\bindings.rs:38143
+  18:     0x7ff7b68b3dc0 - _CallSettingFrame
+                               at D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\amd64\handlers.asm:49
+  19:     0x7ff7b68b2af1 - __FrameHandler3::CxxCallCatchBlock
+                               at D:\a\_work\1\s\src\vctools\crt\vcruntime\src\eh\frame.cpp:1567
+  20:     0x7ff97d1b1cd6 - RtlCaptureContext2
+  21:     0x7ff7b6461cef - webview2_com_sys::Microsoft::Web::WebView2::Win32::impl$772::new::Invoke<webview2_com::callback::WebResourceRequestedEventHandler_Impl,-1>
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-sys-0.38.2\src\bindings.rs:38154
+  22:     0x7ff92d519cb0 - CreateSharedWebViewEnvironmentInternal
+  23:     0x7ff92d519af9 - CreateSharedWebViewEnvironmentInternal
+  24:     0x7ff92d535d83 - CreateSharedWebViewEnvironmentInternal
+  25:     0x7ff92d598dda - DllCanUnloadNow
+  26:     0x7ff92d89ee58 - GetHandleVerifier
+  27:     0x7ff92d57cc29 - DllCanUnloadNow
+  28:     0x7ff92d57e3f7 - DllCanUnloadNow
+  29:     0x7ff92d57e33b - DllCanUnloadNow
+  30:     0x7ff92d57e222 - DllCanUnloadNow
+  31:     0x7ff92d998c51 - telemetry_client::IDataFieldVisitor::IDataFieldVisitor
+  32:     0x7ff92d9eb2a5 - telemetry_client::IDataFieldVisitor::IDataFieldVisitor
+  33:     0x7ff92d5805bf - DllCanUnloadNow
+  34:     0x7ff92d959805 - telemetry_client::IDataFieldVisitor::~IDataFieldVisitor
+  35:     0x7ff92d671a99 - DllCanUnloadNow
+  36:     0x7ff92d68c232 - DllCanUnloadNow
+  37:     0x7ff92d6729df - DllCanUnloadNow
+  38:     0x7ff92d676d61 - DllCanUnloadNow
+  39:     0x7ff92d68c232 - DllCanUnloadNow
+  40:     0x7ff92d71c794 - DllCanUnloadNow
+  41:     0x7ff92d631051 - DllCanUnloadNow
+  42:     0x7ff92d569412 - DllCanUnloadNow
+  43:     0x7ff92d56923a - DllCanUnloadNow
+  44:     0x7ff92d568962 - DllCanUnloadNow
+  45:     0x7ff92d6dfc78 - DllCanUnloadNow
+  46:     0x7ff92d6dfbe0 - DllCanUnloadNow
+  47:     0x7ff92d6df82f - DllCanUnloadNow
+  48:     0x7ff97cb9ef5c - CallWindowProcW
+  49:     0x7ff97cb9e684 - DispatchMessageW
+  50:     0x7ff7b643a86f - windows::Win32::UI::WindowsAndMessaging::DispatchMessageA
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-0.61.3\src\Windows\Win32\UI\WindowsAndMessaging\mod.rs:572
+  51:     0x7ff7b6450c71 - webview2_com::wait_with_pump<enum2$<core::result::Result<tuple$<>,enum2$<webview2_com::Error> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.38.2\src\lib.rs:76
+  52:     0x7ff7b644a0da - webview2_com::callback::AddScriptToExecuteOnDocumentCreatedCompletedHandler::wait_for_async_operation
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.38.2\src\callback.rs:289
+  53:     0x7ff7b59bfe23 - wry::webview2::InnerWebView::add_script_to_execute_on_document_created
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.55.1\src\webview2\mod.rs:1308
+  54:     0x7ff7b59b5b1f - wry::webview2::InnerWebView::init_webview
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.55.1\src\webview2\mod.rs:494
+  55:     0x7ff7b59b47cb - wry::webview2::InnerWebView::new_in_hwnd
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.55.1\src\webview2\mod.rs:139
+  56:     0x7ff7b4fca65d - wry::webview2::InnerWebView::new<ref$<tao::window::Window> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.55.1\src\webview2\mod.rs:91
+  57:     0x7ff7b4fad86d - wry::WebViewBuilder::build<ref$<tao::window::Window> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wry-0.55.1\src\lib.rs:1466
+  58:     0x7ff7b5492a0a - tauri_runtime_wry::create_webview<enum2$<tauri::EventLoopMessage> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:5253
+  59:     0x7ff7b548fd11 - tauri_runtime_wry::create_window<enum2$<tauri::EventLoopMessage>,tauri::manager::menu::impl$0::prepare_window_menu_creation_handler::closure_env$0<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:4683
+  60:     0x7ff7b5497bff - tauri_runtime_wry::impl$2::create_window::closure$1<enum2$<tauri::EventLoopMessage>,tauri::manager::menu::impl$0::prepare_window_menu_creation_handler::closure_env$0<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:325
+  61:     0x7ff7b4f058c0 - core::ops::function::FnOnce::call_once<tauri_runtime_wry::impl$2::create_window::closure_env$1<enum2$<tauri::EventLoopMessage>,tauri::manager::menu::impl$0::prepare_window_menu_creation_handler::closure_env$0<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopM
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\ops\function.rs:250
+  62:     0x7ff7b6207da5 - alloc::boxed::impl$31::call_once<tuple$<ref$<tao::event_loop::EventLoopWindowTarget<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > > > >,dyn$<core::ops::function::FnOnce<tuple$<ref$<tao::event_loop::EventLoopWindowTarget<enum2$<tauri
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\alloc\src\boxed.rs:2206
+  63:     0x7ff7b619b674 - tauri_runtime_wry::handle_user_message<enum2$<tauri::EventLoopMessage> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:4077
+  64:     0x7ff7b619afaa - tauri_runtime_wry::send_user_message<enum2$<tauri::EventLoopMessage> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:240
+  65:     0x7ff7b54975e6 - tauri_runtime_wry::Context<enum2$<tauri::EventLoopMessage> >::create_window<enum2$<tauri::EventLoopMessage>,tauri::manager::menu::impl$0::prepare_window_menu_creation_handler::closure_env$0<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:320
+  66:     0x7ff7b549dafa - tauri_runtime_wry::impl$43::create_window<enum2$<tauri::EventLoopMessage>,tauri::manager::menu::impl$0::prepare_window_menu_creation_handler::closure_env$0<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:2764
+  67:     0x7ff7b543be30 - tauri::window::WindowBuilder<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,tauri::app::AppHandle<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > > >::build_internal<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,tauri::app::Ap
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.11.5\src\window\mod.rs:411
+  68:     0x7ff7b543a741 - tauri::window::WindowBuilder<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,tauri::app::AppHandle<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > > >::with_webview<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,tauri::app::AppH
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.11.5\src\window\mod.rs:344
+  69:     0x7ff7b4fa6c8b - tauri::webview::webview_window::WebviewWindowBuilder<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,tauri::app::AppHandle<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > > >::build<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.11.5\src\webview\webview_window.rs:439
+  70:     0x7ff7b4eb8e74 - tauri::app::setup<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.11.5\src\app.rs:2525
+  71:     0x7ff7b4ead9a5 - tauri::app::impl$16::make_run_event_loop_callback::closure$0<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,yume_lib::run::closure_env$6>
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.11.5\src\app.rs:1424
+  72:     0x7ff7b5498282 - tauri_runtime_wry::handle_event_loop<enum2$<tauri::EventLoopMessage> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:4174
+  73:     0x7ff7b549ba16 - tauri_runtime_wry::make_event_handler::closure$0<enum2$<tauri::EventLoopMessage>,tauri::app::impl$16::make_run_event_loop_callback::closure_env$0<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,yume_lib::run::closure_env$6> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:3297
+  74:     0x7ff7b5530e1c - tao::platform_impl::platform::event_loop::impl$3::run_return::closure$0<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > >,tauri_runtime_wry::make_event_handler::closure_env$0<enum2$<tauri::EventLoopMessage>,tauri::app::impl$16::make_run
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop.rs:245
+  75:     0x7ff7b6207b55 - alloc::boxed::impl$32::call_mut<tuple$<enum2$<tao::event::Event<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > > >,ref_mut$<enum2$<tao::event_loop::ControlFlow> > >,dyn$<core::ops::function::FnMut<tuple$<enum2$<tao::event::Event<enum
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\alloc\src\boxed.rs:2213
+  76:     0x7ff7b6171257 - tao::platform_impl::platform::event_loop::runner::impl$3::call_event_handler::closure$0<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop\runner.rs:251
+  77:     0x7ff7b61bbb44 - core::panic::unwind_safe::impl$25::call_once<tuple$<>,tao::platform_impl::platform::event_loop::runner::impl$3::call_event_handler::closure_env$0<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > > >
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\panic\unwind_safe.rs:274
+  78:     0x7ff7b61fc784 - std::panicking::catch_unwind::do_call<core::panic::unwind_safe::AssertUnwindSafe<tao::platform_impl::platform::event_loop::runner::impl$3::call_event_handler::closure_env$0<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > > >,tuple$<> 
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:581
+  79:     0x7ff7b6188bb3 - hashbrown::set::impl$1::retain::closure$0<tauri::event::listener::JsHandler,std::hash::random::RandomState,alloc::alloc::Global,tauri::event::listener::impl$3::unlisten_js::closure_env$0>
+  80:     0x7ff7b616e885 - std::panicking::catch_unwind
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:544
+  81:     0x7ff7b616e885 - std::panic::catch_unwind<core::panic::unwind_safe::AssertUnwindSafe<tao::platform_impl::platform::event_loop::runner::impl$3::call_event_handler::closure_env$0<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > > >,tuple$<> >
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panic.rs:359
+  82:     0x7ff7b616ff0f - tao::platform_impl::platform::event_loop::runner::EventLoopRunner<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >::catch_unwind<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > >,tuple$<>,tao::platform_impl::platf
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop\runner.rs:156
+  83:     0x7ff7b617108b - tao::platform_impl::platform::event_loop::runner::EventLoopRunner<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >::call_event_handler<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop\runner.rs:243
+  84:     0x7ff7b6170e97 - tao::platform_impl::platform::event_loop::runner::EventLoopRunner<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >::call_new_events<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop\runner.rs:399
+  85:     0x7ff7b61702ec - tao::platform_impl::platform::event_loop::runner::EventLoopRunner<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >::move_state_to<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop\runner.rs:311
+  86:     0x7ff7b567dd73 - tao::platform_impl::platform::event_loop::runner::EventLoopRunner<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >::poll<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop\runner.rs:205
+  87:     0x7ff7b5530a97 - tao::platform_impl::platform::event_loop::EventLoop<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >::run_return<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > >,tauri_runtime_wry::make_event_handler::closure_env
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop.rs:254
+  88:     0x7ff7b55312cf - tao::platform_impl::platform::event_loop::EventLoop<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >::run<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > >,tauri_runtime_wry::make_event_handler::closure_env$0<enum
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop.rs:229
+  89:     0x7ff7b5452553 - tao::event_loop::EventLoop<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > > >::run<enum2$<tauri_runtime_wry::Message<enum2$<tauri::EventLoopMessage> > >,tauri_runtime_wry::make_event_handler::closure_env$0<enum2$<tauri::EventLoopMessag
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\event_loop.rs:224
+  90:     0x7ff7b549d6d3 - tauri_runtime_wry::impl$45::run<enum2$<tauri::EventLoopMessage>,tauri::app::impl$16::make_run_event_loop_callback::closure_env$0<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,yume_lib::run::closure_env$6> >
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-runtime-wry-2.11.4\src\lib.rs:3241
+  91:     0x7ff7b4eae045 - tauri::app::App<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> > >::run<tauri_runtime_wry::Wry<enum2$<tauri::EventLoopMessage> >,yume_lib::run::closure_env$6>
+                               at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.11.5\src\app.rs:1373
+  92:     0x7ff7b4dcf83f - yume_lib::run
+                               at E:\Codex\工作伙伴\deskmate-windows-b7\src-tauri\src\lib.rs:1841
+  93:     0x7ff7b4dc10b9 - yume::main
+                               at E:\Codex\工作伙伴\deskmate-windows-b7\src-tauri\src\main.rs:4
+  94:     0x7ff7b4dc109b - core::ops::function::FnOnce::call_once<void (*)(),tuple$<> >
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\ops\function.rs:250
+  95:     0x7ff7b4dc100e - core::hint::black_box
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\core\src\hint.rs:482
+  96:     0x7ff7b4dc100e - std::sys::backtrace::__rust_begin_short_backtrace<void (*)(),tuple$<> >
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\sys\backtrace.rs:166
+  97:     0x7ff7b4dc1141 - std::rt::lang_start::closure$0<tuple$<> >
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\rt.rs:206
+  98:     0x7ff7b66e93ff - std::rt::lang_start_internal::closure$0
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\rt.rs:175
+  99:     0x7ff7b66e93ff - std::panicking::catch_unwind::do_call
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:581
+ 100:     0x7ff7b66e93ff - std::panicking::catch_unwind
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panicking.rs:544
+ 101:     0x7ff7b66e93ff - std::panic::catch_unwind
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\panic.rs:359
+ 102:     0x7ff7b66e93ff - std::rt::lang_start_internal
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\rt.rs:171
+ 103:     0x7ff7b4dc112a - std::rt::lang_start<tuple$<> >
+                               at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library\std\src\rt.rs:205
+ 104:     0x7ff7b4dc10d9 - main
+ 105:     0x7ff7b68ae098 - invoke_main
+                               at D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:78
+ 106:     0x7ff7b68ae098 - __scrt_common_main_seh
+                               at D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:288
+ 107:     0x7ff97c907374 - BaseThreadInitThunk
+ 108:     0x7ff97d15cc91 - RtlUserThreadStart
+thread caused non-unwinding panic. aborting.

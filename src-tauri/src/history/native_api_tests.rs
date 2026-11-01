@@ -24,6 +24,37 @@ pub(super) fn session(id: &str, directory: &str) -> String {
 }
 
 #[test]
+fn project_bootstrap_has_a_separate_budget_without_extending_ordinary_reads() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let url = format!("http://{}", listener.local_addr().unwrap());
+    let worker = std::thread::spawn(move || {
+        for _ in 0..3 {
+            let (mut stream, _) = listener.accept().unwrap();
+            stream.set_read_timeout(Some(Duration::from_secs(2))).unwrap();
+            let request = read_request(&mut stream);
+            assert!(request.starts_with("GET /session/status?directory=C%3A%2Fallowed "));
+            std::thread::sleep(Duration::from_millis(100));
+            let _ = write!(stream, "HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{{}}");
+        }
+    });
+    let mut client = NativeHistoryClient::new(&url, "Basic synthetic").unwrap();
+    client.agent = ureq::AgentBuilder::new().timeout(Duration::from_millis(25)).build();
+    assert_eq!(client.wait_for_directory("C:/allowed", Duration::from_secs(1)), Ok(()));
+    assert_eq!(client.statuses("C:/allowed"), Err(NativeApiError::Timeout));
+    assert_eq!(client.wait_for_directory("C:/allowed", Duration::from_millis(25)), Err(NativeApiError::Timeout));
+    worker.join().unwrap();
+}
+
+#[test]
+fn project_readiness_rejects_http_and_malformed_status_failures() {
+    let (url, worker) = serve(vec![(401, "{}".into()), (200, r#"{"ses_one":{"type":"not_a_status"}}"#.into())]);
+    let client = NativeHistoryClient::new(&url, "Basic synthetic").unwrap();
+    assert_eq!(client.wait_for_directory("C:/allowed", Duration::from_secs(1)), Err(NativeApiError::Unauthorized));
+    assert_eq!(client.wait_for_directory("C:/allowed", Duration::from_secs(1)), Err(NativeApiError::InvalidResponse));
+    worker.join().unwrap();
+}
+
+#[test]
 fn wrong_window_is_denied_before_any_sidecar_access() {
     // Given an unrelated renderer.
     // When it requests the history boundary.

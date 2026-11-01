@@ -1,0 +1,100 @@
+{
+  "resources": [
+    {
+      "id": "22759d67-18c3-42d4-ad3f-4bd6cb9c0c9f",
+      "path": "\\\\?\\E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\B7-video-30s.mp4",
+      "name": "B7-video-30s.mp4",
+      "kind": "\"video\"",
+      "mime": "video/mp4",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "owned": 0,
+      "read_base": "/",
+      "exists": true,
+      "sha256": "1509f2a1570c460579be69e11a1ad1b035b4e44fcca5a83306fa33406b24ccf2"
+    },
+    {
+      "id": "473d29f3-d65b-4f8a-82cf-978932fdd0bb",
+      "path": "\\\\?\\E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\B7-audio-10s.mp3",
+      "name": "B7-audio-10s.mp3",
+      "kind": "\"audio\"",
+      "mime": "audio/mpeg",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "owned": 0,
+      "read_base": "/",
+      "exists": true,
+      "sha256": "e756256cef609ec9e1c89fcdd4b95762c5f06d337c95eb80dafbc08e82aceed2"
+    },
+    {
+      "id": "a060cf86-5864-4249-ad81-f7662a83a8b3",
+      "path": "\\\\?\\E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\B7-audio-8s.wav",
+      "name": "B7-audio-8s.wav",
+      "kind": "\"audio\"",
+      "mime": "audio/wav",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "owned": 0,
+      "read_base": "/",
+      "exists": true,
+      "sha256": "278cc96acad05257cb61e11df3fe64ff0cbb6a1d02594cf6edd1ed9f6deecba7"
+    },
+    {
+      "id": "49630b00-c4d4-47f8-8f95-3781e1cadd23",
+      "path": "\\\\?\\E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\folder",
+      "name": "folder",
+      "kind": "\"directory\"",
+      "mime": "application/x-directory",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "owned": 0,
+      "read_base": "/",
+      "exists": true,
+      "sha256": null
+    },
+    {
+      "id": "901fb2fb-ecce-4035-af33-fe4a364d6e06",
+      "path": "\\\\?\\C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\chat-resource-uploads\\901fb2fb-ecce-4035-af33-fe4a364d6e06\\B7-64MiB.wav",
+      "name": "B7-64MiB.wav",
+      "kind": "\"audio\"",
+      "mime": "audio/wav",
+      "directory": null,
+      "session_id": null,
+      "owned": 1,
+      "read_base": null,
+      "exists": true,
+      "sha256": "ba1ff6174a3be9a7a478522f45284706defa187636f374113963b71ef829dad5"
+    }
+  ],
+  "messages": [
+    {
+      "resource_id": "22759d67-18c3-42d4-ad3f-4bd6cb9c0c9f",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "message_id": "msg_dcae6086eae34683824323c20a9a5697"
+    },
+    {
+      "resource_id": "473d29f3-d65b-4f8a-82cf-978932fdd0bb",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "message_id": "msg_dcae6086eae34683824323c20a9a5697"
+    },
+    {
+      "resource_id": "a060cf86-5864-4249-ad81-f7662a83a8b3",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "message_id": "msg_dcae6086eae34683824323c20a9a5697"
+    },
+    {
+      "resource_id": "49630b00-c4d4-47f8-8f95-3781e1cadd23",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "message_id": "msg_dcae6086eae34683824323c20a9a5697"
+    }
+  ],
+  "integrity": [
+    {
+      "integrity_check": "ok"
+    }
+  ]
+}

@@ -1,0 +1,366 @@
+{
+  "time": "2026-10-28T02:38:10.640Z",
+  "entries": [
+    {
+      "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+      "businessDate": "2026-10-28",
+      "project": "B7 Release 物理验收",
+      "originalText": "完成 release 附件核对和播放器生命周期验收。",
+      "text": "完成 release 附件核对和播放器生命周期验收。（第二调用者已更新）",
+      "status": "done",
+      "sourceSessionId": null,
+      "sourceMessageId": null,
+      "revision": 2,
+      "createdAt": "2026-10-28T02:32:30.465837700+00:00",
+      "updatedAt": "2026-10-28T02:36:51.965217400+00:00"
+    },
+    {
+      "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+      "businessDate": "2026-10-28",
+      "project": "B7 Release 物理验收",
+      "originalText": "继续检查工作日志编辑、导出和失败恢复。",
+      "text": "继续检查工作日志编辑、导出和失败恢复。",
+      "status": "in_progress",
+      "sourceSessionId": null,
+      "sourceMessageId": null,
+      "revision": 1,
+      "createdAt": "2026-10-28T02:33:27.100068100+00:00",
+      "updatedAt": "2026-10-28T02:33:27.100068100+00:00"
+    }
+  ],
+  "reports": [
+    {
+      "id": "46ba2d8b-f5c5-4cd0-85f2-3e126201bc5d",
+      "kind": "daily",
+      "periodStart": "2026-10-28",
+      "periodEnd": "2026-10-28",
+      "currentVersionId": "571b23b9-3a8f-4d29-93e3-95d565cd61b6",
+      "revision": 3,
+      "stale": false,
+      "sourceDeleted": false,
+      "updatedAt": "2026-10-28T02:38:02.319412+00:00"
+    }
+  ],
+  "runs": [
+    {
+      "id": "93349de6-9287-4372-94b5-da4a443ba255",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-28",
+      "periodEnd": "2026-10-28",
+      "occurrenceKey": "manual:8c7699d2-5ff8-4e71-9763-be749d21ec40",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e7fa1686dffe7zoZtmMhNKrSN6",
+      "baseReportRevision": 2,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+          "revision": 2
+        },
+        {
+          "kind": "entry",
+          "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+          "revision": 1
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+            "revision": 2
+          },
+          "businessDate": "2026-10-28",
+          "project": "B7 Release 物理验收",
+          "text": "[done] 完成 release 附件核对和播放器生命周期验收。（第二调用者已更新）"
+        },
+        {
+          "entryStatus": "in_progress",
+          "source": {
+            "kind": "entry",
+            "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+            "revision": 1
+          },
+          "businessDate": "2026-10-28",
+          "project": "B7 Release 物理验收",
+          "text": "[in_progress] 继续检查工作日志编辑、导出和失败恢复。"
+        }
+      ],
+      "modelId": "yume/model-a",
+      "resultReportId": "46ba2d8b-f5c5-4cd0-85f2-3e126201bc5d",
+      "errorCode": null,
+      "createdAt": "2026-10-28T02:37:25.131177800+00:00",
+      "updatedAt": "2026-10-28T02:37:25.778282+00:00"
+    },
+    {
+      "id": "9341a15e-8846-4a34-8e19-0e1d88dcf216",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-28",
+      "periodEnd": "2026-10-28",
+      "occurrenceKey": "manual:ac95b738-e58c-4404-88f7-0775b4fc162b",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e7fa4f566ffeMRgOSdUFA7DrnX",
+      "baseReportRevision": null,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+          "revision": 1
+        },
+        {
+          "kind": "entry",
+          "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+          "revision": 1
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+            "revision": 1
+          },
+          "businessDate": "2026-10-28",
+          "project": "B7 Release 物理验收",
+          "text": "[done] 完成 release 附件核对和播放器生命周期验收。"
+        },
+        {
+          "entryStatus": "in_progress",
+          "source": {
+            "kind": "entry",
+            "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+            "revision": 1
+          },
+          "businessDate": "2026-10-28",
+          "project": "B7 Release 物理验收",
+          "text": "[in_progress] 继续检查工作日志编辑、导出和失败恢复。"
+        }
+      ],
+      "modelId": "yume/model-a",
+      "resultReportId": "46ba2d8b-f5c5-4cd0-85f2-3e126201bc5d",
+      "errorCode": null,
+      "createdAt": "2026-10-28T02:33:32.494762600+00:00",
+      "updatedAt": "2026-10-28T02:33:33.097694900+00:00"
+    }
+  ],
+  "schedules": [],
+  "details": [
+    {
+      "report": {
+        "id": "46ba2d8b-f5c5-4cd0-85f2-3e126201bc5d",
+        "kind": "daily",
+        "periodStart": "2026-10-28",
+        "periodEnd": "2026-10-28",
+        "currentVersionId": "571b23b9-3a8f-4d29-93e3-95d565cd61b6",
+        "revision": 3,
+        "stale": false,
+        "sourceDeleted": false,
+        "updatedAt": "2026-10-28T02:38:02.319412+00:00"
+      },
+      "versions": [
+        {
+          "id": "571b23b9-3a8f-4d29-93e3-95d565cd61b6",
+          "reportId": "46ba2d8b-f5c5-4cd0-85f2-3e126201bc5d",
+          "version": 4,
+          "bodyMarkdown": "## 今日完成\n\nB7 Release 物理验收：[done] 完成 release 附件核对和播放器生命周期验收。（第二调用者已更新）\n\n## 进行中\n\nB7 Release 物理验收：[in_progress] 继续检查工作日志编辑、导出和失败恢复。\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+          "origin": "manual",
+          "sourceRevisionManifest": [
+            {
+              "kind": "entry",
+              "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+              "revision": 2
+            },
+            {
+              "kind": "entry",
+              "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+              "revision": 1
+            }
+          ],
+          "sourceSnapshot": [
+            {
+              "entryStatus": "done",
+              "source": {
+                "kind": "entry",
+                "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+                "revision": 2
+              },
+              "businessDate": "2026-10-28",
+              "project": "B7 Release 物理验收",
+              "text": "[done] 完成 release 附件核对和播放器生命周期验收。（第二调用者已更新）"
+            },
+            {
+              "entryStatus": "in_progress",
+              "source": {
+                "kind": "entry",
+                "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+                "revision": 1
+              },
+              "businessDate": "2026-10-28",
+              "project": "B7 Release 物理验收",
+              "text": "[in_progress] 继续检查工作日志编辑、导出和失败恢复。"
+            }
+          ],
+          "coverageDates": [
+            "2026-10-28"
+          ],
+          "generatedAt": "2026-10-28T02:38:02.319412+00:00",
+          "modelId": "yume/model-a"
+        },
+        {
+          "id": "af032b63-5cd9-4171-9609-1e3b6c2feb9a",
+          "reportId": "46ba2d8b-f5c5-4cd0-85f2-3e126201bc5d",
+          "version": 3,
+          "bodyMarkdown": "## 今日完成\n\nB7 Release 物理验收：[done] 完成 release 附件核对和播放器生命周期验收。（第二调用者已更新）\n\n## 进行中\n\nB7 Release 物理验收：[in_progress] 继续检查工作日志编辑、导出和失败恢复。\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+          "origin": "generated",
+          "sourceRevisionManifest": [
+            {
+              "kind": "entry",
+              "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+              "revision": 2
+            },
+            {
+              "kind": "entry",
+              "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+              "revision": 1
+            }
+          ],
+          "sourceSnapshot": [
+            {
+              "entryStatus": "done",
+              "source": {
+                "kind": "entry",
+                "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+                "revision": 2
+              },
+              "businessDate": "2026-10-28",
+              "project": "B7 Release 物理验收",
+              "text": "[done] 完成 release 附件核对和播放器生命周期验收。（第二调用者已更新）"
+            },
+            {
+              "entryStatus": "in_progress",
+              "source": {
+                "kind": "entry",
+                "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+                "revision": 1
+              },
+              "businessDate": "2026-10-28",
+              "project": "B7 Release 物理验收",
+              "text": "[in_progress] 继续检查工作日志编辑、导出和失败恢复。"
+            }
+          ],
+          "coverageDates": [
+            "2026-10-28"
+          ],
+          "generatedAt": "2026-10-28T02:37:25.778282+00:00",
+          "modelId": "yume/model-a"
+        },
+        {
+          "id": "06f99dfe-7c35-47a0-9cb7-1918cbab200d",
+          "reportId": "46ba2d8b-f5c5-4cd0-85f2-3e126201bc5d",
+          "version": 2,
+          "bodyMarkdown": "人工修订保留：B7 Release 物理验收。",
+          "origin": "manual",
+          "sourceRevisionManifest": [
+            {
+              "kind": "entry",
+              "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+              "revision": 1
+            },
+            {
+              "kind": "entry",
+              "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+              "revision": 1
+            }
+          ],
+          "sourceSnapshot": [
+            {
+              "entryStatus": "done",
+              "source": {
+                "kind": "entry",
+                "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+                "revision": 1
+              },
+              "businessDate": "2026-10-28",
+              "project": "B7 Release 物理验收",
+              "text": "[done] 完成 release 附件核对和播放器生命周期验收。"
+            },
+            {
+              "entryStatus": "in_progress",
+              "source": {
+                "kind": "entry",
+                "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+                "revision": 1
+              },
+              "businessDate": "2026-10-28",
+              "project": "B7 Release 物理验收",
+              "text": "[in_progress] 继续检查工作日志编辑、导出和失败恢复。"
+            }
+          ],
+          "coverageDates": [
+            "2026-10-28"
+          ],
+          "generatedAt": "2026-10-28T02:34:21.251141500+00:00",
+          "modelId": null
+        },
+        {
+          "id": "2f3aa279-ccd6-4e91-b2eb-1050ff275ef3",
+          "reportId": "46ba2d8b-f5c5-4cd0-85f2-3e126201bc5d",
+          "version": 1,
+          "bodyMarkdown": "## 今日完成\n\nB7 Release 物理验收：[done] 完成 release 附件核对和播放器生命周期验收。\n\n## 进行中\n\nB7 Release 物理验收：[in_progress] 继续检查工作日志编辑、导出和失败恢复。\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+          "origin": "generated",
+          "sourceRevisionManifest": [
+            {
+              "kind": "entry",
+              "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+              "revision": 1
+            },
+            {
+              "kind": "entry",
+              "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+              "revision": 1
+            }
+          ],
+          "sourceSnapshot": [
+            {
+              "entryStatus": "done",
+              "source": {
+                "kind": "entry",
+                "id": "53355015-de0b-41b6-ba9e-7f6004a27233",
+                "revision": 1
+              },
+              "businessDate": "2026-10-28",
+              "project": "B7 Release 物理验收",
+              "text": "[done] 完成 release 附件核对和播放器生命周期验收。"
+            },
+            {
+              "entryStatus": "in_progress",
+              "source": {
+                "kind": "entry",
+                "id": "768e8a3c-c9b2-46fa-ae0a-ee6e971fc43c",
+                "revision": 1
+              },
+              "businessDate": "2026-10-28",
+              "project": "B7 Release 物理验收",
+              "text": "[in_progress] 继续检查工作日志编辑、导出和失败恢复。"
+            }
+          ],
+          "coverageDates": [
+            "2026-10-28"
+          ],
+          "generatedAt": "2026-10-28T02:33:33.097694900+00:00",
+          "modelId": "yume/model-a"
+        }
+      ]
+    }
+  ]
+}

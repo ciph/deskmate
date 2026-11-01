@@ -1,0 +1,21 @@
+{
+  "time": "2026-10-27T12:18:38.4618070+08:00",
+  "identity": "com.deskmate.unifiedhistoryqa.winb720261027a",
+  "ownedProcessesGone": true,
+  "providerPortClosed": true,
+  "debugPortClosed": true,
+  "providerStoppedWith": "Ctrl-C on owned tool session 5934, exit 1; port and process absent",
+  "syntheticCredentialRemoved": true,
+  "databasesChecked": 5,
+  "roots": [
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027a",
+      "removed": true
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb720261027a",
+      "removed": true
+    }
+  ],
+  "productionDataAccessed": false
+}

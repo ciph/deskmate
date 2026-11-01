@@ -1,0 +1,126 @@
+{
+  "databases": [
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\chat-resources.sqlite3",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\deskmate-memory.db",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\history-catalog.sqlite",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\opencode-home\\xdg-data\\opencode\\opencode.db",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\yume-worklog.db",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\EBWebView\\Default\\declarative_performance_observer.db",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    }
+  ],
+  "resourceRows": [
+    {
+      "id": "22759d67-18c3-42d4-ad3f-4bd6cb9c0c9f",
+      "path": "\\\\?\\E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\B7-video-30s.mp4",
+      "name": "B7-video-30s.mp4",
+      "kind": "\"video\"",
+      "mime": "video/mp4",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "owned": 0,
+      "read_base": "/"
+    },
+    {
+      "id": "473d29f3-d65b-4f8a-82cf-978932fdd0bb",
+      "path": "\\\\?\\E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\B7-audio-10s.mp3",
+      "name": "B7-audio-10s.mp3",
+      "kind": "\"audio\"",
+      "mime": "audio/mpeg",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "owned": 0,
+      "read_base": "/"
+    },
+    {
+      "id": "a060cf86-5864-4249-ad81-f7662a83a8b3",
+      "path": "\\\\?\\E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\B7-audio-8s.wav",
+      "name": "B7-audio-8s.wav",
+      "kind": "\"audio\"",
+      "mime": "audio/wav",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "owned": 0,
+      "read_base": "/"
+    },
+    {
+      "id": "49630b00-c4d4-47f8-8f95-3781e1cadd23",
+      "path": "\\\\?\\E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\folder",
+      "name": "folder",
+      "kind": "\"directory\"",
+      "mime": "application/x-directory",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "owned": 0,
+      "read_base": "/"
+    }
+  ],
+  "resourceMessages": [
+    {
+      "resource_id": "22759d67-18c3-42d4-ad3f-4bd6cb9c0c9f",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "message_id": "msg_dcae6086eae34683824323c20a9a5697"
+    },
+    {
+      "resource_id": "473d29f3-d65b-4f8a-82cf-978932fdd0bb",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "message_id": "msg_dcae6086eae34683824323c20a9a5697"
+    },
+    {
+      "resource_id": "a060cf86-5864-4249-ad81-f7662a83a8b3",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "message_id": "msg_dcae6086eae34683824323c20a9a5697"
+    },
+    {
+      "resource_id": "49630b00-c4d4-47f8-8f95-3781e1cadd23",
+      "directory": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7attachments20261027a\\workspace",
+      "session_id": "ses_e8352a372ffek1cSJfO4mjYZBY",
+      "message_id": "msg_dcae6086eae34683824323c20a9a5697"
+    }
+  ],
+  "pass": true,
+  "time": "2026-10-27T10:13:14.511Z"
+}

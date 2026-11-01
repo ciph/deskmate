@@ -1,0 +1,951 @@
+{
+  "method": "actual settings WebView2 native IPC, not physical UI or clipboard/export test",
+  "before": {
+    "report": {
+      "id": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "currentVersionId": "e46bdff5-9ae5-4c1d-8b45-6c8fbefc1a7e",
+      "revision": 3,
+      "stale": false,
+      "sourceDeleted": false,
+      "updatedAt": "2026-10-27T10:10:30.910833500+00:00"
+    },
+    "versions": [
+      {
+        "id": "e46bdff5-9ae5-4c1d-8b45-6c8fbefc1a7e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 4,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:30.910833500+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "d9b007e5-cf86-45a9-bf84-ac8e5bea671e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 3,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:30.809635400+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "7786a435-4302-4878-9715-092afd1af0d8",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 2,
+        "bodyMarkdown": "# B7 合成日报\n\n人工修订保留：完成附件和物理拖放验收。",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 1
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件和物理拖放验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:29.178971900+00:00",
+        "modelId": null
+      },
+      {
+        "id": "a2199969-ade6-4dd0-96f4-6c7eb5007e0e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 1,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件和物理拖放验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 1
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件和物理拖放验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T09:40:54.244190900+00:00",
+        "modelId": "yume/b7-local"
+      }
+    ]
+  },
+  "saved": {
+    "operationId": "018f321f-0280-4857-83f6-0831ddda5716",
+    "entityKind": "report",
+    "entityId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+    "revision": 4,
+    "businessDate": "2026-10-27",
+    "status": "committed"
+  },
+  "manual": {
+    "report": {
+      "id": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "currentVersionId": "d5f02b23-f8ff-489c-b7c8-e660a42e8b0e",
+      "revision": 4,
+      "stale": false,
+      "sourceDeleted": false,
+      "updatedAt": "2026-10-27T10:11:00.157154500+00:00"
+    },
+    "versions": [
+      {
+        "id": "d5f02b23-f8ff-489c-b7c8-e660a42e8b0e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 5,
+        "bodyMarkdown": "# B7 合成日报\n\n人工修订保留：完成附件和物理拖放验收。",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:11:00.157154500+00:00",
+        "modelId": null
+      },
+      {
+        "id": "e46bdff5-9ae5-4c1d-8b45-6c8fbefc1a7e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 4,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:30.910833500+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "d9b007e5-cf86-45a9-bf84-ac8e5bea671e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 3,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:30.809635400+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "7786a435-4302-4878-9715-092afd1af0d8",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 2,
+        "bodyMarkdown": "# B7 合成日报\n\n人工修订保留：完成附件和物理拖放验收。",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 1
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件和物理拖放验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:29.178971900+00:00",
+        "modelId": null
+      },
+      {
+        "id": "a2199969-ade6-4dd0-96f4-6c7eb5007e0e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 1,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件和物理拖放验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 1
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件和物理拖放验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T09:40:54.244190900+00:00",
+        "modelId": "yume/b7-local"
+      }
+    ]
+  },
+  "generated": {
+    "operationId": "0a657436-7e4e-4073-b593-93e3e8feabe7",
+    "entityKind": "run",
+    "entityId": "4aff6961-a6b4-401a-bdd0-0c60bc8b04f5",
+    "revision": 1,
+    "businessDate": "2026-10-27",
+    "status": "committed"
+  },
+  "runs": [
+    {
+      "id": "4aff6961-a6b4-401a-bdd0-0c60bc8b04f5",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "occurrenceKey": "manual:0a657436-7e4e-4073-b593-93e3e8feabe7",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e83288037ffeDcIczDVam46Qp3",
+      "baseReportRevision": 4,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+          "revision": 4
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          },
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+        }
+      ],
+      "modelId": "yume/b7-local",
+      "resultReportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "errorCode": null,
+      "createdAt": "2026-10-27T10:11:00.162641300+00:00",
+      "updatedAt": "2026-10-27T10:11:00.692681400+00:00"
+    },
+    {
+      "id": "9d1f5014-ab4e-442a-8918-f9e4cbf26aa0",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "occurrenceKey": "manual:d0ac0ad1-1df3-42c9-ab8c-8a4a003efb09",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e8328f932ffeeroaFPwcsRhd7Z",
+      "baseReportRevision": 2,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+          "revision": 4
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          },
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+        }
+      ],
+      "modelId": "yume/b7-local",
+      "resultReportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "errorCode": null,
+      "createdAt": "2026-10-27T10:10:29.184495800+00:00",
+      "updatedAt": "2026-10-27T10:10:30.809635400+00:00"
+    },
+    {
+      "id": "b5e6bac5-1aaf-4bdb-9eaa-606193379fd3",
+      "scheduleId": "acb5d577-2399-4477-af54-c616c94d1989",
+      "kind": "weekly",
+      "periodStart": "2026-10-19",
+      "periodEnd": "2026-10-23",
+      "occurrenceKey": "acb5d577-2399-4477-af54-c616c94d1989:2026-10-19:2026-10-23",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e832a99a7ffe80VFdzAKOYGuhO",
+      "baseReportRevision": null,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+          "revision": 1
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+            "revision": 1
+          },
+          "businessDate": "2026-10-19",
+          "project": "漏周合成测试",
+          "text": "[done] 完成历史周合成验收。"
+        }
+      ],
+      "modelId": "yume/b7-local",
+      "resultReportId": "3a90e193-d6ba-4897-9394-5357b48f3c05",
+      "errorCode": null,
+      "createdAt": "2026-10-27T10:08:41.481334900+00:00",
+      "updatedAt": "2026-10-27T10:08:44.225111900+00:00"
+    },
+    {
+      "id": "274dd301-565c-44b6-b6be-d21104b2519b",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "occurrenceKey": "manual:8ad9b415-32e0-9fdc-3c0b-af94c1f5de92",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e834410a8ffecPcSVFoQ42mC2V",
+      "baseReportRevision": null,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+          "revision": 1
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          },
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "[done] 完成 B7 附件和物理拖放验收。"
+        }
+      ],
+      "modelId": "yume/b7-local",
+      "resultReportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "errorCode": null,
+      "createdAt": "2026-10-27T09:40:53.693778500+00:00",
+      "updatedAt": "2026-10-27T09:40:54.244190900+00:00"
+    }
+  ],
+  "candidate": {
+    "report": {
+      "id": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "currentVersionId": "d5f02b23-f8ff-489c-b7c8-e660a42e8b0e",
+      "revision": 4,
+      "stale": true,
+      "sourceDeleted": false,
+      "updatedAt": "2026-10-27T10:11:00.692681400+00:00"
+    },
+    "versions": [
+      {
+        "id": "a1fc3f69-337a-4861-8119-d66329ece0b9",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 6,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:11:00.692681400+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "d5f02b23-f8ff-489c-b7c8-e660a42e8b0e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 5,
+        "bodyMarkdown": "# B7 合成日报\n\n人工修订保留：完成附件和物理拖放验收。",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:11:00.157154500+00:00",
+        "modelId": null
+      },
+      {
+        "id": "e46bdff5-9ae5-4c1d-8b45-6c8fbefc1a7e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 4,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:30.910833500+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "d9b007e5-cf86-45a9-bf84-ac8e5bea671e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 3,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:30.809635400+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "7786a435-4302-4878-9715-092afd1af0d8",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 2,
+        "bodyMarkdown": "# B7 合成日报\n\n人工修订保留：完成附件和物理拖放验收。",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 1
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件和物理拖放验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:29.178971900+00:00",
+        "modelId": null
+      },
+      {
+        "id": "a2199969-ade6-4dd0-96f4-6c7eb5007e0e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 1,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件和物理拖放验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 1
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件和物理拖放验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T09:40:54.244190900+00:00",
+        "modelId": "yume/b7-local"
+      }
+    ]
+  },
+  "adopted": {
+    "operationId": "2f02816f-5e72-41fe-8ce9-cde187e6e039",
+    "entityKind": "report",
+    "entityId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+    "revision": 5,
+    "businessDate": null,
+    "status": "committed"
+  },
+  "after": {
+    "report": {
+      "id": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "currentVersionId": "97393203-632f-4b56-80f2-933010b1aea4",
+      "revision": 5,
+      "stale": false,
+      "sourceDeleted": false,
+      "updatedAt": "2026-10-27T10:11:00.717297600+00:00"
+    },
+    "versions": [
+      {
+        "id": "97393203-632f-4b56-80f2-933010b1aea4",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 7,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:11:00.717297600+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "a1fc3f69-337a-4861-8119-d66329ece0b9",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 6,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:11:00.692681400+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "d5f02b23-f8ff-489c-b7c8-e660a42e8b0e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 5,
+        "bodyMarkdown": "# B7 合成日报\n\n人工修订保留：完成附件和物理拖放验收。",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:11:00.157154500+00:00",
+        "modelId": null
+      },
+      {
+        "id": "e46bdff5-9ae5-4c1d-8b45-6c8fbefc1a7e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 4,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:30.910833500+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "d9b007e5-cf86-45a9-bf84-ac8e5bea671e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 3,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件、物理拖放和历史恢复验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 4
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 4
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件、物理拖放和历史恢复验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:30.809635400+00:00",
+        "modelId": "yume/b7-local"
+      },
+      {
+        "id": "7786a435-4302-4878-9715-092afd1af0d8",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 2,
+        "bodyMarkdown": "# B7 合成日报\n\n人工修订保留：完成附件和物理拖放验收。",
+        "origin": "manual",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 1
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件和物理拖放验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T10:10:29.178971900+00:00",
+        "modelId": null
+      },
+      {
+        "id": "a2199969-ade6-4dd0-96f4-6c7eb5007e0e",
+        "reportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+        "version": 1,
+        "bodyMarkdown": "## 今日完成\n\nB7 合成验收：[done] 完成 B7 附件和物理拖放验收。\n\n## 进行中\n\n待补充\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n",
+        "origin": "generated",
+        "sourceRevisionManifest": [
+          {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          }
+        ],
+        "sourceSnapshot": [
+          {
+            "entryStatus": "done",
+            "source": {
+              "kind": "entry",
+              "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+              "revision": 1
+            },
+            "businessDate": "2026-10-27",
+            "project": "B7 合成验收",
+            "text": "[done] 完成 B7 附件和物理拖放验收。"
+          }
+        ],
+        "coverageDates": [
+          "2026-10-27"
+        ],
+        "generatedAt": "2026-10-27T09:40:54.244190900+00:00",
+        "modelId": "yume/b7-local"
+      }
+    ]
+  },
+  "conflict": "Error: {\"exceptionId\":2,\"text\":\"Uncaught (in promise)\",\"lineNumber\":0,\"columnNumber\":0,\"exception\":{\"type\":\"object\",\"className\":\"Object\",\"description\":\"Object\",\"objectId\":\"-1678150592483002613.2.1\",\"preview\":{\"type\":\"object\",\"description\":\"Object\",\"overflow\":false,\"properties\":[{\"name\":\"code\",\"type\":\"string\",\"value\":\"CONFLICT\"},{\"name\":\"message\",\"type\":\"string\",\"value\":\"The record changed; refresh before saving\"}]}}}",
+  "pass": true
+}

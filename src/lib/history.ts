@@ -9,6 +9,13 @@ export interface HistoryMessage {
   partId?: string;
   localOnly?: boolean;
   personaId?: string;
+  /** Display-only native file metadata; no file bytes, URLs, or local persistence. */
+  attachments?: readonly HistoryAttachment[];
+}
+
+export interface HistoryAttachment {
+  readonly id: string;
+  readonly name: string;
 }
 
 /** A full chat session record. */

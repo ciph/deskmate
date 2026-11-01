@@ -1,0 +1,13 @@
+{
+  "text": "小著\n在的,说吧\n跟小著说点什么吧 (｡•̀ᴗ-)✧\n文件夹\n⌄\nmodel-a\n⌄\n发送",
+  "focus": true,
+  "active": "<textarea class=\"chat-input\" placeholder=\"输入消息,Enter 发送\" rows=\"2\"></textarea>",
+  "inputs": [
+    {
+      "tag": "TEXTAREA",
+      "placeholder": "输入消息,Enter 发送",
+      "disabled": false,
+      "value": ""
+    }
+  ]
+}

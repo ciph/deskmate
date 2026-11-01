@@ -1,0 +1,62 @@
+{
+  "base": "http://127.0.0.1:49237",
+  "port": 49237,
+  "pid": 147428,
+  "events": [
+    {
+      "event": "healthy",
+      "at": 914.5082
+    },
+    {
+      "event": "headers",
+      "at": 923.1782000000001,
+      "status": 200,
+      "headers": {
+        "cache-control": "no-cache, no-transform",
+        "content-type": "text/event-stream",
+        "date": "Tue, 27 Oct 2026 07:59:05 GMT",
+        "transfer-encoding": "chunked",
+        "vary": "Origin",
+        "x-accel-buffering": "no",
+        "x-content-type-options": "nosniff"
+      }
+    },
+    {
+      "event": "read",
+      "at": 924.8359,
+      "done": false,
+      "text": "data: {\"payload\":{\"id\":\"evt_17c5eb9e2001fUtpDoog4x41ZG\",\"type\":\"server.connected\",\"properties\":{}}}\n\n"
+    },
+    {
+      "event": "read",
+      "at": 2708.7982,
+      "done": false,
+      "text": "data: {\"payload\":{\"id\":\"evt_17c5ec0dc0015YTgea52KY3krU\",\"type\":\"models-dev.refreshed\",\"properties\":{}}}\n\n"
+    },
+    {
+      "event": "read",
+      "at": 10936.2005,
+      "done": false,
+      "text": "data: {\"payload\":{\"id\":\"evt_17c5ee100001EWgA47jyReFfYo\",\"type\":\"server.heartbeat\",\"properties\":{}}}\n\n"
+    },
+    {
+      "event": "read",
+      "at": 20945.0321,
+      "done": false,
+      "text": "data: {\"payload\":{\"id\":\"evt_17c5f0815001785dz5s7aQngot\",\"type\":\"server.heartbeat\",\"properties\":{}}}\n\n"
+    },
+    {
+      "event": "read",
+      "at": 30957.9901,
+      "done": false,
+      "text": "data: {\"payload\":{\"id\":\"evt_17c5f2f32001Hdd4OwYjY54Zji\",\"type\":\"server.heartbeat\",\"properties\":{}}}\n\n"
+    },
+    {
+      "event": "read",
+      "at": 40969.3025,
+      "done": false,
+      "text": "data: {\"payload\":{\"id\":\"evt_17c5f56510011ptNKtNObyxugY\",\"type\":\"server.heartbeat\",\"properties\":{}}}\n\n"
+    }
+  ],
+  "stopped": true
+}

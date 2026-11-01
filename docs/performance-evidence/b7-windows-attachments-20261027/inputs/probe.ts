@@ -1,0 +1,6 @@
+import {connect,save} from './cdp-client';
+const c=await connect('chat');
+try {
+ const result=await c.evaluate(`(()=>{window.b7MediaEvents??=[];for(const m of document.querySelectorAll('video,audio'))if(!m.dataset.b7Observed){m.dataset.b7Observed='true';for(const t of ['play','pause','seeking','seeked','ended','error'])m.addEventListener(t,e=>window.b7MediaEvents.push({type:t,time:Date.now(),name:m.getAttribute('aria-label'),position:m.currentTime,trusted:e.isTrusted,error:m.error?.code}));}return {at:Date.now(),text:document.body.innerText,dpr:devicePixelRatio,focus:document.hasFocus(),media:[...document.querySelectorAll('video,audio')].map(m=>({tag:m.tagName,name:m.getAttribute('aria-label'),src:m.currentSrc,duration:m.duration,currentTime:m.currentTime,ended:m.ended,paused:m.paused,readyState:m.readyState,error:m.error?.code,rect:m.getBoundingClientRect().toJSON()})),buttons:[...document.querySelectorAll('button')].map(b=>({text:b.textContent,aria:b.getAttribute('aria-label'),disabled:b.disabled,rect:b.getBoundingClientRect().toJSON()})),events:window.b7MediaEvents}})()`);
+ save('probe-'+(process.argv[2]??Date.now())+'.json',result);console.log(JSON.stringify({text:result.text,focus:result.focus,media:result.media,events:result.events.slice(-5)}));
+}finally{c.close()}

@@ -1,0 +1,17 @@
+{
+  "binarySha256": "35BEEF23FE7768CEB7159FCAA6D9AD6AAC5B298BEC0B26B49E6914F243178473",
+  "command": "bun run tauri build --debug --no-bundle --config output/b7-qa/production-build.json",
+  "time": "2026-10-27T13:05:53.6682582+08:00",
+  "exitCode": 0,
+  "sourceHashes": [
+    {
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatApp.tsx",
+      "Hash": "86F681BA0B554D240C57313B382615755520BB0BE543A77DEF4411DB9B40E61B"
+    },
+    {
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\sharedConversation.ts",
+      "Hash": "FCF27DD6851C697215CDD0D0064884FE97FCB39608E77243997564C2EDDAE2CB"
+    }
+  ],
+  "features": "default; no QA"
+}

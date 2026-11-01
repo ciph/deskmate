@@ -1643,6 +1643,7 @@ pub fn run() {
             worklog::commands::worklog_list_runs,
             worklog::commands::worklog_retry_run,
             worklog::commands::worklog_get_operation,
+            worklog::commands::worklog_get_operation_states,
             worklog::export::worklog_export_report,
             sidecar_base_url,
             sidecar_auth,
@@ -1794,7 +1795,7 @@ pub fn run() {
                 pet_startup::place(&pet, &loaded.persona_id, loaded.pet_position);
             }
             let history = history::load(&handle).map_err(std::io::Error::other)?;
-            app.manage(HistoryState(Mutex::new(history)));
+            app.manage(HistoryState::new(Mutex::new(history)));
             app.manage(history::maintenance::HistoryMaintenance::default());
             app.manage(history::NativeSessionIndex::default());
             history::load_native_index(&handle, &app.state::<history::NativeSessionIndex>())?;

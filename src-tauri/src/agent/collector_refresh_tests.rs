@@ -22,6 +22,7 @@ fn message(id: &str, created: u64) -> NativeMessage {
         usage: None, system: None, id: id.into(), role: Some("assistant".into()),
         created: Some(created), parent_id: Some("msg_run".into()), completed: false,
         finish: None, error: None, parts: vec![NativePart {
+            file_name: None,
             id: format!("prt_{id}"), synthetic: false, kind: Some("text".into()),
             text: Some("original".into()), call_id: None, tool: None, state: None,
         }],

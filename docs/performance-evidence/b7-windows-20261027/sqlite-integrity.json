@@ -1,0 +1,32 @@
+[
+  {
+    "file": "chat-resources.sqlite3",
+    "integrity": [
+      "ok"
+    ]
+  },
+  {
+    "file": "deskmate-memory.db",
+    "integrity": [
+      "ok"
+    ]
+  },
+  {
+    "file": "history-catalog.sqlite",
+    "integrity": [
+      "ok"
+    ]
+  },
+  {
+    "file": "yume-worklog.db",
+    "integrity": [
+      "ok"
+    ]
+  },
+  {
+    "file": "opencode-home/xdg-data/opencode/opencode.db",
+    "integrity": [
+      "ok"
+    ]
+  }
+]

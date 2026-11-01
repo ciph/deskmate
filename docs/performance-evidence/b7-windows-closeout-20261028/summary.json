@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-28",
+  "branch": "codex/yume-performance-b6",
+  "preservationCommit": "8702347",
+  "fixCommit": "36a3c2e",
+  "version": "0.4.21",
+  "schemas": {
+    "history": 3,
+    "memory": 4
+  },
+  "status": "Windows audit repair delivery closed; strict cross-platform/hardware V2 acceptance is not claimed",
+  "originalFindings": 20,
+  "adoptedCodeChanges": 19,
+  "conditionalModelExperiment": 1,
+  "sourceFixesThisRound": [
+    "Only expected aborts of this view’s exact stopping request omit an error bubble; other errors remain visible.",
+    "Worklog receipt recovery passes the selected directory and rejects asynchronous results from earlier session/directory scopes, including leave-and-revisit."
+  ],
+  "frontend": {
+    "files": 172,
+    "pass": 1373,
+    "fail": 0,
+    "skip": 8,
+    "unfinished": 0
+  },
+  "rust": {
+    "pass": 974,
+    "fail": 0,
+    "ignored": 24
+  },
+  "nativeRecovery": {
+    "pass": 1,
+    "archiveFailureHeldMs": 31148,
+    "replayed": false
+  },
+  "streams": [
+    {
+      "size": 10000,
+      "updates": 182,
+      "samples": 30,
+      "busySamples": 30,
+      "inputP95Ms": 30.8,
+      "scrollP95Ms": 40,
+      "firstAtMs": 1283.5,
+      "stableOldNodes": 1000,
+      "focus": true,
+      "draft": true
+    },
+    {
+      "size": 50000,
+      "updates": 180,
+      "samples": 30,
+      "busySamples": 30,
+      "inputP95Ms": 31,
+      "scrollP95Ms": 43.1,
+      "firstAtMs": 335.3,
+      "stableOldNodes": 1000,
+      "focus": true,
+      "draft": true
+    }
+  ],
+  "activeTool": {
+    "secondaryLaunches": 10,
+    "maxSecondaryExitMs": 481.5082,
+    "toolRequests": 1,
+    "toolCompleted": true
+  },
+  "pdf": {
+    "cycles": 32,
+    "created": 32,
+    "terminated": 32,
+    "tail": {
+      "heapMin": 6124728,
+      "heapMax": 6131384,
+      "heapLastMinusFirst": 6656,
+      "rssMin": 1449873408,
+      "rssMax": 1456783360,
+      "rssLastMinusFirst": -6627328
+    },
+    "forcedGc": true
+  },
+  "idle": {
+    "durationMs": 603669,
+    "samples": 121,
+    "cpu": {
+      "p50": 1.0565893608495291,
+      "p95": 1.2951757294429709
+    },
+    "rss": {
+      "min": 1511407616,
+      "max": 1521213440,
+      "lastMinusFirst": 3555328
+    },
+    "petSlept": true
+  },
+  "normalBuild": {
+    "exitCode": 0,
+    "workbench": "Unchanged pinned bundle reused",
+    "binarySha256": "765F92FEA04713AE267EB9A981C66CA07AE18EA4FB8456308728A2C9E9388DC8",
+    "profile": "release / fat LTO",
+    "startedAt": "2026-10-28T11:15:01.5961365+08:00",
+    "features": "default",
+    "finishedAt": "2026-10-28T11:20:39.3621704+08:00",
+    "launched": false,
+    "identity": "com.deskmate.desktop"
+  },
+  "qaBuild": {
+    "binarySha256": "A9BBFF944872DB8C2B1EEBB9D490D412EC4022897CEC90CD4E22A027BFC57C3B",
+    "identity": "com.deskmate.unifiedhistoryqa.winb7closeout20261028a",
+    "exitCode": 0,
+    "startedAt": "2026-10-28T11:21:03.8213636+08:00",
+    "finishedAt": "2026-10-28T11:26:52.0555970+08:00",
+    "features": "worklog-qa",
+    "profile": "release / fat LTO"
+  },
+  "cleanup": {
+    "pass": true,
+    "time": "2026-10-28T11:54:24.0474666+08:00",
+    "credentialCleared": true,
+    "ownedProcessesGone": true,
+    "portsClosed": [
+      9244,
+      61413,
+      61857
+    ],
+    "rootsRemoved": [
+      "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a",
+      "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a"
+    ],
+    "normalReleaseSha256": "765F92FEA04713AE267EB9A981C66CA07AE18EA4FB8456308728A2C9E9388DC8",
+    "integrityAfterStop": true
+  },
+  "integrityDatabases": 6,
+  "sources": [
+    {
+      "path": "src/chat/ChatApp.tsx",
+      "sha256": "b8bde63869ee3a1f79019b65018b59e07848639c7a86fd7220742ec9ad9ed876"
+    },
+    {
+      "path": "src/chat/useWorklogChat.ts",
+      "sha256": "ed4d4820fbac359a37051da8794c61d8f5f3510dca152d130ed713c0c40c7af5"
+    },
+    {
+      "path": "src/chat/chatFixedReply.test.tsx",
+      "sha256": "6a6c1459c05bebf90f1d571022061c17667dfc1434b40d96cb90bf60a360de56"
+    },
+    {
+      "path": "src/chat/useWorklogChat.test.tsx",
+      "sha256": "adab8bfea6fcd1556f211b03265539e54ca07e140d82b766e3edc30912bd532c"
+    }
+  ],
+  "remainingExternalAcceptance": [
+    "Mac-specific native GUI/recovery and final patch compilation need a Mac; Windows results do not close these.",
+    "Mixed DPI/high-refresh hardware, measured GPU residency/power and controlled old/new production A/B are not established; all three attached displays are 125% DPI.",
+    "Real paid-model worklog intent and exhaustive disk-full/process-interrupted migration/repair UI were not exercised; tested forced failure rollback is preserved.",
+    "No claim to validate every model animation extreme in native GUI, arbitrary lifetime leak absence, or receipt of a delayed response after client cancellation."
+  ],
+  "knownTradeoffs": [
+    "1000 chat rows still mount; current Markdown tail still parses whole accumulated content.",
+    "History/receipt recovery reads whole selected session; no new streaming-per-chunk fetch path was introduced.",
+    "R06 whole-history comparison, D20 once-per-operation full read, M19c DELETE foreign-key scan remain.",
+    "Initial project plugin initialization can take tens of seconds; model verification restarts engine and a transient ordinary history read required retry in this harness."
+  ],
+  "committed": true,
+  "pushed": false,
+  "installed": false,
+  "published": false
+}

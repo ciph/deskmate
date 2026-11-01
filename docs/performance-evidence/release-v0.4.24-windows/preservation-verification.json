@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-29T07:24:10.818622+00:00",
+  "preexistingDraft": "v0.4.20",
+  "preexistingDraftMetadataAndAssetsUnchanged": true,
+  "draftAssetIdentity": [
+    [
+      "YUME_0.4.20_x64-setup.exe",
+      "sha256:17db896a5f2452a5dc3b7b3e074a5d9987557679c494b846c4b195620a75e679",
+      117079889
+    ],
+    [
+      "YUME_0.4.20_x64-setup.exe.sig",
+      "sha256:bcdc3dc505f4035b11eb08d00cb7658d40186037a43c009de93d85050ed9ca6d",
+      416
+    ],
+    [
+      "latest.json",
+      "sha256:b85de05ec0e71f1a50edfc88fd38f641506d3975a33b7c01466d13c50b0b017a",
+      1254
+    ]
+  ],
+  "publishedTagsUnchanged": {
+    "refs/tags/v0.4.23": "892ae7a29c687f9fcd5adfdb7427b09bec88faff",
+    "refs/tags/v0.4.23^{}": "289f08cdc2d3bd10d03289bb469b7bf03211ab4e",
+    "refs/tags/v0.4.24": "1b2b3b4814abbb841a26dd2c6f53cc709811b42b",
+    "refs/tags/v0.4.24^{}": "b9c5606863ebd60d18a4004a31188ca6b6d100dc"
+  },
+  "otherWorktreesModifiedByThisRelease": false
+}

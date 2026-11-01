@@ -1,0 +1,112 @@
+[host] sidecar launch
+[stderr] timestamp=2026-10-27T05:52:38.721Z level=INFO run=58a7663c message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\config.json"
+[stderr] timestamp=2026-10-27T05:52:38.723Z level=INFO run=58a7663c message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:52:38.725Z level=INFO run=58a7663c message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.jsonc"
+[stdout] opencode server listening on http://127.0.0.1:60815
+[stderr] timestamp=2026-10-27T05:52:38.920Z level=INFO run=58a7663c message="global event connected"
+[host] health_ready
+[stderr] timestamp=2026-10-27T05:52:39.000Z level=INFO run=58a7663c message="creating instance" directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:52:39.000Z level=INFO run=58a7663c message=fromDirectory directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:52:39.007Z level=INFO run=58a7663c message=bootstrapping directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:52:39.010Z level=INFO run=58a7663c message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\config.json"
+[stderr] timestamp=2026-10-27T05:52:39.016Z level=INFO run=58a7663c message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:52:39.016Z level=INFO run=58a7663c message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.jsonc"
+[stderr] timestamp=2026-10-27T05:52:39.039Z level=INFO run=58a7663c message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace\\.opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:52:39.040Z level=INFO run=58a7663c message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace\\.opencode\\opencode.jsonc"
+[stderr] timestamp=2026-10-27T05:52:39.493Z level=INFO run=58a7663c message="global event connected"
+[host] stable_health_retry_budget_reset
+[stderr] timestamp=2026-10-27T05:53:42.682Z level=INFO run=58a7663c message="all LSPs are disabled"
+[stderr] timestamp=2026-10-27T05:53:42.683Z level=INFO run=58a7663c message="all formatters are disabled"
+[stderr] timestamp=2026-10-27T05:53:42.683Z level=INFO run=58a7663c message=init
+[stderr] [redacted sensitive log line]
+[stderr] timestamp=2026-10-27T05:53:42.845Z level=INFO run=58a7663c message="event connected"
+[host] sidecar launch
+[stderr] timestamp=2026-10-27T05:55:39.213Z level=INFO run=3cfb69d6 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\config.json"
+[stderr] timestamp=2026-10-27T05:55:39.216Z level=INFO run=3cfb69d6 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:55:39.218Z level=INFO run=3cfb69d6 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.jsonc"
+[stdout] opencode server listening on http://127.0.0.1:60815
+[stderr] timestamp=2026-10-27T05:55:39.429Z level=INFO run=3cfb69d6 message="global event connected"
+[stderr] timestamp=2026-10-27T05:55:39.445Z level=INFO run=3cfb69d6 message="creating instance" directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:55:39.446Z level=INFO run=3cfb69d6 message=fromDirectory directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:55:39.452Z level=INFO run=3cfb69d6 message=bootstrapping directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:55:39.455Z level=INFO run=3cfb69d6 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\config.json"
+[stderr] timestamp=2026-10-27T05:55:39.461Z level=INFO run=3cfb69d6 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:55:39.462Z level=INFO run=3cfb69d6 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.jsonc"
+[stderr] timestamp=2026-10-27T05:55:39.478Z level=INFO run=3cfb69d6 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace\\.opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:55:39.479Z level=INFO run=3cfb69d6 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace\\.opencode\\opencode.jsonc"
+[stderr] timestamp=2026-10-27T05:55:39.498Z level=INFO run=3cfb69d6 message="all LSPs are disabled"
+[stderr] timestamp=2026-10-27T05:55:39.499Z level=INFO run=3cfb69d6 message="all formatters are disabled"
+[stderr] timestamp=2026-10-27T05:55:39.499Z level=INFO run=3cfb69d6 message=init
+[stderr] timestamp=2026-10-27T05:55:39.501Z level=INFO run=3cfb69d6 message="event connected"
+[stderr] timestamp=2026-10-27T05:55:39.942Z level=INFO run=3cfb69d6 message="global event connected"
+[stderr] timestamp=2026-10-27T05:55:40.458Z level=INFO run=3cfb69d6 message="event connected"
+[host] health_ready
+[stderr] timestamp=2026-10-27T05:55:40.590Z level=INFO run=3cfb69d6 message="removing share" sessionID=ses_e84140ec9ffe5DpnKLNHWsfDqM
+[host] stable_health_retry_budget_reset
+[host] sidecar launch
+[stderr] timestamp=2026-10-27T05:58:01.400Z level=INFO run=c396e2e2 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\config.json"
+[stderr] timestamp=2026-10-27T05:58:01.402Z level=INFO run=c396e2e2 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:58:01.403Z level=INFO run=c396e2e2 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.jsonc"
+[stdout] opencode server listening on http://127.0.0.1:61520
+[host] health_ready
+[stderr] timestamp=2026-10-27T05:58:01.602Z level=INFO run=c396e2e2 message="creating instance" directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:58:01.602Z level=INFO run=c396e2e2 message=fromDirectory directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:58:01.615Z level=INFO run=c396e2e2 message=bootstrapping directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T05:58:01.618Z level=INFO run=c396e2e2 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\config.json"
+[stderr] timestamp=2026-10-27T05:58:01.619Z level=INFO run=c396e2e2 message="global event connected"
+[stderr] timestamp=2026-10-27T05:58:01.626Z level=INFO run=c396e2e2 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:58:01.627Z level=INFO run=c396e2e2 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.jsonc"
+[stderr] timestamp=2026-10-27T05:58:01.646Z level=INFO run=c396e2e2 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace\\.opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T05:58:01.646Z level=INFO run=c396e2e2 message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace\\.opencode\\opencode.jsonc"
+[stderr] timestamp=2026-10-27T05:58:01.668Z level=INFO run=c396e2e2 message="all LSPs are disabled"
+[stderr] timestamp=2026-10-27T05:58:01.669Z level=INFO run=c396e2e2 message="all formatters are disabled"
+[stderr] timestamp=2026-10-27T05:58:01.669Z level=INFO run=c396e2e2 message=init
+[stderr] [redacted sensitive log line]
+[stderr] timestamp=2026-10-27T05:58:01.785Z level=INFO run=c396e2e2 message="event connected"
+[host] stable_health_retry_budget_reset
+[host] sidecar launch
+[stderr] timestamp=2026-10-27T06:00:28.097Z level=INFO run=0578df8b message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\config.json"
+[stderr] timestamp=2026-10-27T06:00:28.100Z level=INFO run=0578df8b message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T06:00:28.109Z level=INFO run=0578df8b message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.jsonc"
+[stdout] opencode server listening on http://127.0.0.1:62356
+[stderr] timestamp=2026-10-27T06:00:28.258Z level=INFO run=0578df8b message="creating instance" directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T06:00:28.259Z level=INFO run=0578df8b message=fromDirectory directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T06:00:28.266Z level=INFO run=0578df8b message=bootstrapping directory="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace"
+[stderr] timestamp=2026-10-27T06:00:28.269Z level=INFO run=0578df8b message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\config.json"
+[stderr] timestamp=2026-10-27T06:00:28.273Z level=INFO run=0578df8b message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T06:00:28.273Z level=INFO run=0578df8b message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\opencode-home\\xdg-config\\opencode\\opencode.jsonc"
+[stderr] timestamp=2026-10-27T06:00:28.290Z level=INFO run=0578df8b message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace\\.opencode\\opencode.json"
+[stderr] timestamp=2026-10-27T06:00:28.290Z level=INFO run=0578df8b message=loading path="C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027g\\workspace\\.opencode\\opencode.jsonc"
+[stderr] timestamp=2026-10-27T06:00:28.309Z level=INFO run=0578df8b message="all LSPs are disabled"
+[stderr] timestamp=2026-10-27T06:00:28.310Z level=INFO run=0578df8b message="all formatters are disabled"
+[stderr] timestamp=2026-10-27T06:00:28.310Z level=INFO run=0578df8b message=init
+[stderr] [redacted sensitive log line]
+[host] health_ready
+[stderr] timestamp=2026-10-27T06:00:28.386Z level=INFO run=0578df8b message="global event connected"
+[stderr] timestamp=2026-10-27T06:00:28.398Z level=INFO run=0578df8b message="event connected"
+[stderr] timestamp=2026-10-27T06:00:28.457Z level=INFO run=0578df8b message="removing share" sessionID=ses_e84101b19ffeM4D5PxIO342yUf
+[stderr] timestamp=2026-10-27T06:00:28.728Z level=INFO run=0578df8b message="global event connected"
+[host] stable_health_retry_budget_reset
+[stderr] timestamp=2026-10-27T06:01:43.343Z level=INFO run=0578df8b message="event connected"
+[stderr] timestamp=2026-10-27T06:01:44.645Z level=INFO run=0578df8b message="global event connected"
+[stderr] timestamp=2026-10-27T06:01:46.524Z level=INFO run=0578df8b message=init count=1
+[stderr] timestamp=2026-10-27T06:01:47.729Z level=INFO run=0578df8b message="watcher backend" directory=C:/Users/chenglingxiao/AppData/Roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027g/workspace platform=win32 backend=windows
+[stderr] timestamp=2026-10-27T06:01:47.736Z level=INFO run=0578df8b message="project copy refresh started" projectID=global
+[stderr] timestamp=2026-10-27T06:01:47.737Z level=INFO run=0578df8b message="project copy refresh done" projectID=global updated=[] removed=[]
+[stderr] timestamp=2026-10-27T06:01:47.904Z level=INFO run=0578df8b message="booting location services" directory=C:/Users/chenglingxiao/AppData/Roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027g/workspace workspaceID=undefined
+[stderr] timestamp=2026-10-27T06:01:48.523Z level=INFO run=0578df8b message="creating instance" directory="C:\\"
+[stderr] timestamp=2026-10-27T06:01:48.523Z level=INFO run=0578df8b message=fromDirectory directory="C:\\"
+[stderr] timestamp=2026-10-27T06:01:48.526Z level=INFO run=0578df8b message=bootstrapping directory="C:\\"
+[stderr] timestamp=2026-10-27T06:01:48.533Z level=INFO run=0578df8b message="watcher backend" directory=c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027g/workspace platform=win32 backend=windows
+[stderr] timestamp=2026-10-27T06:01:48.537Z level=INFO run=0578df8b message="project copy refresh started" projectID=global
+[stderr] timestamp=2026-10-27T06:01:48.538Z level=INFO run=0578df8b message="project copy refresh done" projectID=global updated=[] removed=[]
+[stderr] timestamp=2026-10-27T06:01:48.676Z level=INFO run=0578df8b message="booting location services" directory=c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027g/workspace workspaceID=undefined
+[stderr] timestamp=2026-10-27T06:01:48.794Z level=INFO run=0578df8b message="all LSPs are disabled"
+[stderr] timestamp=2026-10-27T06:01:48.794Z level=INFO run=0578df8b message="all formatters are disabled"
+[stderr] timestamp=2026-10-27T06:01:48.794Z level=INFO run=0578df8b message=init
+[stderr] timestamp=2026-10-27T06:01:49.449Z level=INFO run=0578df8b message="watcher backend" directory=/ platform=win32 backend=windows
+[stderr] timestamp=2026-10-27T06:01:49.450Z level=INFO run=0578df8b message="project copy refresh started" projectID=global
+[stderr] timestamp=2026-10-27T06:01:49.451Z level=INFO run=0578df8b message="project copy refresh done" projectID=global updated=[] removed=[]
+[stderr] timestamp=2026-10-27T06:01:49.477Z level=INFO run=0578df8b message="booting location services" directory=/ workspaceID=undefined
+[stderr] timestamp=2026-10-27T06:04:24.043Z level=INFO run=0578df8b message="global event connected"
+[stderr] timestamp=2026-10-27T06:04:24.689Z level=INFO run=0578df8b message="removing share" sessionID=ses_e840dde59ffeKc9V4QlKNdo5Og

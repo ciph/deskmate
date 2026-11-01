@@ -68,11 +68,11 @@ impl AgentRunState {
             record.outcome = Some(RunOutcome::Failed);
             record.error_summary = Some("scheduled_agent_busy".into());
             record.initial_input = None;
-            self.store.write(&record)?;
+            self.persist_record(None, &record)?;
             data.recent.insert(0, record);
             return Ok(ScheduledAdmission::BusyReceipt);
         }
-        self.store.write(&record)?;
+        self.persist_record(None, &record)?;
         data.active = Some(record);
         Ok(ScheduledAdmission::Started)
     }

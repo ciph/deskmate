@@ -1,18 +1,12 @@
 # YUME 性能整改施工方案
 
-创建：2026-10-22；交接核对：2026-10-24（Asia/Shanghai）。本文件是性能整改施工计划的唯一维护入口，原 Windows `.omo/plans/` 副本冻结为历史记录。
+原方案创建于 2026-10-22；2026-10-28 B6/B7 本机整改已随 Windows 0.4.22 交付。[当前状态](performance-windows-handoff.md)、[20 项处置矩阵](performance-evidence/b7-windows-closeout-20261028/audit-matrix.json) 和 [发布回执](performance-evidence/release-v0.4.22-windows/README.md) 是最新结论。
 
-**当前：B1–B5 代码已保存并进入远端 `main`；Windows v0.4.21 已发布；B6、B7 尚未开工，B1–B5 原生待验仍保留。** 下一步先读 [Mac 接续说明](performance-remediation-handoff.md)，再执行本计划第 10 节 H18a。不要从原始 0.4.20 基线重新施工。
-
-源码/发布基线：`fee4d707804f76e5c608ceef33c622e71d17b175`，版本 `0.4.21`。远端 `main` 在本次文档提交前已核验与该提交一致；此后从实际最新 `origin/main` 接续并检查新增差异。B5 最终 CI、公开下载和审计基线的便携回执见 [证据索引](performance-evidence/README.md)。
-
-旧回执中的“下一批”“未推送”“未发布”、盘符路径与并行安排只描述当时状态；当前执行位置使用 Mac 的实际 clone，是否分派任务遵循接手会话规则。当前验收范围以 [验收待办](verification-backlog.md) 和接续说明为准。
-
-目标：先修复会中断任务、阻断功能或破坏数据完整性的问题，再减少启动、流式聊天、后台采集、渲染和数据库的实际工作量。每项改动必须同时证明行为仍然正确、工作量下降和对应环境的实际表现；不以微测结果承诺整机提速，不以删除功能换取性能。
+本文保留原设计、依赖、门槛与执行回执，不能把历史基线、轮次或“下一步”当成新的施工指令。严格跨平台/硬件 V2 未全过，现存未验事项只在 [验收待办](verification-backlog.md) 维护；不重复复制各轮进度。
 
 ## 1. 已确认的基线与施工边界
 
-- 接续入口：先核对实际 checkout、分支、工作区、HEAD、远端和 `package.json` / `Cargo.toml` 版本。当前发布源码基线为 `fee4d70` / 0.4.21；Mac 使用本机 clone，不复制 Windows 链接工作树的 `.git`。
+- 接续入口：先核对实际 checkout、分支、工作区、HEAD、远端和 `package.json` / `Cargo.toml` 版本。本方案实施时的发布源码基线为 `fee4d70` / 0.4.21；当前已发布 0.4.22，见交付入口；Mac 使用本机 clone，不复制 Windows 链接工作树的 `.git`。
 - 原审计基线（历史）：`codex/optional-windows-component`，`d92a9c872b01300a27d90a675cfa9247bfd2fd2b`，0.4.20。B1–B5 施工分支为 `codex/yume-performance-remediation`，不是要求 Mac 回退的目标。
 - Windows 开发路径（历史）：`C:/Users/chenglingxiao/.codex/worktrees/build-v0418-9081/deskmate-public-release`。旧 `E:/Codex/工作伙伴/deskmate-public-release` 是保留旧改动的元数据仓；不 reset/clean，不移动 `.git`。
 - 本方案在仓库 `docs/performance-remediation-plan.md` 维护；原审计证据保持原样。每个小步更新 `docs/verification-backlog.md` 和实际受影响的现行契约，未验事项继续保留。
@@ -266,6 +260,10 @@ QA：10000 无关版本、1 个来源、20 个相关版本、链式/重复引用
 
 ### H18a｜成功写入驱动 revision/generation（#18 第一步，中；依赖 R06 相关接口稳定）
 
+状态（2026-10-24 Mac）：**代码与自动测试通过但原生待验**。历史文件、旧 native index、Agent 目录证据及 native 关联分别跟踪 revision；命中时不读/克隆/编码全量来源。历史文件替换、Agent 持久化、catalog 事务成功后才发布相应失效。流式 part/call ID、用量重试和 pending outcome 不触发无关来源重导入；组织操作与墓碑仍从数据库读取，工作台所有权仍实时派生。导入失败/并发变更不确认完成代际，变更请求后续刷新。首次及距上次成功恢复校验 30 秒后的下一次读取会重读历史/index/run 来源，异常保留原内存并允许重试；这不是无条件每 30 秒唤醒，也不是外部变化 30 秒内必然可见的 SLA。
+
+本机固定 Bun 1.3.14 / Rust 1.94.1，基线完整 `bun run check` 通过；H18a 后完整 Rust 901 pass / 0 fail / 18 ignored。正文 10k/100k 字符各 100 次命中：新增 RunStore 文件读取与 catalog 导入均为 0；没有把该操作计数当原生耗时收益。完整工作台从固定 commit 的官方源码归档重建，原锁文件哈希保持不变。实际命令、失败与复验及本地证据位置见 [当前验收记录](verification-backlog.md#2026-10-24-mac-b6-h18a)。未改 schema、版本或发布资产。
+
 文件：history/commands.rs、maintenance.rs、storage.rs、native_index.rs、catalog_local.rs、catalog_import.rs；agent/record_store.rs、lifecycle.rs 的已稳定持久化边界；history/catalog_local/content/migration/reconcile 和 recovery 测试。
 
 步骤：列清所有失效入口后才替换 fingerprint：history_save/delete、legacy/local messages、Agent input/snapshot/outcome/最终提交、native index 变化、启动 index_agent_records、native register/reconcile、catalog mutation 与删除回执、目录与启动恢复。revision 只在对应存储成功提交后推进；读取抓取一致 generation，导入期间若再变更就请求下一轮，不把旧结果标成最新。分清真正需要重导入的来源与只需刷新派生所有权的变化，避免任何事件都触发全量导入。workbench ownership 的 6 秒租约可以自然过期，不能只依赖 mutation generation；读取/操作时仍动态派生与验证。未知外部变化用启动/低频恢复校验兜底，不能继续每次 clone+serialize 所有正文。
@@ -273,6 +271,10 @@ QA：10000 无关版本、1 个来源、20 个相关版本、链式/重复引用
 QA：缓存命中不 clone/hash 完整 HistorySession/records；固定会话数把正文放大 10 倍，未变列表的工作量不随正文增长。逐个写入口、失败写、并发写、重启、late Agent snapshot、墓碑、工作台 ownership 切换正确失效；当前导入失败不推进 initialized revision。
 
 ### H18b｜单条目录事务按 key 修改（#18 第二步，中；依赖 H18a）
+
+状态（2026-10-24 Mac）：**代码与自动测试通过但原生待验**。`update_entry` 在 IMMEDIATE 事务内按完整主键读取、验证并更新目标行，禁止换 key；未改变不写入。注册、组织操作、内容证据、删除回执及空会话清理已接入。批量导入/目录发现保留全量原子路径；来源关联 revision 仍仅在提交成功后推进。物理移除条目及偏好删除同事务，偏好写入也在同一事务检查目标存在。迟到操作重新验证当前墓碑、可用性和运行状态，保留较新的组织、所有权和内容证据。
+
+1k/10k/100k 合成库各执行 100 次单条修改，解码均为 100、UPDATE 均为 100，EXPLAIN 使用主键索引；这是存储操作计数，不是完整端点或 GUI 性能保证。无关损坏行保持原字节，单条路径沿用 `get` 的隔离策略；目标损坏拒绝，`all`/批量事务继续全量验证并报错，未引入静默修复。完整 Rust 916 pass / 0 fail / 19 ignored，其中新增手工规模测试已单独执行通过。命令与覆盖见 [H18b 验收记录](verification-backlog.md#2026-10-24-mac-b6-h18b)。schema 仍为 2，产品仍为 0.4.21；H18c 未开始。
 
 文件：history/catalog.rs、catalog_mutation.rs、catalog_content.rs、commands.rs、maintenance.rs；catalog_tests.rs、catalog_local_tests.rs、catalog_model_tests.rs、catalog_content_tests.rs、ownership/migration_rollback 测试。
 
@@ -282,7 +284,11 @@ QA：1k/10k/100k 行中单条修改解码数量恒定；无关损坏数据如何
 
 ### H18c｜筛选排序投影列与 SQL 分页（#18 第三步，大；依赖 H18b）
 
-文件：history/catalog.rs、catalog_query.rs、catalog_model.rs、commands.rs；catalog_migration_tests.rs、catalog_tests.rs、catalog_model_tests.rs、history 迁移/回退测试。当前 catalog schema 为 2，新增迁移不能改旧基线含义。
+状态（2026-10-25 Mac）：**代码与自动测试通过但原生待验**。独立 schema 2→3 迁移增加查询投影表、分页/目录/来源/离线索引；不重写旧 metadata，偏好与目录注册表保留。单条/批量 metadata 与投影同事务更新，直接 SQL metadata 写入会标记未验证投影，列表拒绝返回旧结果。列表/count/离线/目录读取共用 DEFERRED 快照，只解码返回页；工作台实时租约在页内重算能力，旧全量查询仅保留为测试 oracle。
+
+1k/10k/100k 数据各 97 组查询矩阵及首页/深页/搜索/目录/来源样本与旧 oracle 等价；50 行页均仅解码 50 行，对应索引均命中。保留 Rust Unicode 小写与字面子串、全部 u64 时间戳、空记录/墓碑、默认归档、置顶及 key 排序。中断注入、SQLite 容量上限、损坏、未来 schema、重复/并发打开、WAL 读写、物理删除及投影写失败均覆盖。完整 Rust 926 pass / 0 fail / 20 ignored；新增 ignored 规模测试单独通过，生产 `cargo check` 通过。预热后的 30 样本分布、扫描工作量及边界见 [H18c 验收记录](verification-backlog.md#2026-10-25-mac-b6-h18c)。count、搜索、深 offset 和来源恢复仍可能随数据增长；不宣称整个端点 O(1)。
+
+文件：history/catalog.rs、catalog_schema.rs、catalog_sql.rs、catalog_query.rs、commands.rs；catalog_schema_tests.rs、catalog_sql_tests.rs 及既有 history/ownership/迁移回退测试。起点 catalog schema 为 2；新增版本 3 保留旧基线含义，旧版拒绝写入新库。
 
 步骤：把实际查询需要的稳定字段投影为列/索引，metadata 与投影同事务更新；保留当前搜索大小写/substring、空会话排除、tombstone、pinned 优先、时间排序和 key tie-break。不凭 SQL 默认排序替换既有语义。列表/count 在 SQL 执行，最多解码返回页；全局目录与错误元数据单独读取。搜索与深 offset 的代价分别记录，不能声称任意深页恒定成本；先不改外部分页 API。
 
@@ -290,11 +296,19 @@ QA：迁移前后同一 1k/10k/100k fixture 的所有过滤/排序/分页结果�
 
 ### M19a｜有界到期索引（#19 第一步，小；依赖 A04）
 
+状态（2026-10-25 Mac）：**代码与自动测试通过但原生待验**。独立 `003_active_expiry.sql` 将记忆库 schema 2→3，仅增加 `memories(expires_at)` 的 active/non-null 部分索引；001/002 未修改。现有到期 UPDATE、pending 候选清理、TEXT 时间比较、作用域和 IMMEDIATE 事务语义保留。A04 的全量导出及 400 参数分块不变；读取实时过滤和 FTS 触发器优化仍分别留给 M19b/M19c。
+
+100k 行无期限、全未来、5 条到期、20k 集中到期和其他 persona 到期的真实 UPDATE 计划均为 `SEARCH memories USING COVERING INDEX idx_memories_active_expiry`；候选检索与强制扫描 oracle 完全一致。无到期时实际 UPDATE 为 17/21 VM steps，集中到期仍按命中数工作。迁移保留旧库只读副本/哈希、完整记录/关联/FTS；容量不足、后置失败、未检查点 WAL、重复/并发打开和未来版本均覆盖。完整 Rust 复测 933 pass / 0 fail / 21 ignored，规模专项单独通过，生产 `cargo check` 通过。首次全套的 10k 检索 p95 95 ms 超出原 50 ms 预算；独立复测 20 ms、原 4 线程全套复测 15 ms，未改预算；失败与复测均记录于 [M19a 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19a)。不以候选定位的收益代表完整 FTS 更新或原生性能。
+
 文件：memory/repository.rs、storage.rs、新增独立 migration；repository_tests.rs、perf_tests.rs、cross_process_tests.rs。
 
 步骤/QA：只为 active 且 expires_at 非空建立适配谓词的部分索引，不顺手改变读语义；新建 migration，不修改已应用的 001_initial.sql。100k 行无到期、有少量到期、集中到期、无关 persona 下 EXPLAIN 不再全扫到期 UPDATE；保留 ISO 时间与时区比较语义，旧 schema 迁移原子成功，失败仍可打开旧副本。
 
 ### M19b｜读取实时过滤，物化过期独立维护（#19 第二步，中；依赖 M19a）
+
+状态（2026-10-25 Mac）：**代码与自动测试通过但原生待验**。列表/导出及关联查询使用同一 DEFERRED 只读快照；检索单条 SELECT 过滤逻辑过期。active/expired/superseded、全量导出、FTS 与短词 LIKE 在物化前后结果一致；普通写入保留 IMMEDIATE。后台以索引最近期限判断是否需要维护，每轮最多 8 条记忆和 32 条 pending 候选；记忆逐条执行并检查 10 ms 预算，忙时让出，失败整批回滚重试。新建同 key 只处理对应过期槽位，编辑/自动提议不会复活到期记录。物化保留 updated_at/revision，避免后台调度改变排序与导出，明确取代旧读时更新 timestamp 的副作用，详见[当前契约](memory-and-worklog.md#读取与到期维护2026-10-25-m19b)。
+
+完整 Rust 941 pass / 0 fail / 22 ignored，10k 检索 p50/p95 11/16 ms，未改 50 ms 预算；新增 100k 规模专项单独通过。最近期限查询 36–40 VM steps，读取写入次数为 0。初版固定 8 条维护耗时 254 ms，加入逐条时间预算后本机同场景处理 1 条、耗时 40.8 ms；这不是严格 10 ms 上限，单条旧 FTS 触发器仍可能超时，留给 M19c。100k 检索自身仍为约 102–117 ms 的 p50，不承诺整体恒定时间或原生体验。所有失败、调整及数字见 [M19b 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19b)。两库独立 schema 仍为 3，未变更迁移、前端、依赖或发布版本。
 
 文件：memory/repository.rs、retrieval.rs、commands.rs、automatic/worker.rs 或已有维护入口；retrieval_tests.rs、repository_tests.rs、perf_tests.rs、commands_forget_tests.rs、cross_process_tests.rs。
 
@@ -304,6 +318,10 @@ QA：冻结时钟覆盖边界、立即到期、远未来、集中到期、关闭
 
 ### M19c｜稳定 rowid 的 FTS 精确维护（#19 第三步，大；依赖 M19b）
 
+状态（2026-10-25 Mac）：**代码与自动测试通过但原生待验**。独立 `004_precise_fts.sql` 将记忆库 schema 3→4，旧 001/002/003 不变。每条记忆有 UUID 唯一映射到显式 `INTEGER PRIMARY KEY AUTOINCREMENT` search_id；FTS rowid 使用它，VACUUM/重开/状态切换不改变身份。metadata 和无效值变更不重建全文；有效文本/key/status 变化按 rowid 定位，映射级联删除直接擦除相应 FTS 行。仍为 owned-content trigram 表，新增 FTS secure-delete，保留 core secure_delete、WAL TRUNCATE、clear compact 与删除屏障。
+
+完整 Rust 951 pass / 0 fail / 23 ignored，10k 检索 p95 14 ms；M19c 规模专项与 M19b 到期规模复跑均单独通过。1k/10k/100k 实际触发器的 FTS DELETE 定位均为 26 VM steps，旧 schema 3 为 3017/30017/300017；metadata 与内容更新的固定 20 次 VM 工作量不再随全库增长。100k 下内容更新 p95 33.070→1.389 ms，metadata 32.143→0.006 ms。完整硬删除仍有 supersedes_id/accepted_memory_id 外键扫描，1k 小库内容更新/删除本轮 p95 高于旧值（均 <1.3 ms）；新映射与 secure-delete 同时引入，未把单次微测推断为整体恒定时延或已完成平台验收。细分测量、删除哨兵、迁移/回滚/并发与未验边界见 [M19c 验收记录](verification-backlog.md#2026-10-25-mac-b6-m19c)。历史目录仍为独立 schema 3，产品版本 0.4.21，未迁移日常用户数据或发布。
+
 文件：memory/storage.rs、repository.rs、retrieval.rs、新增 migration；repository/retrieval/perf/cross_process/commands_forget 测试。
 
 步骤：设计显式持久 INTEGER PRIMARY KEY 映射到 memory UUID（或同等稳定显式主键），由该稳定 id 精确定位 FTS rowid；不要使用可能在 VACUUM 变化的隐式 rowid。新增迁移中原子更新映射、FTS、触发器和 schema/user_version，不修改 001 历史迁移。触发器只在 content/memory_key/status 等实际检索字段变化时重建；非检索 metadata 更新不删重插全文。迁移重建、增删改、事务回滚、状态变更均保持映射与 FTS 一致，trigram 与短查询 LIKE 行为保留；保留旧版本拒绝写新 schema 的明确行为。
@@ -311,6 +329,12 @@ QA：冻结时钟覆盖边界、立即到期、远未来、集中到期、关闭
 QA：1k/10k/100k 行固定一批 UPDATE/DELETE 的 FTS 定位不全扫、不随全库线性增长；VACUUM 后 UUID↔rowid 仍一致；重复/冲突/回滚/重开/迁移失败不漏搜不误删。保留 active-only、真正擦除、secure_delete、WAL checkpoint(TRUNCATE)、批量遗忘后的 compact；用已知敏感哨兵检验原表、FTS、来源/关联和可控数据库文件残留，保留现有隐私测试。不得以 external-content FTS 改造悄悄削弱删除保证。
 
 ## 11. B7：验证、退出条件与回退
+
+2026-10-27 Windows 最新接续：冷启动历史误超时及早期 state/视图竞态已修复，最终全新身份和热重启通过；已推进真实多窗口目录/所有权、UIA 搜索，并复测 1000 消息 10k/Stop/续聊。前端 1360 pass / 8 skip、Rust 970 pass / 24 ignored，正常构建通过，QA 清理完成。物理 GUI/视觉、完整故障恢复/迁移、硬件及 Mac 专有范围继续保留。见 [最新证据](performance-evidence/b7-windows-cold-history-20261027/README.md)。以下保留先前原始记录。
+
+2026-10-27 Windows 前次修复：已用真实目录事件与 native 能力复现首次流式 composer 卸载，限定本视图当前回复保留控制并刷新终态能力。新 1000 消息的 10k、50k、Stop/继续、重启后另一首轮 10k 均通过；完整前端 1358 pass / 8 skip，类型/标准生产前端/正常 Windows debug 构建通过。历史删除、native 404、记忆导出/忘记与重启持续性新增通过。详见 [最新证据](performance-evidence/b7-windows-stop-focus-20261027/README.md)。冷启动历史发现仍有超时，GUI、多窗口、迁移、内存/硬件及 Mac 专有范围未关闭；B7 仍进行中。以下首批回写为先前记录，原失败证据保留。
+
+2026-10-27 Windows 首批回写：从 `db07e5b` 在独立 clone 接管，Windows 类型/固定工作台/前端 1353 pass + 8 skip/Rust 966 pass + 24 ignored/生产配置检查及 debug 编译通过。新增真实引擎恢复、QA 启动所有权/孤儿、WebView2 PDF 32 次、50k 长会话/Stop 证据。首次 1000 消息 10k composer/焦点异常未关闭，稳定后的 1002 消息复查不能替代；先复现定位再继续 GUI/存储/硬件。**B7 进行中，V1/V2 未达全部退出条件。** 以 [Windows 本轮方法与边界](performance-evidence/b7-windows-20261027/README.md) 及 [结果](performance-evidence/b7-windows-20261027/summary.json) 为准，下面门槛保持不变。
 
 ### V1｜集成检查与 Windows 原生全链路（中）
 
@@ -372,7 +396,7 @@ macOS 单独待验：单实例/恢复语义、WebKit PDF worker/CSP、媒体/二
 | #19 到期扫描/FTS 扫描 | M19a/b/c | B6 | 大，三步 | 部分索引→读过滤/维护→显式稳定 rowid |
 | #20 删除递归全扫 | D20a/b | B5 | 中，两步 | 不变不写→闭包一次处理；独立快照不漏擦除 |
 
-历史顺序：2026-10-22 首次开工执行 G0/G1 和 B1，随后用户逐批授权推进至 B5。当前接续先复核 G0，再从 B6 H18a 开始；原生缺口仍按 V1/V2 补验，不重做已保存的 B1–B5。
+历史执行回执见下文；当前交付与未验范围统一见 [Windows 状态](performance-windows-handoff.md) 和 [验收待办](verification-backlog.md)。
 
 
 ## 历史回执：B1 开工（2026-10-22）

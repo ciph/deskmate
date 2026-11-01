@@ -1,0 +1,249 @@
+{
+  "name": "resume",
+  "initialRows": 1005,
+  "finalRows": 1007,
+  "stableOldNodes": 1005,
+  "firstAt": 366,
+  "elapsedMs": 8978,
+  "updates": [
+    {
+      "at": 349,
+      "chars": 19
+    }
+  ],
+  "sampleWindows": [
+    {
+      "at": 1534,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 1764,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 1994.0000000001164,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 2224,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 2455,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 2685,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 2914,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 3144,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 3375,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 3605,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 3834,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 4064,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 4295,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 4525,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 4755,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 4995,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 5225,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 5455,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 5685,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 5914,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 6144,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 6375,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 6605,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 6835.000000000116,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 7065,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 7295,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 7525,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 7766,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 7995,
+      "busy": false,
+      "textChars": 19
+    },
+    {
+      "at": 8236,
+      "busy": false,
+      "textChars": 19
+    }
+  ],
+  "input": {
+    "n": 30,
+    "p50": 9,
+    "p95": 19,
+    "max": 19,
+    "samples": [
+      8,
+      9,
+      8.999999999883585,
+      9.000000000116415,
+      9,
+      8,
+      10,
+      10,
+      9,
+      9.000000000116415,
+      10,
+      10,
+      9,
+      9,
+      19,
+      9,
+      9.000000000116415,
+      9,
+      8,
+      9,
+      9,
+      9,
+      8.000000000116415,
+      8.999999999883585,
+      8.999999999883585,
+      9,
+      19,
+      8,
+      19,
+      18
+    ]
+  },
+  "scroll": {
+    "n": 30,
+    "p50": 20,
+    "p95": 21,
+    "max": 21,
+    "samples": [
+      21,
+      21,
+      21,
+      19.999999999883585,
+      21,
+      20,
+      20,
+      20,
+      20,
+      19.999999999883585,
+      19,
+      20,
+      21,
+      21,
+      20,
+      20,
+      19.999999999883585,
+      20.000000000116415,
+      21,
+      20,
+      20,
+      20,
+      19.999999999883585,
+      21,
+      20,
+      20,
+      20,
+      20,
+      21,
+      21
+    ]
+  },
+  "focusPreserved": true,
+  "draftRestored": true,
+  "stopClicked": false,
+  "busy": false,
+  "tailText": "\nB7_LOCAL_REPLY_OK\n",
+  "codeText": "",
+  "method": "live production DOM; 5 warmup pairs +30 paired samples spaced 200 ms; input/scroll to second rAF; Inspector closed"
+}

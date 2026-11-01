@@ -1,0 +1,1 @@
+(async()=>{const i=window.__TAURI__.core.invoke,base=await i('sidecar_base_url'),a=await i('sidecar_auth');const r=await fetch(base+'/global/health',{headers:{Authorization:'Basic '+btoa(a.username+':'+a.password)}});return {status:r.status,body:await r.text()}})()

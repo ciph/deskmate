@@ -1,0 +1,13 @@
+{
+  "time": "2026-10-27T06:47:39.247Z",
+  "window": {
+    "app": "process:C:\\Windows\\System32\\notepad.exe",
+    "id": 2169516,
+    "title": "无标题 - 记事本"
+  },
+  "first": {
+    "error": "Error: window capture timed out: timed out waiting on channel",
+    "elapsedMs": 5591
+  },
+  "retry": "Error: window capture timed out: timed out waiting on channel"
+}

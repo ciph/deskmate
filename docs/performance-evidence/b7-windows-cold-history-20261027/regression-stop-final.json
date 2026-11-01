@@ -1,0 +1,582 @@
+{
+  "ok": true,
+  "trace": [
+    {
+      "at": 72.5,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 73.09999999962747,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 173.90000000037253,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 174.59999999962747,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 358.09999999962747,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 358.69999999925494,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 1159,
+      "kind": "dom",
+      "composer": true,
+      "sameInput": true,
+      "focus": false,
+      "stop": false,
+      "notices": [],
+      "tailChars": 119
+    },
+    {
+      "at": 1452.800000000745,
+      "kind": "dom",
+      "composer": true,
+      "sameInput": true,
+      "focus": false,
+      "stop": true,
+      "notices": [],
+      "tailChars": 119
+    },
+    {
+      "at": 1665.5999999996275,
+      "kind": "dom",
+      "composer": true,
+      "sameInput": true,
+      "focus": true,
+      "stop": true,
+      "notices": [],
+      "tailChars": 95
+    },
+    {
+      "at": 3953.199999999255,
+      "kind": "native-access",
+      "entry": {
+        "key": "native:16:managed-local-v197:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace27:ses_winb7focus5000020261027",
+        "identity": {
+          "kind": "native",
+          "sidecarId": "managed-local-v1",
+          "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace",
+          "sessionId": "ses_winb7focus5000020261027"
+        },
+        "title": "B7 Windows 1000 messages 50000",
+        "userTitle": null,
+        "source": "workbench",
+        "created": 1793081302568,
+        "updated": 1793081622132,
+        "pinned": false,
+        "archived": false,
+        "availability": "available",
+        "ownership": "unowned",
+        "runtime": "running",
+        "tombstone": null,
+        "hasRecords": true,
+        "displayTitle": "B7 Windows 1000 messages 50000",
+        "capabilities": {
+          "open": true,
+          "openWorkbench": true,
+          "send": false,
+          "rename": true,
+          "pin": true,
+          "archive": true,
+          "delete": false,
+          "readOnlyReason": "active_task"
+        }
+      }
+    },
+    {
+      "at": 3953.199999999255,
+      "kind": "replay-catalog-event"
+    },
+    {
+      "at": 3954.300000000745,
+      "kind": "catalog-event"
+    },
+    {
+      "at": 4758.300000000745,
+      "kind": "dom",
+      "composer": true,
+      "sameInput": true,
+      "focus": true,
+      "stop": false,
+      "notices": [],
+      "tailChars": 12
+    }
+  ],
+  "result": {
+    "name": "fixed-stop",
+    "initialRows": 1000,
+    "finalRows": 1003,
+    "stableOldNodes": 1000,
+    "firstAt": 502.30000000074506,
+    "elapsedMs": 10452.599999999627,
+    "updates": [
+      {
+        "at": 499.09999999962747,
+        "chars": 95
+      },
+      {
+        "at": 540.5,
+        "chars": 295
+      },
+      {
+        "at": 606.4000000003725,
+        "chars": 695
+      },
+      {
+        "at": 688.4000000003725,
+        "chars": 995
+      },
+      {
+        "at": 735.2000000011176,
+        "chars": 1294
+      },
+      {
+        "at": 786,
+        "chars": 1495
+      },
+      {
+        "at": 834.5999999996275,
+        "chars": 1695
+      },
+      {
+        "at": 886.8000000007451,
+        "chars": 1995
+      },
+      {
+        "at": 937.4000000003725,
+        "chars": 2294
+      },
+      {
+        "at": 990,
+        "chars": 2495
+      },
+      {
+        "at": 1036.2000000011176,
+        "chars": 2795
+      },
+      {
+        "at": 1119.2000000011176,
+        "chars": 3095
+      },
+      {
+        "at": 1165.300000000745,
+        "chars": 3395
+      },
+      {
+        "at": 1235.2000000011176,
+        "chars": 3795
+      },
+      {
+        "at": 1306.800000000745,
+        "chars": 4095
+      },
+      {
+        "at": 1361.0999999996275,
+        "chars": 4495
+      },
+      {
+        "at": 1434.300000000745,
+        "chars": 4795
+      },
+      {
+        "at": 1507.5999999996275,
+        "chars": 5095
+      },
+      {
+        "at": 1586.5999999996275,
+        "chars": 5495
+      },
+      {
+        "at": 1637.800000000745,
+        "chars": 5795
+      },
+      {
+        "at": 1709,
+        "chars": 6195
+      },
+      {
+        "at": 1784.4000000003725,
+        "chars": 6495
+      },
+      {
+        "at": 1834,
+        "chars": 6795
+      },
+      {
+        "at": 1891.300000000745,
+        "chars": 6994
+      },
+      {
+        "at": 1936.2000000011176,
+        "chars": 7195
+      },
+      {
+        "at": 1985.800000000745,
+        "chars": 7595
+      },
+      {
+        "at": 2066.300000000745,
+        "chars": 7895
+      },
+      {
+        "at": 2141.4000000003725,
+        "chars": 8295
+      },
+      {
+        "at": 2214.0999999996275,
+        "chars": 8695
+      },
+      {
+        "at": 2285.5,
+        "chars": 8995
+      },
+      {
+        "at": 2336.4000000003725,
+        "chars": 9195
+      },
+      {
+        "at": 2392,
+        "chars": 9495
+      },
+      {
+        "at": 2443.800000000745,
+        "chars": 9795
+      },
+      {
+        "at": 2494.9000000003725,
+        "chars": 9994
+      },
+      {
+        "at": 2540.2000000011176,
+        "chars": 10294
+      },
+      {
+        "at": 2617.5,
+        "chars": 10594
+      },
+      {
+        "at": 2689.9000000003725,
+        "chars": 10995
+      },
+      {
+        "at": 2739.0999999996275,
+        "chars": 11195
+      },
+      {
+        "at": 2785.5999999996275,
+        "chars": 11495
+      },
+      {
+        "at": 2837.300000000745,
+        "chars": 11795
+      },
+      {
+        "at": 2891.300000000745,
+        "chars": 11995
+      },
+      {
+        "at": 2935.800000000745,
+        "chars": 12195
+      },
+      {
+        "at": 2993.9000000003725,
+        "chars": 12495
+      },
+      {
+        "at": 3033.800000000745,
+        "chars": 12795
+      },
+      {
+        "at": 3107.0999999996275,
+        "chars": 13195
+      },
+      {
+        "at": 3184.800000000745,
+        "chars": 13495
+      },
+      {
+        "at": 3236.2000000011176,
+        "chars": 13795
+      },
+      {
+        "at": 3288,
+        "chars": 13994
+      },
+      {
+        "at": 3335,
+        "chars": 14195
+      },
+      {
+        "at": 3384.300000000745,
+        "chars": 14495
+      },
+      {
+        "at": 3442.4000000003725,
+        "chars": 14795
+      },
+      {
+        "at": 3486.4000000003725,
+        "chars": 14994
+      },
+      {
+        "at": 3541.0999999996275,
+        "chars": 15195
+      },
+      {
+        "at": 3568.5,
+        "chars": 12
+      }
+    ],
+    "sampleWindows": [
+      {
+        "at": 1861.4000000003725,
+        "busy": true,
+        "textChars": 6795
+      },
+      {
+        "at": 2130.5,
+        "busy": true,
+        "textChars": 7895
+      },
+      {
+        "at": 2413.5,
+        "busy": true,
+        "textChars": 9495
+      },
+      {
+        "at": 2681.5,
+        "busy": true,
+        "textChars": 10594
+      },
+      {
+        "at": 2954.5999999996275,
+        "busy": true,
+        "textChars": 12195
+      },
+      {
+        "at": 3228.4000000003725,
+        "busy": true,
+        "textChars": 13495
+      },
+      {
+        "at": 3505,
+        "busy": true,
+        "textChars": 14994
+      },
+      {
+        "at": 3779.0999999996275,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 4051.800000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 4327.800000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 4601.800000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 4876.0999999996275,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 5127.300000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 5401.0999999996275,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 5658.4000000003725,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 5927.4000000003725,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 6202,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 6460.300000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 6711.5,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 6958.300000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 7230.5,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 7501.800000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 7795.0999999996275,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 8077.0999999996275,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 8352,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 8608.300000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 8876.800000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 9127.800000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 9403.300000000745,
+        "busy": false,
+        "textChars": 12
+      },
+      {
+        "at": 9677.300000000745,
+        "busy": false,
+        "textChars": 12
+      }
+    ],
+    "input": {
+      "n": 30,
+      "p50": 27.600000001490116,
+      "p95": 42.600000001490116,
+      "max": 49.5,
+      "samples": [
+        29.90000000037253,
+        42.600000001490116,
+        12.5,
+        30.300000000745058,
+        20.09999999962747,
+        32,
+        20.59999999962747,
+        28.799999998882413,
+        24.5,
+        31.300000000745058,
+        24.300000000745058,
+        15.099999999627471,
+        30.699999999254942,
+        23.700000001117587,
+        32.69999999925494,
+        30.5,
+        22.59999999962747,
+        14.100000001490116,
+        12.800000000745058,
+        32.90000000037253,
+        27.600000001490116,
+        22.90000000037253,
+        29.199999999254942,
+        32.09999999962747,
+        25.800000000745058,
+        49.5,
+        20.699999999254942,
+        36.20000000111759,
+        27.699999999254942,
+        19.800000000745058
+      ]
+    },
+    "scroll": {
+      "n": 30,
+      "p50": 33.30000000074506,
+      "p95": 37.5,
+      "max": 50.09999999962747,
+      "samples": [
+        33.09999999962747,
+        25.09999999962747,
+        37.5,
+        29.40000000037253,
+        34,
+        30.700000001117587,
+        50.09999999962747,
+        33.40000000037253,
+        33.09999999962747,
+        34.09999999962747,
+        33.19999999925494,
+        33.5,
+        34.80000000074506,
+        33.29999999888241,
+        33.30000000074506,
+        33.30000000074506,
+        33.40000000037253,
+        33.399999998509884,
+        33.30000000074506,
+        33.40000000037253,
+        33.19999999925494,
+        33.30000000074506,
+        34.5,
+        32.29999999888241,
+        30.199999999254942,
+        16.800000000745058,
+        27.200000001117587,
+        33.69999999925494,
+        33.100000001490116,
+        33.69999999925494
+      ]
+    },
+    "focusPreserved": true,
+    "draftRestored": true,
+    "stopClicked": true,
+    "busy": false,
+    "tailText": "出错了: Aborted",
+    "codeText": "",
+    "method": "live production DOM; 5 warmup pairs +30 paired samples spaced 200 ms; input/scroll to second rAF; remote debug connected without Inspector UI"
+  },
+  "final": {
+    "rows": 1003,
+    "composer": true,
+    "sameInput": true,
+    "focus": true,
+    "stop": false,
+    "text": "出错了: Aborted"
+  }
+}

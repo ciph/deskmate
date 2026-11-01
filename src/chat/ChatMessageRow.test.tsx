@@ -1,6 +1,7 @@
+import { renderMarkdown as render } from "../testing/renderMarkdown";
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import type { ComponentProps } from "react";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { cleanup, fireEvent } from "@testing-library/react";
 import { dict } from "../lib/i18n";
 import { restoreTauriModuleFixture } from "../testing/tauriModuleFixture";
 import { ChatMessageRow, type TextChatMessage } from "./ChatMessageRow";
@@ -24,7 +25,7 @@ function propsFor(message: TextChatMessage): ComponentProps<typeof ChatMessageRo
 }
 
 describe("ChatMessageRow", () => {
-  test("skips unchanged row rendering and retains code/table focus and scroll during unrelated updates", () => {
+  test("skips unchanged row rendering and retains code/table focus and scroll during unrelated updates", async () => {
     let textReads = 0;
     const message: TextChatMessage = {
       id: "completed", role: "assistant",
@@ -34,7 +35,7 @@ describe("ChatMessageRow", () => {
     function Timeline({ counter }: { readonly counter: number }) {
       return <><span data-counter={counter}>{counter}</span><ChatMessageRow {...props} /></>;
     }
-    const { container, rerender } = render(<Timeline counter={0} />);
+    const { container, rerender } = await render(<Timeline counter={0} />);
     const row = container.querySelector<HTMLElement>("[data-message-id]")!;
     const code = row.querySelector<HTMLPreElement>("pre")!;
     const table = row.querySelector<HTMLElement>(".chat-markdown-table")!;
@@ -46,7 +47,7 @@ describe("ChatMessageRow", () => {
     const observer = new MutationObserver(() => {});
     observer.observe(row, { attributes: true, childList: true, subtree: true, characterData: true });
     try {
-      for (let counter = 1; counter <= 20; counter += 1) rerender(<Timeline counter={counter} />);
+      for (let counter = 1; counter <= 20; counter += 1) await rerender(<Timeline counter={counter} />);
       expect(container.querySelector("[data-counter]")?.textContent).toBe("20");
       expect(textReads).toBe(readsAfterMount);
       expect(observer.takeRecords()).toHaveLength(0);
@@ -61,17 +62,17 @@ describe("ChatMessageRow", () => {
     }
   });
 
-  test("streaming text and terminal presentation keep existing code/table nodes and their scroll positions", () => {
+  test("streaming text and terminal presentation keep existing code/table nodes and their scroll positions", async () => {
     const message: TextChatMessage = { id: "stream", role: "assistant", text: markdown + "\n\n**开始" };
     const props = { ...propsFor(message), streaming: true };
-    const { container, rerender } = render(<ChatMessageRow {...props} />);
+    const { container, rerender } = await render(<ChatMessageRow {...props} />);
     const row = container.querySelector("[data-message-id]");
     const code = container.querySelector<HTMLPreElement>("pre")!;
     const table = container.querySelector<HTMLElement>(".chat-markdown-table")!;
     code.scrollLeft = 42;
     table.scrollLeft = 67;
     code.focus();
-    rerender(<ChatMessageRow {...props} message={{ ...message, text: markdown + "\n\n**开始继续" }} />);
+    await rerender(<ChatMessageRow {...props} message={{ ...message, text: markdown + "\n\n**开始继续" }} />);
     expect(container.querySelector("[data-message-id]")).toBe(row);
     expect(container.querySelector("pre")).toBe(code);
     expect(container.querySelector(".chat-markdown-table")).toBe(table);
@@ -80,7 +81,7 @@ describe("ChatMessageRow", () => {
     expect(code.scrollLeft).toBe(42);
     expect(table.scrollLeft).toBe(67);
     table.focus();
-    rerender(<ChatMessageRow {...props} streaming={false} message={{ ...message, text: markdown + "\n\n**开始继续并完成**" }} />);
+    await rerender(<ChatMessageRow {...props} streaming={false} message={{ ...message, text: markdown + "\n\n**开始继续并完成**" }} />);
     expect(container.querySelector("pre")).toBe(code);
     expect(container.querySelector(".chat-markdown-table")).toBe(table);
     expect(document.activeElement).toBe(table);
@@ -89,7 +90,7 @@ describe("ChatMessageRow", () => {
     expect(container.querySelector("strong")?.textContent).toBe("开始继续并完成");
   });
 
-  test("preserves literal user copy, attachments and resource cards without exposing resource context", () => {
+  test("preserves literal user copy, attachments and resource cards without exposing resource context", async () => {
     const message: TextChatMessage = {
       id: "user", role: "user",
       text: "**原文**\n\n<yume-local-resources>\nprivate context\n</yume-local-resources>",
@@ -99,7 +100,7 @@ describe("ChatMessageRow", () => {
       ],
       resources: [{ id: "resource", name: "archive.zip", kind: "file", mime: "application/zip", size: 8, previewUrl: null }],
     };
-    const { container, getByRole } = render(<ChatMessageRow {...propsFor(message)} avatarSources={["data:image/png;base64,AAAA"]} />);
+    const { container, getByRole } = await render(<ChatMessageRow {...propsFor(message)} avatarSources={["data:image/png;base64,AAAA"]} />);
     expect(container.querySelector(".chat-bubble")?.textContent).toBe("**原文**");
     expect(container.querySelector("strong")).toBeNull();
     expect(container.textContent).not.toContain("private context");
@@ -109,7 +110,7 @@ describe("ChatMessageRow", () => {
     expect(getByRole("img", { name: copy.myAvatar }).querySelector("img")?.getAttribute("src")).toBe("data:image/png;base64,AAAA");
   });
 
-  test("updates activity, avatar, localized copy and receipt callbacks when their props change", () => {
+  test("updates activity, avatar, localized copy and receipt callbacks when their props change", async () => {
     const message: TextChatMessage = {
       id: "assistant", role: "assistant", text: "", localOnly: true,
       activity: { kind: "websearch", running: true, sites: ["example.com", "example.org"] },
@@ -120,7 +121,7 @@ describe("ChatMessageRow", () => {
     const undone: ChatWorklogOperation[] = [];
     const onRefresh = async (operation: ChatWorklogOperation) => { refreshed.push(operation); };
     const onUndo = async (operation: ChatWorklogOperation) => { undone.push(operation); };
-    const { container, getByRole, rerender } = render(<ChatMessageRow {...props} operations={[pending]} onRefresh={onRefresh} />);
+    const { container, getByRole, rerender } = await render(<ChatMessageRow {...props} operations={[pending]} onRefresh={onRefresh} />);
     expect(container.querySelector(".chat-activity-websearch")?.getAttribute("role")).toBe("status");
     expect(container.querySelector(".chat-activity-websearch")?.getAttribute("aria-live")).toBe("polite");
     expect(container.querySelector(".chat-websearch-sites")?.getAttribute("title")).toBe("example.com · example.org");
@@ -134,7 +135,7 @@ describe("ChatMessageRow", () => {
       ...pending, undoable: true,
       receipt: { operationId: "operation", entityKind: "entry", entityId: "entry", revision: 1, businessDate: null, status: "committed" },
     };
-    rerender(<ChatMessageRow {...props} lang="en-US" t={dict("en-US")} resourceLanguage="en-US"
+    await rerender(<ChatMessageRow {...props} lang="en-US" t={dict("en-US")} resourceLanguage="en-US"
       message={{ ...message, activity: "工具已完成" }} avatarSources={["data:image/png;base64,BBBB"]}
       operations={[committed]} onUndo={onUndo} />);
     expect(container.querySelector(".chat-activity-websearch")).toBeNull();

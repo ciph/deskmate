@@ -1,0 +1,116 @@
+{
+  "baseCommit": "703c124",
+  "testedCodeCommit": "dea6d771d90394e89e3e151f74dfbde6a6281680",
+  "files": {
+    "src-tauri/src/agent/agent_tests.rs": {
+      "bytes": 9228,
+      "sha256": "34e400261ad56cb5d7121c0c2e455afd3ac9acd8e5a705945ca897e6d297cb05"
+    },
+    "src-tauri/src/agent/artifacts_tests.rs": {
+      "bytes": 5336,
+      "sha256": "c78b72282b9d7dfb6aa24acd43682b58be3cddac7f845efabb99a435174f54d3"
+    },
+    "src-tauri/src/agent/collector_refresh_tests.rs": {
+      "bytes": 29610,
+      "sha256": "128ee318c77c51aa8bef111c1b3bfd651aba8eaae8816c0f8d17cc3267688793"
+    },
+    "src-tauri/src/agent/collector_tests.rs": {
+      "bytes": 13548,
+      "sha256": "4ae6c23397edb7aae31f7e65c538005e2e9d446bfad0a4e3dab14ff451f48938"
+    },
+    "src-tauri/src/agent/lifecycle_recovery_tests.rs": {
+      "bytes": 8396,
+      "sha256": "f15423a74cc63fcbde615a9eb0f7fef8d1aa2b575069cf8e9222b34d2b5f719d"
+    },
+    "src-tauri/src/agent/lifecycle_tests.rs": {
+      "bytes": 11630,
+      "sha256": "3957409ef6b2e7240d63ec861cee7427a9021a21282ca833fdc566aed183a3b6"
+    },
+    "src-tauri/src/agent/opencode.rs": {
+      "bytes": 12893,
+      "sha256": "cf66dea7fcb9e2168423b20f253c6c78dfb1d0a7acd035d2043a7e16b8941d59"
+    },
+    "src-tauri/src/agent/opencode_wire_tests.rs": {
+      "bytes": 29234,
+      "sha256": "1986b68acaf20b7f8cfe4d0b1b0b37b915c932824ed720b124ee7c30d7962c4b"
+    },
+    "src-tauri/src/agent/record_store.rs": {
+      "bytes": 6965,
+      "sha256": "d7b63e5e15664c698d9e8896b678f803a8a749b942ad36192f01b3172f421695"
+    },
+    "src-tauri/src/history.rs": {
+      "bytes": 12975,
+      "sha256": "71f45c25dbbc35697716e46bfafb3c74064f793ce165c89c754efa4c917a50d0"
+    },
+    "src-tauri/src/history/catalog_query.rs": {
+      "bytes": 3366,
+      "sha256": "21d78678c33d334867e223e1872e3a1ec00a94600f70f596afb9d7b93b20d9db"
+    },
+    "src-tauri/src/history/commands.rs": {
+      "bytes": 15388,
+      "sha256": "ab32738dbeda5a960d3003f532395b2c1bcf148890fd06b0a0031992d1355068"
+    },
+    "src-tauri/src/history/history_tests/archive_tests.rs": {
+      "bytes": 8406,
+      "sha256": "6b83dc9dc3f5c900836006607c722f4bc5d01a5c51385cfa1c07acf3fc8cac14"
+    },
+    "src-tauri/src/history/history_tests/migration_rollback_tests.rs": {
+      "bytes": 13292,
+      "sha256": "92626c981e9875045d8c3f219a73663979da84165167633b74618f14b0ec3990"
+    },
+    "src-tauri/src/history/history_tests/recovery_tests.rs": {
+      "bytes": 1458,
+      "sha256": "8d19ce3978ee79c1177e71966b05650bac504480f3cf57638844c88467457a2c"
+    },
+    "src-tauri/src/history/native_files.rs": {
+      "bytes": 6506,
+      "sha256": "d5b82e3c74ddfee5d991bec5936cfbf585646fa439c03b717989b87adfd46b66"
+    },
+    "src-tauri/src/history/staged_snapshot_tests.rs": {
+      "bytes": 20473,
+      "sha256": "64f5c15fad3fa7e776ec31b56d846244ba03fdc7424fbf5cb59b36fd11267dc6"
+    },
+    "src/chat/ChatApp.tsx": {
+      "bytes": 76674,
+      "sha256": "0705cb1695bc9ac09efcaab709cc3ecae8987b9da117865a3e6cda57ed2aafe4"
+    },
+    "src/chat/ChatMessageRow.tsx": {
+      "bytes": 6152,
+      "sha256": "5266d210aded1b2f8c936627306953c4fe5d73c9a669bc8819b22abb2341f651"
+    },
+    "src/chat/ChatNavigation.test.tsx": {
+      "bytes": 12708,
+      "sha256": "3fd7f608d65c555cd9bec761ef19220cd0fbc4407a93bdac29a1aafc24d42fab"
+    },
+    "src/chat/ChatNavigation.tsx": {
+      "bytes": 7966,
+      "sha256": "b5e6cf2c317a30b1c006f03edf4084750432244e8cfa8a3b0ce0e2270fa2628f"
+    },
+    "src/chat/nativeResourceFlow.test.tsx": {
+      "bytes": 12642,
+      "sha256": "e0175df9f48b5c8b6845d6389e08ae639377c5ad79282d0ff30aa2bf72610175"
+    },
+    "src/lib/history.ts": {
+      "bytes": 1155,
+      "sha256": "54399a959f1efd520790d327bfca430e08fd7d8a3ea0c56925028068a5899b1e"
+    }
+  },
+  "unchangedContracts": {
+    "package.json": {
+      "bytes": 2060,
+      "sha256": "79d323fad6e56cfb69a322061da2d91ddd3b7402334c7cb82551767c5278ef6d"
+    },
+    "bun.lock": {
+      "bytes": 146110,
+      "sha256": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029"
+    },
+    "src-tauri/Cargo.lock": {
+      "bytes": 147262,
+      "sha256": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8"
+    },
+    "src-tauri/tauri.conf.json": {
+      "bytes": 4097,
+      "sha256": "c500bc7e3c321d82a0cca3a93bb1ba8a8bbb74542e649abded70c2d0107dc2af"
+    }
+  }
+}

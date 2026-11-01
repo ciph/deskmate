@@ -1,0 +1,15 @@
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+settings window QA: large=false, physical_size=Ok(PhysicalSize { width: 900, height: 650 }), scale_factor=Ok(1.25)
+chat window QA: large=true, physical_size=Ok(PhysicalSize { width: 900, height: 950 }), scale_factor=Ok(1.25)
+settings window QA: large=false, physical_size=Ok(PhysicalSize { width: 900, height: 650 }), scale_factor=Ok(1.25)
+settings window QA: large=false, physical_size=Ok(PhysicalSize { width: 900, height: 650 }), scale_factor=Ok(1.25)
+
+thread 'main' (130548) panicked at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tao-0.35.3\src\platform_impl\windows\event_loop.rs:2344:11:
+assertion failed: flush_paint_messages(None, &subclass_input.event_loop_runner)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[1027/151514.112:ERROR:ui\gfx\win\window_impl.cc:172] Failed to unregister class Chrome_WidgetWin_0. Error = 1412

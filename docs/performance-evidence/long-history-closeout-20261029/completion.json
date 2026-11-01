@@ -1,0 +1,69 @@
+{
+  "status": "complete",
+  "batches": {
+    "B0": "complete",
+    "B1": "complete",
+    "B2": "complete",
+    "B3": "complete",
+    "B4": "complete"
+  },
+  "gates": {
+    "G1": "pass",
+    "G2": "pass",
+    "G3": "pass",
+    "G4": "pass",
+    "G5": "pass"
+  },
+  "anchorDeviationCssPx": 0.40000152587890625,
+  "middleNavigationSetup": {
+    "setup": "CDP sets only navigation viewport; actual navigation activated by physical mouse",
+    "scrollTop": 40000,
+    "buttons": [
+      {
+        "index": "2505",
+        "label": "第 2506 轮：Synthetic question 5010",
+        "rect": {
+          "x": 4.800000190734863,
+          "y": 271.70001220703125,
+          "width": 28,
+          "height": 16,
+          "top": 271.70001220703125,
+          "right": 32.80000019073486,
+          "bottom": 287.70001220703125,
+          "left": 4.800000190734863
+        }
+      },
+      {
+        "index": "2506",
+        "label": "第 2507 轮：Synthetic question 5012",
+        "rect": {
+          "x": 4.800000190734863,
+          "y": 287.70001220703125,
+          "width": 28,
+          "height": 16,
+          "top": 287.70001220703125,
+          "right": 32.80000019073486,
+          "bottom": 303.70001220703125,
+          "left": 4.800000190734863
+        }
+      }
+    ]
+  },
+  "cleanup": {
+    "time": "2026-10-29T14:23:18.8184173+08:00",
+    "candidateOwnedStopped": true,
+    "providerOwnedStopped": true,
+    "bridgeAcknowledgedClose": true,
+    "retained": "Raw evidence and synthetic QA data preserved under ignored output and separate QA identity; no daily data touched"
+  },
+  "temporaryPidsAbsent": [
+    635360,
+    576900,
+    585696,
+    582680
+  ],
+  "productVersion": "0.4.22",
+  "pushed": false,
+  "published": false,
+  "scope": "Agreed long-history plan only; see README for exclusions and unverified platform/hardware boundaries."
+}

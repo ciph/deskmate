@@ -1,0 +1,98 @@
+{
+  "owner": {
+    "version": 1,
+    "identifier": "com.deskmate.unifiedhistoryqa.winb720261027a",
+    "host": {
+      "pid": 62864,
+      "created": 134375472194461582,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\yume.exe"
+    },
+    "sidecar": {
+      "pid": 35568,
+      "created": 134375472210367586,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\resources\\opencode\\opencode.exe"
+    }
+  },
+  "results": [
+    {
+      "iteration": 0,
+      "secondaryPid": 75216,
+      "exitCode": 0,
+      "elapsedMs": 184.6543,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 1,
+      "secondaryPid": 37516,
+      "exitCode": 0,
+      "elapsedMs": 110.9042,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 2,
+      "secondaryPid": 46424,
+      "exitCode": 0,
+      "elapsedMs": 115.4304,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 3,
+      "secondaryPid": 67040,
+      "exitCode": 0,
+      "elapsedMs": 106.7438,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 4,
+      "secondaryPid": 74060,
+      "exitCode": 0,
+      "elapsedMs": 113.2399,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 5,
+      "secondaryPid": 72376,
+      "exitCode": 0,
+      "elapsedMs": 113.4439,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 6,
+      "secondaryPid": 11260,
+      "exitCode": 0,
+      "elapsedMs": 107.2406,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 7,
+      "secondaryPid": 35584,
+      "exitCode": 0,
+      "elapsedMs": 109.5255,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 8,
+      "secondaryPid": 41144,
+      "exitCode": 0,
+      "elapsedMs": 110.039,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    },
+    {
+      "iteration": 9,
+      "secondaryPid": 78724,
+      "exitCode": 0,
+      "elapsedMs": 115.4669,
+      "hostPreserved": true,
+      "sidecarPreserved": true
+    }
+  ]
+}

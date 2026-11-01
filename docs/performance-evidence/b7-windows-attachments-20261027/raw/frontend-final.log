@@ -1,0 +1,370 @@
+$ bun scripts/test-frontend.ts
+passed: scripts\agent-qa\client.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\agent-qa\permissions-evidence.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\bundled-personas.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\check-package-resources.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\macos-release.test.ts (6 pass, 0 fail, 8 skip; exit 0)
+passed: scripts\pack-figure2d.test.ts (7 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\pack-personas.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\pack-position.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\pack-rig2d.test.ts (14 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\persona-asset-policy.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\prepare-opencode.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\prepare-persona-envelopes.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\test-frontend.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\workbench-ownership.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\workbench-qa\provider.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\workbench-routing.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\workbench-theme.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\worklog-qa\provider-models.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\worklog\bridge.test.ts (10 pass, 0 fail, 0 skip; exit 0)
+passed: scripts\worklog\full-flow.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ArtifactCard.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\AttachmentTray.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ChatKeyboardNavigation.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ChatMessageRow.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ChatNavigation.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ChatText.test.tsx (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\HistoryOrganizer.test.tsx (16 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\HistoryPanel.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\LocalResourceTray.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\MediaPreview.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\ToolApprovalCards.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\WorklogReceipt.test.tsx (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\WorkspaceTask.test.tsx (15 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentApi.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentApiLeak.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentBinaryUpload.test.ts (29 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentState.test.ts (94 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachments.test.ts (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\attachmentsPdfLifecycle.test.ts (17 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\binaryUploadTestHelpers.test.ts (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentFlow.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentFlowHarness.test.ts (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentLifecycle.test.tsx (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentLifecycleHarness.test.ts (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentSend.test.tsx (28 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatAttachmentSendHarness.test.tsx (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatFixedReply.test.tsx (24 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatMemory.test.tsx (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\chatPersona.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+failed: src\chat\chatPetActivity.test.tsx (25 pass, 3 fail, 0 skip; exit 1)
+bun test v1.3.14 (0d9b296a)
+
+src\chat\chatPetActivity.test.tsx:
+(pass) chat emits scoped success once after terminal assistant SSE even after idle [193.85ms]
+An update to ChatApp inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ChatApp inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ChatApp inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ChatApp inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+(pass) chat cancellation rejects a late terminal SSE [23.00ms]
+(pass) chat keeps the run active when cancellation cannot be confirmed [28.94ms]
+(pass) chat reconciles a lost prompt response without resending the turn [58.95ms]
+Work journal receipt recovery unavailable
+(pass) chat leaves an unreadable prompt submission pending without resending [25.40ms]
+(pass) chat session failure rejects a later success [94.67ms]
+(pass) fixed identity reply emits exactly one completion [46.39ms]
+(pass) real SSE tool stop cannot celebrate before the tool follow-up response [122.60ms]
+(pass) stop isolates late text, busy and error events for the cancelled request [65.27ms]
+(pass) a request with an error before its first chunk rejects later text [74.62ms]
+(pass) unmount cancels the scoped request and ignores late streamed content [48.35ms]
+(pass) a new request in the same session rejects text from a known old parent [106.63ms]
+(pass) a queued second snapshot flushes before idle and preserves ordered parts [94.59ms]
+(pass) native text deltas render before completion and final snapshots replace accumulated text [139.52ms]
+(pass) deltas cannot reveal reasoning or cross session, user, parent and Stop boundaries [110.69ms]
+(pass) error flushes queued content before its error row and rejects later chunks [90.49ms]
+(pass) confirmed Stop keeps queued legal content and a new request never receives its stale timer [168.15ms]
+(pass) tool events flush prior text and duplicate text after a tool clears only plain activity [126.16ms]
+(pass) an unconfirmed Stop leaves queued content and subsequent chunks live [139.53ms]
+(pass) unmount discards an already queued presentation timer [135.93ms]
+(pass) completed assistant metadata flushes queued text without waiting for session idle [99.24ms]
+78 |       promptAttempts += 1;
+79 |       const body = typeof init.body === "string" ? JSON.parse(init.body) as unknown : null;
+80 |       submittedMessageId = typeof body === "object" && body !== null && "messageID" in body
+81 |         ? String(Reflect.get(body, "messageID"))
+82 |         : null;
+83 |       if (promptTransport !== "ok") return Promise.reject(new Error("response lost"));
+                                                                   ^
+error: response lost
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:83:63)
+      at api (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:149:21)
+      at async promptAsync (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:226:9)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:1147:13)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:944:24)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:958:17)
+
+(pass) confirmed missing prompt removes its optimistic row, keeps the draft and allows one visible retry [51.58ms]
+160 |       case "history_recent_workspaces":
+161 |         return Promise.resolve([]);
+162 |       case "history_register_native_session":
+163 |         return Promise.resolve(registeredHistoryFixture({ sessionId: "ses_fixed", directory: "." }));
+164 |       case "history_catalog_access":
+165 |         if (failNextCatalogAccess) { failNextCatalogAccess = false; return Promise.reject(new Error("private internal access detail")); }
+                                                                                                    ^
+error: private internal access detail
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:165:95)
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:1130:33)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:944:24)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:958:17)
+
+(pass) a failure before prompt submission removes only its optimistic question and shows no internal detail [39.84ms]
+(pass) late unknown submission confirmation cannot revive a request after confirmed Stop [75.76ms]
+(pass) Stop during native turn registration prevents a later prompt submission [62.53ms]
+78 |       promptAttempts += 1;
+79 |       const body = typeof init.body === "string" ? JSON.parse(init.body) as unknown : null;
+80 |       submittedMessageId = typeof body === "object" && body !== null && "messageID" in body
+81 |         ? String(Reflect.get(body, "messageID"))
+82 |         : null;
+83 |       if (promptTransport !== "ok") return Promise.reject(new Error("response lost"));
+                                                                   ^
+error: response lost
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:83:63)
+      at api (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:149:21)
+      at async promptAsync (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:226:9)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:1147:13)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:944:24)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:958:17)
+
+605 |       { type: "message.updated", properties: { info: { ...info, time: { created: 1 }, finish: undefined } } },
+606 |       { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "native completed answer" } } },
+607 |       { type: "message.updated", properties: { info } },
+608 |       { type: "session.idle", properties: { sessionID: info.sessionID } },
+609 |     ]);
+610 |     expect(activityEvents.filter(event => event.type === "success")).toHaveLength(1);
+                                                                           ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 1
+Received length: 0
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:610:70)
+(fail) native completion before confirmed confirmation never restores the sent draft [112.63ms]
+78 |       promptAttempts += 1;
+79 |       const body = typeof init.body === "string" ? JSON.parse(init.body) as unknown : null;
+80 |       submittedMessageId = typeof body === "object" && body !== null && "messageID" in body
+81 |         ? String(Reflect.get(body, "messageID"))
+82 |         : null;
+83 |       if (promptTransport !== "ok") return Promise.reject(new Error("response lost"));
+                                                                   ^
+error: response lost
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:83:63)
+      at api (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:149:21)
+      at async promptAsync (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:226:9)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:1147:13)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:944:24)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:958:17)
+
+605 |       { type: "message.updated", properties: { info: { ...info, time: { created: 1 }, finish: undefined } } },
+606 |       { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "native completed answer" } } },
+607 |       { type: "message.updated", properties: { info } },
+608 |       { type: "session.idle", properties: { sessionID: info.sessionID } },
+609 |     ]);
+610 |     expect(activityEvents.filter(event => event.type === "success")).toHaveLength(1);
+                                                                           ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 1
+Received length: 0
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:610:70)
+(fail) native completion before unknown confirmation never restores the sent draft [104.16ms]
+78 |       promptAttempts += 1;
+79 |       const body = typeof init.body === "string" ? JSON.parse(init.body) as unknown : null;
+80 |       submittedMessageId = typeof body === "object" && body !== null && "messageID" in body
+81 |         ? String(Reflect.get(body, "messageID"))
+82 |         : null;
+83 |       if (promptTransport !== "ok") return Promise.reject(new Error("response lost"));
+                                                                   ^
+error: response lost
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:83:63)
+      at api (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:149:21)
+      at async promptAsync (E:\Codex\工作伙伴\deskmate-windows-b7\src\lib\opencode.ts:226:9)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:1147:13)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:944:24)
+      at async <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\ChatApp.tsx:958:17)
+
+605 |       { type: "message.updated", properties: { info: { ...info, time: { created: 1 }, finish: undefined } } },
+606 |       { type: "message.part.updated", properties: { part: { sessionID: info.sessionID, messageID: info.id, type: "text", text: "native completed answer" } } },
+607 |       { type: "message.updated", properties: { info } },
+608 |       { type: "session.idle", properties: { sessionID: info.sessionID } },
+609 |     ]);
+610 |     expect(activityEvents.filter(event => event.type === "success")).toHaveLength(1);
+                                                                           ^
+error: expect(received).toHaveLength(expected)
+
+Expected length: 1
+Received length: 0
+
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\chatPetActivity.test.tsx:610:70)
+(fail) native completion before not_found confirmation never restores the sent draft [92.87ms]
+
+3 tests failed:
+(fail) native completion before confirmed confirmation never restores the sent draft [112.63ms]
+(fail) native completion before unknown confirmation never restores the sent draft [104.16ms]
+(fail) native completion before not_found confirmation never restores the sent draft [92.87ms]
+
+ 25 pass
+ 3 fail
+ 154 expect() calls
+Ran 28 tests across 1 file. [3.85s]
+
+passed: src\chat\chatWorklogPrompt.test.tsx (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\currentInformation.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\dragDropConfig.test.ts (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\localResources.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\memoryActions.test.ts (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\messagePersona.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\nativeResourceFlow.test.tsx (10 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\pdfPageText.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\petActivity.test.ts (20 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\providerConnection.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\sharedConversation.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\streamText.test.ts (10 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\toolPart.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useAgentHistoryView.test.tsx (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useAgentRun.test.tsx (17 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachments.test.ts (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachmentsGate.test.ts (13 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachmentsHarness.test.ts (0 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachmentsPreviewLifecycle.test.ts (16 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useChatAttachmentsUtils.test.ts (21 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useHistoryOrganizerRequest.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useLocalResources.test.tsx (16 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\usePersonaAvatar.test.tsx (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useToolPermissions.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\useWorklogChat.test.tsx (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\webSearchSites.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\chat\worklogActions.test.ts (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\devtools.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\horoscope\date.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\horoscope\generator.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\localAiUsage.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\memory.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\nativeHistoryEvents.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\opencode.directory.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\opencode.test.ts (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\packs.events.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\petState.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\pomodoro.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\settings.test.ts (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\toolPermissions.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\unifiedHistory.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\userAvatar.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\lib\worklog.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\GifPetView.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\GlbPetView.visibility.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetAnimation.test.ts (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetApp.glbMood.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetApp.loading.test.tsx (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetApp.reload.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetPomodoro.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetRendererActions.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetRendererEnvelope.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetRendererResources.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\PetRendererVisibility.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\figure2d.contract.test.ts (65 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\figure2d.test.ts (24 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\frameGate.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\gifGeometry.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\gifState.test.ts (20 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\mouseFollow.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\personaAssets.test.ts (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\personaAvatar.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\personaCatalog.test.ts (16 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\petLayout.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\petSleep.test.ts (10 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\petWindowGeometry.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\rig2d\assets.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\rig2d\config.test.ts (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\rig2d\renderer.test.ts (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\sandaimeAsset.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\useGifPassthrough.lifecycle.test.tsx (14 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\useGifPassthrough.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\useGifState.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\useGifVisibility.test.tsx (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\usePetInteraction.test.tsx (10 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\usePetSleep.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\variantEnvelope.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\variantEnvelopeAsset.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\xiaozhuNidaime.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\pet\xiaozhuSandaime.test.ts (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiProviderConnection.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiProviderDisclosure.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiProviderList.test.tsx (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiProviderShortcuts.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiTab.test.tsx (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\AiUsage.test.tsx (12 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\MemoryTab.test.tsx (18 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\PersonaPackNavigation.test.tsx (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\PersonaPacks.test.tsx (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\PersonaPacksLoading.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\SettingsKeyboardNavigation.test.tsx (22 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\ToolPermissionsTab.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\UpdateFooter.test.tsx (27 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\UserAvatarControl.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\UserAvatarSettings.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\WidgetSettings.test.tsx (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\WindowsComponentControl.test.tsx (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\WorklogWidget.test.tsx (15 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\aiProviderModel.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\modelManufacturer.test.ts (20 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\settingsPrimitives.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\theme.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\updateErrors.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\updateState.test.ts (5 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\HoroscopeWidget.test.tsx (4 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\PomodoroWidget.test.tsx (8 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\TimePicker.test.tsx (11 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\useDailyHoroscope.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\usePomodoro.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\widgets\usePomodoroErrors.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\ReportEditor.test.tsx (7 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\ReportSchedulePanel.test.tsx (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\WeekWheel.test.tsx (17 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\WorklogTab.test.tsx (13 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\reportExport.test.ts (3 pass, 0 fail, 0 skip; exit 0)
+passed: src\settings\worklog\worklogWeek.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\testing\harness.test.tsx (2 pass, 0 fail, 0 skip; exit 0)
+passed: src\ui\Avatar.test.tsx (1 pass, 0 fail, 0 skip; exit 0)
+passed: src\workbench\history-shortcut.test.ts (9 pass, 0 fail, 0 skip; exit 0)
+passed: src\workbench\session-route.test.ts (6 pass, 0 fail, 0 skip; exit 0)
+passed: src\workbench\theme-sync.test.ts (2 pass, 0 fail, 0 skip; exit 0)
+passed: vite.config.test.ts (1 pass, 0 fail, 0 skip; exit 0)
+171/172 files passed; 0 unfinished
+error: script "test:frontend" exited with code 1

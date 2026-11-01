@@ -1,0 +1,64 @@
+{
+  "label": "after-fault-lifecycle",
+  "base": "http://127.0.0.1:53128",
+  "pid": 193436,
+  "events": [
+    {
+      "event": "healthy",
+      "ms": 998.1927000000001
+    },
+    {
+      "event": "sse-request",
+      "ms": 1510.2056,
+      "attempt": 1
+    },
+    {
+      "event": "stalled-header-closed",
+      "ms": 4509.0746
+    },
+    {
+      "event": "sse-request",
+      "ms": 5508.9655999999995,
+      "attempt": 2
+    },
+    {
+      "event": "native-ready",
+      "ms": 5613.8841999999995
+    },
+    {
+      "event": "stalled-sockets-at-ready",
+      "ms": 5613.918,
+      "count": 0
+    },
+    {
+      "event": "heartbeat",
+      "ms": 15543.003400000001
+    },
+    {
+      "event": "session",
+      "ms": 17647.6127,
+      "id": "ses_e83810e5bffeuwsXNhUyHlsT2g"
+    },
+    {
+      "event": "prompt",
+      "ms": 17671.6349
+    },
+    {
+      "event": "permission-event",
+      "ms": 22163.0884
+    },
+    {
+      "event": "native-done",
+      "ms": 22195.4169,
+      "code": 0
+    }
+  ],
+  "binary": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\deps\\yume_lib-8bfdae2dcef0bbf7.exe",
+  "pass": true,
+  "cleanup": {
+    "engineGone": true,
+    "portClosed": true,
+    "providerClosed": true,
+    "proxyClosed": true
+  }
+}

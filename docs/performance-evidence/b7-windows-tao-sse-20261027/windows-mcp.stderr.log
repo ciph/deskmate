@@ -1,0 +1,2 @@
+[windows-mcp] tool filter active: 11 enabled, 8 disabled.
+[windows-mcp] disabled tools: clipboard, file_open, file_save, process, ui_batch, ui_macro, ui_read_table, ui_select

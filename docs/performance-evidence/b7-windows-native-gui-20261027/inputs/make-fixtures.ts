@@ -1,0 +1,12 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+const old=readFileSync('docs/performance-evidence/b7-windows-20261027/inputs/webview-probes.ts','utf8');
+const source=old.slice(old.indexOf('function pdf('),old.indexOf('export async function pdfCycle'));
+const generator=new Function(source.replace('pages:number,lines:number','pages,lines').replace('objects:string[]','objects')+'; return pdf(2,5);');
+const bytes=new Uint8Array(generator());
+if(!new TextDecoder().decode(bytes).includes('B7_PDF_PAGE_1_LINE_4'))throw Error('PDF fixture');
+writeFileSync('output/b7-native-gui/B7-native-picker.pdf',bytes);
+const hz=8000,n=hz,buf=Buffer.alloc(44+n*2);
+buf.write('RIFF');buf.writeUInt32LE(buf.length-8,4);buf.write('WAVEfmt ',8);buf.writeUInt32LE(16,16);buf.writeUInt16LE(1,20);buf.writeUInt16LE(1,22);buf.writeUInt32LE(hz,24);buf.writeUInt32LE(hz*2,28);buf.writeUInt16LE(2,32);buf.writeUInt16LE(16,34);buf.write('data',36);buf.writeUInt32LE(n*2,40);
+for(let i=0;i<n;i++)buf.writeInt16LE(Math.round(Math.sin(i*440*2*Math.PI/hz)*500),44+i*2);
+writeFileSync('output/b7-native-gui/B7-native-tone.wav',buf);
+console.log(JSON.stringify({pdf:bytes.length,wav:buf.length,durationSeconds:1}));

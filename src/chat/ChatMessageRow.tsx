@@ -1,3 +1,4 @@
+import type { HistoryAttachment } from "../lib/history";
 import { memo } from "react";
 import type { dict, Lang } from "../lib/i18n";
 import { AppIcon } from "../ui/AppIcon";
@@ -17,6 +18,7 @@ export interface TextChatMessage {
   activity?: ToolActivity;
   attachments?: ModelReadyAttachment[];
   resources?: readonly LocalResource[];
+  historyAttachments?: readonly HistoryAttachment[];
   readonly nativeMessageId?: string;
   readonly localOnly?: boolean;
   readonly time?: number;
@@ -113,6 +115,9 @@ export const ChatMessageRow = memo(function ChatMessageRow({
           ))}
         </div>
       )}
+      {m.historyAttachments?.length ? <div className="chat-message-attachments">
+        {m.historyAttachments.map(file => <div key={file.id} className="chat-attachment-document">{t.chatAttach} · {file.name}</div>)}
+      </div> : null}
       {m.role === "user" && (m.resources?.length || m.text.includes("<yume-local-resources>")) ? (
         <MessageLocalResources directory={currentDirectory ?? ""} sessionId={currentSessionId ?? ""}
           messageId={m.nativeMessageId ?? m.id} resources={m.resources} lang={resourceLanguage} />

@@ -1,3 +1,4 @@
+import { eventStreamFixture } from "../testing/eventStreamFixture";
 import type { InvokeOptions } from "@tauri-apps/api/core";
 import { requireBinaryUpload, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import type { AgentHistoryDetails, HistorySession } from "../lib/history";
@@ -115,6 +116,7 @@ function jsonResponse(body: unknown): Response {
 function installOpenCodeTransport(): void {
   const fetchMock = mock((input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(String(input)).pathname;
+    if (url === "/event") return Promise.resolve(eventStreamFixture(init?.signal, send => { activeEventSource = { onmessage: message => send(JSON.parse(String(message.data))) }; }));
     if (url.endsWith("/session") && init?.method === "GET") {
       return Promise.resolve(new Response(null, { status: 200 }));
     }

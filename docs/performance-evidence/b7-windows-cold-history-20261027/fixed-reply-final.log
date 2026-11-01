@@ -1,0 +1,34 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\chatFixedReply.test.tsx:
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects history_native_missing [88.88ms]
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects %s [32.86ms]
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects history_native_timeout [31.82ms]
+(pass) 小著固定名字由来回复 > a newly registered unknown session refreshes host capabilities before the first send [23.03ms]
+new conversation status unavailable synthetic unavailable
+(pass) 小著固定名字由来回复 > a new session stays read only when its fresh host status cannot be loaded [19.15ms]
+(pass) 小著固定名字由来回复 > reopening a fixed reply preserves the local turn in the same native conversation [66.51ms]
+(pass) 小著固定名字由来回复 > keeps input locked until a disconnected workbench session has a verified state [41.56ms]
+(pass) 小著固定名字由来回复 > sends four lines two seconds apart and shows typing while waiting [50.29ms]
+(pass) 小著固定名字由来回复 > answers who-am-I directly with the requested intro [47.12ms]
+(pass) 小著固定名字由来回复 > stopping during the wait prevents stale later bubbles [45.23ms]
+(pass) 小著固定名字由来回复 > shows a 100 ms first chunk immediately and settles a 300 ms response [63.96ms]
+(pass) 小著固定名字由来回复 > shows slow streaming replies at their real arrival time [62.60ms]
+(pass) 小著固定名字由来回复 > does not add an empty placeholder bubble next to the typing indicator [62.33ms]
+(pass) 小著固定名字由来回复 > shows web search as a breathing network activity that settles when completed [62.35ms]
+(pass) cold initialization preserves the history view opened while the native project is loading [93.48ms]
+(pass) catalog refresh preserves local reply controls through idle [119.18ms]
+(pass) catalog refresh preserves local reply controls through stop [109.50ms]
+(pass) catalog refresh preserves local reply controls through stop-error [101.69ms]
+(pass) a completed local reply does not grant control over a later external run [118.40ms]
+(pass) reopening a running read-only native session continues receiving its live text [105.92ms]
+Work journal receipt recovery unavailable
+(pass) switching to another native directory and session rejects the previous stream's text [109.43ms]
+(pass) native part IDs resume into one assistant row without duplicated restored content [108.33ms]
+Work journal receipt recovery unavailable
+(pass) a Stop confirmation for an old generation cannot cancel a newly selected native run [123.43ms]
+
+ 23 pass
+ 0 fail
+ 164 expect() calls
+Ran 23 tests across 1 file. [9.39s]

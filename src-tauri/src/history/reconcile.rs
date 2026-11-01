@@ -27,7 +27,7 @@ pub(crate) fn reconcile(store: &CatalogStore, client: &NativeHistoryClient, reco
         if matches!(statuses.get(session_id), Some(NativeStatus::Busy | NativeStatus::Retry { .. })) { continue; }
         if records.iter().any(|record| record.outcome.is_none() && record.session_id.as_deref() == Some(session_id) && canonical_directory(&record.workspace_path.to_string_lossy()) == *directory) { continue; }
         match client.delete(directory, session_id) {
-            Ok(()) => store.update(|rows| { if let Some(entry) = rows.iter_mut().find(|entry| entry.key() == row.key()) { if let Some(tombstone) = &mut entry.tombstone { tombstone.remote_deleted = true; } } Ok(()) })?,
+            Ok(()) => super::catalog_mutation::confirm_deleted(store, &row.key())?,
             Err(error) => errors.push(error.to_string()),
         }
     }

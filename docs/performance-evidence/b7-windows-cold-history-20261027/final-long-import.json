@@ -1,0 +1,16 @@
+[
+  {
+    "sessionId": "ses_winb7focus1000020261027",
+    "count": 1000,
+    "exitCode": 0,
+    "ms": 1625.7322000000001,
+    "fixtureSha256": "146cb73cd8474e64777eedb32f4b45e61401cd388ca46555d1c8140a2d126611"
+  },
+  {
+    "sessionId": "ses_winb7focus5000020261027",
+    "count": 1000,
+    "exitCode": 0,
+    "ms": 1434.2627,
+    "fixtureSha256": "85f390979e36fef9c3d349b77fb08eb310ebf8c3f7bc9e23568ebd08cff35e0c"
+  }
+]

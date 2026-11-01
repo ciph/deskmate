@@ -1,0 +1,133 @@
+warning: unused import: `Manager`
+  --> src\updater.rs:11:38
+   |
+11 | use tauri::{ipc::Channel, AppHandle, Manager};
+   |                                      ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `app`
+   --> src\updater.rs:594:40
+    |
+594 | pub(crate) fn confirm_installed_update(app: &AppHandle) {
+    |                                        ^^^ help: if this is intentional, prefix it with an underscore: `_app`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `decision_with_approvals` is never used
+  --> src\agent\permission_policy.rs:83:15
+   |
+83 | pub(super) fn decision_with_approvals(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `invalidate_all` is never used
+  --> src\history\catalog_preview.rs:64:15
+   |
+64 | pub(crate) fn invalidate_all() {
+   |               ^^^^^^^^^^^^^^
+
+warning: function `active_provider_clone` is never used
+   --> src\settings.rs:514:15
+    |
+514 | pub(crate) fn active_provider_clone(state: &SettingsState) -> Option<AiProvider> {
+    |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variants `UnsafeInstall`, `PermissionDenied`, and `RestoreFailed` are never constructed
+   --> src\updater.rs:145:5
+    |
+137 | pub enum UpdateError {
+    |          ----------- variants in this enum
+...
+145 |     UnsafeInstall,
+    |     ^^^^^^^^^^^^^
+146 |     PermissionDenied,
+    |     ^^^^^^^^^^^^^^^^
+147 |     RestoreFailed,
+    |     ^^^^^^^^^^^^^
+    |
+    = note: `UpdateError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: variants `WaitingForIdle` and `Restarting` are never constructed
+   --> src\updater.rs:222:5
+    |
+206 | pub enum UpdateEvent {
+    |          ----------- variants in this enum
+...
+222 |     WaitingForIdle {
+    |     ^^^^^^^^^^^^^^
+...
+228 |     Restarting {
+    |     ^^^^^^^^^^
+    |
+    = note: `UpdateEvent` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: variant `WaitingForIdle` is never constructed
+   --> src\updater.rs:248:5
+    |
+235 | pub enum UpdateStatus {
+    |          ------------ variant in this enum
+...
+248 |     WaitingForIdle {
+    |     ^^^^^^^^^^^^^^
+    |
+    = note: `UpdateStatus` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: method `has_running_run` is never used
+  --> src\worklog\commands.rs:43:19
+   |
+13 | impl WorklogState {
+   | ----------------- method in this implementation
+...
+43 |     pub(crate) fn has_running_run(&self) -> WorklogResult<bool> {
+   |                   ^^^^^^^^^^^^^^^
+
+warning: method `has_running_run` is never used
+  --> src\worklog\repository_runtime.rs:20:12
+   |
+19 | impl Repository {
+   | --------------- method in this implementation
+20 |     pub fn has_running_run(&self) -> WorklogResult<bool> {
+   |            ^^^^^^^^^^^^^^^
+
+warning: `yume` (lib test) generated 10 warnings (run `cargo fix --lib -p yume --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+     Running unittests src\lib.rs (src-tauri\target\debug\deps\yume_lib-8bfdae2dcef0bbf7.exe)
+
+running 32 tests
+test history::catalog_migration_tests::agent_snapshot_scope_rejects_other_directory_and_preserves_same_scope_continuation ... ok
+test history::catalog_migration_tests::known_directories_are_canonical_and_reject_relative_paths ... ok
+test history::catalog_migration_tests::startup_index_cannot_forge_agent_origin_for_existing_legacy_collision ... ok
+test history::catalog_migration_tests::deleted_projection_stays_suppressed_when_native_index_is_imported ... ok
+test history::catalog_migration_tests::local_organization_survives_when_projection_is_later_discovered_native ... ok
+test history::catalog_migration_tests::unrelated_agent_collision_preserves_legacy_metadata ... ok
+test history::catalog_migration_tests::unrelated_snapshot_is_skipped_while_scoped_native_run_completes ... ok
+test history::catalog_tests::migration_preserves_legacy_bytes_when_repeated_and_coalesces_registered_projection ... ok
+test history::catalog_schema::tests::sqlite_full_rolls_back_migration_without_changing_old_metadata ... ok
+test history::history_tests::migration_rollback_tests::synthetic_migration_and_separate_rollback_rehearsal_is_idempotent ... ok
+test memory::storage::expiry_migration_tests::expiry_index_late_failure_rolls_back_index_and_version_then_can_retry ... ok
+test history::catalog_schema::tests::migration_preserves_metadata_preferences_registry_and_readonly_old_copy ... ok
+test memory::storage::expiry_migration_tests::expiry_index_full_database_keeps_schema_two_and_all_committed_rows ... ok
+test memory::storage::expiry_migration_tests::expiry_index_open_failure_preserves_uncheckpointed_v2_wal_and_parallel_retry ... ok
+test memory::storage::fts_migration_tests::fts_migration_rebuilds_from_authoritative_rows_not_a_stale_old_index ... ok
+test memory::storage::expiry_migration_tests::expiry_index_upgrade_preserves_data_and_old_readonly_copy_across_reopen ... ok
+test memory::storage::fts_migration_tests::fts_migration_disk_full_rolls_back_and_can_retry ... ok
+test memory::storage::tests::multiple_pending_migrations_roll_back_as_one_unit ... ok
+test settings::tests::legacy_key_migration_deletes_legacy_after_scoped_readback_matches ... ok
+test settings::tests::legacy_key_migration_prefers_existing_scoped_key_over_legacy_key ... ok
+test settings::tests::legacy_key_migration_prefers_plaintext_key_over_legacy_key ... ok
+test settings::tests::legacy_key_migration_preserves_legacy_when_scoped_read_fails ... ok
+test settings::tests::legacy_key_migration_preserves_legacy_when_scoped_readback_mismatches ... ok
+test settings::tests::legacy_key_migration_preserves_legacy_when_scoped_write_fails ... ok
+test settings::tests::legacy_key_migration_preserves_legacy_when_settings_persistence_fails ... ok
+test settings::tests::legacy_key_migration_reports_delete_failure_after_verified_equality ... ok
+test settings::tests::legacy_key_migration_returns_none_when_preferred_and_legacy_keys_are_empty ... ok
+test settings::update_repo::tests::migration_is_idempotent_when_new_default_is_loaded ... ok
+test worklog::storage::tests::backup_failure_stops_migration ... ok
+test memory::storage::fts_migration_tests::fts_open_failure_preserves_wal_then_concurrent_openers_rebuild_once ... ok
+test memory::storage::fts_migration_tests::late_fts_migration_failure_restores_old_triggers_rowids_schema_and_version ... ok
+test memory::storage::fts_migration_tests::fts_upgrade_preserves_records_provenance_search_and_readonly_original ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 966 filtered out; finished in 0.35s
+

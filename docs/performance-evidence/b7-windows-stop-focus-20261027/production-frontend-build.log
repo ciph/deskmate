@@ -1,0 +1,32 @@
+$ tsc --noEmit && vite build
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 5434 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/pet.html                                0.92 kB │ gzip:   0.44 kB
+dist/chat.html                               1.00 kB │ gzip:   0.45 kB
+dist/settings.html                           1.01 kB │ gzip:   0.47 kB
+dist/assets/pdf.worker.min-CLrFZWeq.mjs  1,312.45 kB
+dist/assets/pet-kuEUgwpr.css                 2.23 kB │ gzip:   0.75 kB
+dist/assets/userAvatar-Dgt0Ji5w.css          4.38 kB │ gzip:   1.33 kB
+dist/assets/window-BbWyHlPB.css              5.22 kB │ gzip:   1.34 kB
+dist/assets/chat-B4528mX8.css               37.87 kB │ gzip:   6.91 kB
+dist/assets/settings-cTZmAkq_.css           52.74 kB │ gzip:   8.79 kB
+dist/assets/pdf.worker.min-FyRH-AZg.js       0.07 kB │ gzip:   0.09 kB
+dist/assets/petVisibility-CQmGKtLa.js        4.37 kB │ gzip:   1.77 kB
+dist/assets/personaAssets-DcQqeEzj.js       10.62 kB │ gzip:   4.13 kB
+dist/assets/pet-H4skp05U.js                 43.13 kB │ gzip:  14.72 kB
+dist/assets/settings-CN7v9MtI.js           144.14 kB │ gzip:  47.40 kB
+dist/assets/chat-B5xs1xfm.js               179.69 kB │ gzip:  59.21 kB
+dist/assets/userAvatar-Cle-0hrX.js         189.58 kB │ gzip:  58.74 kB
+dist/assets/window-C5HS_61l.js             377.50 kB │ gzip: 114.36 kB
+dist/assets/pdf-DlDyyR6N.js                488.63 kB │ gzip: 148.46 kB
+dist/assets/index-KjNLH8DJ.js              503.73 kB │ gzip: 131.42 kB
+dist/assets/GlbPetView-C_x5zJWC.js         776.48 kB │ gzip: 201.74 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 8.94s

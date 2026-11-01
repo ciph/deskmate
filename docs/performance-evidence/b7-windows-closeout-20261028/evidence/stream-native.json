@@ -1,0 +1,30 @@
+[
+  {
+    "size": 10000,
+    "count": 1002,
+    "tails": [
+      {
+        "chars": 10000,
+        "sha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1"
+      }
+    ]
+  },
+  {
+    "size": 50000,
+    "count": 1006,
+    "tails": [
+      {
+        "chars": 50000,
+        "sha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+      },
+      {
+        "chars": 3000,
+        "sha256": "28269b9370ae9d85f347ab91eb1287d46d0fc93671892d09b1f0b9ee7b8a509e"
+      },
+      {
+        "chars": 17,
+        "sha256": "df4e678db4ca9340e1b7be02ac789bafea0f9158cee9999e3b36adbb264dadd4"
+      }
+    ]
+  }
+]

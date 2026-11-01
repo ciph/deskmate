@@ -1,0 +1,7 @@
+{
+  "time": "2026-10-28T11:56:39.0603352+08:00",
+  "command": "bun run build",
+  "exitCode": 0,
+  "qaEntryAbsent": true,
+  "normalExecutableSha256": "765F92FEA04713AE267EB9A981C66CA07AE18EA4FB8456308728A2C9E9388DC8"
+}

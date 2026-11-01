@@ -1,0 +1,42 @@
+[
+  {
+    "file": "src/chat/ChatApp.tsx",
+    "baselineSha256": "22578e5fa9b3b44baccc841fcc73037f0a18227c39b1f84bd200641bacebbc3a",
+    "currentSha256": "86f681ba0b554d240c57313b382615755520bb0be543a77def4411db9b40e61b"
+  },
+  {
+    "file": "src/chat/sharedConversation.ts",
+    "baselineSha256": "4d62940b2ff8645800b722a706020d19507fc616a598b3994e49020c8acd7002",
+    "currentSha256": "fcf27dd6851c697215cdd0d0064884fe97fcb39608e77243997564c2eddae2cb"
+  },
+  {
+    "file": "src/chat/chatFixedReply.test.tsx",
+    "baselineSha256": "b8997a0ce1f32b0eb1c820a777293e9e0b8bc68231bf9877a175bb98dcabb3d1",
+    "currentSha256": "e237fc7d8686180babd49c1883940a45b903a0628fc4149f86f1d65b963d19b8"
+  },
+  {
+    "file": "src/chat/sharedConversation.test.ts",
+    "baselineSha256": "4072b4409878373a1470389c5c461474fdaa32de37d1339668f5c97c596782d0",
+    "currentSha256": "bf53f9c334ae26f04a98a0c12eba78308f070500c0842f7d72928e09b361048a"
+  },
+  {
+    "file": "package.json",
+    "baselineSha256": "79d323fad6e56cfb69a322061da2d91ddd3b7402334c7cb82551767c5278ef6d",
+    "currentSha256": "79d323fad6e56cfb69a322061da2d91ddd3b7402334c7cb82551767c5278ef6d"
+  },
+  {
+    "file": "bun.lock",
+    "baselineSha256": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029",
+    "currentSha256": "334ac7fb44e967944973c979ecaa218aca96fd19028eab36a89ea3f2bcba1029"
+  },
+  {
+    "file": "src-tauri/Cargo.lock",
+    "baselineSha256": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8",
+    "currentSha256": "0e3244a9852c50e04aad939d205fbb08fec8d3fedab33862cb796427529087d8"
+  },
+  {
+    "file": "src-tauri/tauri.conf.json",
+    "baselineSha256": "c500bc7e3c321d82a0cca3a93bb1ba8a8bbb74542e649abded70c2d0107dc2af",
+    "currentSha256": "c500bc7e3c321d82a0cca3a93bb1ba8a8bbb74542e649abded70c2d0107dc2af"
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "ok": false,
+  "error": "Error: Owned conversation rejects stale local write",
+  "trace": [
+    {
+      "step": "workbench-owns-session",
+      "atMs": 34,
+      "owned": {
+        "key": "native:16:managed-local-v197:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027g/workspace27:ses_winb7focus1000020261027",
+        "identity": {
+          "kind": "native",
+          "sidecarId": "managed-local-v1",
+          "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027g/workspace",
+          "sessionId": "ses_winb7focus1000020261027"
+        },
+        "title": "B7 Windows 1000 messages 10000",
+        "userTitle": null,
+        "source": "workbench",
+        "created": 1793080252922,
+        "updated": 1793080253921,
+        "pinned": false,
+        "archived": false,
+        "availability": "available",
+        "ownership": "workbench",
+        "runtime": "idle",
+        "tombstone": null,
+        "hasRecords": true,
+        "displayTitle": "B7 Windows 1000 messages 10000",
+        "capabilities": {
+          "open": true,
+          "openWorkbench": true,
+          "send": false,
+          "rename": true,
+          "pin": true,
+          "archive": true,
+          "delete": true,
+          "readOnlyReason": "workbench_owned"
+        }
+      },
+      "chatOwnedDom": {
+        "composer": false,
+        "tail": "ence\nts\nconst round = 993;\n\nItem\tStatus\nB7\tComplete\nSynthetic question 994\nSynthetic reply 995\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nts\nconst round = 995;\n\nItem\tStatus\nB7\tComplete\nSynthetic question 996\nSynthetic reply 997\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nts\nconst round = 997;\n\nItem\tStatus\nB7\tComplete\nSynthetic question 998\nSynthetic reply 999\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nts\nconst round = 999;\n\nItem\tStatus\nB7\tComplete\n该会话正在工作台处理新会话在工作台打开"
+      }
+    },
+    {
+      "step": "settings-denied",
+      "atMs": 36,
+      "deniedSettings": "Error: {\"exceptionId\":2,\"text\":\"Uncaught (in promise)\",\"lineNumber\":0,\"columnNumber\":0,\"exception\":{\"type\":\"string\",\"value\":\"history_forbidden\"}}"
+    }
+  ]
+}

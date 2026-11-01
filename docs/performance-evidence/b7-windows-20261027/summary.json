@@ -1,0 +1,286 @@
+{
+  "date": "2026-10-27",
+  "status": "B7 进行中；Windows baseline passed, partial native QA evidence, initial 10k anomaly unresolved",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "branch": "codex/yume-performance-b6",
+  "version": "0.4.21",
+  "schemas": {
+    "history": 3,
+    "memory": 4
+  },
+  "repository": "E:\\Codex\\工作伙伴\\deskmate-windows-b7",
+  "rawEvidence": "E:/Codex/工作伙伴/reports/yume-b7-windows-20261027",
+  "baseline": {
+    "typecheck": "3 TypeScript configurations passed",
+    "frontend": {
+      "files": 172,
+      "passed": 1353,
+      "failed": 0,
+      "skipped": 8,
+      "unfinished": 0
+    },
+    "rust": {
+      "passed": 966,
+      "failed": 0,
+      "ignored": 24,
+      "firstAttempt": {
+        "passed": 962,
+        "failed": 4,
+        "ignored": 24
+      },
+      "targetedRecovery": "19 permissions + 1 health passed; full rerun then passed",
+      "retrieval10000": {
+        "p50Ms": 16,
+        "p95Ms": 23,
+        "maxMs": 26
+      }
+    },
+    "workbench": "fresh pinned source build, unchanged upstream lock hash",
+    "productionCheck": "passed",
+    "productionDesktopBuild": {
+      "name": "13-production-desktop-build",
+      "command": "bun run tauri build --debug --no-bundle --config output/b7-qa/production-build.json",
+      "startedAt": "2026-10-27T11:56:34.6876345+08:00",
+      "finishedAt": "2026-10-27T11:57:49.5054075+08:00",
+      "exitCode": 0,
+      "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+      "log": "E:\\Codex\\工作伙伴\\reports\\yume-b7-windows-20261027\\13-production-desktop-build.log",
+      "binarySha256": "5287A41C8C0B8AA1841EE23C579C86E3892C857D7E5E6CFAC49829C620B1C6D0"
+    },
+    "restore": {
+      "command": "bun run build",
+      "startedAt": "2026-10-27T12:19:11.0519446+08:00",
+      "finishedAt": "2026-10-27T12:19:29.1427630+08:00",
+      "exitCode": 0,
+      "qaEntryAbsent": true,
+      "htmlEntries": [
+        "chat.html",
+        "pet.html",
+        "settings.html"
+      ]
+    }
+  },
+  "native": {
+    "feature": "worklog-qa",
+    "profile": "debug",
+    "identity": "com.deskmate.unifiedhistoryqa.winb720261027a",
+    "productionAppLaunched": false,
+    "normalConfigBuilt": true,
+    "realOpenCodeSyntheticProvider": true,
+    "realModel": false,
+    "guiVisualAcceptance": false,
+    "desktopCapture": "Sky FrameArrived/window capture timeout on three attempts; no visual pass",
+    "ownership": {
+      "simultaneousLaunches": 3,
+      "primaryRetained": 1,
+      "idleSecondaryLaunches": 10,
+      "streamingSecondaryLaunches": 10,
+      "hostAndEngineIdentityPreserved": true,
+      "realOrphanRecovery": true,
+      "activeToolTaskRepeatLaunches": "not tested"
+    },
+    "recovery": {
+      "test": "agent::tool_lifecycle_live_tests::live_audit_remediation",
+      "passed": true,
+      "archiveFailureHeldMs": 31246,
+      "initialProviderRequests": 3,
+      "recoveryInitialRequests": 1
+    },
+    "pdf": {
+      "attempts": 32,
+      "eachKind": 8,
+      "created": 32,
+      "terminated": 32,
+      "peak": 1,
+      "active": 0,
+      "heapBefore": 4576561,
+      "heapAfter": 7614933,
+      "heapConvergence": "not measured; two readings without GC/RSS sequence cannot establish convergence"
+    },
+    "startupStream": {
+      "characters": 50000,
+      "plannedChunks": 3000,
+      "done": true,
+      "sha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+    },
+    "stop": {
+      "providerAborted": true,
+      "persistedCharacters": 16300,
+      "subsequentReply": "B7_LOCAL_REPLY_OK"
+    },
+    "long10kInitial": {
+      "checks": {
+        "rowCount": true,
+        "stableOldNodes": true,
+        "focus": false,
+        "draft": true,
+        "notBusy": true,
+        "nativeSha": true,
+        "renderedCode": false,
+        "allSamplesInStream": false
+      },
+      "passed": false,
+      "initialRows": 1000,
+      "finalRows": 1002,
+      "stableOldNodes": 1000,
+      "updates": 183,
+      "inputP95": 31,
+      "scrollP95": 38.30000000074506,
+      "busySamples": 0,
+      "sha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1",
+      "status": "incomplete; reject latency baseline",
+      "note": "No Stop button in all 30 samples, focus lost, probe ended before rendered terminal. Native full text correct. Cause not determined."
+    },
+    "long50k": {
+      "checks": {
+        "rowCount": true,
+        "stableOldNodes": true,
+        "focus": true,
+        "draft": true,
+        "notBusy": true,
+        "nativeSha": true,
+        "renderedCode": true,
+        "allSamplesInStream": true
+      },
+      "passed": true,
+      "initialRows": 1000,
+      "finalRows": 1002,
+      "stableOldNodes": 1000,
+      "updates": 179,
+      "inputP95": 42,
+      "scrollP95": 43.19999999925494,
+      "busySamples": 30,
+      "sha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea",
+      "status": "passed in isolated QA"
+    },
+    "long10kRecheck": {
+      "checks": {
+        "rowCount": true,
+        "stableOldNodes": true,
+        "focus": true,
+        "draft": true,
+        "notBusy": true,
+        "nativeSha": true,
+        "renderedCode": true,
+        "allSamplesInStream": true
+      },
+      "passed": true,
+      "initialRows": 1002,
+      "finalRows": 1004,
+      "stableOldNodes": 1002,
+      "updates": 185,
+      "inputP95": 33.30000000074506,
+      "scrollP95": 37,
+      "busySamples": 30,
+      "sha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1",
+      "status": "passed with 1002 starting messages and 1500 ms stabilization; does not replace initial 1000 case"
+    },
+    "provider": [
+      {
+        "id": 0,
+        "at": "2026-10-27T04:08:55.314Z",
+        "size": 50000,
+        "plannedChunks": 3000,
+        "emitted": 3000,
+        "done": true,
+        "aborted": false,
+        "elapsedMs": 59995.64949999994,
+        "expectedSha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+      },
+      {
+        "id": 1,
+        "at": "2026-10-27T04:11:00.030Z",
+        "size": 50000,
+        "plannedChunks": 500,
+        "emitted": 163,
+        "done": false,
+        "aborted": true,
+        "elapsedMs": 3242.524299999932,
+        "expectedSha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+      },
+      {
+        "id": 2,
+        "at": "2026-10-27T04:11:28.940Z",
+        "size": 0,
+        "plannedChunks": 1,
+        "emitted": 1,
+        "done": true,
+        "aborted": false,
+        "elapsedMs": 0.1334999999962747,
+        "expectedSha256": "df4e678db4ca9340e1b7be02ac789bafea0f9158cee9999e3b36adbb264dadd4"
+      },
+      {
+        "id": 3,
+        "at": "2026-10-27T04:13:18.125Z",
+        "size": 10000,
+        "plannedChunks": 500,
+        "emitted": 500,
+        "done": true,
+        "aborted": false,
+        "elapsedMs": 9989.308699999936,
+        "expectedSha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1"
+      },
+      {
+        "id": 4,
+        "at": "2026-10-27T04:13:43.099Z",
+        "size": 50000,
+        "plannedChunks": 500,
+        "emitted": 500,
+        "done": true,
+        "aborted": false,
+        "elapsedMs": 9981.886200000066,
+        "expectedSha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+      },
+      {
+        "id": 5,
+        "at": "2026-10-27T04:16:31.241Z",
+        "size": 10000,
+        "plannedChunks": 500,
+        "emitted": 500,
+        "done": true,
+        "aborted": false,
+        "elapsedMs": 9992.855099999928,
+        "expectedSha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1"
+      }
+    ]
+  },
+  "cleanup": {
+    "time": "2026-10-27T12:18:38.4618070+08:00",
+    "identity": "com.deskmate.unifiedhistoryqa.winb720261027a",
+    "ownedProcessesGone": true,
+    "providerPortClosed": true,
+    "debugPortClosed": true,
+    "providerStoppedWith": "Ctrl-C on owned tool session 5934, exit 1; port and process absent",
+    "syntheticCredentialRemoved": true,
+    "databasesChecked": 5,
+    "roots": [
+      {
+        "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027a",
+        "removed": true
+      },
+      {
+        "path": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb720261027a",
+        "removed": true
+      }
+    ],
+    "productionDataAccessed": false
+  },
+  "preservation": {
+    "oldMainStatusMatches": true,
+    "oldMainCommand": "git status --porcelain=v1 --untracked-files=all",
+    "previousDevClean": true,
+    "note": "Status comparison, not a pre/post hash of every original local file; no writes performed in either old checkout"
+  },
+  "pending": [
+    "Cold start / freshly imported 1000-message 10k composer disappearance and focus loss; reproduce with ownership/SSE/DOM traces before product changes",
+    "Native picker/drop, media/binary upload and history reopen on Windows",
+    "GUI approval/rejection/cancel; SSE disconnect and engine failure/recovery; five worklog tools/expiry",
+    "History deletion and multiwindow contention; memory export/forget/reopen",
+    "PDF JS heap/RSS convergence; 2D/3D, hide/sleep, DPI/high refresh, GPU/energy and same-host production comparison",
+    "All Mac-only pending gates; M19c full-delete FK scans/small-library cost, C16 all rows mounted, R06/D20 remaining costs"
+  ],
+  "sourceChanges": "Documentation/evidence only; no product code, dependency, schema or version change",
+  "installed": false,
+  "published": false,
+  "pushed": false
+}

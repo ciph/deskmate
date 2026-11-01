@@ -7,6 +7,7 @@ pub mod contract_runtime;
 pub mod error;
 pub mod export;
 pub mod model_client;
+pub mod operation_states;
 pub mod reports;
 pub mod repository;
 mod repository_entries;

@@ -1,0 +1,99 @@
+{
+  "cdpAndReactReadyMs": 804,
+  "elapsedMs": 5868,
+  "result": {
+    "ok": true,
+    "discoveredAt": 2034.5999999996275,
+    "trace": [
+      {
+        "at": 1,
+        "kind": "open-history"
+      },
+      {
+        "at": 1.099999999627471,
+        "kind": "dom",
+        "history": false,
+        "rows": 0,
+        "notice": [],
+        "empty": false
+      },
+      {
+        "at": 228.19999999925494,
+        "kind": "catalog",
+        "ms": 227.09999999962747,
+        "total": 2,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 278.8999999985099,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [],
+        "loading": "true",
+        "empty": false
+      },
+      {
+        "at": 1011.1999999992549,
+        "kind": "catalog",
+        "ms": 7.099999999627471,
+        "total": 2,
+        "errors": [],
+        "refreshing": true
+      },
+      {
+        "at": 1459.3999999985099,
+        "kind": "dom",
+        "history": true,
+        "rows": 3,
+        "notice": [],
+        "loading": "true",
+        "empty": false
+      },
+      {
+        "at": 1519,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [],
+        "loading": "true",
+        "empty": false
+      },
+      {
+        "at": 1578.3999999985099,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [],
+        "loading": "false",
+        "empty": false
+      },
+      {
+        "at": 2034.5999999996275,
+        "kind": "catalog",
+        "ms": 6,
+        "total": 2,
+        "errors": [],
+        "refreshing": false
+      },
+      {
+        "at": 3078.2999999988824,
+        "kind": "catalog",
+        "ms": 4.799999998882413,
+        "total": 2,
+        "errors": [],
+        "refreshing": false
+      },
+      {
+        "at": 4135.0999999996275,
+        "kind": "catalog",
+        "ms": 4.900000000372529,
+        "total": 2,
+        "errors": [],
+        "refreshing": false
+      }
+    ],
+    "body": "会话历史\n新会话\n筛选\n会话\n已归档\n2 段会话\n今天\nB7 Windows 1000 messages 50000\n14:08\n### Synthetic reply 999 **Scope:** isolated QA data. - Check state - Keep evidence ```ts const round = 999; ``` | Item | Status | | --- | --- | | B7 | Complete\nworkspace\nB7 Windows 1000 messages 10000\n14:08\n### Synthetic reply 999 **Scope:** isolated QA data. - Check state - Keep evidence ```ts const round = 999; ``` | Item | Status | | --- | --- | | B7 | Complete\nworkspace"
+  }
+}

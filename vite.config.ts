@@ -7,6 +7,9 @@ import { BUILTIN_PACKS } from "./src/pet/personaCatalog";
 // Two entry pages: pet (transparent always-on-top mascot) and chat (chat panel).
 export default defineConfig({
   root: realpathSync(__dirname),
+  // The browser export uses document.createElement. Markdown also runs in a
+  // Worker, so use this package's equivalent DOM-free entity table explicitly.
+  resolve: { alias: { "decode-named-character-reference": resolve(__dirname, "node_modules/decode-named-character-reference/index.js") } },
   plugins: [react(), {
     name: "exclude-optional-persona-packs",
     apply: "build",

@@ -1,0 +1,45 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\HistoryOrganizer.test.tsx:
+An update to HistoryOrganizer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to HistoryOrganizer inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+(pass) cold native discovery shows progress, then reveals discovered rows without manual refresh [49.50ms]
+(pass) native and legacy rows open with their complete identity and capability labels [100.37ms]
+(pass) same-title rows show distinct real preview results without opening either row [62.39ms]
+(pass) details keeps the full project path behind the action menu [22.74ms]
+(pass) delete requires confirmation; rejected mutation preserves the row and shows an error [40.60ms]
+(pass) search and filters reset pagination and query metadata without refreshing native content [231.38ms]
+(pass) failed refresh keeps cached rows visible and offers retry [34.64ms]
+(pass) large histories navigate bounded pages and reset the page when filters change [44.43ms]
+(pass) a new chat action remains available from the global organizer [14.01ms]
+(pass) an open failure keeps the organizer and conversation visible [32.93ms]
+(pass) confirmed deletion defaults to forgetting conversation-only memories [27.26ms]
+(pass) unchecking conversation memory cleanup preserves the user's choice [31.97ms]
+conversation cleanup failed [object Object]
+(pass) memory identity ambiguity preserves memories without resurrecting a deleted conversation [50.00ms]
+(pass) unavailable rows avoid duplicate badges but retain other read-only reasons in zh-CN [13.08ms]
+(pass) unavailable rows avoid duplicate badges but retain other read-only reasons in en-US [15.88ms]
+(pass) opening an unavailable conversation shows a localized retry message without a backend code [47.99ms]
+
+ 16 pass
+ 0 fail
+ 47 expect() calls
+Ran 16 tests across 1 file. [8.26s]

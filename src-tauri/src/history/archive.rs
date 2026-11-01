@@ -27,11 +27,12 @@ pub(super) fn upsert_agent_snapshot(
     path: &Path,
     list: &mut Vec<HistorySession>,
     snapshot: AgentHistorySnapshot<'_>,
-) -> Result<(), String> {
+) -> Result<bool, String> {
     if let Some(session) = merged_agent_snapshot(list, snapshot)? {
         save_to_path(path, list, session)?;
+        return Ok(true);
     }
-    Ok(())
+    Ok(false)
 }
 
 pub(super) fn merged_agent_snapshot(

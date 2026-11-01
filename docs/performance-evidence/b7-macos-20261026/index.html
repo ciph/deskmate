@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B7 · Mac 附件与长会话接续</title><style>
+:root{color-scheme:dark;font:16px/1.65 system-ui,sans-serif;background:#101622;color:#e4eaf4}body{max-width:1100px;margin:auto;padding:36px 28px 72px}h1{font-size:36px;line-height:1.25;margin:.3em 0}h2{font-size:22px;margin-top:36px}p{max-width:960px}a{color:#9fc8ff}small,.muted{color:#aab6c9}.badge{display:inline-block;border:1px solid #ba985c;color:#f0ce8e;border-radius:24px;padding:3px 12px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}.card{border:1px solid #344358;background:#192334;border-radius:14px;padding:18px}.value{font-size:30px;font-weight:700;color:#95e5c2}table{width:100%;border-collapse:collapse}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #344358;padding:12px 10px}th{color:#acc9ef}code{color:#bfd2ed}figure{margin:0}img{max-width:100%;border:1px solid #40516c;border-radius:12px}figcaption{font-size:14px;color:#aab6c9;margin:8px 0 20px}.screens{display:grid;grid-template-columns:1fr 1fr;gap:22px}.note{border-left:3px solid #c7a96b;padding:8px 18px;background:#211f21}footer{margin-top:40px;border-top:1px solid #344358;padding-top:18px}@media(max-width:750px){body{padding:24px 16px}.cards,.screens{grid-template-columns:1fr}h1{font-size:28px}table{font-size:14px}}
+</style></head><body>
+<small>DESKMATE / YUME · B7 · 2026-10-26–27 · macOS 26.5.2 ARM64</small>
+<h1>附件历史恢复，补齐原生上传证据</h1><span class="badge">B7 进行中</span>
+<p>PDF 历史标签已恢复，导航提示已隐藏内部资源信息。新增三种媒体、64 MiB 原始上传和 1000 消息非流式交互实测。产品仍为 0.4.21，历史 schema 3 / 记忆 schema 4；未推送或发布。</p>
+<div class="cards"><div class="card"><div class="value">1354 / 957</div>前端 / Rust 通过<br><small>172 文件；Rust 23 ignored</small></div><div class="card"><div class="value">64 MiB</div>原生上传、播放、近末尾跳转<br><small>WebKit / Tauri / 隔离 debug App</small></div><div class="card"><div class="value">22 / 21 ms</div>1000 消息输入 / 滚动 p95<br><small>各 30 次，非流式、双 rAF 探针</small></div></div>
+<p><a href="README.md">完整说明与边界</a> · <a href="summary.json">结果 / 日志哈希</a> · <a href="source-fingerprints.json">代码指纹</a> · <a href="manifest.json">文件清单</a> · <a href="../b7-macos-20261025/index.html">上一轮 #01–20 矩阵</a></p>
+<h2>本次修改</h2><p><code>c00528e</code>：从受作用域约束的原生快照恢复普通附件文件名，仅附件消息也保留。标签随加载结果返回，不增加逐消息请求，不持久化字节、URL 或路径。<br><code>dea6d77</code>：对话导航复用气泡的资源上下文过滤。两项修复均有回归与原生历史复核。</p>
+<h2>实测覆盖</h2><table><thead><tr><th>场景</th><th>观察结果</th><th>尚未覆盖</th></tr></thead><tbody>
+<tr><td>PDF 历史</td><td>选择、提取、真实 OpenCode + 合成 provider 回复；重开和重启后文件名保留</td><td>复杂/损坏/截断 PDF 的重复循环与堆收敛</td></tr>
+<tr><td>WAV / MP3 / MP4</td><td>播放推进、暂停、DOM seek 成功；历史恢复媒体卡片</td><td>物理滑块拖动、完整编码矩阵</td></tr>
+<tr><td>二进制上传</td><td>1 / 8 / 20 MiB 成功；20 MiB + 1 B 拒绝；64 MiB 媒体成功</td><td>OS 拖入、重复峰值内存、原生 HTTP 206 回执</td></tr>
+<tr><td>1000 消息</td><td>500 轮 Markdown 加载；输入和滚动各预热 5 次 + 30 次采样</td><td>50 Hz 流式、真实按键到显示、优化前后对照</td></tr>
+</tbody></table>
+<p class="muted">上传单次观察 3 / 8 / 19 / 65 ms，仅为调用到宿主回复。交互测量为程序化 DOM input/scroll 到第二个 requestAnimationFrame；全部 1000 行仍挂载。不能据此宣称生产性能或跨平台达标。<a href="interaction-results.json">原始采样</a> · <a href="binary-results-transcribed.json">上传回执及转录来源</a></p>
+<h2>真实 QA 窗口</h2><div class="screens"><figure><img src="history-final.png" alt="重启后历史中的 PDF 文件名和可见媒体卡片"><figcaption>最终历史重开：PDF 标签与可见媒体卡片；完整导航提示见 <a href="history-final-ax.txt">AX 记录</a>。</figcaption></figure><figure><img src="long-history.png" alt="1000 条合成消息的第 500 轮显示于聊天窗口"><figcaption>1000 条合成消息，当前显示第 500 轮。模型未验证提示来自清理虚拟凭据后的隔离状态。</figcaption></figure></div>
+<h2>保留失败经过</h2><div class="note"><p>检查器开启时上传曾触发 SIGTRAP，栈位于 WebKit Inspector JSON 序列化；原因未定。关闭检查器后的延迟探针完成，不能写成崩溃已修复。</p><p>重建后读取 QA 虚拟钥匙串条目阻塞；仅移除该测试条目后同一二进制恢复。直接 fetch 媒体 Range 被 CSP 拒绝，未放宽策略，随后改用实际媒体元素验证。</p></div>
+<p>React Doctor 保留 1 条既有辅助函数导出提示；类型检查、前端/Rust 套件和构建通过。5 个 SQLite 库完整性均 ok；本次 QA 进程、端口、虚拟凭据及三个专属数据根已清理。</p>
+<h2>下一步</h2><p>优先验证 <strong>1000 消息 + 50 Hz 流式 + 10k/50k 尾消息</strong>，覆盖终态、Stop、输入焦点和滚动；随后补 PDF 生命周期循环。Windows、GUI 权限/故障、完整存储删除、2D/3D、睡眠/高刷/DPI、GPU/功耗仍待验。</p>
+<footer><a href="../../performance-remediation-handoff.md">接续说明</a> · <a href="../../verification-backlog.md">验收待办</a><p class="muted">证据来自独立 debug QA，未操作日常数据。输入脚本仅供复核，重现时必须更换隔离身份与输出目录。</p></footer>
+</body></html>

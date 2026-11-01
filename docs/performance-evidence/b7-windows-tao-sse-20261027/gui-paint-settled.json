@@ -1,0 +1,128 @@
+[
+  {
+    "step": 0,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    },
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":30021,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-settled-0.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 1,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    },
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":31514,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-settled-1.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 2,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    },
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":30021,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-settled-2.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 3,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    },
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":31525,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-settled-3.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 4,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,760,820],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    },
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 760x820 png\",\"width\":760,\"height\":820,\"format\":\"png\",\"fileSizeBytes\":30010,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-settled-4.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "step": 5,
+    "resize": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"window\":{\"handle\":\"401544\",\"title\":\"YUME B7 Tao SSE QA chat\",\"className\":\"Tauri Window\",\"processName\":\"yume\",\"pid\":158032,\"bounds\":[125,125,900,950],\"state\":\"normal\",\"monitorIndex\":0,\"isForeground\":true,\"isElevated\":true}}"
+        }
+      ],
+      "isError": false
+    },
+    "capture": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"errorCode\":\"success\",\"message\":\"Captured window: 900x950 png\",\"width\":900,\"height\":950,\"format\":\"png\",\"fileSizeBytes\":31525,\"filePath\":\"E:/Codex/\\u5DE5\\u4F5C\\u4F19\\u4F34/reports/yume-b7-tao-sse-20261027/gui-settled-5.png\"}"
+        }
+      ],
+      "isError": false
+    }
+  }
+]

@@ -1,0 +1,75 @@
+{
+  "items": [
+    {
+      "key": "native:16:managed-local-v199:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7taosse20261027a/workspace30:ses_e837780b8ffeYb17WYJM7KJv4H",
+      "identity": {
+        "kind": "native",
+        "sidecarId": "managed-local-v1",
+        "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7taosse20261027a/workspace",
+        "sessionId": "ses_e837780b8ffeYb17WYJM7KJv4H"
+      },
+      "title": "YUME chat",
+      "userTitle": null,
+      "source": "light_chat",
+      "created": 1793090682695,
+      "updated": 1793090709718,
+      "pinned": false,
+      "archived": false,
+      "availability": "available",
+      "ownership": "unowned",
+      "runtime": "idle",
+      "tombstone": null,
+      "displayTitle": "YUME chat",
+      "capabilities": {
+        "open": true,
+        "openWorkbench": true,
+        "send": true,
+        "rename": true,
+        "pin": true,
+        "archive": true,
+        "delete": true,
+        "readOnlyReason": null
+      }
+    },
+    {
+      "key": "native:16:managed-local-v199:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7taosse20261027a/workspace30:ses_e837b5d9fffetAweSAq94zRg1k",
+      "identity": {
+        "kind": "native",
+        "sidecarId": "managed-local-v1",
+        "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7taosse20261027a/workspace",
+        "sessionId": "ses_e837b5d9fffetAweSAq94zRg1k"
+      },
+      "title": "YUME chat",
+      "userTitle": null,
+      "source": "light_chat",
+      "created": 1793090429536,
+      "updated": 1793090625434,
+      "pinned": false,
+      "archived": false,
+      "availability": "available",
+      "ownership": "unowned",
+      "runtime": "idle",
+      "tombstone": null,
+      "hasRecords": true,
+      "displayTitle": "YUME chat",
+      "capabilities": {
+        "open": true,
+        "openWorkbench": true,
+        "send": true,
+        "rename": true,
+        "pin": true,
+        "archive": true,
+        "delete": true,
+        "readOnlyReason": null
+      }
+    }
+  ],
+  "total": 2,
+  "hasMore": false,
+  "directories": [
+    "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7taosse20261027a/workspace"
+  ],
+  "offline": false,
+  "errors": [],
+  "refreshing": false
+}

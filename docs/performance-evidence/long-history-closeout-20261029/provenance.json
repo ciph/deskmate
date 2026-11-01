@@ -1,0 +1,283 @@
+{
+  "baseline": {
+    "head": "2ea18cf64695edf95d5da914739fa8cf30492ba5",
+    "branch": "codex/yume-performance-b6",
+    "version": "0.4.22",
+    "preservedFiles": [
+      {
+        "path": "docs/README.md",
+        "sha256": "0AB0BD9D95FF7463B07AA57B1039E01D80E2DA150A6C123A535F29DD2155E97F"
+      },
+      {
+        "path": "docs/long-history-construction-plan.md",
+        "sha256": "76E337C31C862061C9F3A824333960648C311D251A2AFB57ADF3BA294D1F2B12"
+      }
+    ],
+    "phase": "B0",
+    "time": "2026-10-29T11:16:53.3326492+08:00"
+  },
+  "productVersion": "0.4.22",
+  "implementationCommits": [
+    "25bd5b1c13bb89084f02eedda56ce27116b6f8d4 perf(chat): virtualize timeline and indexed conversation navigation",
+    "df9b7135936f72f103e601dace707f44c76e5421 perf(worklog): reuse scoped history snapshots and batch exact receipts",
+    "f59a4a0a20985d9006d3b64edfd9332796061d1e perf(chat): move markdown parsing to bounded worker scheduling"
+  ],
+  "build": {
+    "exitCode": 0,
+    "binarySha256": "CDE474A34C8E197140450DDD3CCB1708B8525376DB3F69A8DB01DEB2BD8D0E42",
+    "builtAt": "2026-10-29T13:50:19.1020055+08:00"
+  },
+  "launches": [
+    {
+      "pid": 566872,
+      "created": 134377207043687795,
+      "binarySha256": "5D724902DEC8111EA056FC94C7EE44139247C78ECB64FC4CC97714B66FB55C96",
+      "startedAt": "2026-10-29T12:11:44.5724039+08:00"
+    },
+    {
+      "pid": 604924,
+      "created": 134377226624779591,
+      "binarySha256": "8ABDB688CCD53BC8487B61161B4D18DDF38D76F4C711EAC52EB4D5AB8C0823AB",
+      "startedAt": "2026-10-29T12:44:22.6738028+08:00"
+    },
+    {
+      "pid": 625836,
+      "created": 134377245419635151,
+      "binarySha256": "8ABDB688CCD53BC8487B61161B4D18DDF38D76F4C711EAC52EB4D5AB8C0823AB",
+      "startedAt": "2026-10-29T13:15:42.1486237+08:00"
+    },
+    {
+      "pid": 560116,
+      "created": 134377254527031886,
+      "binarySha256": "D63197058150C50CE6CAC364478739F7DB31D63EB1A14E5ACCA5B9658DD58184",
+      "startedAt": "2026-10-29T13:30:52.8868331+08:00"
+    },
+    {
+      "pid": 640780,
+      "created": 134377266193021810,
+      "binarySha256": "CDE474A34C8E197140450DDD3CCB1708B8525376DB3F69A8DB01DEB2BD8D0E42",
+      "startedAt": "2026-10-29T13:50:19.4891118+08:00"
+    },
+    {
+      "pid": 635360,
+      "created": 134377270556319366,
+      "binarySha256": "CDE474A34C8E197140450DDD3CCB1708B8525376DB3F69A8DB01DEB2BD8D0E42",
+      "startedAt": "2026-10-29T13:57:35.8028260+08:00"
+    }
+  ],
+  "source": [
+    {
+      "path": "bun.lock",
+      "sha256": "41676a8670174079dca679872c7bba2668e2bdcce1764846163b59adde35c816"
+    },
+    {
+      "path": "package.json",
+      "sha256": "41476889f17bf961051e3efe39531f71295c5989cd96e4dacd10b4bb20531064"
+    },
+    {
+      "path": "scripts/long-history-qa/vite.qa.ts",
+      "sha256": "9384235497c5901d20cc82fe6bf585eac76a88849e69bd6ff0e6d2da8478d018"
+    },
+    {
+      "path": "scripts/long-history-qa/webview-probes.ts",
+      "sha256": "393aeda7577e2ccab415bdee7e3cff1e5532c36dd0fb9083b503ec53a3c53d9a"
+    },
+    {
+      "path": "src-tauri/src/history.rs",
+      "sha256": "3be1de7075284fcec6a7507eeba767648274b4b2c994aa495114f8f0c12aa55f"
+    },
+    {
+      "path": "src-tauri/src/history/catalog_details.rs",
+      "sha256": "a59427817af265d8db33ecc7d223dd2f35ba13f84c9e7eab3250e7246d0025cb"
+    },
+    {
+      "path": "src-tauri/src/history/catalog_query.rs",
+      "sha256": "8362862cb71041f14767ace215b170f5b43245ab8665afc0f928924a7b5794c4"
+    },
+    {
+      "path": "src-tauri/src/history/commands.rs",
+      "sha256": "f48301b51ec71a8c84b60a558f29956f5e444555f0fec91ddc11dc470e6e67b3"
+    },
+    {
+      "path": "src-tauri/src/history/worklog_outcomes.rs",
+      "sha256": "bab7be9b9e0254d0b0abaa90949fe192f5efe37d0e67f3a1c01e27d0ca60d612"
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "sha256": "0aad91db8ffb7873af012d7300a43b4eea1934ac044b186b44154b960ae3fa49"
+    },
+    {
+      "path": "src-tauri/src/worklog/commands.rs",
+      "sha256": "0c99c0600706e8c968473ddf2ec63f258ea9fe29ede2c7e38c820c0eae8c61d5"
+    },
+    {
+      "path": "src-tauri/src/worklog/mod.rs",
+      "sha256": "8166536ab117702e0d25744245af47106e381b5d43d4fefa15c87239c8243fb5"
+    },
+    {
+      "path": "src-tauri/src/worklog/operation_states.rs",
+      "sha256": "f4d3652bca74af8f2569226dd6b55cf0b00fc34598bd95cf82d263f27c7f99a0"
+    },
+    {
+      "path": "src/chat/ChatApp.tsx",
+      "sha256": "ee6e39345c638310bde76f5fc2aa55126758cf274b49f90cdc5eb7dc507d3656"
+    },
+    {
+      "path": "src/chat/ChatMessageRow.test.tsx",
+      "sha256": "c55dded18f3156dac6376fac57a2c93a079a1ef43ad011c4d9b76c3948b1ddc5"
+    },
+    {
+      "path": "src/chat/ChatNavigation.test.tsx",
+      "sha256": "49e7cdd2a5e164fb71e1b0c6872c3a3006be6d113c0e1215fa112e5009cf6b9b"
+    },
+    {
+      "path": "src/chat/ChatNavigation.tsx",
+      "sha256": "6d4b168394c5f2df60cc72208f81ea494baef6fc1b730746274ab337a8eb841a"
+    },
+    {
+      "path": "src/chat/ChatText.test.tsx",
+      "sha256": "dd8fa5be4baf4a3a3721c1c22bc8603b777c71d6a0f49d6ed7139590bc0c627c"
+    },
+    {
+      "path": "src/chat/ChatText.tsx",
+      "sha256": "758dee7a98893d82cff92a670dbf252bf03dca2ca4199669a8d94ed3ebd62800"
+    },
+    {
+      "path": "src/chat/ChatTimeline.test.tsx",
+      "sha256": "398235f0c89bf4a2e0059f6c389c8c11f14a07255ec62954760a4cdfc5c42d4b"
+    },
+    {
+      "path": "src/chat/ChatTimeline.tsx",
+      "sha256": "00fff3eb1db6ec2235ef17ca99b0bda0059a73969117337ecd8b0c1084784f7f"
+    },
+    {
+      "path": "src/chat/chat-navigation.css",
+      "sha256": "83a819c3d360a498f077be22a7e61a8104c047cf2bc1245c21173a9720261b89"
+    },
+    {
+      "path": "src/chat/chat-timeline.css",
+      "sha256": "d323ed17c9630a8bd456b8668efc8c3a28ee10d52d33da63732bbb1183416937"
+    },
+    {
+      "path": "src/chat/chatAttachmentLifecycleHarness.test.ts",
+      "sha256": "a72f66fd5c0f7cfad77ce2de0298a3d15e3ed9edb8a6b345b110bb164649c20a"
+    },
+    {
+      "path": "src/chat/chatAttachmentSendHarness.test.tsx",
+      "sha256": "cc810d7c890611aa26ee00c7057395125300d3289299bc99b4f678105bea70fc"
+    },
+    {
+      "path": "src/chat/chatFixedReply.test.tsx",
+      "sha256": "cc32feb2e02af0027e4fbc14262cee729132ecca6af6a70f92aeecf2e66850ab"
+    },
+    {
+      "path": "src/chat/chatMemory.test.tsx",
+      "sha256": "c60195f334578d8370454c5f8d846aad1dd76558033dedc7bc702bb93a8fcc5c"
+    },
+    {
+      "path": "src/chat/conversationEvents.test.ts",
+      "sha256": "90f212dc9ff079730c693664d6015fda3019ccf5de14a5b30df38d568623738c"
+    },
+    {
+      "path": "src/chat/conversationEvents.ts",
+      "sha256": "41043273eec3989897d8ca0fcecc6b31c15198fcd781bab2080e1e8527c21a2e"
+    },
+    {
+      "path": "src/chat/conversationIndex.test.ts",
+      "sha256": "50e344f19014e5a0e1062ce43ea26a592c3ed486730f03e458e8e0f0d51fa01d"
+    },
+    {
+      "path": "src/chat/conversationIndex.ts",
+      "sha256": "ff37209c8535028cf5b8e9543fe1b86db4f656eba04ba9de150cb8677d6773af"
+    },
+    {
+      "path": "src/chat/markdown.worker.ts",
+      "sha256": "5677feb584946f8d43ae012447cd1d652a49a1b07925990bb077aeaef30e40f5"
+    },
+    {
+      "path": "src/chat/markdownPipeline.test.tsx",
+      "sha256": "a760d2651abe2cb817f81f1d535d651a133d7d8d5696c16b60b7c52ccf188242"
+    },
+    {
+      "path": "src/chat/markdownPipeline.ts",
+      "sha256": "2301b5286b9ed4b7c7a74d71a4e7645f57b11bf1b3bc1a9155fa7941efa35a60"
+    },
+    {
+      "path": "src/chat/markdownScheduler.test.ts",
+      "sha256": "791ee48d69a27bcb03a7ca149965484900762b83478158247e731d23ac125475"
+    },
+    {
+      "path": "src/chat/markdownScheduler.ts",
+      "sha256": "00976e2cd3293b0636435aa288ff84f8fd5fc5697857000b686aada99905ca64"
+    },
+    {
+      "path": "src/chat/streamText.test.ts",
+      "sha256": "93441bcb5f72f3e1b1b7296653570efaca8d77e1d6772bd0ec90e3faa8e0c472"
+    },
+    {
+      "path": "src/chat/streamText.ts",
+      "sha256": "1ae2bb6970626f4b90018427ac9f9376c9a972652c818c84d05563df138033be"
+    },
+    {
+      "path": "src/chat/timelineRange.ts",
+      "sha256": "93eee3829c1e76f6515d7495eb7a683d1dd74b0db9bca09680259e9d8b4c0898"
+    },
+    {
+      "path": "src/chat/useAgentHistoryView.ts",
+      "sha256": "84a655385910dc06a7afed664715cf40ca318325a92b38714380c5dc877e24d3"
+    },
+    {
+      "path": "src/chat/useWorklogChat.test.tsx",
+      "sha256": "95a108b1e2985cd34a75963a6843206203d6e39485fd75e25d967e7af3aa08b7"
+    },
+    {
+      "path": "src/chat/useWorklogChat.ts",
+      "sha256": "131b28562a8cfc43ee5b4e21c08eb1f3d4da7d10c6dac105d069f275160ce742"
+    },
+    {
+      "path": "src/chat/worklogRecovery.test.ts",
+      "sha256": "9634f12bdced6c02e88d22dfb8e493f27c5715709f4b4acc9fef5f220c149ca6"
+    },
+    {
+      "path": "src/chat/worklogRecovery.ts",
+      "sha256": "0697ea9a7a3e2cc73eb7983170c2b43c0990b6f315626aaea30253679f728e47"
+    },
+    {
+      "path": "src/lib/opencode.ts",
+      "sha256": "cf4d9262d165e45169bc07fe583f1616203213906d3a38051038092f405ef685"
+    },
+    {
+      "path": "src/lib/unifiedHistory.ts",
+      "sha256": "9623c4a50b49239ecadf4dd051a9b29271573722cfc3b2d160a3121b18fe21fd"
+    },
+    {
+      "path": "src/lib/worklog.ts",
+      "sha256": "3a8c89f3133661d2dc1fc87f2a776b81b0b9fdec2d56dca139c18307b54a6b86"
+    },
+    {
+      "path": "src/testing/dom.ts",
+      "sha256": "0ef833257f5006e62ecb9a3741ec0f9a7d8795d017a27a8d14f64512ec250cc1"
+    },
+    {
+      "path": "src/testing/eventStreamFixture.ts",
+      "sha256": "8a7e35465b95f6e4afb9183f6ac878d852ba10d1e317a0e5e87ebfb5bb77a536"
+    },
+    {
+      "path": "src/testing/renderMarkdown.tsx",
+      "sha256": "32d17dcfc672019e5f6eac9c0643f4c46604d3e0d8390fad7484c5cd0e174c38"
+    },
+    {
+      "path": "src/testing/virtualLayout.ts",
+      "sha256": "36d2e117585688ecfd27498941a9c2b5475dcc5571c32bbe40b29a4651546731"
+    },
+    {
+      "path": "vite.config.test.ts",
+      "sha256": "d39c8a6b1e4f664ae078e9731ba53c54efb699f872f4fd63db5562b9f2edbd91"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "48b8c7fe8ae00c051ff6c92431b07aade606f6d6a87a5867cade17ce3be7eb6d"
+    }
+  ],
+  "sourceManifestSha256": "c8a95aacec7dde7dc1575ac81d889b04bec9d8c029a0441ffff5be5c9cb3f59a"
+}

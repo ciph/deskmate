@@ -1,0 +1,10 @@
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb7gui20261027a
+settings window QA: large=false, physical_size=Ok(PhysicalSize { width: 900, height: 650 }), scale_factor=Ok(1.25)
+chat window QA: large=true, physical_size=Ok(PhysicalSize { width: 900, height: 950 }), scale_factor=Ok(1.25)
+permission stream: http://127.0.0.1:63378/global/event: Network Error: Network Error: Error encountered in the status line: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。 (os error 10060)
+permission stream: 远程主机强迫关闭了一个现有的连接。 (os error 10054)

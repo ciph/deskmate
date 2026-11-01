@@ -21,6 +21,29 @@ pub(crate) fn apply_local(entry: &mut CatalogEntry, mutation: &CatalogMutation, 
     Ok(())
 }
 
+fn commit_local(store: &super::catalog::CatalogStore, observed: &CatalogEntry, guarded: &CatalogEntry, mutation: &CatalogMutation, now: u64) -> Result<(), String> {
+    store.update_entry(&observed.key(), |entry| {
+        let row = entry.as_mut().ok_or("history_not_found")?;
+        // Preserve newer discovery/ownership evidence while applying live run
+        // and native-status checks to fields that have not changed meanwhile.
+        if (row.updated, row.availability, row.runtime, row.ownership)
+            == (observed.updated, observed.availability, observed.runtime, observed.ownership) {
+            row.runtime = guarded.runtime;
+            row.ownership = guarded.ownership;
+        }
+        apply_local(row, mutation, now)
+    })
+}
+
+pub(super) fn confirm_deleted(store: &super::catalog::CatalogStore, key: &str) -> Result<(), String> {
+    store.update_entry(key, |entry| {
+        if let Some(tombstone) = entry.as_mut().and_then(|row| row.tombstone.as_mut()) {
+            tombstone.remote_deleted = true;
+        }
+        Ok(())
+    })
+}
+
 #[tauri::command]
 pub(crate) async fn history_catalog_mutate(window: tauri::WebviewWindow, app: tauri::AppHandle, key: String, mutation: CatalogMutation) -> Result<Option<CatalogRow>, String> {
     super::native_api::authorize_history_window(window.label()).map_err(|error| error.to_string())?;
@@ -33,7 +56,8 @@ fn mutate(app: &tauri::AppHandle, key: &str, mutation: &CatalogMutation) -> Resu
     // Share the launch/stop operation lock so an active run cannot race permanent deletion.
     let _guard = runs.lock_operation()?;
     let store = commands::store(app)?;
-    let mut entry = store.get(key)?;
+    let observed = store.get(key)?;
+    let mut entry = observed.clone();
     if let CatalogIdentity::Native { directory, session_id, .. } = &entry.identity {
         let active = runs.all_records()?.into_iter().any(|record| record.outcome.is_none() && record.session_id.as_deref() == Some(session_id) && super::catalog_import::canonical_directory(&record.workspace_path.to_string_lossy()) == *directory);
         if active { entry.ownership = Ownership::Agent; entry.runtime = RuntimeState::Running; }
@@ -49,13 +73,7 @@ fn mutate(app: &tauri::AppHandle, key: &str, mutation: &CatalogMutation) -> Resu
     if let (CatalogIdentity::Native { directory, session_id, .. }, CatalogMutation::Rename { title }) = (&entry.identity, mutation) {
         commands::client(app)?.rename(directory, session_id, title.trim()).map_err(|error| error.to_string())?;
     }
-    store.update(|rows| {
-        let row = rows.iter_mut().find(|row| row.key() == key).ok_or("history_not_found")?;
-        // Refresh only fields changed by the mutation; preserve concurrent discovery and pin updates.
-        row.runtime = entry.runtime; row.ownership = entry.ownership;
-        apply_local(row, mutation, commands::now()?)?;
-        Ok(())
-    })?;
+    commit_local(&store, &observed, &entry, mutation, commands::now()?)?;
     if matches!(mutation, CatalogMutation::Delete { .. }) { super::catalog_preview::invalidate(key); }
     let mut pending_error = None;
     if let (CatalogIdentity::Native { directory, session_id, .. }, CatalogMutation::Delete { .. }) = (&entry.identity, mutation) {
@@ -63,7 +81,7 @@ fn mutate(app: &tauri::AppHandle, key: &str, mutation: &CatalogMutation) -> Resu
             resources.revoke_session(directory, session_id)?;
         }
         match commands::client(app)?.delete(directory, session_id) {
-            Ok(()) => store.update(|rows| { if let Some(row) = rows.iter_mut().find(|row| row.key() == key) { if let Some(tombstone) = &mut row.tombstone { tombstone.remote_deleted = true; } } Ok(()) })?,
+            Ok(()) => confirm_deleted(&store, key)?,
             Err(error) => pending_error = Some(error.to_string()),
         }
     }
@@ -71,4 +89,8 @@ fn mutate(app: &tauri::AppHandle, key: &str, mutation: &CatalogMutation) -> Resu
     if let Some(error) = pending_error { return Err(format!("history_delete_pending:{error}")); }
     if matches!(mutation, CatalogMutation::Delete { .. }) { Ok(None) } else { Ok(Some(store.get(key)?.into())) }
 }
+
+#[cfg(test)]
+#[path = "catalog_mutation_tests.rs"]
+mod tests;
 

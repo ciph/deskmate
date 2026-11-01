@@ -15,7 +15,7 @@ use super::error::{MemoryError, MemoryResult};
 
 /// Current logical schema version. Bump together with a new entry in
 /// [`MIGRATIONS`].
-pub const SCHEMA_VERSION: i64 = 2;
+pub const SCHEMA_VERSION: i64 = 4;
 
 /// Database file name inside the Tauri app-data directory.
 pub const DB_FILE_NAME: &str = "deskmate-memory.db";
@@ -35,6 +35,14 @@ const MIGRATIONS: &[Migration] = &[
     Migration {
         to_version: 2,
         sql: include_str!("migrations/002_automatic.sql"),
+    },
+    Migration {
+        to_version: 3,
+        sql: include_str!("migrations/003_active_expiry.sql"),
+    },
+    Migration {
+        to_version: 4,
+        sql: include_str!("migrations/004_precise_fts.sql"),
     },
 ];
 
@@ -118,6 +126,50 @@ impl MemoryStore {
             .commit()
             .map_err(|error| MemoryError::storage_unavailable(error.to_string()))?;
         Ok(value)
+    }
+
+    /// A consistent snapshot for multi-query reads. Never upgrade this to a write.
+    pub fn with_read_transaction<T>(
+        &self,
+        body: impl FnOnce(&rusqlite::Transaction<'_>) -> MemoryResult<T>,
+    ) -> MemoryResult<T> {
+        let mut guard = self.connection.lock()
+            .map_err(|_| MemoryError::storage_unavailable("memory connection poisoned"))?;
+        let transaction = guard.transaction_with_behavior(rusqlite::TransactionBehavior::Deferred)?;
+        let value = body(&transaction)?;
+        transaction.commit()?;
+        Ok(value)
+    }
+
+    /// Background maintenance yields to local callers and other processes.
+    /// Check the nearest deadline without reserving a writer; only due work
+    /// attempts IMMEDIATE, with no busy wait. Foreground writes keep their timeout.
+    pub(super) fn try_maintenance<T>(
+        &self,
+        due: impl FnOnce(&Connection) -> MemoryResult<bool>,
+        body: impl FnOnce(&rusqlite::Transaction<'_>) -> MemoryResult<T>,
+    ) -> MemoryResult<Option<T>> {
+        let mut guard = match self.connection.try_lock() {
+            Ok(guard) => guard,
+            Err(std::sync::TryLockError::WouldBlock) => return Ok(None),
+            Err(_) => return Err(MemoryError::storage_unavailable("memory connection poisoned")),
+        };
+        if !due(&guard)? { return Ok(None); }
+        guard.busy_timeout(std::time::Duration::ZERO)?;
+        let result = (|| {
+            let transaction = match guard.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate) {
+                Ok(transaction) => transaction,
+                Err(rusqlite::Error::SqliteFailure(error, _)) if matches!(error.code,
+                    rusqlite::ErrorCode::DatabaseBusy | rusqlite::ErrorCode::DatabaseLocked) => return Ok(None),
+                Err(error) => return Err(error.into()),
+            };
+            let value = body(&transaction)?;
+            transaction.commit()?;
+            Ok(Some(value))
+        })();
+        // Restore even when the batch rolls back or BEGIN found a competing writer.
+        guard.busy_timeout(std::time::Duration::from_secs(5))?;
+        result
     }
 
     /// Flush the WAL into the main database file so deleted content cannot
@@ -246,6 +298,22 @@ fn read_schema_version(connection: &Connection) -> MemoryResult<i64> {
 }
 
 #[cfg(test)]
+#[path = "expiry_migration_tests.rs"]
+mod expiry_migration_tests;
+
+#[cfg(test)]
+#[path = "fts_migration_tests.rs"]
+mod fts_migration_tests;
+
+#[cfg(test)]
+#[path = "fts_tests.rs"]
+mod fts_tests;
+
+#[cfg(test)]
+#[path = "fts_perf_tests.rs"]
+mod fts_perf_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -284,12 +352,14 @@ mod tests {
             "relationship_states",
             "memory_events",
             "memory_search",
+            "memory_search_ids",
         ] {
             assert!(table_exists(&store, table), "missing table {table}");
         }
         for index in [
             "idx_memories_scope_status",
             "idx_memories_key",
+            "idx_memories_active_expiry",
             "idx_memory_sources_conversation",
         ] {
             assert!(table_exists(&store, index), "missing index {index}");
@@ -464,7 +534,7 @@ mod tests {
 
     #[test]
     fn upgrades_each_supported_schema_and_rejects_future_without_journal_changes() {
-        for version in [0, 1, SCHEMA_VERSION, SCHEMA_VERSION + 1] {
+        for version in 0..=SCHEMA_VERSION + 1 {
             let dir = temp_dir("versions");
             let path = dir.join(DB_FILE_NAME);
             let connection = Connection::open(&path).expect("open fixture");

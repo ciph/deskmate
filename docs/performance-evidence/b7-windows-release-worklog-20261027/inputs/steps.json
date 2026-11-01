@@ -1,0 +1,6 @@
+{
+  "scope": "Release isolated native QA; real Windows MCP mouse/keyboard and local synthetic provider",
+  "attachment": ["body/composer physical MP4 MP3 WAV folder invalid media", "MP4 native picker complete play", "rapid backward/forward seek and replay", "remove/switch while playing and add again", "MP3/WAV play pause seek", "bad media fallback", "native resource DB readback", "picker cancel keeps draft", "release binary boundaries"],
+  "worklog": ["empty daily weekly schedules/tasks", "physical entry create and edit", "conflict preserves draft then reload", "daily and weekly generation/source/missing dates", "manual edit/source stale/candidate/adopt", "copy and MD/TXT export bytes and duplicate names", "schedule create edit pause resume/next time", "provider error then physical retry", "running schedule physical pause rejects late result", "restart persistence/latest missed only", "source deletion cancel/keep linked/delete linked", "report and schedule deletion", "light/dark and fixed window scrolling", "final integrity and cleanup"],
+  "notEquivalent": ["synthetic provider is not real-model semantic intent", "silent media is not hardware audibility", "background IPC is not physical input", "Windows is not macOS"]
+}

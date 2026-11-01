@@ -1,0 +1,8 @@
+{
+  "qaFeature": false,
+  "productionIdentityRun": false,
+  "command": "bun run tauri build --debug --no-bundle",
+  "exitCode": 0,
+  "binarySha256": null,
+  "time": "2026-10-27T14:23:43.7756802+08:00"
+}

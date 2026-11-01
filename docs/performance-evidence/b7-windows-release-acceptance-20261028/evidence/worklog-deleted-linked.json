@@ -1,0 +1,150 @@
+{
+  "time": "2026-10-28T02:48:08.893Z",
+  "entries": [],
+  "reports": [
+    {
+      "id": "5c1c29c7-fcf1-4fa0-ac50-c4fe60e55a68",
+      "kind": "weekly",
+      "periodStart": "2026-10-26",
+      "periodEnd": "2026-11-01",
+      "currentVersionId": "06b6b74a-6c02-4003-97bb-67593bf8f288",
+      "revision": 1,
+      "stale": true,
+      "sourceDeleted": true,
+      "updatedAt": "2026-10-28T02:38:31.379550500+00:00"
+    }
+  ],
+  "runs": [
+    {
+      "id": "fd87782a-0ebe-4cd2-9a9c-d22efe2d4517",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-28",
+      "periodEnd": "2026-10-28",
+      "occurrenceKey": "manual:9f4f43f9-1010-41d2-8cd5-f6824aba7097",
+      "state": "succeeded",
+      "attempt": 4,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e7f990112ffe3J41y4E4un9T9k",
+      "baseReportRevision": 3,
+      "sourceManifest": [],
+      "sourceSnapshot": [],
+      "modelId": "yume/model-a",
+      "resultReportId": null,
+      "errorCode": null,
+      "createdAt": "2026-10-28T02:39:58.932503+00:00",
+      "updatedAt": "2026-10-28T02:46:36.522719300+00:00"
+    },
+    {
+      "id": "916f7d35-15b6-453c-935f-eb20e0fa9a64",
+      "scheduleId": null,
+      "kind": "weekly",
+      "periodStart": "2026-10-26",
+      "periodEnd": "2026-11-01",
+      "occurrenceKey": "manual:2209003a-8045-4115-a19f-96fff93d5e56",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e7fa0682bffexbNP6vF702Ju1K",
+      "baseReportRevision": null,
+      "sourceManifest": [],
+      "sourceSnapshot": [],
+      "modelId": "yume/model-a",
+      "resultReportId": "5c1c29c7-fcf1-4fa0-ac50-c4fe60e55a68",
+      "errorCode": null,
+      "createdAt": "2026-10-28T02:38:30.848161700+00:00",
+      "updatedAt": "2026-10-28T02:38:31.379550500+00:00"
+    },
+    {
+      "id": "93349de6-9287-4372-94b5-da4a443ba255",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-28",
+      "periodEnd": "2026-10-28",
+      "occurrenceKey": "manual:8c7699d2-5ff8-4e71-9763-be749d21ec40",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e7fa1686dffe7zoZtmMhNKrSN6",
+      "baseReportRevision": 2,
+      "sourceManifest": [],
+      "sourceSnapshot": [],
+      "modelId": "yume/model-a",
+      "resultReportId": null,
+      "errorCode": null,
+      "createdAt": "2026-10-28T02:37:25.131177800+00:00",
+      "updatedAt": "2026-10-28T02:37:25.778282+00:00"
+    },
+    {
+      "id": "9341a15e-8846-4a34-8e19-0e1d88dcf216",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-28",
+      "periodEnd": "2026-10-28",
+      "occurrenceKey": "manual:ac95b738-e58c-4404-88f7-0775b4fc162b",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e7fa4f566ffeMRgOSdUFA7DrnX",
+      "baseReportRevision": null,
+      "sourceManifest": [],
+      "sourceSnapshot": [],
+      "modelId": "yume/model-a",
+      "resultReportId": null,
+      "errorCode": null,
+      "createdAt": "2026-10-28T02:33:32.494762600+00:00",
+      "updatedAt": "2026-10-28T02:33:33.097694900+00:00"
+    }
+  ],
+  "schedules": [
+    {
+      "id": "985a3347-39e5-4d31-a1d7-a68c68c913e5",
+      "kind": "weekly",
+      "weekdaySet": [
+        4
+      ],
+      "localTime": "17:00",
+      "timezoneMode": "system_local",
+      "enabled": true,
+      "revision": 4,
+      "createdAt": "2026-10-28T02:39:06.439633800+00:00",
+      "updatedAt": "2026-10-28T02:40:37.263366300+00:00",
+      "nextDueAt": "2026-10-29T09:00:00+00:00"
+    }
+  ],
+  "details": [
+    {
+      "report": {
+        "id": "5c1c29c7-fcf1-4fa0-ac50-c4fe60e55a68",
+        "kind": "weekly",
+        "periodStart": "2026-10-26",
+        "periodEnd": "2026-11-01",
+        "currentVersionId": "06b6b74a-6c02-4003-97bb-67593bf8f288",
+        "revision": 1,
+        "stale": true,
+        "sourceDeleted": true,
+        "updatedAt": "2026-10-28T02:38:31.379550500+00:00"
+      },
+      "versions": [
+        {
+          "id": "06b6b74a-6c02-4003-97bb-67593bf8f288",
+          "reportId": "5c1c29c7-fcf1-4fa0-ac50-c4fe60e55a68",
+          "version": 1,
+          "bodyMarkdown": "## 本周成果（按项目）\n\n## 今日完成\n\nB7 Release 物理验收：[done] 完成 release 附件核对和播放器生命周期验收。（第二调用者已更新）\n\n## 进行中\n\nB7 Release 物理验收：[in_progress] 继续检查工作日志编辑、导出和失败恢复。\n\n## 问题/阻塞\n\n待补充\n\n## 下一步\n\n待补充\n\n\n\n## 进展\n\n待补充\n\n## 风险\n\n待补充\n\n## 下周计划\n\n待补充\n\n## 缺少素材的日期\n\n2026-10-26、2026-10-27\n",
+          "origin": "generated",
+          "sourceRevisionManifest": [],
+          "sourceSnapshot": [],
+          "coverageDates": [
+            "2026-10-28"
+          ],
+          "generatedAt": "2026-10-28T02:38:31.379550500+00:00",
+          "modelId": "yume/model-a"
+        }
+      ]
+    }
+  ]
+}

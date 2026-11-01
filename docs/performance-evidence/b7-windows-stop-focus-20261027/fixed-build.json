@@ -1,0 +1,17 @@
+{
+  "time": "2026-10-27T12:54:48.0235235+08:00",
+  "exitCode": 0,
+  "binarySha256": "B7691F480EB131BBA91F789CD4A256A27DE02460CB7FA159C5EE8E0EAAEDB2CC",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "identity": "com.deskmate.unifiedhistoryqa.winb720261027c",
+  "sourceHashes": [
+    {
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatApp.tsx",
+      "Hash": "86F681BA0B554D240C57313B382615755520BB0BE543A77DEF4411DB9B40E61B"
+    },
+    {
+      "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\sharedConversation.ts",
+      "Hash": "FCF27DD6851C697215CDD0D0064884FE97FCB39608E77243997564C2EDDAE2CB"
+    }
+  ]
+}

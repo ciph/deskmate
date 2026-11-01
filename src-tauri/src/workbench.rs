@@ -143,14 +143,25 @@ impl WorkbenchOwnership {
         session_id: &str,
         apply: impl FnOnce() -> Result<T, String>,
     ) -> Result<T, String> {
+        self.while_not_owned_with_clock(directory, session_id, Instant::now, apply)
+    }
+
+    fn while_not_owned_with_clock<T>(
+        &self,
+        directory: &str,
+        session_id: &str,
+        clock: impl FnOnce() -> Instant,
+        apply: impl FnOnce() -> Result<T, String>,
+    ) -> Result<T, String> {
         let directory = crate::history::catalog_model::canonical_directory(directory)
             .map_err(|_| "history_identity_invalid")?;
         let mut state = self.0.try_lock().map_err(|error| match error {
             std::sync::TryLockError::WouldBlock => "history_ownership_busy",
             std::sync::TryLockError::Poisoned(_) => "ownership state poisoned",
         })?;
+        let now = clock();
         if state.current.as_ref().is_some_and(|current|
-            Instant::now().saturating_duration_since(current.refreshed_at) > OWNERSHIP_LEASE) {
+            now.saturating_duration_since(current.refreshed_at) > OWNERSHIP_LEASE) {
             state.current = None;
         }
         if state.current.as_ref().is_some_and(|current| current.session_id == session_id
@@ -737,12 +748,13 @@ mod ownership_tests {
     #[test]
     fn archive_guard_obeys_live_lease_full_scope_and_expiration() {
         let ownership = WorkbenchOwnership::default();
-        ownership.claim_at("C:/PROJECT", "ses_agent", Instant::now()).unwrap();
+        let start = Instant::now();
+        ownership.claim_at("C:/PROJECT", "ses_agent", start).unwrap();
         assert_eq!(ownership.while_not_owned("c:/project", "ses_agent", || panic!("owned archive")), Err::<(), _>("history_agent_owned".into()));
         assert_eq!(ownership.while_not_owned("c:/other", "ses_agent", || Ok(7)), Ok(7));
         assert_eq!(ownership.while_not_owned("c:/project", "ses_other", || Ok(8)), Ok(8));
-        ownership.claim_at("c:/project", "ses_agent", Instant::now() - OWNERSHIP_LEASE - Duration::from_millis(1)).unwrap();
-        assert_eq!(ownership.while_not_owned("c:/project", "ses_agent", || Ok(9)), Ok(9));
+        assert_eq!(ownership.while_not_owned_with_clock("c:/project", "ses_agent", || start + OWNERSHIP_LEASE, || panic!("lease boundary archived")), Err::<(), _>("history_agent_owned".into()));
+        assert_eq!(ownership.while_not_owned_with_clock("c:/project", "ses_agent", || start + OWNERSHIP_LEASE + Duration::from_millis(1), || Ok(9)), Ok(9));
     }
 
     #[test]

@@ -25,7 +25,7 @@ impl Fixture {
             runs.bind_session(id, "ses_same").unwrap();
             runs.fail_active(id, "completed fixture").unwrap();
         }
-        let history = HistoryState(Mutex::new(vec![HistorySession {
+        let history = HistoryState::new(Mutex::new(vec![HistorySession {
             local_link: None, id: "ses_same".into(), title: "Other".into(), created: 1, updated: 2,
             messages: Vec::new(), origin_run_id: Some("msg_other".into()), deleted: false,
         }]));

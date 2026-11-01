@@ -1,0 +1,23 @@
+{
+  "resources": [
+    {
+      "id": "1a07c54c-63fc-423d-af9a-97a057af5006",
+      "path": "\\\\?\\C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7release20261027a\\chat-resource-uploads\\1a07c54c-63fc-423d-af9a-97a057af5006\\B7-64MiB.wav",
+      "name": "B7-64MiB.wav",
+      "kind": "\"audio\"",
+      "mime": "audio/wav",
+      "directory": null,
+      "session_id": null,
+      "owned": 1,
+      "read_base": null,
+      "exists": true,
+      "sha256": "ba1ff6174a3be9a7a478522f45284706defa187636f374113963b71ef829dad5"
+    }
+  ],
+  "messages": [],
+  "integrity": [
+    {
+      "integrity_check": "ok"
+    }
+  ]
+}

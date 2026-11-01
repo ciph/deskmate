@@ -1,0 +1,89 @@
+{
+  "cdpAndReactReadyMs": 980,
+  "elapsedMs": 5249,
+  "result": {
+    "ok": false,
+    "discoveredAt": 1219.5,
+    "trace": [
+      {
+        "at": 1.099999999627471,
+        "kind": "open-history"
+      },
+      {
+        "at": 1.200000001117587,
+        "kind": "dom",
+        "history": false,
+        "rows": 0,
+        "notice": [],
+        "empty": false
+      },
+      {
+        "at": 21.800000000745058,
+        "kind": "catalog-error",
+        "error": "history_state_unavailable"
+      },
+      {
+        "at": 74.5,
+        "kind": "dom",
+        "history": true,
+        "rows": 0,
+        "notice": [
+          "历史加载失败，已缓存的记录仍会保留。 重试"
+        ],
+        "loading": "false",
+        "empty": true
+      },
+      {
+        "at": 1054.4000000003725,
+        "kind": "catalog",
+        "ms": 5.400000000372529,
+        "total": 2,
+        "errors": [],
+        "refreshing": false
+      },
+      {
+        "at": 1219.5,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [],
+        "loading": "true",
+        "empty": false
+      },
+      {
+        "at": 1330.7000000011176,
+        "kind": "dom",
+        "history": true,
+        "rows": 2,
+        "notice": [],
+        "loading": "false",
+        "empty": false
+      },
+      {
+        "at": 2106.800000000745,
+        "kind": "catalog",
+        "ms": 4.5,
+        "total": 2,
+        "errors": [],
+        "refreshing": false
+      },
+      {
+        "at": 3154.4000000003725,
+        "kind": "catalog",
+        "ms": 4,
+        "total": 2,
+        "errors": [],
+        "refreshing": false
+      },
+      {
+        "at": 4205.9000000003725,
+        "kind": "catalog",
+        "ms": 4.099999999627471,
+        "total": 2,
+        "errors": [],
+        "refreshing": false
+      }
+    ],
+    "body": "会话历史\n新会话\n筛选\n会话\n已归档\n2 段会话\n今天\nB7 Windows 1000 messages 50000\n13:50\n### Synthetic reply 999 **Scope:** isolated QA data. - Check state - Keep evidence ```ts const round = 999; ``` | Item | Status | | --- | --- | | B7 | Complete\nworkspace\nB7 Windows 1000 messages 10000\n13:50\n### Synthetic reply 999 **Scope:** isolated QA data. - Check state - Keep evidence ```ts const round = 999; ``` | Item | Status | | --- | --- | | B7 | Complete\nworkspace"
+  }
+}

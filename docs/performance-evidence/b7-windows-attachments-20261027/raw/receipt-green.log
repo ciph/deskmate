@@ -1,0 +1,34 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\useWorklogChat.test.tsx:
+(pass) unrelated journal changes do not turn a rejected operation back into pending [20.98ms]
+(pass) late empty receipt lookup cannot erase a later rejection [15.03ms]
+(pass) a verified host receipt can resolve a previously pending operation [15.76ms]
+(pass) an old-session save completes without publishing a receipt into the new chat [13.67ms]
+(pass) an old-session rejected schedule does not attach an error to the new chat [15.78ms]
+
+src\chat\worklogActions.test.ts:
+(pass) work journal chat trust boundary > only a host lookup can substantiate a tool receipt [0.20ms]
+(pass) work journal chat trust boundary > malformed output and prose do not advertise a save [0.08ms]
+(pass) work journal chat trust boundary > existing work does not advertise a pending save or offer undo [0.03ms]
+(pass) work journal chat trust boundary > message identities match the real sidecar caller ID contract [0.07ms]
+(pass) work journal chat trust boundary > business dates change at 03:00 without mutating the clock [0.08ms]
+(pass) work journal chat trust boundary > dynamic instruction gives the model today's local date for natural readback [0.09ms]
+(pass) work journal chat trust boundary > dynamic instruction separates empty records from query failure [0.05ms]
+(pass) work journal chat trust boundary > dynamic instruction preserves mutation, quote, receipt, and memory boundaries [0.05ms]
+
+src\chat\WorklogReceipt.test.tsx:
+(pass) pending output never appears as a saved record [12.01ms]
+(pass) committed entries expose actual date and an immediate undo [2.20ms]
+(pass) a queued report receipt does not claim the report is archived [1.15ms]
+(pass) deleted records lose their undo action [1.21ms]
+(pass) uses the work journal feature name in receipt actions and authorization guidance [1.20ms]
+(pass) opens the matching entity when a queued receipt is clicked [2.44ms]
+(pass) opens the matching entity when a running receipt is clicked [1.35ms]
+(pass) opens the matching entity when a failed receipt is clicked [1.74ms]
+(pass) opens the matching entity when a succeeded receipt is clicked [1.09ms]
+
+ 22 pass
+ 0 fail
+ 66 expect() calls
+Ran 22 tests across 3 files. [4.01s]

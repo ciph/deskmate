@@ -1,0 +1,22 @@
+{
+  "initialTag": "v0.4.23",
+  "initialCommit": "289f08cdc2d3bd10d03289bb469b7bf03211ab4e",
+  "initialRun": 40829586381,
+  "failure": "Both platforms: ReportEditor.test.tsx read Worker Markdown heading synchronously before formatting completed.",
+  "fix": "7830555: three assertions await findByRole; no product logic change.",
+  "retest": "7 pass, 0 fail; final release workflow source checks passed.",
+  "initialReleasePublished": false,
+  "initialTagUnchanged": true,
+  "raw": [
+    {
+      "path": "E:\\Codex\\工作伙伴\\release-artifacts\\v0.4.23-windows-release\\source-checks-failed.log",
+      "bytes": 183268,
+      "sha256": "53af9978f5576211ca14f6a0769ef0a5c2a0f978fd79f94bcc37bbe2cf567b87"
+    },
+    {
+      "path": "E:\\Codex\\工作伙伴\\release-artifacts\\v0.4.24-windows-release\\report-editor-retest.log",
+      "bytes": 753,
+      "sha256": "e2a19ac8d58a46ec8627037e390474f6a04307fe371e66909d563d627b11ddb3"
+    }
+  ]
+}

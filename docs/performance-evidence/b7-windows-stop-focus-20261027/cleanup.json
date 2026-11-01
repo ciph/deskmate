@@ -1,0 +1,39 @@
+{
+  "time": "2026-10-27T13:06:09.9038806+08:00",
+  "roots": [
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb720261027b",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027b",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb720261027b",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb720261027b",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb720261027c",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    },
+    {
+      "identity": "com.deskmate.unifiedhistoryqa.winb720261027c",
+      "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb720261027c",
+      "deleted": true,
+      "ownedProcessesAlive": 0,
+      "credentialCleared": true
+    }
+  ],
+  "listeners": [],
+  "portsClosed": true,
+  "providerPid": 83504,
+  "providerProcessGone": true,
+  "providerStop": "Ctrl-C to owned PTY session; Windows exit 1",
+  "noProductionIdentityRun": true
+}

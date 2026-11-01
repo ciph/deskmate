@@ -1,8 +1,10 @@
-import { createContext, memo, useContext, useEffect, useRef, useState } from "react";
+import { createContext, Fragment, memo, useContext, useEffect, useRef, useState } from "react";
+import { jsx, jsxs } from "react/jsx-runtime";
 import { invoke, isTauri } from "@tauri-apps/api/core";
-import Markdown, { defaultUrlTransform, type Components } from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remend from "remend";
+import type { Components } from "react-markdown";
+import { toJsxRuntime } from "hast-util-to-jsx-runtime";
+import type { MarkdownBlock } from "./markdownPipeline";
+import { markdownScheduler, type MarkdownSnapshot } from "./markdownScheduler";
 import { Code } from "@phosphor-icons/react/dist/csr/Code";
 import { Copy } from "@phosphor-icons/react/dist/csr/Copy";
 import { Check } from "@phosphor-icons/react/dist/csr/Check";
@@ -30,7 +32,6 @@ const COPY_LABELS = {
 } as const;
 const CopyLabelsContext = createContext<{ readonly button: string; readonly accessible: string; readonly success: string; readonly failure: string }>(COPY_LABELS["zh-CN"]);
 const LabelsContext = createContext<{ readonly code: string; readonly table: string; readonly linkError: string }>(LABELS["zh-CN"]);
-const REMARK_PLUGINS = [remarkGfm];
 const COMPONENTS: Components = {
   a: function MarkdownLink({ href, children, title, id }) {
     const [failed, setFailed] = useState(false);
@@ -108,23 +109,45 @@ const COMPONENTS: Components = {
   },
 };
 
-function chatUrl(url: string): string {
-  // Chat content must never navigate to local files, app routes or custom protocols.
-  return /^(https?:\/\/|mailto:|#)/iu.test(url) ? defaultUrlTransform(url) : "";
+const RichBlock = memo(function RichBlock({ block }: { block: MarkdownBlock }) {
+  return toJsxRuntime(block.node, { Fragment, jsx, jsxs, components: COMPONENTS, ignoreInvalidStyle: true, passKeys: true, passNode: true });
+});
+function languageKey(lang: string) {
+  if (lang.startsWith("zh")) return "zh-CN";
+  if (lang.startsWith("ja")) return "ja";
+  if (lang.startsWith("ko")) return "ko";
+  return "en";
 }
-
-export const ChatText = memo(function ChatText({ text, format = "markdown", streaming = false, lang = "zh-CN" }: ChatTextProps) {
-  if (format === "plain") return <span className="chat-plain-text">{text}</span>;
-  const labels = lang.startsWith("zh") ? LABELS["zh-CN"] : lang.startsWith("ja") ? LABELS.ja : lang.startsWith("ko") ? LABELS.ko : LABELS.en;
-  const copyLabels = lang.startsWith("zh") ? COPY_LABELS["zh-CN"] : lang.startsWith("ja") ? COPY_LABELS.ja : lang.startsWith("ko") ? COPY_LABELS.ko : COPY_LABELS.en;
-  const source = streaming ? remend(text, { katex: false, inlineKatex: false }) : text;
+const FORMAT_UNAVAILABLE = {
+  "zh-CN": "格式暂不可用，可复制原文", ja: "書式を表示できません。原文はコピーできます",
+  ko: "서식을 사용할 수 없습니다. 원문을 복사할 수 있습니다", en: "Formatting unavailable; original text can be copied",
+};
+function RichText({ text, streaming = false, lang = "zh-CN" }: ChatTextProps) {
+  const [snapshot, setSnapshot] = useState<MarkdownSnapshot | null>(null);
+  const client = useRef<ReturnType<typeof markdownScheduler.open> | null>(null);
+  useEffect(() => {
+    client.current = markdownScheduler.open(setSnapshot);
+    return () => { client.current?.close(); client.current = null; };
+  }, []);
+  useEffect(() => { client.current?.update(text, streaming); }, [text, streaming]);
+  const language = languageKey(lang);
+  const labels = LABELS[language];
+  const copyLabels = COPY_LABELS[language];
+  const valid = snapshot && !snapshot.unavailable && text.startsWith(snapshot.text) ? snapshot : null;
+  const tail = text.slice(valid?.text.length ?? 0);
   return (
     <LabelsContext.Provider value={labels}>
       <CopyLabelsContext.Provider value={copyLabels}>
-      <div className="chat-markdown">
-        <Markdown remarkPlugins={REMARK_PLUGINS} components={COMPONENTS} urlTransform={chatUrl} skipHtml>{source}</Markdown>
+      <div className="chat-markdown" data-format-pending={!valid || valid.text !== text || valid.streaming !== streaming ? "true" : undefined}>
+        {valid?.blocks.map(block => <RichBlock key={block.key} block={block} />)}
+        {tail && <span className="chat-plain-text">{tail}</span>}
+        {snapshot?.unavailable && <span role="status">{FORMAT_UNAVAILABLE[language]}</span>}
       </div>
       </CopyLabelsContext.Provider>
     </LabelsContext.Provider>
   );
+}
+
+export const ChatText = memo(function ChatText(props: ChatTextProps) {
+  return props.format === "plain" ? <span className="chat-plain-text">{props.text}</span> : <RichText {...props} />;
 });

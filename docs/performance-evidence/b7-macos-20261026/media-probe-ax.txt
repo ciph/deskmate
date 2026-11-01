@@ -1,0 +1,147 @@
+Window: "YUME B7 Followup QA chat", App: YUME B7 Followup QA.
+0 standard window YUME B7 Followup QA chat, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content inspector-resource:///Main.html
+			3 button Close
+			4 button Dock to left of window
+			5 button Dock to right of window
+			6 button Detach into separate window
+			7 button Start element selection (⇧⌘C)
+			8 button Device Settings
+			9 button Click to show 5 errors in the Console
+			10 tab group (selectable)
+				11 tab (selectable) Elements
+				12 tab (selected) Console
+				13 tab (selectable) Sources
+				14 tab (selectable) Network
+				15 tab (selectable) Timelines
+				16 tab (selectable) Show hidden tabs…
+				17 tab (selectable) Search (⇧⌘F)
+				18 tab (selectable) Settings (⌘,)
+			19 container Console
+				20 search text field (settable)  
+				21 button (disabled) Find Previous (⇧⌘G)
+				22 button (disabled) Find Next (⌘G)
+				23 button Other filter options…
+				24 checkbox (settable, integer) Emulate User Gesture, Help: Run console commands as if inside a user gesture, Value: 0
+				25 button Run Console Snippet…
+				26 button Collect garbage
+				27 button Clear log (⌘K or ⌃L)
+				28 container
+					29 text Console opened at 23:52:16
+					30 image
+					31 text Could not connect to the server.
+					32 image
+					33 text Fetch API cannot load 
+					34 link http://127.0.0.1:51989/session, Value: 127.0.0.1:51989/session
+					35 text  due to access control checks.
+					36 image
+					37 link http://127.0.0.1:51989/session, Value: 127.0.0.1:51989/session
+					38 text Failed to load resource: Could not connect to the server.
+					39 image
+					40 link http://127.0.0.1:51989/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261026a%2Fworkspace, Value: 127.0.0.1:51989/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261026a%2Fworkspace
+					41 text Failed to load resource: The network connection was lost.
+					42 image
+					43 link http://127.0.0.1:51989/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261026a%2Fworkspace, Value: 127.0.0.1:51989/event?directory=%2FUsers%2Fxmaczone%2FLibrary%2FApplication+Support%2Fcom.deskmate.unifiedhistoryqa.b720261026a%2Fworkspace
+					44 text Failed to load resource: Could not connect to the server.
+					45 image
+					46 text JSON.stringify([...document.querySelectorAll("audio,video")].map(m=>({name:m.getAttribute("aria-label"),duration:m.duration,time:m.currentTime,paused:m.paused,error:m.error?.code,ready:m.readyState,src:m.currentSrc})))
+					47 image
+					48 text "
+					49 text [{\"name\":\"预览 b7-clip.mp4\",\"duration\":8,\"time\":0,\"paused\":true,\"ready\":1,\"src\":\"
+					50 link chat-resource://localhost/96c99ccc-9cf6-4161-abca-b04d30743bd2\, Value: chat-resource://localhost/96c99ccc-9cf6-4161-abca-b04d30743bd2%5C
+					51 text "},{\"name\":\"预览 b7-tone.mp3\",\"duration\":12.096,\"time\":0,\"paused\":true,\"ready\":1,\"src\":\"
+					52 link chat-resource://localhost/c1ee3f7c-2f3f-47ea-a6d9-7c77c9dd5668\, Value: chat-resource://localhost/c1ee3f7c-2f3f-47ea-a6d9-7c77c9dd5668%5C
+					53 text "},{\"name\":\"预览 b7-tone.wav\",\"duration\":12,\"time\":11.808638489978476,\"paused\":true,\"ready\":4,\"src\":\"
+					54 link chat-resource://localhost/13c67614-47f2-4b7f-9eeb-6884e6632f5e\, Value: chat-resource://localhost/13c67614-47f2-4b7f-9eeb-6884e6632f5e%5C
+					55 text "}]
+					56 text "
+					57 text  = $1
+					58 image
+					59 text (async()=>{const out=[];for(const m of document.querySelectorAll("audio,video")){m.muted=true;m.currentTime=0;await m.play();await new Promise(r=>setTimeout(r,1100));const advanced=m.currentTime;m.pause();m.currentTime=m.duration/2;await new Promise(r=>setTimeout(r,350));out.push({name:m.getAttribute("aria-label"),duration:m.duration,advanced,seek:m.currentTime,paused:m.paused,ready:m.readyState,error:m.error?.code??null,width:m.videoWidth??null,height:m.videoHeight??null});}console.log("B7_MEDIA "+JSON.str
+					60 image
+					61 text Promise 
+					62 text {
+					63 text status
+					64 text : 
+					65 text "pending"
+					66 text }
+					67 text  = $2
+					68 image
+					69 text B7_MEDIA [{"name":"预览 b7-clip.mp4","duration":8,"advanced":1.0784818333699255,"seek":4,"paused":true,"ready":4,"error":null,"width":160,"height":90},{"name":"预览 b7-tone.mp3","duration":12.096,"advanced":0.795474008105679,"seek":6.048,"paused":true,"ready":4,"error":null,"width":null,"height":null},{"name":"预览 b7-tone.wav","duration":12,"advanced":0.5008321250788867,"seek":6,"paused":true,"ready":4,"error":null,"width":null,"height":null}]
+			70 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]
+			71 container
+	72 scroll area
+		73 HTML content Description: YUME chat, URL: tauri://localhost/chat.html
+			74 container
+				75 text 小著 在的,说吧
+				76 button 在工作台打开
+				77 button 历史
+				78 button 设置
+				79 button 关闭
+			80 image 我的头像
+			81 container
+				82 text 附件  ·  b7-fixture.pdf
+			83 text B7_ATTACHMENT_HISTORY_CHECK
+			84 image 小著
+			85 text B7_PDF_TEXT_CONFIRMED: YUME B7 PDF WebKit fixture
+			86 container
+				87 container 文件与文件夹
+					88 container b7-clip.mp4
+						89 text b7-clip.mp4 视频  · 71 KB
+						90 button 移除 b7-clip.mp4, Help: 移除
+						91 container 预览 b7-clip.mp4, URL: chat-resource://localhost/96c99ccc-9cf6-4161-abca-b04d30743bd2
+							92 container
+								93 button Enter Full Screen
+								94 button Enter Picture in Picture
+							95 container Video Controls
+								96 button Play
+								97 text Elapsed: 4 seconds
+								98 slider (settable, float) Value: 0.5, Details: 4 seconds
+									99 value indicator 0.5
+								100 text Duration: 8 seconds
+								101 button More…
+							102 container
+								103 slider (settable, float) 0
+									104 value indicator 0
+							105 button Unmute
+					106 container b7-tone.mp3
+						107 text b7-tone.mp3 音频  · 36 KB
+						108 button 移除 b7-tone.mp3, Help: 移除
+						109 container 预览 b7-tone.mp3
+							110 container Audio Controls
+								111 button Play
+								112 text Elapsed: 6 seconds
+								113 container
+									114 slider (settable, float) Value: 0.5, Details: 6 seconds
+										115 value indicator 0.5
+								116 text Duration: 12 seconds
+								117 button More…
+					118 container b7-tone.wav
+						119 text b7-tone.wav 音频  · 376 KB
+						120 button 移除 b7-tone.wav, Help: 移除
+						121 container 预览 b7-tone.wav
+							122 container Audio Controls
+								123 button Play
+								124 text Elapsed: 6 seconds
+								125 container
+									126 slider (settable, float) Value: 0.5, Details: 6 seconds
+										127 value indicator 0.5
+								128 text Duration: 12 seconds
+								129 button AirPlay
+								130 button More…
+				131 text entry area (settable) Value: [text entry area], Placeholder: 输入消息,Enter 发送
+					132 text 输入消息,Enter 发送
+				133 button 附件
+				134 pop up button 文件夹
+				135 pop up button b7-local, Help: b7-local (b7-local)
+				136 button 发送
+137 menu bar
+	138 YUME B7 Followup QA
+	139 File
+	140 Edit
+	141 View
+	142 Window
+	143 Help
+
+The focused UI element is 70 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]

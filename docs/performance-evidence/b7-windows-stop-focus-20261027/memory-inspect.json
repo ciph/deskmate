@@ -1,0 +1,128 @@
+{
+  "exported": {
+    "schemaVersion": 1,
+    "appVersion": "0.4.21",
+    "exportedAt": "2026-10-27T04:59:22Z",
+    "memories": [
+      {
+        "id": "146e25d6-5df9-44fb-8c63-948089ba8a3e",
+        "scope": "global",
+        "personaId": null,
+        "type": "preference",
+        "memoryKey": null,
+        "content": "B7_KEEP_SENTINEL_20261027_c synthetic preference",
+        "status": "active",
+        "confidence": 1,
+        "importance": 3,
+        "sensitivity": "normal",
+        "sourceKind": "explicit",
+        "validFrom": "2026-10-27T04:59:04Z",
+        "expiresAt": null,
+        "createdAt": "2026-10-27T04:59:04Z",
+        "updatedAt": "2026-10-27T04:59:04Z",
+        "revision": 1,
+        "supersedesId": null,
+        "sources": [
+          {
+            "conversationId": null,
+            "messageId": null,
+            "sourceKind": "explicit",
+            "createdAt": "2026-10-27T04:59:04Z"
+          }
+        ],
+        "linkedTaskIds": [],
+        "context": null
+      },
+      {
+        "id": "d50c731b-aa0a-47bc-91e8-cb6335f6dbd3",
+        "scope": "global",
+        "personaId": null,
+        "type": "preference",
+        "memoryKey": null,
+        "content": "B7_ERASE_SENTINEL_20261027_c synthetic preference",
+        "status": "active",
+        "confidence": 1,
+        "importance": 3,
+        "sensitivity": "normal",
+        "sourceKind": "explicit",
+        "validFrom": "2026-10-27T04:59:04Z",
+        "expiresAt": null,
+        "createdAt": "2026-10-27T04:59:04Z",
+        "updatedAt": "2026-10-27T04:59:04Z",
+        "revision": 1,
+        "supersedesId": null,
+        "sources": [
+          {
+            "conversationId": null,
+            "messageId": null,
+            "sourceKind": "explicit",
+            "createdAt": "2026-10-27T04:59:04Z"
+          }
+        ],
+        "linkedTaskIds": [],
+        "context": null
+      }
+    ],
+    "relationships": []
+  },
+  "list": [
+    {
+      "id": "146e25d6-5df9-44fb-8c63-948089ba8a3e",
+      "scope": "global",
+      "personaId": null,
+      "type": "preference",
+      "memoryKey": null,
+      "content": "B7_KEEP_SENTINEL_20261027_c synthetic preference",
+      "status": "active",
+      "confidence": 1,
+      "importance": 3,
+      "sensitivity": "normal",
+      "sourceKind": "explicit",
+      "validFrom": "2026-10-27T04:59:04Z",
+      "expiresAt": null,
+      "createdAt": "2026-10-27T04:59:04Z",
+      "updatedAt": "2026-10-27T04:59:04Z",
+      "revision": 1,
+      "supersedesId": null,
+      "sources": [
+        {
+          "conversationId": null,
+          "messageId": null,
+          "sourceKind": "explicit",
+          "createdAt": "2026-10-27T04:59:04Z"
+        }
+      ],
+      "linkedTaskIds": [],
+      "context": null
+    },
+    {
+      "id": "d50c731b-aa0a-47bc-91e8-cb6335f6dbd3",
+      "scope": "global",
+      "personaId": null,
+      "type": "preference",
+      "memoryKey": null,
+      "content": "B7_ERASE_SENTINEL_20261027_c synthetic preference",
+      "status": "active",
+      "confidence": 1,
+      "importance": 3,
+      "sensitivity": "normal",
+      "sourceKind": "explicit",
+      "validFrom": "2026-10-27T04:59:04Z",
+      "expiresAt": null,
+      "createdAt": "2026-10-27T04:59:04Z",
+      "updatedAt": "2026-10-27T04:59:04Z",
+      "revision": 1,
+      "supersedesId": null,
+      "sources": [
+        {
+          "conversationId": null,
+          "messageId": null,
+          "sourceKind": "explicit",
+          "createdAt": "2026-10-27T04:59:04Z"
+        }
+      ],
+      "linkedTaskIds": [],
+      "context": null
+    }
+  ]
+}

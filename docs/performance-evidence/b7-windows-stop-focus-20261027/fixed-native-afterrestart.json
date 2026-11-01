@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "sessions": [
+    {
+      "sessionId": "ses_winb7focus4000020261027",
+      "messages": 1002,
+      "assistant": [
+        {
+          "characters": 10000,
+          "sha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1",
+          "complete10k": true,
+          "complete50k": false,
+          "resume": false
+        }
+      ]
+    },
+    {
+      "sessionId": "ses_winb7focus5000020261027",
+      "messages": 1002,
+      "assistant": [
+        {
+          "characters": 50000,
+          "sha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea",
+          "complete10k": false,
+          "complete50k": true,
+          "resume": false
+        }
+      ]
+    },
+    {
+      "sessionId": "ses_winb7focus1000020261027",
+      "messages": 1002,
+      "assistant": [
+        {
+          "characters": 10000,
+          "sha256": "841fce2bd7eb0ebec5cd55cbadb3840f1db36a590bc978892507b234f67053a1",
+          "complete10k": true,
+          "complete50k": false,
+          "resume": false
+        }
+      ]
+    }
+  ]
+}

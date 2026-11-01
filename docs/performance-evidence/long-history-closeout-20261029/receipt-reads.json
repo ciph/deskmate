@@ -1,0 +1,195 @@
+{
+  "scale": [
+    {
+      "title": "Scale 100 messages",
+      "k": 0,
+      "metrics": {
+        "starts": 98,
+        "maxRunning": 1,
+        "maxPendingPerMessage": 1,
+        "parseMs": 54.900000125169754,
+        "failures": 0,
+        "cacheBytes": 476660,
+        "mountedRows": 11,
+        "logicalMessages": 100,
+        "navigation": 29
+      },
+      "calls": [
+        {
+          "command": "history_catalog_load",
+          "start": 74903.90000000596,
+          "ms": 22.19999998807907,
+          "bytes": 21853
+        }
+      ],
+      "fetches": [],
+      "receipts": []
+    },
+    {
+      "title": "receipts5",
+      "k": 5,
+      "metrics": {
+        "starts": 148,
+        "maxRunning": 1,
+        "maxPendingPerMessage": 1,
+        "parseMs": 76.3000001013279,
+        "failures": 0,
+        "cacheBytes": 476660,
+        "mountedRows": 11,
+        "logicalMessages": 100,
+        "navigation": 29
+      },
+      "calls": [
+        {
+          "command": "history_catalog_load",
+          "start": 136501.40000000596,
+          "ms": 28.099999994039536,
+          "bytes": 22916
+        },
+        {
+          "command": "worklog_get_operation_states",
+          "count": 5,
+          "start": 136543.5,
+          "ms": 8.900000005960464,
+          "bytes": 945
+        }
+      ],
+      "fetches": [],
+      "receipts": []
+    },
+    {
+      "title": "receipts K100",
+      "k": 100,
+      "metrics": {
+        "starts": 198,
+        "maxRunning": 1,
+        "maxPendingPerMessage": 1,
+        "parseMs": 96.59999993443489,
+        "failures": 0,
+        "cacheBytes": 476660,
+        "mountedRows": 11,
+        "logicalMessages": 100,
+        "navigation": 29
+      },
+      "calls": [
+        {
+          "command": "history_catalog_load",
+          "start": 137545.5,
+          "ms": 24.099999994039536,
+          "bytes": 33674
+        },
+        {
+          "command": "worklog_get_operation_states",
+          "count": 50,
+          "start": 137579.40000000596,
+          "ms": 10.699999988079071,
+          "bytes": 6210
+        },
+        {
+          "command": "worklog_get_operation_states",
+          "count": 50,
+          "start": 137593.09999999404,
+          "ms": 3.300000011920929,
+          "bytes": 5851
+        }
+      ],
+      "fetches": [],
+      "receipts": []
+    },
+    {
+      "title": "Scale 10000 messages",
+      "k": 0,
+      "metrics": {
+        "starts": 345,
+        "maxRunning": 1,
+        "maxPendingPerMessage": 1,
+        "parseMs": 148.9000000357628,
+        "failures": 0,
+        "cacheBytes": 1392692,
+        "mountedRows": 21,
+        "logicalMessages": 10000,
+        "navigation": 36
+      },
+      "calls": [
+        {
+          "command": "history_catalog_load",
+          "start": 138596.69999998808,
+          "ms": 693,
+          "bytes": 2208119
+        }
+      ],
+      "fetches": [],
+      "receipts": []
+    }
+  ],
+  "idleReconnect": {
+    "initial": {
+      "receipts": [],
+      "metrics": {
+        "starts": 5209,
+        "maxRunning": 1,
+        "maxPendingPerMessage": 1,
+        "parseMs": 1799.9000001847744,
+        "failures": 0,
+        "cacheBytes": 104834,
+        "mountedRows": 12,
+        "logicalMessages": 100,
+        "navigation": 28
+      }
+    },
+    "idle": {
+      "calls": [
+        {
+          "command": "worklog_register_turn",
+          "start": 178451.69999998808,
+          "ms": 4.0999999940395355,
+          "bytes": 4
+        },
+        {
+          "command": "worklog_get_operation_states",
+          "count": 50,
+          "start": 179456.79999998212,
+          "ms": 5.600000023841858,
+          "bytes": 6210
+        },
+        {
+          "command": "worklog_get_operation_states",
+          "count": 50,
+          "start": 179464.40000000596,
+          "ms": 2,
+          "bytes": 5851
+        }
+      ],
+      "fetches": [],
+      "count": "102"
+    },
+    "reconnect": {
+      "calls": [
+        {
+          "command": "history_catalog_load",
+          "start": 180615.90000000596,
+          "ms": 23.5,
+          "bytes": 34025
+        },
+        {
+          "command": "worklog_get_operation_states",
+          "count": 50,
+          "start": 180641.69999998808,
+          "ms": 4.200000017881393,
+          "bytes": 6210
+        },
+        {
+          "command": "worklog_get_operation_states",
+          "count": 50,
+          "start": 180646.19999998808,
+          "ms": 2.0999999940395355,
+          "bytes": 5851
+        }
+      ],
+      "fetches": [],
+      "count": "102",
+      "busy": false
+    }
+  },
+  "note": "Initial receipts:[] used a wrong selector and is not receipt-display evidence. Display and scope evidence is in native-interactions.json. The pre-layout-fix scale DOM counts remain bounded but do not prove initial navigation cost."
+}

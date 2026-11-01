@@ -1,0 +1,78 @@
+{
+  "entries": [
+    {
+      "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+      "businessDate": "2026-10-27",
+      "project": "B7 合成验收",
+      "originalText": "请记录 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。",
+      "text": "完成 B7 附件和物理拖放验收。",
+      "status": "done",
+      "sourceSessionId": "ses_e83489dffffepPRvAJzPXGkYh9",
+      "sourceMessageId": "msg_16f39e7b47b84c62b9ff2f707452430e",
+      "revision": 1,
+      "createdAt": "2026-10-27T09:38:44.414013200+00:00",
+      "updatedAt": "2026-10-27T09:38:44.414013200+00:00"
+    }
+  ],
+  "reports": [],
+  "runs": [],
+  "schedules": [],
+  "provider": {
+    "mode": "success",
+    "delayMs": 0,
+    "pendingTool": null,
+    "requests": [
+      {
+        "at": "2026-10-27T09:38:19.821Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": "worklog_record",
+        "invokedInput": {
+          "mode": "direct",
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "完成 B7 附件和物理拖放验收。",
+          "status": "done"
+        }
+      },
+      {
+        "at": "2026-10-27T09:38:44.568Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": null,
+        "invokedInput": null
+      }
+    ],
+    "modelRequests": []
+  }
+}

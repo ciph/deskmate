@@ -98,6 +98,7 @@ struct WireError {
 }
 #[derive(Deserialize)]
 struct WirePart {
+    filename: Option<String>,
     id: String,
     #[serde(default, rename = "messageID", deserialize_with = "present_identity")]
     message_id: Option<serde_json::Value>,
@@ -133,6 +134,7 @@ impl WireMessage {
             finish: self.info.finish,
             error: self.info.error.map(|error| error.name),
             parts: self.parts.into_iter().map(|part| NativePart {
+                file_name: (part.kind.as_deref() == Some("file")).then_some(part.filename).flatten(),
                 id: part.id,
                 synthetic: part.synthetic,
                 kind: part.kind,

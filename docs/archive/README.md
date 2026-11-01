@@ -1,9 +1,11 @@
 # 历史记录索引
 
-这些原文保留独有设计、旧基线、命令结果和验收证据，归档日期为 2026-09-30。当前规则见[文档入口](../README.md)，旧计划未完成事项见[当前验收与待办](../verification-backlog.md)。归档不代表原计划的全部验收已经通过。
+这些原文保留独有设计、旧基线、命令结果和验收证据，原批次归档日期为 2026-09-30，最近补充为 2026-10-28。当前规则见[文档入口](../README.md)，旧计划未完成事项见[当前验收与待办](../verification-backlog.md)。归档不代表原计划的全部验收已经通过。
 
 | 原职责 | 历史记录 |
 | --- | --- |
+| 2026-10-28 集中归档 | [历史验收记录](verification/history-through-20261028.md) |
+| 已完成的 Mac → Windows 交接 | [Windows 原接管记录](performance/windows-handoff-20261027.md) |
 | 历史方案 / 基线 / 回执 | [YUME Agent Harness Roadmap 架构审计](architecture/AGENT_HARNESS_ROADMAP_AUDIT.md) |
 | 历史方案 / 基线 / 回执 | [自动记忆、工作日志自动归档与聊天消息区清理施工方案](memory/automatic-memory-construction-plan.md) |
 | 历史方案 / 基线 / 回执 | [聊天输入区、工作文件夹与模型选择施工任务书](chat/chat-composer-workspace-model-plan.md) |

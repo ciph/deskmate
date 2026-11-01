@@ -1,0 +1,174 @@
+$ tauri build --debug --no-bundle --features worklog-qa --config "output/b7-cold-history/tauri.qa.json"
+        Info Looking up installed tauri packages to check mismatched versions...
+   Compiling yume v0.4.21 (E:\Codex\工作伙伴\deskmate-windows-b7\src-tauri)
+warning: unused import: `StageChatAttachmentRequest`
+  --> src\chat_attachments.rs:27:5
+   |
+27 |     StageChatAttachmentRequest, StagedChatAttachment,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `Manager`
+  --> src\updater.rs:11:38
+   |
+11 | use tauri::{ipc::Channel, AppHandle, Manager};
+   |                                      ^^^^^^^
+
+warning: unused variable: `app`
+   --> src\updater.rs:594:40
+    |
+594 | pub(crate) fn confirm_installed_update(app: &AppHandle) {
+    |                                        ^^^ help: if this is intentional, prefix it with an underscore: `_app`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `retry_after` is never used
+   --> src\sidecar_supervisor.rs:147:19
+    |
+ 48 | impl RetryPolicy {
+    | ---------------- method in this implementation
+...
+147 |     pub(crate) fn retry_after(&self, now: Instant) -> Option<Duration> {
+    |                   ^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variant `SidecarLost` is never constructed
+  --> src\agent\collector.rs:12:5
+   |
+10 | pub(super) enum SnapshotRead {
+   |                 ------------ variant in this enum
+11 |     Messages(Vec<NativeMessage>),
+12 |     SidecarLost,
+   |     ^^^^^^^^^^^
+
+warning: function `decision_with_approvals` is never used
+  --> src\agent\permission_policy.rs:83:15
+   |
+83 | pub(super) fn decision_with_approvals(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variants `ChildSession`, `Deleted`, and `UnknownDirectory` are never constructed
+   --> src\history\catalog_model.rs:217:5
+    |
+215 | pub(crate) enum ExclusionReason {
+    |                 --------------- variants in this enum
+216 |     MalformedIdentity,
+217 |     ChildSession,
+    |     ^^^^^^^^^^^^
+218 |     Deleted,
+    |     ^^^^^^^
+219 |     UnknownDirectory,
+    |     ^^^^^^^^^^^^^^^^
+    |
+    = note: `ExclusionReason` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: struct `DiscoveryCandidate` is never constructed
+   --> src\history\catalog_model.rs:222:19
+    |
+222 | pub(crate) struct DiscoveryCandidate<'a> {
+    |                   ^^^^^^^^^^^^^^^^^^
+
+warning: function `exclusion_reason` is never used
+   --> src\history\catalog_model.rs:228:15
+    |
+228 | pub(crate) fn exclusion_reason(
+    |               ^^^^^^^^^^^^^^^^
+
+warning: function `invalidate_all` is never used
+  --> src\history\catalog_preview.rs:64:15
+   |
+64 | pub(crate) fn invalidate_all() {
+   |               ^^^^^^^^^^^^^^
+
+warning: method `message` is never used
+  --> src\memory\error.rs:51:12
+   |
+36 | impl MemoryError {
+   | ---------------- method in this implementation
+...
+51 |     pub fn message(&self) -> &str {
+   |            ^^^^^^^
+
+warning: method `retrieve` is never used
+   --> src\memory\repository.rs:423:12
+    |
+ 64 | impl<C: Clock> MemoryRepository<C> {
+    | ---------------------------------- method in this implementation
+...
+423 |     pub fn retrieve(
+    |            ^^^^^^^^
+
+warning: function `context_for_turn` is never used
+  --> src\memory\retrieval.rs:53:8
+   |
+53 | pub fn context_for_turn<C: Clock>(
+   |        ^^^^^^^^^^^^^^^^
+
+warning: function `active_provider_clone` is never used
+   --> src\settings.rs:514:15
+    |
+514 | pub(crate) fn active_provider_clone(state: &SettingsState) -> Option<AiProvider> {
+    |               ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variants `UnsafeInstall`, `PermissionDenied`, and `RestoreFailed` are never constructed
+   --> src\updater.rs:145:5
+    |
+137 | pub enum UpdateError {
+    |          ----------- variants in this enum
+...
+145 |     UnsafeInstall,
+    |     ^^^^^^^^^^^^^
+146 |     PermissionDenied,
+    |     ^^^^^^^^^^^^^^^^
+147 |     RestoreFailed,
+    |     ^^^^^^^^^^^^^
+    |
+    = note: `UpdateError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: variants `WaitingForIdle` and `Restarting` are never constructed
+   --> src\updater.rs:222:5
+    |
+206 | pub enum UpdateEvent {
+    |          ----------- variants in this enum
+...
+222 |     WaitingForIdle {
+    |     ^^^^^^^^^^^^^^
+...
+228 |     Restarting {
+    |     ^^^^^^^^^^
+    |
+    = note: `UpdateEvent` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: variant `WaitingForIdle` is never constructed
+   --> src\updater.rs:248:5
+    |
+235 | pub enum UpdateStatus {
+    |          ------------ variant in this enum
+...
+248 |     WaitingForIdle {
+    |     ^^^^^^^^^^^^^^
+    |
+    = note: `UpdateStatus` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: method `has_running_run` is never used
+  --> src\worklog\commands.rs:43:19
+   |
+13 | impl WorklogState {
+   | ----------------- method in this implementation
+...
+43 |     pub(crate) fn has_running_run(&self) -> WorklogResult<bool> {
+   |                   ^^^^^^^^^^^^^^^
+
+warning: method `has_running_run` is never used
+  --> src\worklog\repository_runtime.rs:20:12
+   |
+19 | impl Repository {
+   | --------------- method in this implementation
+20 |     pub fn has_running_run(&self) -> WorklogResult<bool> {
+   |            ^^^^^^^^^^^^^^^
+
+warning: `yume` (lib) generated 19 warnings (run `cargo fix --lib -p yume` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 23.56s
+       Built application at: E:\Codex\工作伙伴\deskmate-windows-b7\src-tauri\target\debug\yume.exe

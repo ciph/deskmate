@@ -78,7 +78,7 @@ pub(super) fn index_agent_records(
     path: &Path,
     list: &mut Vec<HistorySession>,
     records: &[RunRecord],
-) -> Result<(), String> {
+) -> Result<bool, String> {
     let mut next = list.clone();
     let mut grouped: BTreeMap<&str, Vec<&RunRecord>> = BTreeMap::new();
     for record in records {
@@ -123,11 +123,11 @@ pub(super) fn index_agent_records(
     }
     next.sort_by(|left, right| right.updated.cmp(&left.updated));
     if next == *list {
-        return Ok(());
+        return Ok(false);
     }
     persist_path(path, &next)?;
     *list = next;
-    Ok(())
+    Ok(true)
 }
 
 pub(super) fn prepare_lazy_read(
@@ -169,7 +169,7 @@ pub(super) fn apply_lazy_snapshot(
     path: &Path,
     list: &mut Vec<HistorySession>,
     snapshot: LazySnapshot<'_>,
-) -> Result<HistorySession, String> {
+) -> Result<(HistorySession, bool), String> {
     let mut session = list
         .iter()
         .find(|session| session.id == snapshot.target.session_id)
@@ -190,10 +190,11 @@ pub(super) fn apply_lazy_snapshot(
     {
         session.title = first_user.text.chars().take(40).collect();
     }
-    if session != original {
+    let changed = session != original;
+    if changed {
         save_to_path(path, list, session.clone())?;
     }
-    Ok(session)
+    Ok((session, changed))
 }
 
 pub(super) fn details_for(

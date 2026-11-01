@@ -64,7 +64,7 @@ const server = Bun.serve({
     if (mode !== "success") return Response.json({ error: { message: "Synthetic QA provider failure", type: mode === "unauthorized" ? "authentication_error" : "server_error" } }, { status: mode === "unauthorized" ? 401 : 503 });
     if (invoke && pending === state.nextTool) state.nextTool = null;
     const content = latestTool ? `合成模型工具回执：${typeof latestTool.content === "string" ? latestTool.content : JSON.stringify(latestTool.content)}` : (frozenReport(messages) ?? state.report);
-    const toolCalls = invoke ? [{ index: 0, id: `call_qa_${crypto.randomUUID().replaceAll("-", "")}`, type: "function", function: { name: pending.name, arguments: JSON.stringify(pending.input) } }] : undefined;
+    const toolCalls = invoke ? [{ index: 0, id: `call_qa_${crypto.randomUUID().replaceAll("-", "")}`, type: "function", function: { name: pending.name, arguments: JSON.stringify(permitted.has(pending.name) ? { input: pending.input } : pending.input) } }] : undefined;
     const message = invoke ? { role: "assistant", tool_calls: toolCalls } : { role: "assistant", content };
     const finishReason = invoke ? "tool_calls" : "stop";
     const base = { id: `chatcmpl-${crypto.randomUUID()}`, created: Math.floor(Date.now() / 1000), model: "model-a" };

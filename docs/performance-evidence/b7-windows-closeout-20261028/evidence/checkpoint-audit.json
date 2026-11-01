@@ -1,0 +1,8 @@
+{
+  "files": 945,
+  "logs": 201,
+  "logBytes": 1472503,
+  "knownBridgeTokenValuesChecked": 6,
+  "problems": [],
+  "scope": "Known QA tokens and common credential patterns; not a guarantee of arbitrary-secret detection"
+}

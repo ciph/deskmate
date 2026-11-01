@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "fixed-10k",
+      "passed": true,
+      "initialRows": 1000,
+      "finalRows": 1002,
+      "stableOldNodes": 1000,
+      "domUpdates": 171,
+      "busySamples": 30,
+      "focusPreserved": true,
+      "draftRestored": true,
+      "stopClicked": false,
+      "nativeFullShaMatches": true,
+      "codeMatches": true,
+      "inputP95": 32.40000000037253,
+      "scrollP95": 40.5
+    },
+    {
+      "name": "fixed-50k",
+      "passed": true,
+      "initialRows": 1000,
+      "finalRows": 1002,
+      "stableOldNodes": 1000,
+      "domUpdates": 172,
+      "busySamples": 30,
+      "focusPreserved": true,
+      "draftRestored": true,
+      "stopClicked": false,
+      "nativeFullShaMatches": true,
+      "codeMatches": true,
+      "inputP95": 33.899999998509884,
+      "scrollP95": 38.80000000074506
+    },
+    {
+      "name": "fixed-stop",
+      "passed": true,
+      "initialRows": 1000,
+      "finalRows": 1003,
+      "stableOldNodes": 1000,
+      "domUpdates": 53,
+      "busySamples": 7,
+      "focusPreserved": true,
+      "draftRestored": true,
+      "stopClicked": true,
+      "nativeFullShaMatches": null,
+      "codeMatches": null,
+      "inputP95": null,
+      "scrollP95": null
+    },
+    {
+      "name": "fixed-10k-second-cold",
+      "passed": true,
+      "initialRows": 1000,
+      "finalRows": 1002,
+      "stableOldNodes": 1000,
+      "domUpdates": 173,
+      "busySamples": 30,
+      "focusPreserved": true,
+      "draftRestored": true,
+      "stopClicked": false,
+      "nativeFullShaMatches": true,
+      "codeMatches": true,
+      "inputP95": 31.59999999962747,
+      "scrollP95": 36.70000000111759
+    }
+  ],
+  "stopAndResumePassed": true,
+  "resumeFocusPreserved": false,
+  "aborted": [
+    {
+      "id": 4,
+      "at": "2026-10-27T04:57:46.241Z",
+      "size": 50000,
+      "plannedHz": 50,
+      "plannedChunks": 500,
+      "emitted": 158,
+      "aborted": true,
+      "done": false,
+      "expectedChars": 50000,
+      "expectedSha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+    }
+  ]
+}

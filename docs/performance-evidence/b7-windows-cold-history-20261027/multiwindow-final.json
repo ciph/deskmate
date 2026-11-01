@@ -1,0 +1,192 @@
+{
+  "ok": true,
+  "method": "real WebView2 windows + host IPC + native OpenCode; no physical mouse or visual acceptance",
+  "trace": [
+    {
+      "step": "workbench-owns-session",
+      "atMs": 81,
+      "owned": {
+        "key": "native:16:managed-local-v197:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace27:ses_winb7focus1000020261027",
+        "identity": {
+          "kind": "native",
+          "sidecarId": "managed-local-v1",
+          "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace",
+          "sessionId": "ses_winb7focus1000020261027"
+        },
+        "title": "B7 Windows 1000 messages 10000",
+        "userTitle": null,
+        "source": "workbench",
+        "created": 1793081300864,
+        "updated": 1793081301863,
+        "pinned": false,
+        "archived": false,
+        "availability": "available",
+        "ownership": "workbench",
+        "runtime": "idle",
+        "tombstone": null,
+        "hasRecords": true,
+        "displayTitle": "B7 Windows 1000 messages 10000",
+        "capabilities": {
+          "open": true,
+          "openWorkbench": true,
+          "send": false,
+          "rename": true,
+          "pin": true,
+          "archive": true,
+          "delete": true,
+          "readOnlyReason": "workbench_owned"
+        }
+      },
+      "chatOwnedDom": {
+        "composer": false,
+        "tail": "\nconst round = 993;\n\nItem\tStatus\nB7\tComplete\nSynthetic question 994\nSynthetic reply 995\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nts\nconst round = 995;\n\nItem\tStatus\nB7\tComplete\nSynthetic question 996\nSynthetic reply 997\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nts\nconst round = 997;\n\nItem\tStatus\nB7\tComplete\nSynthetic question 998\nSynthetic reply 999\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nts\nconst round = 999;\n\nItem\tStatus\nB7\tComplete\n此对话由工作台管理，请在工作台继续新会话在工作台打开"
+      }
+    },
+    {
+      "step": "settings-denied",
+      "atMs": 84,
+      "deniedSettings": "Error: {\"exceptionId\":1,\"text\":\"Uncaught (in promise)\",\"lineNumber\":0,\"columnNumber\":0,\"exception\":{\"type\":\"string\",\"value\":\"history_forbidden\"}}"
+    },
+    {
+      "step": "local-write-denied",
+      "atMs": 107,
+      "deniedWrite": "Error: {\"exceptionId\":2,\"text\":\"Uncaught (in promise)\",\"lineNumber\":0,\"columnNumber\":0,\"exception\":{\"type\":\"string\",\"value\":\"history_local_messages_denied\"}}"
+    },
+    {
+      "step": "authorization",
+      "atMs": 107,
+      "deniedSettings": "Error: {\"exceptionId\":1,\"text\":\"Uncaught (in promise)\",\"lineNumber\":0,\"columnNumber\":0,\"exception\":{\"type\":\"string\",\"value\":\"history_forbidden\"}}",
+      "deniedClaim": "Error: {\"exceptionId\":1,\"text\":\"Uncaught (in promise)\",\"lineNumber\":0,\"columnNumber\":0,\"exception\":{\"type\":\"string\",\"value\":\"workbench commands are only available to the workbench window\"}}",
+      "deniedWrite": "Error: {\"exceptionId\":2,\"text\":\"Uncaught (in promise)\",\"lineNumber\":0,\"columnNumber\":0,\"exception\":{\"type\":\"string\",\"value\":\"history_local_messages_denied\"}}"
+    },
+    {
+      "step": "cross-window-metadata",
+      "atMs": 739,
+      "concurrent": [
+        {
+          "pinned": true,
+          "displayTitle": "B7 multiwindow verified 10000 concurrent"
+        },
+        {
+          "pinned": false,
+          "displayTitle": "B7 multiwindow verified 10000 concurrent"
+        }
+      ],
+      "after": {
+        "key": "native:16:managed-local-v197:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace27:ses_winb7focus1000020261027",
+        "identity": {
+          "kind": "native",
+          "sidecarId": "managed-local-v1",
+          "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace",
+          "sessionId": "ses_winb7focus1000020261027"
+        },
+        "title": "B7 multiwindow verified 10000 concurrent",
+        "userTitle": "B7 multiwindow verified 10000 concurrent",
+        "source": "workbench",
+        "created": 1793081300864,
+        "updated": 1793081301863,
+        "pinned": true,
+        "archived": false,
+        "availability": "available",
+        "ownership": "workbench",
+        "runtime": "idle",
+        "tombstone": null,
+        "hasRecords": true,
+        "displayTitle": "B7 multiwindow verified 10000 concurrent",
+        "capabilities": {
+          "open": true,
+          "openWorkbench": true,
+          "send": false,
+          "rename": true,
+          "pin": true,
+          "archive": true,
+          "delete": true,
+          "readOnlyReason": "workbench_owned"
+        }
+      }
+    },
+    {
+      "step": "archive-sync",
+      "atMs": 771,
+      "archived": {
+        "key": "native:16:managed-local-v197:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace27:ses_winb7focus1000020261027",
+        "identity": {
+          "kind": "native",
+          "sidecarId": "managed-local-v1",
+          "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace",
+          "sessionId": "ses_winb7focus1000020261027"
+        },
+        "title": "B7 multiwindow verified 10000 concurrent",
+        "userTitle": "B7 multiwindow verified 10000 concurrent",
+        "source": "workbench",
+        "created": 1793081300864,
+        "updated": 1793081301863,
+        "pinned": true,
+        "archived": true,
+        "availability": "available",
+        "ownership": "workbench",
+        "runtime": "idle",
+        "tombstone": null,
+        "hasRecords": true,
+        "displayTitle": "B7 multiwindow verified 10000 concurrent",
+        "capabilities": {
+          "open": true,
+          "openWorkbench": true,
+          "send": false,
+          "rename": true,
+          "pin": true,
+          "archive": true,
+          "delete": true,
+          "readOnlyReason": "archived"
+        }
+      },
+      "visibleRows": 1
+    },
+    {
+      "step": "release-and-preservation",
+      "atMs": 2375,
+      "released": {
+        "key": "native:16:managed-local-v197:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace27:ses_winb7focus1000020261027",
+        "identity": {
+          "kind": "native",
+          "sidecarId": "managed-local-v1",
+          "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb7cold20261027h/workspace",
+          "sessionId": "ses_winb7focus1000020261027"
+        },
+        "title": "B7 Windows 1000 messages 10000",
+        "userTitle": "B7 Windows 1000 messages 10000",
+        "source": "workbench",
+        "created": 1793081300864,
+        "updated": 1793081301863,
+        "pinned": false,
+        "archived": false,
+        "availability": "available",
+        "ownership": "unowned",
+        "runtime": "idle",
+        "tombstone": null,
+        "hasRecords": true,
+        "displayTitle": "B7 Windows 1000 messages 10000",
+        "capabilities": {
+          "open": true,
+          "openWorkbench": true,
+          "send": true,
+          "rename": true,
+          "pin": true,
+          "archive": true,
+          "delete": true,
+          "readOnlyReason": null
+        }
+      },
+      "releasedDom": {
+        "composer": true,
+        "textarea": true,
+        "tail": "\nB7\tComplete\nSynthetic question 998\nSynthetic reply 999\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nts\nconst round = 999;\n\nItem\tStatus\nB7\tComplete\n文件夹\n⌄\n选择模型\n⌄\n发送\n\n模型列表尚未验证或已过期，请在 AI 设置中重新验证。"
+      },
+      "messageCount": 1000,
+      "eventCounts": [
+        15,
+        15
+      ]
+    }
+  ]
+}

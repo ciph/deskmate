@@ -1,0 +1,10 @@
+{
+  "name": "15-qa-desktop-build",
+  "command": "bun run tauri build --debug --no-bundle --features worklog-qa --config output/b7-qa/tauri.qa.json",
+  "startedAt": "2026-10-27T11:57:59.7080342+08:00",
+  "finishedAt": "2026-10-27T11:59:13.0628943+08:00",
+  "exitCode": 0,
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "log": "E:\\Codex\\工作伙伴\\reports\\yume-b7-windows-20261027\\15-qa-desktop-build.log",
+  "binarySha256": "998065F2C8A9DE9C08F4D8A05683AF18D487D374C2C87778EF86A34459AF4446"
+}

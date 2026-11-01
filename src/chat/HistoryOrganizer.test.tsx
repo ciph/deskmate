@@ -18,23 +18,42 @@ let mutationFails = false;
 let listFails = false;
 let rows = [nativeRow, legacyRow];
 let paginated = false;
+let nativeRefreshing = false;
+let catalogChanged: (() => void) | undefined;
 function installHost() {
   mock.module("@tauri-apps/api/core", () => ({ invoke: async (command: string, args?: Record<string, unknown>) => {
     calls.push({ command, args });
     if (command === "history_catalog_list") {
       if (listFails) throw new Error("sidecar unavailable");
-      return { items: rows, total: paginated ? 1001 : rows.length, hasMore: paginated, offline: false, errors: [], directories: ["c:/project"] };
+      return { items: rows, total: paginated ? 1001 : rows.length, hasMore: paginated, offline: false, errors: [], directories: ["c:/project"], refreshing: nativeRefreshing };
     }
     if (command === "history_catalog_previews") return (args?.keys as string[] ?? []).map(key => ({ key, status: "ready", text: `Preview for ${key}`, role: "user", time: 1, localOnly: false }));
     if (command === "history_catalog_mutate" && mutationFails) throw new Error("history_agent_running");
     if (command === "history_catalog_mutate" && args?.mutation && typeof args.mutation === "object" && "action" in args.mutation && args.mutation.action === "delete") rows = rows.filter(row => row.key !== args.key);
     return null;
   } }));
-  mock.module("@tauri-apps/api/event", () => ({ listen: async () => () => {} }));
+  mock.module("@tauri-apps/api/event", () => ({ listen: async (event: string, callback: () => void) => {
+    if (event === "history-catalog-changed") catalogChanged = callback;
+    return () => {};
+  } }));
 }
 installHost();
 const { HistoryOrganizer } = await import("./HistoryOrganizer");
-afterEach(() => { cleanup(); calls.length = 0; mutationFails = false; listFails = false; paginated = false; rows = [nativeRow, legacyRow]; restoreTauriModuleFixture(); installHost(); });
+afterEach(() => { cleanup(); calls.length = 0; mutationFails = false; listFails = false; paginated = false; nativeRefreshing = false; catalogChanged = undefined; rows = [nativeRow, legacyRow]; restoreTauriModuleFixture(); installHost(); });
+
+test("cold native discovery shows progress, then reveals discovered rows without manual refresh", async () => {
+  rows = [];
+  nativeRefreshing = true;
+  render(<HistoryOrganizer language="en-US" onOpen={() => {}} onClose={() => {}} />);
+  await waitFor(() => expect(lastListCall()).toBeDefined());
+  expect(document.querySelector('.history-organizer-results')?.getAttribute('aria-busy')).toBe('true');
+  expect(document.querySelector('.history-organizer-empty')).toBeNull();
+  nativeRefreshing = false;
+  rows = [nativeRow];
+  catalogChanged?.();
+  await screen.findByText("Native task");
+  expect(document.querySelector('.history-organizer-results')?.getAttribute('aria-busy')).toBe('false');
+});
 
 test("native and legacy rows open with their complete identity and capability labels", async () => {
   let opened: UnifiedHistoryRow | undefined;

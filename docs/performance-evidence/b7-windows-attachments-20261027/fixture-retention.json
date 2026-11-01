@@ -1,0 +1,36 @@
+{
+  "method": "hashes recorded after physical tests and checked again at cleanup; not a pre-first-drop digest",
+  "sourceFiles": [
+    {
+      "path": "output\\b7-attachments\\fixtures\\B7-audio-10s.mp3",
+      "size": 160749,
+      "sha256": "e756256cef609ec9e1c89fcdd4b95762c5f06d337c95eb80dafbc08e82aceed2"
+    },
+    {
+      "path": "output\\b7-attachments\\fixtures\\B7-audio-8s.wav",
+      "size": 1536078,
+      "sha256": "278cc96acad05257cb61e11df3fe64ff0cbb6a1d02594cf6edd1ed9f6deecba7"
+    },
+    {
+      "path": "output\\b7-attachments\\fixtures\\B7-bad-video.mp4",
+      "size": 37,
+      "sha256": "4f9a5b33db4339c14ed336727b26b6422d1c7fb896ed88a850072dbb3665ba96"
+    },
+    {
+      "path": "output\\b7-attachments\\fixtures\\B7-video-30s.mp4",
+      "size": 23102049,
+      "sha256": "1509f2a1570c460579be69e11a1ad1b035b4e44fcca5a83306fa33406b24ccf2"
+    },
+    {
+      "path": "output\\b7-attachments\\fixtures\\folder\\B7-synthetic-data.json",
+      "size": 33,
+      "sha256": "76c01cd47fd145ef773266585d7c3dd6481fef31b4c809d1f7c961535bc5cdb4"
+    },
+    {
+      "path": "output\\b7-attachments\\fixtures\\folder\\B7-synthetic-note.txt",
+      "size": 47,
+      "sha256": "9150ff5c79d7f73dd934df24fd754c9777384f18f8a6d0a9534b26798bb97816"
+    }
+  ],
+  "allStillPresent": true
+}

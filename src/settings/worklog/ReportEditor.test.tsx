@@ -37,9 +37,9 @@ test("disables archived export when the editor has unsaved changes", async () =>
 
 test("renders the current report as Markdown and follows the selected candidate", async () => {
   open(); const user = userEvent.setup();
-  expect(screen.getByRole("heading", { name: "已采用" })).toBeTruthy();
+  expect(await screen.findByRole("heading", { name: "已采用" })).toBeTruthy();
   await user.selectOptions(screen.getByRole("combobox", { name: "版本" }), "v2");
-  expect(screen.getByRole("heading", { name: "候选" })).toBeTruthy();
+  expect(await screen.findByRole("heading", { name: "候选" })).toBeTruthy();
   expect(screen.queryByRole("heading", { name: "已采用" })).toBeNull();
 });
 
@@ -51,7 +51,7 @@ test("previews edited Markdown without changing the original saved source", asyn
   await user.paste(source);
   await user.click(screen.getByRole("button", { name: "预览" }));
   const preview = screen.getByRole("region", { name: "内容 · 预览" });
-  expect(within(preview).getByRole("heading", { name: "本周完成" })).toBeTruthy();
+  expect(await within(preview).findByRole("heading", { name: "本周完成" })).toBeTruthy();
   expect(within(preview).getByRole("table")).toBeTruthy();
   expect(preview.querySelector("strong")?.textContent).toBe("登录联调");
   expect(preview.querySelector("blockquote")?.textContent).toContain("等待确认");

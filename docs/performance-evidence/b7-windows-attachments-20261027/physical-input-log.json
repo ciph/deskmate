@@ -1,0 +1,1911 @@
+{
+  "scope": "temporary pinned Windows MCP; only mouse/keyboard records; unrelated foreground titles omitted; failures retained",
+  "actions": [
+    {
+      "time": "2026-10-27T09:24:56.754Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "467992",
+        "x": 72,
+        "y": 149
+      },
+      "result": {
+        "success": true,
+        "position": [
+          901,
+          518
+        ],
+        "window": {
+          "handle": "467992",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:25:10.230Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "467992",
+        "x": 72,
+        "y": 149
+      },
+      "result": {
+        "success": true,
+        "position": [
+          1721,
+          248
+        ],
+        "window": {
+          "handle": "467992",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:25:37.014Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "467992",
+        "x": 100,
+        "y": 187
+      },
+      "result": {
+        "success": true,
+        "position": [
+          1749,
+          286
+        ],
+        "window": {
+          "handle": "467992",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:25:52.713Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "467992",
+        "x": 100,
+        "y": 149
+      },
+      "result": {
+        "success": true,
+        "position": [
+          1749,
+          248
+        ],
+        "window": {
+          "handle": "467992",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:26:00.416Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "467992",
+        "x": 370,
+        "y": 165
+      },
+      "result": {
+        "success": true,
+        "position": [
+          2019,
+          264
+        ],
+        "window": {
+          "handle": "467992",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:26:11.814Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "467992",
+        "x": 784,
+        "y": 568
+      },
+      "result": {
+        "success": true,
+        "position": [
+          2433,
+          668
+        ],
+        "window": {
+          "handle": "467992",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:26:17.816Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "target": "primary_screen",
+        "x": 1400,
+        "y": 252,
+        "endX": 600,
+        "endY": 500,
+        "expectedWindowTitle": "B7 Synthetic Drag Source",
+        "expectedProcessName": "DragSource"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          599,
+          499
+        ],
+        "window": {
+          "handle": "140282",
+          "pid": 211748,
+          "processName": "DragSource"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:26:51.808Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "move",
+        "windowHandle": "74894",
+        "x": 250,
+        "y": 750
+      },
+      "result": {
+        "success": true,
+        "position": [
+          463,
+          824
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:16.014Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 61,
+        "y": 754
+      },
+      "result": {
+        "success": true,
+        "position": [
+          185,
+          878
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:17.250Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "windowHandle": "74894",
+        "x": 95,
+        "y": 786,
+        "endX": 350,
+        "endY": 786
+      },
+      "result": {
+        "success": true,
+        "position": [
+          474,
+          910
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:17.257Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "windowHandle": "74894",
+        "x": 350,
+        "y": 786,
+        "endX": 100,
+        "endY": 786
+      },
+      "result": {
+        "success": true,
+        "position": [
+          225,
+          910
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:17.262Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "windowHandle": "74894",
+        "x": 100,
+        "y": 786,
+        "endX": 390,
+        "endY": 786
+      },
+      "result": {
+        "success": true,
+        "position": [
+          515,
+          910
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:17.269Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "windowHandle": "74894",
+        "x": 390,
+        "y": 786,
+        "endX": 180,
+        "endY": 786
+      },
+      "result": {
+        "success": true,
+        "position": [
+          305,
+          910
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:17.276Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "windowHandle": "74894",
+        "x": 180,
+        "y": 786,
+        "endX": 320,
+        "endY": 786
+      },
+      "result": {
+        "success": true,
+        "position": [
+          444,
+          910
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:17.284Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "windowHandle": "74894",
+        "x": 320,
+        "y": 786,
+        "endX": 110,
+        "endY": 786
+      },
+      "result": {
+        "success": true,
+        "position": [
+          234,
+          910
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:31.498Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 436,
+        "y": 544
+      },
+      "result": {
+        "success": true,
+        "position": [
+          560,
+          668
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:32.750Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "target": "primary_screen",
+        "x": 1400,
+        "y": 252,
+        "endX": 600,
+        "endY": 970,
+        "expectedProcessName": "DragSource"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          599,
+          969
+        ],
+        "window": {
+          "handle": "140282",
+          "pid": 211748,
+          "processName": "DragSource"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:33.984Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "target": "primary_screen",
+        "x": 1400,
+        "y": 324,
+        "endX": 600,
+        "endY": 450,
+        "expectedProcessName": "DragSource"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          599,
+          449
+        ],
+        "window": {
+          "handle": "140282",
+          "pid": 211748,
+          "processName": "DragSource"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:33.999Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "target": "primary_screen",
+        "x": 1400,
+        "y": 396,
+        "endX": 600,
+        "endY": 970,
+        "expectedProcessName": "DragSource"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          599,
+          969
+        ],
+        "window": {
+          "handle": "140282",
+          "pid": 211748,
+          "processName": "DragSource"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:51.569Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 491,
+        "y": 550
+      },
+      "result": {
+        "success": true,
+        "position": [
+          616,
+          674
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:52.831Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 491,
+        "y": 550
+      },
+      "result": {
+        "success": true,
+        "position": [
+          616,
+          674
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:52.836Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "windowHandle": "74894",
+        "x": 647,
+        "y": 551,
+        "endX": 710,
+        "endY": 551
+      },
+      "result": {
+        "success": true,
+        "position": [
+          834,
+          675
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:54.033Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 491,
+        "y": 550
+      },
+      "result": {
+        "success": true,
+        "position": [
+          616,
+          674
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:27:54.038Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "scroll",
+        "windowHandle": "74894",
+        "x": 780,
+        "y": 732,
+        "direction": "down",
+        "amount": 4
+      },
+      "result": {
+        "success": true,
+        "position": [
+          904,
+          856
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:10.565Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 63,
+        "y": 792
+      },
+      "result": {
+        "success": true,
+        "position": [
+          187,
+          916
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:11.799Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 63,
+        "y": 792
+      },
+      "result": {
+        "success": true,
+        "position": [
+          187,
+          916
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:11.804Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "windowHandle": "74894",
+        "x": 220,
+        "y": 792,
+        "endX": 310,
+        "endY": 792
+      },
+      "result": {
+        "success": true,
+        "position": [
+          434,
+          916
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:13.016Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 63,
+        "y": 792
+      },
+      "result": {
+        "success": true,
+        "position": [
+          187,
+          916
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:13.052Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "target": "primary_screen",
+        "x": 1400,
+        "y": 468,
+        "endX": 600,
+        "endY": 350,
+        "expectedProcessName": "DragSource"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          599,
+          349
+        ],
+        "window": {
+          "handle": "140282",
+          "pid": 211748,
+          "processName": "DragSource"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:13.072Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "drag",
+        "target": "primary_screen",
+        "x": 1400,
+        "y": 540,
+        "endX": 600,
+        "endY": 970,
+        "expectedProcessName": "DragSource"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          599,
+          969
+        ],
+        "window": {
+          "handle": "140282",
+          "pid": 211748,
+          "processName": "DragSource"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:14.300Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "scroll",
+        "windowHandle": "74894",
+        "x": 780,
+        "y": 720,
+        "direction": "down",
+        "amount": 8
+      },
+      "result": {
+        "success": true,
+        "position": [
+          904,
+          844
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:27.799Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 518,
+        "y": 781
+      },
+      "result": {
+        "success": true,
+        "position": [
+          642,
+          905
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:27.805Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "scroll",
+        "windowHandle": "74894",
+        "x": 782,
+        "y": 732,
+        "direction": "down",
+        "amount": 12
+      },
+      "result": {
+        "success": true,
+        "position": [
+          906,
+          856
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:28:46.405Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "scroll",
+        "windowHandle": "74894",
+        "x": 780,
+        "y": 732,
+        "direction": "down",
+        "amount": 5
+      },
+      "result": {
+        "success": true,
+        "position": [
+          904,
+          856
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:02.384Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 435,
+        "y": 543
+      },
+      "result": {
+        "success": true,
+        "position": [
+          559,
+          668
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:02.390Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 340,
+        "y": 858
+      },
+      "result": {
+        "success": true,
+        "position": [
+          464,
+          982
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:02.450Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "B7 physical attachments: MP4 MP3 WAV and synthetic folder."
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:02.467Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:31.385Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 136,
+        "y": 270
+      },
+      "result": {
+        "success": true,
+        "position": [
+          260,
+          394
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:32.584Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 777,
+        "y": 27
+      },
+      "result": {
+        "success": true,
+        "position": [
+          901,
+          151
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:43.950Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 787,
+        "y": 33
+      },
+      "result": {
+        "success": true,
+        "position": [
+          911,
+          158
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:45.203Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 777,
+        "y": 27
+      },
+      "result": {
+        "success": true,
+        "position": [
+          901,
+          151
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:29:54.035Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 235,
+        "y": 240
+      },
+      "result": {
+        "success": true,
+        "position": [
+          359,
+          364
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:32:07.240Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 38,
+        "y": 914
+      },
+      "result": {
+        "success": false,
+        "errorCode": "unexpected_error",
+        "position": [
+          4016,
+          903
+        ],
+        "window": null
+      }
+    },
+    {
+      "time": "2026-10-27T09:33:22.124Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 38,
+        "y": 914
+      },
+      "result": {
+        "success": true,
+        "position": [
+          162,
+          1038
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:34:34.515Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "2630644",
+        "action": "type",
+        "text": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-attachments\\fixtures\\B7-video-30s.mp4"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "2630644",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:34:34.522Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "2630644",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "2630644",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:35:05.758Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 62,
+        "y": 754
+      },
+      "result": {
+        "success": true,
+        "position": [
+          186,
+          878
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:35:41.775Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 435,
+        "y": 544
+      },
+      "result": {
+        "success": true,
+        "position": [
+          559,
+          668
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:35:41.781Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 777,
+        "y": 27
+      },
+      "result": {
+        "success": true,
+        "position": [
+          901,
+          151
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:35:55.376Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 787,
+        "y": 33
+      },
+      "result": {
+        "success": true,
+        "position": [
+          911,
+          158
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:35:55.672Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "请记录今天 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:35:55.677Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:36:12.892Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 350,
+        "y": 857
+      },
+      "result": {
+        "success": true,
+        "position": [
+          474,
+          981
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:36:14.001Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "请记录今天 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:36:14.007Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:38:19.634Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "请记录 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:38:19.640Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:38:44.384Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 88,
+        "y": 774
+      },
+      "result": {
+        "success": true,
+        "position": [
+          213,
+          898
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:38:45.799Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 350,
+        "y": 857
+      },
+      "result": {
+        "success": true,
+        "position": [
+          474,
+          981
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:38:46.904Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "查询今天 2026-10-27 的工作记录。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:38:46.911Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:39:16.560Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 88,
+        "y": 774
+      },
+      "result": {
+        "success": false,
+        "errorCode": "unexpected_error",
+        "position": [
+          3986,
+          860
+        ],
+        "window": null
+      }
+    },
+    {
+      "time": "2026-10-27T09:39:17.789Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 350,
+        "y": 857
+      },
+      "result": {
+        "success": false,
+        "errorCode": "unexpected_error",
+        "position": [
+          3986,
+          860
+        ],
+        "window": null
+      }
+    },
+    {
+      "time": "2026-10-27T09:39:18.935Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "请将刚才 2026-10-27 的 B7 合成验收记录改为：完成 B7 附件、物理拖放和历史恢复验收。状态仍为已完成。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:39:18.940Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:39:40.263Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 88,
+        "y": 774
+      },
+      "result": {
+        "success": true,
+        "position": [
+          213,
+          898
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:39:49.840Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 350,
+        "y": 857
+      },
+      "result": {
+        "success": true,
+        "position": [
+          474,
+          981
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:39:49.846Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:40:16.290Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 88,
+        "y": 774
+      },
+      "result": {
+        "success": true,
+        "position": [
+          213,
+          898
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:40:17.572Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 350,
+        "y": 857
+      },
+      "result": {
+        "success": true,
+        "position": [
+          474,
+          981
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:40:18.652Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "请根据已保存的工作记录生成 2026-10-27 的日报。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:40:18.659Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:40:53.663Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 88,
+        "y": 774
+      },
+      "result": {
+        "success": true,
+        "position": [
+          213,
+          898
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:41:26.391Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 350,
+        "y": 857
+      },
+      "result": {
+        "success": true,
+        "position": [
+          474,
+          981
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:41:27.467Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "请修改今天 2026-10-27 的工作日志：B7 合成验收项目的事项更新为完成 B7 附件、物理拖放和历史恢复验收，状态已完成。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:41:27.473Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:41:38.609Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 88,
+        "y": 774
+      },
+      "result": {
+        "success": true,
+        "position": [
+          213,
+          898
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:41:39.809Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 350,
+        "y": 857
+      },
+      "result": {
+        "success": true,
+        "position": [
+          474,
+          981
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:41:40.853Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "type",
+        "text": "请安排每周五 17:00 生成工作周报。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:41:40.859Z",
+      "tool": "keyboard_control",
+      "args": {
+        "windowHandle": "74894",
+        "action": "press",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:42:17.548Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 88,
+        "y": 774
+      },
+      "result": {
+        "success": true,
+        "position": [
+          213,
+          898
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:42:18.906Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "scroll",
+        "windowHandle": "74894",
+        "x": 780,
+        "y": 700,
+        "direction": "down",
+        "amount": 20
+      },
+      "result": {
+        "success": true,
+        "position": [
+          904,
+          824
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:42:32.826Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "74894",
+        "x": 96,
+        "y": 790
+      },
+      "result": {
+        "success": true,
+        "position": [
+          221,
+          914
+        ],
+        "window": {
+          "handle": "74894",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:43:50.725Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "scroll",
+        "windowHandle": "467992",
+        "x": 750,
+        "y": 490,
+        "direction": "down",
+        "amount": 6
+      },
+      "result": {
+        "success": true,
+        "position": [
+          2399,
+          589
+        ],
+        "window": {
+          "handle": "467992",
+          "pid": 222700,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:55:45.061Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "21505758",
+        "x": 775,
+        "y": 28,
+        "expectedProcessName": "yume"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          899,
+          153
+        ],
+        "window": {
+          "handle": "21505758",
+          "pid": 223336,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:55:54.927Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "21505758",
+        "x": 283,
+        "y": 239,
+        "expectedProcessName": "yume"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          408,
+          363
+        ],
+        "window": {
+          "handle": "21505758",
+          "pid": 223336,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:57:02.909Z",
+      "tool": "mouse_control",
+      "args": {
+        "action": "click",
+        "windowHandle": "21505758",
+        "x": 300,
+        "y": 858,
+        "expectedProcessName": "yume"
+      },
+      "result": {
+        "success": true,
+        "position": [
+          425,
+          982
+        ],
+        "window": {
+          "handle": "21505758",
+          "pid": 223336,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:57:11.724Z",
+      "tool": "keyboard_control",
+      "args": {
+        "action": "type",
+        "windowHandle": "21505758",
+        "text": "B7 回执状态复测，请只回复确认，不新增或修改工作日志。"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "21505758",
+          "pid": 223336,
+          "processName": "yume"
+        }
+      }
+    },
+    {
+      "time": "2026-10-27T09:57:18.020Z",
+      "tool": "keyboard_control",
+      "args": {
+        "action": "press",
+        "windowHandle": "21505758",
+        "key": "enter"
+      },
+      "result": {
+        "success": true,
+        "window": {
+          "handle": "21505758",
+          "pid": 223336,
+          "processName": "yume"
+        }
+      }
+    }
+  ]
+}

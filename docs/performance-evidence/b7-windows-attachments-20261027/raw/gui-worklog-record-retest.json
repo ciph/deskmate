@@ -1,0 +1,13 @@
+{
+  "text": "小著\n正在思考..\n请记录今天 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。\n\n合成模型工具回执：{\"version\":1,\"status\":\"rejected\",\"error\":{\"code\":\"BRIDGE_IO_ERROR\",\"message\":\"Work journal input must be an object\"}}\n\n请记录 2026-10-27 的工作：B7 合成验收项目，完成 B7 附件和物理拖放验收，状态已完成。\n文件夹\n⌄\nb7-local\n⌄\n停",
+  "focus": true,
+  "active": "<textarea class=\"chat-input\" placeholder=\"输入消息,Enter 发送\" rows=\"2\"></textarea>",
+  "inputs": [
+    {
+      "tag": "TEXTAREA",
+      "placeholder": "输入消息,Enter 发送",
+      "disabled": false,
+      "value": ""
+    }
+  ]
+}

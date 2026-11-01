@@ -1,0 +1,19 @@
+{
+  "changedScope": {
+    "score": 81,
+    "diagnostics": [],
+    "exitCode": 0
+  },
+  "sameSevenFiles": {
+    "beforeScore": 81,
+    "afterScore": 81,
+    "beforeDiagnostics": 12,
+    "afterDiagnostics": 12,
+    "sameRuleMultiset": true,
+    "exitCodes": [
+      1,
+      1
+    ],
+    "reason": "Existing file-scope diagnostics; no new changed-scope diagnostics. Prior 83 score scanned only four files."
+  }
+}

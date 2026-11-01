@@ -16,7 +16,7 @@ export type AgentHistoryOpenResult =
   | { readonly kind: "missing" }
   | { readonly kind: "stale" };
 
-export function useAgentHistoryView(activeSessionId: string | null) {
+export function useAgentHistoryView(activeSessionId: string | null, onLoaded?: (loaded: CatalogLoadResult) => void) {
   const [viewedId, setViewedId] = useState<string | null>(null);
   const [archive, setArchive] = useState<HistorySession | null>(null);
   const viewedRef = useRef<string | null>(null);
@@ -35,15 +35,16 @@ export function useAgentHistoryView(activeSessionId: string | null) {
   const readCurrent = useCallback(async (id: string) => {
     const generation = generationRef.current;
     const scope = scopeRef.current;
-    const session = scope ? await loadSharedConversation(scope).then(scopedArchive).catch(() => null)
-      : await historyLoad(id).catch(() => null);
+    const loaded = scope ? await loadSharedConversation(scope).catch(() => null) : null;
+    const session = scope ? (loaded ? scopedArchive(loaded) : null) : await historyLoad(id).catch(() => null);
     if (
       generation !== generationRef.current ||
       viewedRef.current !== id ||
       !session?.originRunId
     ) return null;
+    if (loaded) onLoaded?.(loaded);
     return session;
-  }, []);
+  }, [onLoaded]);
 
   const refresh = useCallback(async (id: string) => {
     const session = await readCurrent(id);

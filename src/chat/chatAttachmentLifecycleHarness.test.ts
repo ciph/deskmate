@@ -1,3 +1,4 @@
+import { eventStreamFixture } from "../testing/eventStreamFixture";
 import type { InvokeOptions } from "@tauri-apps/api/core";
 import { requireBinaryUpload, wrapUploadResponse, decodeUploadOptions } from "./binaryUploadTestHelpers.test";
 import { catalogPageFixture, historyArgument, nativeHistoryFixture, registeredHistoryFixture } from "../testing/historyCatalogFixtures";
@@ -235,6 +236,7 @@ function readyAttachment(id: string, fileName: string, mime: string, kind: strin
 function installOpenCodeTransport(): void {
   const fetchMock = mock((input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(String(input)).pathname;
+    if (url === "/event") return Promise.resolve(eventStreamFixture(init?.signal));
     if (url.endsWith("/session") && init?.method === "GET") return Promise.resolve(new Response(null, { status: 200 }));
     if (url.endsWith("/session") && init?.method === "POST") return Promise.resolve(jsonResponse({ id: nextSessionId(), title: "t", directory: "." }));
     if (url.endsWith("/session/status") && init?.method === "GET") return Promise.resolve(jsonResponse({}));

@@ -1,0 +1,40 @@
+[
+  {
+    "name": "b7-windows-20261027",
+    "files": 53,
+    "differences": [
+      "README.md"
+    ],
+    "note": "Pre-existing follow-up-link exception; current-turn baseline still matches"
+  },
+  {
+    "name": "b7-windows-stop-focus-20261027",
+    "files": 95,
+    "differences": [],
+    "note": "all manifest hashes match"
+  },
+  {
+    "name": "b7-windows-cold-history-20261027",
+    "files": 159,
+    "differences": [],
+    "note": "all manifest hashes match"
+  },
+  {
+    "name": "b7-windows-native-gui-20261027",
+    "files": 86,
+    "differences": [],
+    "note": "all manifest hashes match"
+  },
+  {
+    "name": "b7-windows-tao-sse-20261027",
+    "files": 121,
+    "differences": [],
+    "note": "all manifest hashes match"
+  },
+  {
+    "name": "b7-windows-attachments-20261027",
+    "files": 210,
+    "differences": [],
+    "note": "all manifest hashes match"
+  }
+]

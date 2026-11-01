@@ -1,0 +1,6 @@
+{
+  "oldMainStatusMatches": true,
+  "oldMainCommand": "git status --porcelain=v1 --untracked-files=all",
+  "previousDevClean": true,
+  "note": "Status comparison, not a pre/post hash of every original local file; no writes performed in either old checkout"
+}

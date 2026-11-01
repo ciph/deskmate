@@ -1,0 +1,368 @@
+{
+  "date": "2026-10-27",
+  "branch": "codex/yume-performance-b6",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "workspace": "E:\\Codex\\工作伙伴\\deskmate-windows-b7",
+  "version": "0.4.21",
+  "historySchema": 3,
+  "memoryDatabaseSchema": 4,
+  "memoryExportSchema": 1,
+  "status": "B7 in progress; reproduced stream controls defect fixed",
+  "uncommitted": true,
+  "checks": {
+    "frontend": {
+      "files": 172,
+      "pass": 1358,
+      "fail": 0,
+      "skip": 8,
+      "unfinished": 0
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "log": "typecheck-final.log",
+      "configurations": 3
+    },
+    "reactDoctor": {
+      "exitCode": 0,
+      "time": "2026-10-27T12:50:27.0043138+08:00",
+      "command": "npx --yes react-doctor@latest --verbose --scope changed",
+      "score": 83,
+      "scannedFiles": 4,
+      "diagnostics": []
+    },
+    "qaBuild": {
+      "time": "2026-10-27T12:54:48.0235235+08:00",
+      "exitCode": 0,
+      "binarySha256": "B7691F480EB131BBA91F789CD4A256A27DE02460CB7FA159C5EE8E0EAAEDB2CC",
+      "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+      "identity": "com.deskmate.unifiedhistoryqa.winb720261027c",
+      "sourceHashes": [
+        {
+          "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatApp.tsx",
+          "Hash": "86F681BA0B554D240C57313B382615755520BB0BE543A77DEF4411DB9B40E61B"
+        },
+        {
+          "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\sharedConversation.ts",
+          "Hash": "FCF27DD6851C697215CDD0D0064884FE97FCB39608E77243997564C2EDDAE2CB"
+        }
+      ]
+    },
+    "productionFrontend": {
+      "time": "2026-10-27T13:05:25.3803298+08:00",
+      "html": [
+        "chat.html",
+        "pet.html",
+        "settings.html"
+      ],
+      "qaEntryPresent": false,
+      "exitCode": 0
+    },
+    "productionDesktop": {
+      "binarySha256": "35BEEF23FE7768CEB7159FCAA6D9AD6AAC5B298BEC0B26B49E6914F243178473",
+      "command": "bun run tauri build --debug --no-bundle --config output/b7-qa/production-build.json",
+      "time": "2026-10-27T13:05:53.6682582+08:00",
+      "exitCode": 0,
+      "sourceHashes": [
+        {
+          "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\ChatApp.tsx",
+          "Hash": "86F681BA0B554D240C57313B382615755520BB0BE543A77DEF4411DB9B40E61B"
+        },
+        {
+          "Path": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src\\chat\\sharedConversation.ts",
+          "Hash": "FCF27DD6851C697215CDD0D0064884FE97FCB39608E77243997564C2EDDAE2CB"
+        }
+      ],
+      "features": "default; no QA"
+    },
+    "rust": {
+      "rerun": false,
+      "previousPass": 966,
+      "previousIgnored": 24,
+      "reason": "No Rust source changes; previous Windows baseline retained"
+    }
+  },
+  "stream": {
+    "ok": true,
+    "checks": [
+      {
+        "name": "fixed-10k",
+        "passed": true,
+        "initialRows": 1000,
+        "finalRows": 1002,
+        "stableOldNodes": 1000,
+        "domUpdates": 171,
+        "busySamples": 30,
+        "focusPreserved": true,
+        "draftRestored": true,
+        "stopClicked": false,
+        "nativeFullShaMatches": true,
+        "codeMatches": true,
+        "inputP95": 32.40000000037253,
+        "scrollP95": 40.5
+      },
+      {
+        "name": "fixed-50k",
+        "passed": true,
+        "initialRows": 1000,
+        "finalRows": 1002,
+        "stableOldNodes": 1000,
+        "domUpdates": 172,
+        "busySamples": 30,
+        "focusPreserved": true,
+        "draftRestored": true,
+        "stopClicked": false,
+        "nativeFullShaMatches": true,
+        "codeMatches": true,
+        "inputP95": 33.899999998509884,
+        "scrollP95": 38.80000000074506
+      },
+      {
+        "name": "fixed-stop",
+        "passed": true,
+        "initialRows": 1000,
+        "finalRows": 1003,
+        "stableOldNodes": 1000,
+        "domUpdates": 53,
+        "busySamples": 7,
+        "focusPreserved": true,
+        "draftRestored": true,
+        "stopClicked": true,
+        "nativeFullShaMatches": null,
+        "codeMatches": null,
+        "inputP95": null,
+        "scrollP95": null
+      },
+      {
+        "name": "fixed-10k-second-cold",
+        "passed": true,
+        "initialRows": 1000,
+        "finalRows": 1002,
+        "stableOldNodes": 1000,
+        "domUpdates": 173,
+        "busySamples": 30,
+        "focusPreserved": true,
+        "draftRestored": true,
+        "stopClicked": false,
+        "nativeFullShaMatches": true,
+        "codeMatches": true,
+        "inputP95": 31.59999999962747,
+        "scrollP95": 36.70000000111759
+      }
+    ],
+    "stopAndResumePassed": true,
+    "resumeFocusPreserved": false,
+    "aborted": [
+      {
+        "id": 4,
+        "at": "2026-10-27T04:57:46.241Z",
+        "size": 50000,
+        "plannedHz": 50,
+        "plannedChunks": 500,
+        "emitted": 158,
+        "aborted": true,
+        "done": false,
+        "expectedChars": 50000,
+        "expectedSha256": "a3749b8cf4cfef55026956109cf6d5c9130777bdb06715ace9892a3c3168afea"
+      }
+    ]
+  },
+  "storage": {
+    "memory": {
+      "ok": true,
+      "forgottenId": "d50c731b-aa0a-47bc-91e8-cb6335f6dbd3",
+      "retainedId": "146e25d6-5df9-44fb-8c63-948089ba8a3e",
+      "exportedCount": 2,
+      "schemaVersion": 1,
+      "remaining": 1,
+      "forgottenSearchResults": 0
+    },
+    "history": {
+      "ok": true,
+      "key": "native:16:managed-local-v193:c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb720261027c/workspace27:ses_winb7focus3000020261027",
+      "sessionId": "ses_winb7focus3000020261027",
+      "directory": "c:/users/chenglingxiao/appdata/roaming/com.deskmate.unifiedhistoryqa.winb720261027c/workspace",
+      "messagesBefore": 1004,
+      "loadError": "history_deleted",
+      "nativeStatus": 404,
+      "listedAfter": false
+    },
+    "restart": {
+      "ok": true,
+      "memory": {
+        "retainedId": "146e25d6-5df9-44fb-8c63-948089ba8a3e",
+        "exportCount": 1,
+        "forgottenSearchResults": 0,
+        "afterCleanupExportCount": 0,
+        "schemaVersion": 1
+      },
+      "history": {
+        "loadError": "history_deleted",
+        "nativeStatus": 404,
+        "listedAfter": false
+      }
+    },
+    "integrity": [
+      {
+        "identity": "com.deskmate.unifiedhistoryqa.winb720261027b",
+        "databases": [
+          {
+            "file": "chat-resources.sqlite3",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 0
+          },
+          {
+            "file": "deskmate-memory.db",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 4
+          },
+          {
+            "file": "history-catalog.sqlite",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 3
+          },
+          {
+            "file": "yume-worklog.db",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 2
+          },
+          {
+            "file": "opencode-home/xdg-data/opencode/opencode.db",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 0
+          }
+        ]
+      },
+      {
+        "identity": "com.deskmate.unifiedhistoryqa.winb720261027c",
+        "databases": [
+          {
+            "file": "chat-resources.sqlite3",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 0
+          },
+          {
+            "file": "deskmate-memory.db",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 4
+          },
+          {
+            "file": "history-catalog.sqlite",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 3
+          },
+          {
+            "file": "yume-worklog.db",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 2
+          },
+          {
+            "file": "opencode-home/xdg-data/opencode/opencode.db",
+            "integrity": [
+              "ok"
+            ],
+            "schemaVersion": 0
+          }
+        ],
+        "erasure": [
+          {
+            "file": "deskmate-memory.db",
+            "exists": true,
+            "bytes": 180224,
+            "forgottenSentinelPresent": false,
+            "retainedThenForgottenSentinelPresent": false
+          },
+          {
+            "file": "deskmate-memory.db-wal",
+            "exists": true,
+            "bytes": 0,
+            "forgottenSentinelPresent": false,
+            "retainedThenForgottenSentinelPresent": false
+          },
+          {
+            "file": "deskmate-memory.db-shm",
+            "exists": true,
+            "bytes": 32768,
+            "forgottenSentinelPresent": false,
+            "retainedThenForgottenSentinelPresent": false
+          }
+        ]
+      }
+    ]
+  },
+  "cleanup": {
+    "time": "2026-10-27T13:06:09.9038806+08:00",
+    "roots": [
+      {
+        "identity": "com.deskmate.unifiedhistoryqa.winb720261027b",
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027b",
+        "deleted": true,
+        "ownedProcessesAlive": 0,
+        "credentialCleared": true
+      },
+      {
+        "identity": "com.deskmate.unifiedhistoryqa.winb720261027b",
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb720261027b",
+        "deleted": true,
+        "ownedProcessesAlive": 0,
+        "credentialCleared": true
+      },
+      {
+        "identity": "com.deskmate.unifiedhistoryqa.winb720261027c",
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb720261027c",
+        "deleted": true,
+        "ownedProcessesAlive": 0,
+        "credentialCleared": true
+      },
+      {
+        "identity": "com.deskmate.unifiedhistoryqa.winb720261027c",
+        "root": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb720261027c",
+        "deleted": true,
+        "ownedProcessesAlive": 0,
+        "credentialCleared": true
+      }
+    ],
+    "listeners": [],
+    "portsClosed": true,
+    "providerPid": 83504,
+    "providerProcessGone": true,
+    "providerStop": "Ctrl-C to owned PTY session; Windows exit 1",
+    "noProductionIdentityRun": true
+  },
+  "preservation": {
+    "time": "2026-10-27T13:08:02.6261266+08:00",
+    "previousDevClean": true,
+    "oldMainStatusMatches": true,
+    "note": "Status comparison, not pre/post file hashes; no writes performed in either old checkout"
+  },
+  "limitations": [
+    "First original failure lacks event-source tracing; deterministic real-event replay reproduces the mechanism.",
+    "Earliest cold-start discovery timed out; later loaded untouched 1000-message sessions. Cold-start discovery is still open.",
+    "CDP programmatic DOM/IPC with real WebView2 and OpenCode; no physical GUI acceptance or paid model.",
+    "Submission temporarily disables textarea; fast resume lost pre-send focus, separate from streaming focus preservation.",
+    "Full row mounting, PDF/RSS, GPU/power, multiwindow/migration, GUI/physical input and Mac gates remain open."
+  ],
+  "evidence": {
+    "originalReport": "E:/Codex/工作伙伴/reports/yume-b7-stop-focus-20261027",
+    "redLogFullBytes": 44507842,
+    "rawManifest": "raw-log-manifest.json",
+    "fingerprints": "source-fingerprints.json"
+  }
+}

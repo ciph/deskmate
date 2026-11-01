@@ -1,0 +1,17 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\useWorklogChat.test.tsx:
+(pass) opening a native session restores its rejected journal receipt without another reply [23.96ms]
+(pass) receipt recovery reads the selected native directory [0.96ms]
+(pass) revisiting a session cannot publish its previous recovery after switching directories [1.53ms]
+(pass) a late history recovery cannot publish receipts into another session [1.12ms]
+(pass) unrelated journal changes do not turn a rejected operation back into pending [9.15ms]
+(pass) late empty receipt lookup cannot erase a later rejection [15.32ms]
+(pass) a verified host receipt can resolve a previously pending operation [15.58ms]
+(pass) an old-session save completes without publishing a receipt into the new chat [15.56ms]
+(pass) an old-session rejected schedule does not attach an error to the new chat [14.68ms]
+
+ 9 pass
+ 0 fail
+ 16 expect() calls
+Ran 9 tests across 1 file. [2.45s]

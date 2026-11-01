@@ -1,0 +1,21 @@
+{
+  "version": "0.4.24",
+  "productVersion": "0.4.24",
+  "releaseCommit": "b9c5606863ebd60d18a4004a31188ca6b6d100dc",
+  "repository": "ciph/deskmate",
+  "installerBytes": 117713742,
+  "installerSha256": "55c06cee9603840ea2dc8acbfbfb48100e422b7316d8e94e6d9e1d53d1b7188d",
+  "authenticodeStatus": "NotSigned",
+  "assetSha256": {
+    "YUME_0.4.24_x64-setup.exe": "55c06cee9603840ea2dc8acbfbfb48100e422b7316d8e94e6d9e1d53d1b7188d",
+    "YUME_0.4.24_x64-setup.exe.sig": "56e47934dbd493ae0f5e9c8459ac6af59d75823676efe7eb57de7c1bf1ede173",
+    "latest.json": "d2e078e496abc2d7785e40c810dc03a2ee9e64f37d0d8735601f9b79fddc7cf7"
+  },
+  "integrityVerified": true,
+  "contentsVerified": true,
+  "iconsVerified": true,
+  "githubDigestsVerified": true,
+  "installedOrGuiUpgradeTested": false,
+  "extractedExecutable": "E:\\Codex\\工作伙伴\\release-artifacts\\v0.4.24-windows-release\\extracted-5a14bfa756534b4fae7f860edf6c0594\\yume.exe",
+  "checkedAt": "2026-10-29T07:21:26.4014565Z"
+}

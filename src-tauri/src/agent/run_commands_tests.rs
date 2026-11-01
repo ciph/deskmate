@@ -111,7 +111,7 @@ fn history_start_uses_only_the_persisted_session_workspace_pair() -> TestResult<
     runs.begin("msg_origin", &workspace, "first")?;
     runs.bind_session("msg_origin", "ses_history")?;
     runs.fail_active("msg_origin", "done")?;
-    let history = HistoryState(Mutex::new(vec![HistorySession {
+    let history = HistoryState::new(Mutex::new(vec![HistorySession {
         local_link: None,
         id: "ses_history".into(),
         title: "first".into(),

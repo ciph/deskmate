@@ -1,0 +1,8 @@
+import { connect } from './cdp-client';
+import {writeFileSync} from 'node:fs';
+const c=await connect('chat');
+try {
+ const result=await c.evaluate(`(async()=>{const initial=document.querySelector('textarea.chat-input');const old=[...document.querySelectorAll('[data-message-id]')];const trace=[];const start=performance.now();for(let i=0;i<350;i++){const input=document.querySelector('textarea.chat-input');const stop=document.querySelector('button.chat-abort');const r=stop?.getBoundingClientRect();trace.push({at:performance.now()-start,rows:document.querySelectorAll('[data-message-id]').length,sameInput:input===initial,focus:document.activeElement===input,draft:input?.value,stop:!!stop,stopVisible:!!r&&r.width>0&&r.height>0&&r.bottom<=innerHeight&&r.right<=innerWidth,tail:[...document.querySelectorAll('.chat-msg-assistant')].at(-1)?.textContent?.length});await new Promise(r=>setTimeout(r,100));}return {initialRows:old.length,stableOldNodes:old.filter(x=>x.isConnected).length,trace,finalText:[...document.querySelectorAll('.chat-msg-assistant')].at(-1)?.innerText,finalCode:[...document.querySelectorAll('.chat-msg-assistant')].at(-1)?.querySelector('code')?.textContent};})()`);
+ writeFileSync('E:/Codex/工作伙伴/reports/yume-b7-native-gui-20261027/'+(process.argv[2]||'native-observation')+'.json',JSON.stringify(result,null,2));
+ console.log(JSON.stringify({initialRows:result.initialRows,stableOldNodes:result.stableOldNodes,streamSamples:result.trace.filter(x=>x.stop).length,stopMissingVisible:result.trace.filter(x=>x.stop&&!x.stopVisible).length,focusLossStreaming:result.trace.filter(x=>x.stop&&!x.focus).length,final:result.trace.at(-1)}));
+} finally {c.close()}

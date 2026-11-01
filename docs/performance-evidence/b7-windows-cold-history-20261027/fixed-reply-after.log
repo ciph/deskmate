@@ -1,0 +1,18 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\chatFixedReply.test.tsx:
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects history_native_missing [76.74ms]
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects %s [44.37ms]
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects history_native_timeout [33.91ms]
+(pass) 小著固定名字由来回复 > a newly registered unknown session refreshes host capabilities before the first send [32.27ms]
+new conversation status unavailable synthetic unavailable
+(pass) 小著固定名字由来回复 > a new session stays read only when its fresh host status cannot be loaded [13.88ms]
+(pass) 小著固定名字由来回复 > reopening a fixed reply preserves the local turn in the same native conversation [91.19ms]
+(pass) 小著固定名字由来回复 > keeps input locked until a disconnected workbench session has a verified state [61.62ms]
+(pass) 小著固定名字由来回复 > sends four lines two seconds apart and shows typing while waiting [79.96ms]
+(pass) 小著固定名字由来回复 > answers who-am-I directly with the requested intro [46.73ms]
+(pass) 小著固定名字由来回复 > stopping during the wait prevents stale later bubbles [46.34ms]
+(pass) 小著固定名字由来回复 > shows a 100 ms first chunk immediately and settles a 300 ms response [63.45ms]
+(pass) 小著固定名字由来回复 > shows slow streaming replies at their real arrival time [76.12ms]
+(pass) 小著固定名字由来回复 > does not add an empty placeholder bubble next to the typing indicator [61.41ms]
+(pass) 小著固定名字由来回复 > shows web search as a breathing network activity that settles when completed [62.66ms]

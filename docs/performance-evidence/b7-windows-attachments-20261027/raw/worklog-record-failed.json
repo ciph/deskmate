@@ -1,0 +1,64 @@
+{
+  "entries": [],
+  "reports": [],
+  "runs": [],
+  "schedules": [],
+  "provider": {
+    "mode": "success",
+    "delayMs": 0,
+    "pendingTool": null,
+    "requests": [
+      {
+        "at": "2026-10-27T09:36:14.176Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": false,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": "worklog_record",
+        "invokedInput": {
+          "mode": "direct",
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "完成 B7 附件和物理拖放验收。",
+          "status": "done"
+        }
+      },
+      {
+        "at": "2026-10-27T09:36:14.247Z",
+        "tools": [
+          "bash",
+          "edit",
+          "question",
+          "task",
+          "webfetch",
+          "websearch",
+          "worklog_generate_report",
+          "worklog_query",
+          "worklog_record",
+          "worklog_schedule_report",
+          "worklog_update",
+          "write"
+        ],
+        "toolResult": true,
+        "mode": "success",
+        "delayMs": 0,
+        "invokedTool": null,
+        "invokedInput": null
+      }
+    ],
+    "modelRequests": []
+  }
+}

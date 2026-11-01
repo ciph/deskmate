@@ -39,7 +39,7 @@ struct OwnedRun {
     workspace: WorkspaceRoot,
     approvals: Vec<AgentPermissionApproval>,
     resources: Vec<crate::chat_attachments::resources::ReadScope>,
-    approval_started_at: HashMap<String, Instant>,
+    approval_deadlines: HashMap<String, Instant>,
 }
 
 struct OwnedRequest {
@@ -78,14 +78,12 @@ impl AgentPermissionState {
     pub(super) fn expire_current_for_test(&self, run_id: &str) -> Result<(), String> {
         let mut data = self.0.lock().map_err(|_| "agent_permission_unavailable")?;
         let run = data.runs.get_mut(run_id).ok_or("agent_run_unknown")?;
-        let expired = Instant::now()
-            .checked_sub(APPROVAL_TIMEOUT)
-            .ok_or("agent_test_clock_invalid")?;
-        if run.approval_started_at.is_empty() {
+        let expired = Instant::now();
+        if run.approval_deadlines.is_empty() {
             return Err("agent_test_no_approval".into());
         }
-        for started in run.approval_started_at.values_mut() {
-            *started = expired;
+        for deadline in run.approval_deadlines.values_mut() {
+            *deadline = expired;
         }
         Ok(())
     }
@@ -114,7 +112,7 @@ impl AgentPermissionState {
             workspace: WorkspaceRoot::open(workspace).map_err(|error| error.to_string())?,
             approvals: approvals.to_vec(),
             resources: Vec::new(),
-            approval_started_at: HashMap::new(),
+            approval_deadlines: HashMap::new(),
         };
         let mut data = self
             .0
@@ -244,9 +242,9 @@ impl AgentPermissionState {
                 continue;
             }
             let result = if run
-                .approval_started_at
+                .approval_deadlines
                 .get(&request.id)
-                .is_some_and(|started| now.saturating_duration_since(*started) >= APPROVAL_TIMEOUT)
+                .is_some_and(|deadline| now >= *deadline)
             {
                 eprintln!(
                     "agent permission approval timed out: run={run_id} request={}",
@@ -271,9 +269,9 @@ impl AgentPermissionState {
                 }
             };
             if matches!(result, PendingDecision::Ask(_)) {
-                run.approval_started_at
+                run.approval_deadlines
                     .entry(request.id.clone())
-                    .or_insert(now);
+                    .or_insert(now + APPROVAL_TIMEOUT);
             }
             evaluated.push((request, result));
         }
@@ -344,8 +342,8 @@ impl AgentPermissionState {
         if data
             .runs
             .get(run_id)
-            .and_then(|run| run.approval_started_at.get(request_id))
-            .is_some_and(|started| now.saturating_duration_since(*started) >= APPROVAL_TIMEOUT)
+            .and_then(|run| run.approval_deadlines.get(request_id))
+            .is_some_and(|deadline| now >= *deadline)
         {
             return Err("agent_permission_expired".into());
         }

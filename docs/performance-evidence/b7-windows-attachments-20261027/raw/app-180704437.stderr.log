@@ -1,0 +1,13 @@
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7attachments20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7attachments20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb7attachments20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7attachments20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Roaming\com.deskmate.unifiedhistoryqa.winb7attachments20261027a
+worklog QA isolated directory: C:\Users\chenglingxiao\AppData\Local\com.deskmate.unifiedhistoryqa.winb7attachments20261027a
+settings window QA: large=false, physical_size=Ok(PhysicalSize { width: 900, height: 650 }), scale_factor=Ok(1.25)
+chat window QA: large=true, physical_size=Ok(PhysicalSize { width: 900, height: 950 }), scale_factor=Ok(1.25)
+
+thread 'main' (231680) panicked at C:\Users\chenglingxiao\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.11.5\src\app.rs:1425:11:
+Failed to setup app: error encountered during setup hook: history_catalog_invalid
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[1027/180706.585:ERROR:ui\gfx\win\window_impl.cc:172] Failed to unregister class Chrome_WidgetWin_0. Error = 1412

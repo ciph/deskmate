@@ -1,0 +1,58 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\chatFixedReply.test.tsx:
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects history_native_missing [86.65ms]
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects %s [31.99ms]
+(pass) 小著固定名字由来回复 > shows a visible error when the workbench rejects history_native_timeout [30.22ms]
+(pass) 小著固定名字由来回复 > a newly registered unknown session refreshes host capabilities before the first send [30.63ms]
+new conversation status unavailable synthetic unavailable
+(pass) 小著固定名字由来回复 > a new session stays read only when its fresh host status cannot be loaded [15.71ms]
+(pass) 小著固定名字由来回复 > reopening a fixed reply preserves the local turn in the same native conversation [75.12ms]
+(pass) 小著固定名字由来回复 > keeps input locked until a disconnected workbench session has a verified state [61.64ms]
+(pass) 小著固定名字由来回复 > sends four lines two seconds apart and shows typing while waiting [50.20ms]
+(pass) 小著固定名字由来回复 > answers who-am-I directly with the requested intro [47.41ms]
+(pass) 小著固定名字由来回复 > stopping during the wait prevents stale later bubbles [45.60ms]
+(pass) 小著固定名字由来回复 > shows a 100 ms first chunk immediately and settles a 300 ms response [61.82ms]
+(pass) 小著固定名字由来回复 > shows slow streaming replies at their real arrival time [77.11ms]
+(pass) 小著固定名字由来回复 > does not add an empty placeholder bubble next to the typing indicator [64.06ms]
+(pass) 小著固定名字由来回复 > shows web search as a breathing network activity that settles when completed [61.31ms]
+(pass) catalog refresh preserves local reply controls through idle [98.33ms]
+(pass) catalog refresh preserves local reply controls through stop [116.56ms]
+(pass) catalog refresh preserves local reply controls through stop-error [108.57ms]
+(pass) reopening a running read-only native session continues receiving its live text [138.07ms]
+chat attachment cleanup failed 90 |   const sessionId = parseId(readField(source, "sessionId"), "sessionId");
+91 |   return { sessionId };
+92 | }
+93 | 
+94 | export function parseRecord(value: unknown, context: string): Readonly<Record<string, unknown>> {
+95 |   if (typeof value !== "object" || value === null || Array.isArray(value)) throw new AttachmentApiError(`invalid ${context}`);
+                                                                                      ^
+AttachmentApiError: invalid cleanup receipt
+ reason: "invalid cleanup receipt",
+
+      at parseRecord (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\attachmentApiBoundary.ts:95:82)
+      at parseCleanupReceipt (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\attachmentApi.ts:175:31)
+
+Work journal receipt recovery unavailable
+(pass) switching to another native directory and session rejects the previous stream's text [110.88ms]
+(pass) native part IDs resume into one assistant row without duplicated restored content [81.96ms]
+chat attachment cleanup failed 90 |   const sessionId = parseId(readField(source, "sessionId"), "sessionId");
+91 |   return { sessionId };
+92 | }
+93 | 
+94 | export function parseRecord(value: unknown, context: string): Readonly<Record<string, unknown>> {
+95 |   if (typeof value !== "object" || value === null || Array.isArray(value)) throw new AttachmentApiError(`invalid ${context}`);
+                                                                                      ^
+AttachmentApiError: invalid cleanup receipt
+ reason: "invalid cleanup receipt",
+
+      at parseRecord (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\attachmentApiBoundary.ts:95:82)
+      at parseCleanupReceipt (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\attachmentApi.ts:175:31)
+
+Work journal receipt recovery unavailable
+(pass) a Stop confirmation for an old generation cannot cancel a newly selected native run [132.85ms]
+
+ 21 pass
+ 0 fail
+ 150 expect() calls
+Ran 21 tests across 1 file. [9.21s]

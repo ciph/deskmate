@@ -1,0 +1,71 @@
+{
+  "rows": [
+    {
+      "personaId": "xiaozhu",
+      "state": {
+        "canvas": true,
+        "sleep": "sleep",
+        "errors": "",
+        "draws": 9212,
+        "assets": [
+          {
+            "name": "http://tauri.localhost/personas/xiaozhu/figure.glb",
+            "duration": 6.100000008940697,
+            "transferSize": 384468
+          }
+        ]
+      }
+    },
+    {
+      "personaId": "xiaozhu-nidaime",
+      "state": {
+        "canvas": true,
+        "sleep": "awake",
+        "errors": "",
+        "draws": 16248,
+        "assets": [
+          {
+            "name": "http://tauri.localhost/personas/xiaozhu/figure.glb",
+            "duration": 6.100000008940697,
+            "transferSize": 384468
+          }
+        ]
+      }
+    },
+    {
+      "personaId": "xiaozhu-sandaime",
+      "state": {
+        "canvas": true,
+        "sleep": "awake",
+        "errors": "",
+        "draws": 16413,
+        "assets": [
+          {
+            "name": "http://tauri.localhost/personas/xiaozhu/figure.glb",
+            "duration": 6.100000008940697,
+            "transferSize": 384468
+          }
+        ]
+      }
+    }
+  ],
+  "hidden": {
+    "hiddenBefore": 16414,
+    "hiddenAfter": 16414,
+    "restoredBefore": 16414,
+    "restoredAfter": 16420
+  },
+  "max": {
+    "width": 640,
+    "height": 840,
+    "dpr": 1.25,
+    "canvas": [
+      {
+        "width": 800,
+        "height": 1050
+      }
+    ],
+    "errors": ""
+  },
+  "method": "Actual native release QA; normal settings IPC, WebGL draw counters, real hide/show. Tests bundled 3D personas; not rig2d/GIF or every animation extreme."
+}

@@ -1,0 +1,31 @@
+{
+  "text": "会话历史\n新会话\n筛选\n会话\n已归档\n1 段会话\n今天\nYUME chat\n16:43\nB7_APPROVAL_COMPLETED\n轻聊天",
+  "focus": true,
+  "active": "<div class=\"history-organizer\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"_r_1_\" tabindex=\"-1\"><header class=\"history-organizer-header\" data-tauri-drag-region=\"\"><h2 id=\"_r_1_\">会话历史</h2><button type=\"button\" class=\"history-organizer-header-action\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" viewBox=\"0 0 256 256\" class=\"app-icon app-icon-16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16",
+  "inputs": [
+    {
+      "tag": "INPUT",
+      "placeholder": "搜索标题和项目",
+      "disabled": false,
+      "value": ""
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": false,
+      "value": ""
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": false,
+      "value": ""
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": false,
+      "value": "on"
+    }
+  ]
+}

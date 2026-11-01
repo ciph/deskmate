@@ -1,0 +1,30 @@
+[
+  {
+    "path": "src-tauri/Cargo.toml",
+    "sha256": "7c6a93038cc6a37008b266e388ed47c88ed0b98443119ae71a55c42471b48541"
+  },
+  {
+    "path": "src-tauri/Cargo.lock",
+    "sha256": "4c31ec5a8956358b81d84339ac3b367c1ac0f5f1254a310cf7091874ef4e2f96"
+  },
+  {
+    "path": "src-tauri/tauri.conf.json",
+    "sha256": "c500bc7e3c321d82a0cca3a93bb1ba8a8bbb74542e649abded70c2d0107dc2af"
+  },
+  {
+    "path": "src/chat/useWorklogChat.ts",
+    "sha256": "2f0fb7c0bd1b290632fc6b7b06a88d5b3b28f096adfd9b20874b8d8ee6145557"
+  },
+  {
+    "path": "src/chat/localResources.ts",
+    "sha256": "04fc2bea3cf899e46457979e65d6130dcedfe17a88545c84bb9ad58950e50820"
+  },
+  {
+    "path": "src/chat/attachmentApi.ts",
+    "sha256": "0a912f5e81f9c7428907ab0bffd84310cbe624910a5ada7f4a0e38768d8e2b1c"
+  },
+  {
+    "path": "scripts/worklog-qa/provider.js",
+    "sha256": "e35b9c69fe8f074331825ea2f3ff3d9fc2f5b2ab06ff7b60333a174ded4bb615"
+  }
+]

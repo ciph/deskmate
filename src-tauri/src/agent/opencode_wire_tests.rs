@@ -559,3 +559,26 @@ fn single_message_accepts_valid_user_assistant_empty_parts_and_empty_text() -> R
     }
     Ok(())
 }
+
+
+#[test]
+fn snapshot_preserves_native_file_names_without_resolving_urls() -> Result<(), String> {
+    let body = serde_json::json!([{
+        "info": {"id":"msg_file","sessionID":"ses_native","role":"user","time":{"created":1}},
+        "parts": [
+            {"id":"p_pdf","type":"file","filename":"b7.pdf","mime":"text/plain","url":"data:text/plain;base64,cHJpdmF0ZQ=="},
+            {"id":"p_remote","type":"file","filename":"remote.txt","mime":"text/plain","url":"https://invalid.example/never-fetch"},
+            {"id":"p_text","type":"text","filename":"spoof.txt","text":"question"}
+        ]
+    }]);
+    let (port, server) = single_message_response("200 OK", body)?;
+    let messages = client_for(port, Path::new(".")).snapshot("ses_native")?;
+    assert_eq!(messages[0].parts[0].file_name.as_deref(), Some("b7.pdf"));
+    assert_eq!(messages[0].parts[1].file_name.as_deref(), Some("remote.txt"));
+    assert!(messages[0].parts[2].file_name.is_none());
+    let debug = format!("{:?}", messages[0]);
+    assert!(!debug.contains("base64"));
+    assert!(!debug.contains("invalid.example"));
+    assert!(server.join().map_err(|_| "file server join")??.starts_with("GET /session/ses_native/message?"));
+    Ok(())
+}

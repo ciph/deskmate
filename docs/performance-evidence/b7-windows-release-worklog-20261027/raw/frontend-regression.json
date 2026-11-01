@@ -1,0 +1,1218 @@
+{
+  "method": "one complete serial run, no substitutions",
+  "files": 172,
+  "pass": 1367,
+  "fail": 0,
+  "skip": 8,
+  "receipt": {
+    "startedAt": "2026-10-27T19:35:55.0565085+08:00",
+    "finishedAt": "2026-10-27T19:38:32.0678487+08:00",
+    "exitCode": 0
+  },
+  "results": [
+    {
+      "file": "scripts/agent-qa/client.test.ts",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/agent-qa/permissions-evidence.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/bundled-personas.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/check-package-resources.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/macos-release.test.ts",
+      "pass": 6,
+      "fail": 0,
+      "skip": 8,
+      "exit": 0
+    },
+    {
+      "file": "scripts/pack-figure2d.test.ts",
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/pack-personas.test.ts",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/pack-position.test.ts",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/pack-rig2d.test.ts",
+      "pass": 14,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/persona-asset-policy.test.ts",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/prepare-opencode.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/prepare-persona-envelopes.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/test-frontend.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/workbench-ownership.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/workbench-qa/provider.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/workbench-routing.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/workbench-theme.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/worklog-qa/provider-models.test.ts",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/worklog/bridge.test.ts",
+      "pass": 10,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "scripts/worklog/full-flow.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/ArtifactCard.test.tsx",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/AttachmentTray.test.tsx",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/ChatKeyboardNavigation.test.tsx",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/ChatMessageRow.test.tsx",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/ChatNavigation.test.tsx",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/ChatText.test.tsx",
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/HistoryOrganizer.test.tsx",
+      "pass": 16,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/HistoryPanel.test.tsx",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/LocalResourceTray.test.tsx",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/MediaPreview.test.tsx",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/ToolApprovalCards.test.tsx",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/WorklogReceipt.test.tsx",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/WorkspaceTask.test.tsx",
+      "pass": 15,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/attachmentApi.test.ts",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/attachmentApiLeak.test.ts",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/attachmentBinaryUpload.test.ts",
+      "pass": 29,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/attachmentState.test.ts",
+      "pass": 94,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/attachments.test.ts",
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/attachmentsPdfLifecycle.test.ts",
+      "pass": 17,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/binaryUploadTestHelpers.test.ts",
+      "pass": 0,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatAttachmentFlow.test.tsx",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatAttachmentFlowHarness.test.ts",
+      "pass": 0,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatAttachmentLifecycle.test.tsx",
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatAttachmentLifecycleHarness.test.ts",
+      "pass": 0,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatAttachmentSend.test.tsx",
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatAttachmentSendHarness.test.tsx",
+      "pass": 0,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatFixedReply.test.tsx",
+      "pass": 24,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatMemory.test.tsx",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatPersona.test.ts",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatPetActivity.test.tsx",
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/chatWorklogPrompt.test.tsx",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/currentInformation.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/dragDropConfig.test.ts",
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/localResources.test.ts",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/memoryActions.test.ts",
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/messagePersona.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/nativeResourceFlow.test.tsx",
+      "pass": 10,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/pdfPageText.test.ts",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/petActivity.test.ts",
+      "pass": 20,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/providerConnection.test.tsx",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/sharedConversation.test.ts",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/streamText.test.ts",
+      "pass": 10,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/toolPart.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useAgentHistoryView.test.tsx",
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useAgentRun.test.tsx",
+      "pass": 17,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useChatAttachments.test.ts",
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useChatAttachmentsGate.test.ts",
+      "pass": 13,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useChatAttachmentsHarness.test.ts",
+      "pass": 0,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useChatAttachmentsPreviewLifecycle.test.ts",
+      "pass": 16,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useChatAttachmentsUtils.test.ts",
+      "pass": 21,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useHistoryOrganizerRequest.test.tsx",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useLocalResources.test.tsx",
+      "pass": 16,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/usePersonaAvatar.test.tsx",
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useToolPermissions.test.tsx",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/useWorklogChat.test.tsx",
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/webSearchSites.test.ts",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/chat/worklogActions.test.ts",
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/devtools.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/horoscope/date.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/horoscope/generator.test.ts",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/localAiUsage.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/memory.test.ts",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/nativeHistoryEvents.test.ts",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/opencode.directory.test.ts",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/opencode.test.ts",
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/packs.events.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/petState.test.ts",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/pomodoro.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/settings.test.ts",
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/toolPermissions.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/unifiedHistory.test.ts",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/userAvatar.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/lib/worklog.test.ts",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/GifPetView.test.tsx",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/GlbPetView.visibility.test.tsx",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetAnimation.test.ts",
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetApp.glbMood.test.tsx",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetApp.loading.test.tsx",
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetApp.reload.test.tsx",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetPomodoro.test.tsx",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetRendererActions.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetRendererEnvelope.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetRendererResources.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/PetRendererVisibility.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/figure2d.contract.test.ts",
+      "pass": 65,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/figure2d.test.ts",
+      "pass": 24,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/frameGate.test.ts",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/gifGeometry.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/gifState.test.ts",
+      "pass": 20,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/mouseFollow.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/personaAssets.test.ts",
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/personaAvatar.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/personaCatalog.test.ts",
+      "pass": 16,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/petLayout.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/petSleep.test.ts",
+      "pass": 10,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/petWindowGeometry.test.ts",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/rig2d/assets.test.ts",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/rig2d/config.test.ts",
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/rig2d/renderer.test.ts",
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/sandaimeAsset.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/useGifPassthrough.lifecycle.test.tsx",
+      "pass": 14,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/useGifPassthrough.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/useGifState.test.tsx",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/useGifVisibility.test.tsx",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/usePetInteraction.test.tsx",
+      "pass": 10,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/usePetSleep.test.tsx",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/variantEnvelope.test.ts",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/variantEnvelopeAsset.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/xiaozhuNidaime.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/pet/xiaozhuSandaime.test.ts",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/AiProviderConnection.test.tsx",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/AiProviderDisclosure.test.tsx",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/AiProviderList.test.tsx",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/AiProviderShortcuts.test.tsx",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/AiTab.test.tsx",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/AiUsage.test.tsx",
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/MemoryTab.test.tsx",
+      "pass": 18,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/PersonaPackNavigation.test.tsx",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/PersonaPacks.test.tsx",
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/PersonaPacksLoading.test.tsx",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/SettingsKeyboardNavigation.test.tsx",
+      "pass": 22,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/ToolPermissionsTab.test.tsx",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/UpdateFooter.test.tsx",
+      "pass": 27,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/UserAvatarControl.test.tsx",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/UserAvatarSettings.test.tsx",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/WidgetSettings.test.tsx",
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/WindowsComponentControl.test.tsx",
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/WorklogWidget.test.tsx",
+      "pass": 15,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/aiProviderModel.test.ts",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/modelManufacturer.test.ts",
+      "pass": 20,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/settingsPrimitives.test.tsx",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/theme.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/updateErrors.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/updateState.test.ts",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/widgets/HoroscopeWidget.test.tsx",
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/widgets/PomodoroWidget.test.tsx",
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/widgets/TimePicker.test.tsx",
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/widgets/useDailyHoroscope.test.tsx",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/widgets/usePomodoro.test.tsx",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/widgets/usePomodoroErrors.test.tsx",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/worklog/ReportEditor.test.tsx",
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/worklog/ReportSchedulePanel.test.tsx",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/worklog/WeekWheel.test.tsx",
+      "pass": 17,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/worklog/WorklogTab.test.tsx",
+      "pass": 13,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/worklog/reportExport.test.ts",
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/settings/worklog/worklogWeek.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/testing/harness.test.tsx",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/ui/Avatar.test.tsx",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/workbench/history-shortcut.test.ts",
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/workbench/session-route.test.ts",
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "src/workbench/theme-sync.test.ts",
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    {
+      "file": "vite.config.test.ts",
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    }
+  ]
+}

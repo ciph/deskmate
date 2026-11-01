@@ -1,6 +1,32 @@
 # 性能整改便携证据
 
-2026-10-24 为 Mac 交接从 Windows 存档逐字节复制；没有重新执行这些测试或重新发布。当前状态及下一步见 [接续说明](../performance-remediation-handoff.md)，任务全文见 [施工计划](../performance-remediation-plan.md)。
+最新交付为 [Windows 0.4.24 发布回执](release-v0.4.24-windows/README.md)，长历史 B0–B4 见[独立验收](long-history-closeout-20261029/README.md)，本机审计结果见 [B7 完整报告](b7-windows-closeout-20261028/README.md) 与 [20 项矩阵](b7-windows-closeout-20261028/audit-matrix.json)。当前待验统一见 [验收待办](../verification-backlog.md)，此页只维护证据索引。
+
+## 各轮记录
+
+以下报告、截图、日志、失败与 SHA 清单保留原字节和原基线。旧报告中的“未发布”“下一步”“尚需几轮”仅描述其形成时点；后续通过不改写原失败，也不把旧测试数当本轮复测。
+
+| 日期 | 证据范围 |
+| --- | --- |
+| 2026-10-29 | [0.4.24 公开资产、CI、签名、匿名回读及 0.4.23 失败修复](release-v0.4.24-windows/README.md) |
+| 2026-10-29 | [长历史 B0–B4、G1–G5 与 Windows 合成数据物理验收](long-history-closeout-20261029/README.md) |
+| 2026-10-28 | [0.4.22 公开资产、CI、签名与下载回读](release-v0.4.22-windows/README.md) |
+| 2026-10-28 | [本机交付、20 项处置、最终检查及限制](b7-windows-closeout-20261028/README.md) |
+| 2026-10-28 | [release 附件与完整日志物理验收](b7-windows-release-acceptance-20261028/README.md) |
+| 2026-10-27 | [release 媒体与当时的桌面中断](b7-windows-release-worklog-20261027/README.md) |
+| 2026-10-27 | [附件、日志回执与受控迁移恢复](b7-windows-attachments-20261027/README.md) |
+| 2026-10-27 | [Tao 绘制重入和审批 SSE 修复](b7-windows-tao-sse-20261027/README.md) |
+| 2026-10-27 | [原生截图、键鼠与发送焦点](b7-windows-native-gui-20261027/README.md) |
+| 2026-10-27 | [冷历史发现和多窗口](b7-windows-cold-history-20261027/README.md) |
+| 2026-10-27 | [首次长流式 Stop/焦点](b7-windows-stop-focus-20261027/README.md) |
+| 2026-10-27 | [Windows 首批基线与原失败](b7-windows-20261027/README.md) |
+| 2026-10-27 | [Mac 流式与 PDF 生命周期](b7-macos-20261027/README.md) |
+| 2026-10-26 | [Mac 附件与长历史接续](b7-macos-20261026/README.md) |
+| 2026-10-25 | [Mac B7 初次本机检查](b7-macos-20261025/README.md) |
+
+## 原始审计与 0.4.21 发布原件
+
+2026-10-24 从 Windows 原存档按字节复制；不是本轮重测或重新发布。
 
 | 文件 | 时间与用途 |
 | --- | --- |

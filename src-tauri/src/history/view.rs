@@ -216,7 +216,10 @@ pub(crate) async fn history_load(
                         messages: &messages,
                     },
                 ) {
-                    Ok(_) => DetailAvailability::Ready,
+                    Ok((_, changed)) => {
+                        if changed { state.committed(); }
+                        DetailAvailability::Ready
+                    },
                     Err(error) if error == "history_deleted" => return Ok(None),
                     Err(error) => return Err(error),
                 }

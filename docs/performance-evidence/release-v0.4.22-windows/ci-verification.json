@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "releaseCommit": "1901fb8fd46346acfd5e34661f707f7aafde7eab",
+  "releaseRunId": 40630310481,
+  "url": "https://github.com/ciph/deskmate/actions/runs/40630310481",
+  "jobs": [
+    {
+      "name": "checks / Rebuild pinned workbench",
+      "conclusion": "success",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40630310481/job/122624895876"
+    },
+    {
+      "name": "checks / Source checks (macos-15)",
+      "conclusion": "success",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40630310481/job/122624896129"
+    },
+    {
+      "name": "checks / Source checks (windows-latest)",
+      "conclusion": "success",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40630310481/job/122624896146"
+    },
+    {
+      "name": "Prepare draft release",
+      "conclusion": "success",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40630310481/job/122628990974"
+    },
+    {
+      "name": "Windows signed release",
+      "conclusion": "success",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40630310481/job/122629111234"
+    },
+    {
+      "name": "macOS unsigned candidate (local signing required)",
+      "conclusion": "success",
+      "url": "https://github.com/ciph/deskmate/actions/runs/40630310481/job/122629111265"
+    }
+  ],
+  "localTestsReused": true,
+  "duplicateBranchChecksCancelled": [
+    40630311491,
+    40630310885
+  ],
+  "checkedAt": "2026-10-28T12:46:25.2638020+08:00"
+}

@@ -1,0 +1,65 @@
+{
+  "provenance": "Manually transcribed from CUA tool AX output in this turn at 00:09\u201300:10 Asia/Shanghai. Later AX saves returned no-change diffs; not a raw AX export.",
+  "binaryBatch": [
+    {
+      "size": 1048576,
+      "media": false,
+      "identityMatched": true,
+      "hostSize": 1048576,
+      "accepted": true,
+      "uploadMs": 3,
+      "discarded": true
+    },
+    {
+      "size": 8388608,
+      "media": false,
+      "identityMatched": true,
+      "hostSize": 8388608,
+      "accepted": true,
+      "uploadMs": 8,
+      "discarded": true
+    },
+    {
+      "size": 20971520,
+      "media": false,
+      "identityMatched": true,
+      "hostSize": 20971520,
+      "accepted": true,
+      "uploadMs": 19,
+      "discarded": true
+    },
+    {
+      "size": 20971521,
+      "media": false,
+      "accepted": false,
+      "error": "attachment item exceeds 20 MiB"
+    },
+    {
+      "size": 67108864,
+      "media": true,
+      "identityMatched": true,
+      "hostSize": 67108864,
+      "accepted": false,
+      "uploadMs": 65,
+      "ranges": [],
+      "error": "TypeError: Load failed",
+      "discarded": true
+    }
+  ],
+  "interpretation": "64 MiB upload succeeded before the direct fetch Range step was denied by connect-src CSP; accepted=false in that combined probe denotes the later fetch failure. No HTTP 206 assertion was obtained.",
+  "mediaElementRetest": {
+    "size": 67108864,
+    "media": true,
+    "identityMatched": true,
+    "hostSize": 67108864,
+    "accepted": true,
+    "uploadMs": 65,
+    "duration": 2097.150625,
+    "advanced": 0.7959264653977237,
+    "seekedTo": 2096.150625,
+    "errorCode": null,
+    "mediaPassed": true,
+    "discarded": true
+  },
+  "sampling": "one recorded batch, plus one 1 MiB preflight; elapsed values are single observations, not percentiles"
+}

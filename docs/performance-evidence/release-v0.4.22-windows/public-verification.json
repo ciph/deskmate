@@ -1,0 +1,16 @@
+{
+  "version": "0.4.22",
+  "repository": "ciph/deskmate",
+  "releaseCommit": "1901fb8fd46346acfd5e34661f707f7aafde7eab",
+  "publicRelease": true,
+  "latest": true,
+  "annotatedTagCommitVerified": true,
+  "latestManifestMatchesVerifiedAsset": true,
+  "anonymousInstallerDownloadVerified": true,
+  "installerBytes": 117637151,
+  "installerSha256": "b904c00c43bcb4077481a31bc1edc5edd1c33aee733c931aa68deeb163d67682",
+  "publicSignatureMatchesVerifiedAsset": true,
+  "manifestSha256": "f2f58832c9a0f5d169063aaaaa1fb6610ed772617b091e04209bd284b1c465e0",
+  "installedOrGuiUpgradeTested": false,
+  "checkedAt": "2026-10-28T04:48:48.206Z"
+}

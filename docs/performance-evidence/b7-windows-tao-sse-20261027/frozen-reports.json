@@ -1,0 +1,25 @@
+[
+  {
+    "name": "b7-windows-20261027",
+    "files": 53,
+    "differences": [
+      "README.md"
+    ],
+    "note": "Previously recorded README follow-up-link exception; no change this turn."
+  },
+  {
+    "name": "b7-windows-stop-focus-20261027",
+    "files": 95,
+    "differences": []
+  },
+  {
+    "name": "b7-windows-cold-history-20261027",
+    "files": 159,
+    "differences": []
+  },
+  {
+    "name": "b7-windows-native-gui-20261027",
+    "files": 86,
+    "differences": []
+  }
+]

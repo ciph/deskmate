@@ -1,0 +1,30 @@
+[
+  {
+    "id": 0,
+    "at": "2026-10-27T09:26:11.836Z",
+    "size": 0,
+    "plannedHz": 50,
+    "plannedChunks": 1,
+    "emitted": 0,
+    "aborted": false,
+    "done": false,
+    "times": [],
+    "expectedChars": 17,
+    "expectedSha256": "df4e678db4ca9340e1b7be02ac789bafea0f9158cee9999e3b36adbb264dadd4"
+  },
+  {
+    "id": 1,
+    "at": "2026-10-27T09:29:03.306Z",
+    "size": 0,
+    "plannedHz": 50,
+    "plannedChunks": 1,
+    "emitted": 1,
+    "aborted": false,
+    "done": true,
+    "times": [
+      0.8981999999959953
+    ],
+    "expectedChars": 17,
+    "expectedSha256": "df4e678db4ca9340e1b7be02ac789bafea0f9158cee9999e3b36adbb264dadd4"
+  }
+]

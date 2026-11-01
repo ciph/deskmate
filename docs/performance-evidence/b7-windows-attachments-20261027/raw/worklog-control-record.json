@@ -1,0 +1,11 @@
+{
+  "name": "worklog_record",
+  "input": {
+    "mode": "direct",
+    "businessDate": "2026-10-27",
+    "project": "B7 合成验收",
+    "text": "完成 B7 附件和物理拖放验收。",
+    "status": "done"
+  },
+  "time": "2026-10-27T09:38:10.041Z"
+}

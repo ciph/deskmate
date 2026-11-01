@@ -1,0 +1,13 @@
+{
+  "text": "小著\n正在思考..\nB7_APPROVAL_REJECT 请访问合成测试地址\n webfetch\n需要你的确认 · 网页搜索与读取\nhttp://127.0.0.1:53816/v1/models\n允许这一次\n取消\n文件夹\n⌄\nmodel-a\n⌄\n停",
+  "focus": true,
+  "active": "<textarea class=\"chat-input\" placeholder=\"输入消息,Enter 发送\" rows=\"2\"></textarea>",
+  "inputs": [
+    {
+      "tag": "TEXTAREA",
+      "placeholder": "输入消息,Enter 发送",
+      "disabled": false,
+      "value": ""
+    }
+  ]
+}

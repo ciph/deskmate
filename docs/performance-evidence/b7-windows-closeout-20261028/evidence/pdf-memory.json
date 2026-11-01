@@ -1,0 +1,1490 @@
+{
+  "method": "Actual release QA WebView2 production attachment module; 8 batches of four cases; forced CDP GC at each sample. RSS includes verified QA process descendants; not a before/after speed or power comparison.",
+  "cycles": 32,
+  "batches": [
+    {
+      "before": {
+        "heap": 6465600
+      },
+      "after": {
+        "heap": 9384278
+      },
+      "events": [
+        {
+          "i": 0,
+          "kind": "normal",
+          "inputBytes": 1788,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": false,
+          "textChars": 808,
+          "hasStart": true,
+          "hasSuffix": false,
+          "textSha256": "dbd97581dbe06d6ee4b9974c0f22b93a67fe8cecf9d10d625a6346150c95f86b",
+          "activeAfter": 0,
+          "ms": 206.59999999403954
+        },
+        {
+          "i": 1,
+          "kind": "corrupt",
+          "inputBytes": 41,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "InvalidPDFException: Invalid PDF structure.",
+          "aborted": false,
+          "activeAfter": 0,
+          "ms": 155.90000000596046
+        },
+        {
+          "i": 2,
+          "kind": "truncated",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": true,
+          "textChars": 160028,
+          "hasStart": true,
+          "hasSuffix": true,
+          "textSha256": "b6fe7a069074210819305e82a1c5422d79f871f8cded37938e241d05e32fd884",
+          "activeAfter": 0,
+          "ms": 230.90000000596046
+        },
+        {
+          "i": 3,
+          "kind": "abort",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "AbortError: B7 scheduled abort",
+          "aborted": true,
+          "activeAfter": 0,
+          "ms": 154
+        }
+      ],
+      "created": 4,
+      "terminated": 4,
+      "active": 0,
+      "peak": 1,
+      "readableStreamAsyncIterator": "function",
+      "method": "QA-only entry imports the same production attachment module; real WebView2 worker/CSP; Worker constructor/terminate counters; remote debug connected without Inspector UI"
+    },
+    {
+      "before": {
+        "heap": 7314410
+      },
+      "after": {
+        "heap": 9334454
+      },
+      "events": [
+        {
+          "i": 0,
+          "kind": "normal",
+          "inputBytes": 1788,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": false,
+          "textChars": 808,
+          "hasStart": true,
+          "hasSuffix": false,
+          "textSha256": "dbd97581dbe06d6ee4b9974c0f22b93a67fe8cecf9d10d625a6346150c95f86b",
+          "activeAfter": 0,
+          "ms": 162.20000000298023
+        },
+        {
+          "i": 1,
+          "kind": "corrupt",
+          "inputBytes": 41,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "InvalidPDFException: Invalid PDF structure.",
+          "aborted": false,
+          "activeAfter": 0,
+          "ms": 154
+        },
+        {
+          "i": 2,
+          "kind": "truncated",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": true,
+          "textChars": 160028,
+          "hasStart": true,
+          "hasSuffix": true,
+          "textSha256": "b6fe7a069074210819305e82a1c5422d79f871f8cded37938e241d05e32fd884",
+          "activeAfter": 0,
+          "ms": 230.70000000298023
+        },
+        {
+          "i": 3,
+          "kind": "abort",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "AbortError: B7 scheduled abort",
+          "aborted": true,
+          "activeAfter": 0,
+          "ms": 151.5
+        }
+      ],
+      "created": 4,
+      "terminated": 4,
+      "active": 0,
+      "peak": 1,
+      "readableStreamAsyncIterator": "function",
+      "method": "QA-only entry imports the same production attachment module; real WebView2 worker/CSP; Worker constructor/terminate counters; remote debug connected without Inspector UI"
+    },
+    {
+      "before": {
+        "heap": 7348736
+      },
+      "after": {
+        "heap": 9393870
+      },
+      "events": [
+        {
+          "i": 0,
+          "kind": "normal",
+          "inputBytes": 1788,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": false,
+          "textChars": 808,
+          "hasStart": true,
+          "hasSuffix": false,
+          "textSha256": "dbd97581dbe06d6ee4b9974c0f22b93a67fe8cecf9d10d625a6346150c95f86b",
+          "activeAfter": 0,
+          "ms": 177
+        },
+        {
+          "i": 1,
+          "kind": "corrupt",
+          "inputBytes": 41,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "InvalidPDFException: Invalid PDF structure.",
+          "aborted": false,
+          "activeAfter": 0,
+          "ms": 168.29999999701977
+        },
+        {
+          "i": 2,
+          "kind": "truncated",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": true,
+          "textChars": 160028,
+          "hasStart": true,
+          "hasSuffix": true,
+          "textSha256": "b6fe7a069074210819305e82a1c5422d79f871f8cded37938e241d05e32fd884",
+          "activeAfter": 0,
+          "ms": 229.8999999910593
+        },
+        {
+          "i": 3,
+          "kind": "abort",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "AbortError: B7 scheduled abort",
+          "aborted": true,
+          "activeAfter": 0,
+          "ms": 152.59999999403954
+        }
+      ],
+      "created": 4,
+      "terminated": 4,
+      "active": 0,
+      "peak": 1,
+      "readableStreamAsyncIterator": "function",
+      "method": "QA-only entry imports the same production attachment module; real WebView2 worker/CSP; Worker constructor/terminate counters; remote debug connected without Inspector UI"
+    },
+    {
+      "before": {
+        "heap": 7416485
+      },
+      "after": {
+        "heap": 7804186
+      },
+      "events": [
+        {
+          "i": 0,
+          "kind": "normal",
+          "inputBytes": 1788,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": false,
+          "textChars": 808,
+          "hasStart": true,
+          "hasSuffix": false,
+          "textSha256": "dbd97581dbe06d6ee4b9974c0f22b93a67fe8cecf9d10d625a6346150c95f86b",
+          "activeAfter": 0,
+          "ms": 165.09999999403954
+        },
+        {
+          "i": 1,
+          "kind": "corrupt",
+          "inputBytes": 41,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "InvalidPDFException: Invalid PDF structure.",
+          "aborted": false,
+          "activeAfter": 0,
+          "ms": 154
+        },
+        {
+          "i": 2,
+          "kind": "truncated",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": true,
+          "textChars": 160028,
+          "hasStart": true,
+          "hasSuffix": true,
+          "textSha256": "b6fe7a069074210819305e82a1c5422d79f871f8cded37938e241d05e32fd884",
+          "activeAfter": 0,
+          "ms": 231.29999999701977
+        },
+        {
+          "i": 3,
+          "kind": "abort",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "AbortError: B7 scheduled abort",
+          "aborted": true,
+          "activeAfter": 0,
+          "ms": 153.5
+        }
+      ],
+      "created": 4,
+      "terminated": 4,
+      "active": 0,
+      "peak": 1,
+      "readableStreamAsyncIterator": "function",
+      "method": "QA-only entry imports the same production attachment module; real WebView2 worker/CSP; Worker constructor/terminate counters; remote debug connected without Inspector UI"
+    },
+    {
+      "before": {
+        "heap": 7415352
+      },
+      "after": {
+        "heap": 9401032
+      },
+      "events": [
+        {
+          "i": 0,
+          "kind": "normal",
+          "inputBytes": 1788,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": false,
+          "textChars": 808,
+          "hasStart": true,
+          "hasSuffix": false,
+          "textSha256": "dbd97581dbe06d6ee4b9974c0f22b93a67fe8cecf9d10d625a6346150c95f86b",
+          "activeAfter": 0,
+          "ms": 170.59999999403954
+        },
+        {
+          "i": 1,
+          "kind": "corrupt",
+          "inputBytes": 41,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "InvalidPDFException: Invalid PDF structure.",
+          "aborted": false,
+          "activeAfter": 0,
+          "ms": 153.19999998807907
+        },
+        {
+          "i": 2,
+          "kind": "truncated",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": true,
+          "textChars": 160028,
+          "hasStart": true,
+          "hasSuffix": true,
+          "textSha256": "b6fe7a069074210819305e82a1c5422d79f871f8cded37938e241d05e32fd884",
+          "activeAfter": 0,
+          "ms": 226.20000000298023
+        },
+        {
+          "i": 3,
+          "kind": "abort",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "AbortError: B7 scheduled abort",
+          "aborted": true,
+          "activeAfter": 0,
+          "ms": 152.29999999701977
+        }
+      ],
+      "created": 4,
+      "terminated": 4,
+      "active": 0,
+      "peak": 1,
+      "readableStreamAsyncIterator": "function",
+      "method": "QA-only entry imports the same production attachment module; real WebView2 worker/CSP; Worker constructor/terminate counters; remote debug connected without Inspector UI"
+    },
+    {
+      "before": {
+        "heap": 7421389
+      },
+      "after": {
+        "heap": 9408543
+      },
+      "events": [
+        {
+          "i": 0,
+          "kind": "normal",
+          "inputBytes": 1788,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": false,
+          "textChars": 808,
+          "hasStart": true,
+          "hasSuffix": false,
+          "textSha256": "dbd97581dbe06d6ee4b9974c0f22b93a67fe8cecf9d10d625a6346150c95f86b",
+          "activeAfter": 0,
+          "ms": 172.90000000596046
+        },
+        {
+          "i": 1,
+          "kind": "corrupt",
+          "inputBytes": 41,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "InvalidPDFException: Invalid PDF structure.",
+          "aborted": false,
+          "activeAfter": 0,
+          "ms": 154.30000001192093
+        },
+        {
+          "i": 2,
+          "kind": "truncated",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": true,
+          "textChars": 160028,
+          "hasStart": true,
+          "hasSuffix": true,
+          "textSha256": "b6fe7a069074210819305e82a1c5422d79f871f8cded37938e241d05e32fd884",
+          "activeAfter": 0,
+          "ms": 228.5
+        },
+        {
+          "i": 3,
+          "kind": "abort",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "AbortError: B7 scheduled abort",
+          "aborted": true,
+          "activeAfter": 0,
+          "ms": 150.5
+        }
+      ],
+      "created": 4,
+      "terminated": 4,
+      "active": 0,
+      "peak": 1,
+      "readableStreamAsyncIterator": "function",
+      "method": "QA-only entry imports the same production attachment module; real WebView2 worker/CSP; Worker constructor/terminate counters; remote debug connected without Inspector UI"
+    },
+    {
+      "before": {
+        "heap": 7417949
+      },
+      "after": {
+        "heap": 7810912
+      },
+      "events": [
+        {
+          "i": 0,
+          "kind": "normal",
+          "inputBytes": 1788,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": false,
+          "textChars": 808,
+          "hasStart": true,
+          "hasSuffix": false,
+          "textSha256": "dbd97581dbe06d6ee4b9974c0f22b93a67fe8cecf9d10d625a6346150c95f86b",
+          "activeAfter": 0,
+          "ms": 174.90000000596046
+        },
+        {
+          "i": 1,
+          "kind": "corrupt",
+          "inputBytes": 41,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "InvalidPDFException: Invalid PDF structure.",
+          "aborted": false,
+          "activeAfter": 0,
+          "ms": 154
+        },
+        {
+          "i": 2,
+          "kind": "truncated",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": true,
+          "textChars": 160028,
+          "hasStart": true,
+          "hasSuffix": true,
+          "textSha256": "b6fe7a069074210819305e82a1c5422d79f871f8cded37938e241d05e32fd884",
+          "activeAfter": 0,
+          "ms": 228.40000000596046
+        },
+        {
+          "i": 3,
+          "kind": "abort",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "AbortError: B7 scheduled abort",
+          "aborted": true,
+          "activeAfter": 0,
+          "ms": 153.09999999403954
+        }
+      ],
+      "created": 4,
+      "terminated": 4,
+      "active": 0,
+      "peak": 1,
+      "readableStreamAsyncIterator": "function",
+      "method": "QA-only entry imports the same production attachment module; real WebView2 worker/CSP; Worker constructor/terminate counters; remote debug connected without Inspector UI"
+    },
+    {
+      "before": {
+        "heap": 7421848
+      },
+      "after": {
+        "heap": 7810870
+      },
+      "events": [
+        {
+          "i": 0,
+          "kind": "normal",
+          "inputBytes": 1788,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": false,
+          "textChars": 808,
+          "hasStart": true,
+          "hasSuffix": false,
+          "textSha256": "dbd97581dbe06d6ee4b9974c0f22b93a67fe8cecf9d10d625a6346150c95f86b",
+          "activeAfter": 0,
+          "ms": 168.1000000089407
+        },
+        {
+          "i": 1,
+          "kind": "corrupt",
+          "inputBytes": 41,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "InvalidPDFException: Invalid PDF structure.",
+          "aborted": false,
+          "activeAfter": 0,
+          "ms": 154.5
+        },
+        {
+          "i": 2,
+          "kind": "truncated",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": true,
+          "truncated": true,
+          "textChars": 160028,
+          "hasStart": true,
+          "hasSuffix": true,
+          "textSha256": "b6fe7a069074210819305e82a1c5422d79f871f8cded37938e241d05e32fd884",
+          "activeAfter": 0,
+          "ms": 232.09999999403954
+        },
+        {
+          "i": 3,
+          "kind": "abort",
+          "inputBytes": 396726,
+          "activeBefore": 0,
+          "ok": false,
+          "error": "AbortError: B7 scheduled abort",
+          "aborted": true,
+          "activeAfter": 0,
+          "ms": 152.70000000298023
+        }
+      ],
+      "created": 4,
+      "terminated": 4,
+      "active": 0,
+      "peak": 1,
+      "readableStreamAsyncIterator": "function",
+      "method": "QA-only entry imports the same production attachment module; real WebView2 worker/CSP; Worker constructor/terminate counters; remote debug connected without Inspector UI"
+    }
+  ],
+  "samples": [
+    {
+      "batch": 0,
+      "heap": {
+        "usedSize": 5657584,
+        "totalSize": 6029312,
+        "embedderHeapUsedSize": 1784296,
+        "backingStorageSize": 781939
+      },
+      "processes": {
+        "cpuSeconds": 147.734375,
+        "time": "2026-10-28T11:35:41.4142084+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25395200,
+            "privateBytes": 8003584,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 70668288,
+            "privateBytes": 22814720,
+            "cpuSeconds": 1.78125
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 108130304,
+            "privateBytes": 60837888,
+            "cpuSeconds": 38.578125
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 156196864,
+            "privateBytes": 104435712,
+            "cpuSeconds": 27.65625
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.9375
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113905664,
+            "privateBytes": 133832704,
+            "cpuSeconds": 51.46875
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 183185408,
+            "privateBytes": 64856064,
+            "cpuSeconds": 5.59375
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 90640384,
+            "privateBytes": 47898624,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 553828352,
+            "privateBytes": 801497088,
+            "cpuSeconds": 18.484375
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 70209536,
+            "privateBytes": 25341952,
+            "cpuSeconds": 2.828125
+          }
+        ],
+        "workingSet": 1433604096,
+        "privateBytes": 1288761344
+      }
+    },
+    {
+      "batch": 1,
+      "heap": {
+        "usedSize": 6022688,
+        "totalSize": 6815744,
+        "embedderHeapUsedSize": 1792440,
+        "backingStorageSize": 1271195
+      },
+      "processes": {
+        "cpuSeconds": 149.109375,
+        "time": "2026-10-28T11:35:45.7995229+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25460736,
+            "privateBytes": 8032256,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 70705152,
+            "privateBytes": 22818816,
+            "cpuSeconds": 1.796875
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 105648128,
+            "privateBytes": 57790464,
+            "cpuSeconds": 38.859375
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 172503040,
+            "privateBytes": 118173696,
+            "cpuSeconds": 28.046875
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.9375
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113905664,
+            "privateBytes": 133832704,
+            "cpuSeconds": 51.953125
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 187949056,
+            "privateBytes": 69292032,
+            "cpuSeconds": 5.625
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 90710016,
+            "privateBytes": 47919104,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 553930752,
+            "privateBytes": 803725312,
+            "cpuSeconds": 18.609375
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 71593984,
+            "privateBytes": 26095616,
+            "cpuSeconds": 2.875
+          }
+        ],
+        "workingSet": 1453850624,
+        "privateBytes": 1306923008
+      }
+    },
+    {
+      "batch": 2,
+      "heap": {
+        "usedSize": 6058196,
+        "totalSize": 6553600,
+        "embedderHeapUsedSize": 1792584,
+        "backingStorageSize": 1271195
+      },
+      "processes": {
+        "cpuSeconds": 150.09375,
+        "time": "2026-10-28T11:35:50.3260417+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25460736,
+            "privateBytes": 8032256,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 71012352,
+            "privateBytes": 23162880,
+            "cpuSeconds": 1.796875
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 107036672,
+            "privateBytes": 59432960,
+            "cpuSeconds": 39.125
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 173592576,
+            "privateBytes": 119066624,
+            "cpuSeconds": 28.3125
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.9375
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113627136,
+            "privateBytes": 133554176,
+            "cpuSeconds": 52.21875
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 188268544,
+            "privateBytes": 69619712,
+            "cpuSeconds": 5.75
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 90746880,
+            "privateBytes": 47931392,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 553943040,
+            "privateBytes": 803725312,
+            "cpuSeconds": 18.640625
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 70529024,
+            "privateBytes": 24600576,
+            "cpuSeconds": 2.90625
+          }
+        ],
+        "workingSet": 1455661056,
+        "privateBytes": 1308368896
+      }
+    },
+    {
+      "batch": 3,
+      "heap": {
+        "usedSize": 6123648,
+        "totalSize": 6553600,
+        "embedderHeapUsedSize": 1792728,
+        "backingStorageSize": 1271195
+      },
+      "processes": {
+        "cpuSeconds": 150.984375,
+        "time": "2026-10-28T11:35:54.6103109+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25460736,
+            "privateBytes": 8032256,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 71012352,
+            "privateBytes": 23162880,
+            "cpuSeconds": 1.796875
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 105951232,
+            "privateBytes": 58003456,
+            "cpuSeconds": 39.390625
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 173191168,
+            "privateBytes": 118513664,
+            "cpuSeconds": 28.578125
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.9375
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113627136,
+            "privateBytes": 133554176,
+            "cpuSeconds": 52.46875
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 188272640,
+            "privateBytes": 69619712,
+            "cpuSeconds": 5.78125
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 90832896,
+            "privateBytes": 48001024,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 553943040,
+            "privateBytes": 803725312,
+            "cpuSeconds": 18.65625
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 71593984,
+            "privateBytes": 26095616,
+            "cpuSeconds": 2.96875
+          }
+        ],
+        "workingSet": 1455329280,
+        "privateBytes": 1307951104
+      }
+    },
+    {
+      "batch": 4,
+      "heap": {
+        "usedSize": 6124728,
+        "totalSize": 6553600,
+        "embedderHeapUsedSize": 1793448,
+        "backingStorageSize": 1271195
+      },
+      "processes": {
+        "cpuSeconds": 152.375,
+        "time": "2026-10-28T11:35:58.9699035+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25456640,
+            "privateBytes": 8024064,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 71012352,
+            "privateBytes": 23162880,
+            "cpuSeconds": 1.8125
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 107896832,
+            "privateBytes": 60469248,
+            "cpuSeconds": 39.734375
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 173621248,
+            "privateBytes": 119177216,
+            "cpuSeconds": 29.0625
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.953125
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113627136,
+            "privateBytes": 133554176,
+            "cpuSeconds": 52.8125
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 188481536,
+            "privateBytes": 69832704,
+            "cpuSeconds": 5.921875
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 90873856,
+            "privateBytes": 48013312,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 553840640,
+            "privateBytes": 801505280,
+            "cpuSeconds": 18.671875
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 70529024,
+            "privateBytes": 24600576,
+            "cpuSeconds": 3
+          }
+        ],
+        "workingSet": 1456783360,
+        "privateBytes": 1307582464
+      }
+    },
+    {
+      "batch": 5,
+      "heap": {
+        "usedSize": 6130800,
+        "totalSize": 6553600,
+        "embedderHeapUsedSize": 1793016,
+        "backingStorageSize": 1271195
+      },
+      "processes": {
+        "cpuSeconds": 153.765625,
+        "time": "2026-10-28T11:36:03.3339099+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25468928,
+            "privateBytes": 8036352,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 71012352,
+            "privateBytes": 23162880,
+            "cpuSeconds": 1.859375
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 106049536,
+            "privateBytes": 58077184,
+            "cpuSeconds": 39.984375
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 173977600,
+            "privateBytes": 119390208,
+            "cpuSeconds": 29.40625
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.953125
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113627136,
+            "privateBytes": 133554176,
+            "cpuSeconds": 53.109375
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 188485632,
+            "privateBytes": 69836800,
+            "cpuSeconds": 5.984375
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 90918912,
+            "privateBytes": 48033792,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 548360192,
+            "privateBytes": 795955200,
+            "cpuSeconds": 19.015625
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 70529024,
+            "privateBytes": 24600576,
+            "cpuSeconds": 3.046875
+          }
+        ],
+        "workingSet": 1449873408,
+        "privateBytes": 1299890176
+      }
+    },
+    {
+      "batch": 6,
+      "heap": {
+        "usedSize": 6131064,
+        "totalSize": 6553600,
+        "embedderHeapUsedSize": 1793160,
+        "backingStorageSize": 1271195
+      },
+      "processes": {
+        "cpuSeconds": 154.859375,
+        "time": "2026-10-28T11:36:07.8658546+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25477120,
+            "privateBytes": 8040448,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 71012352,
+            "privateBytes": 23162880,
+            "cpuSeconds": 1.859375
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 107925504,
+            "privateBytes": 60514304,
+            "cpuSeconds": 40.390625
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 173432832,
+            "privateBytes": 118784000,
+            "cpuSeconds": 29.6875
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.953125
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113610752,
+            "privateBytes": 133505024,
+            "cpuSeconds": 53.390625
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 188268544,
+            "privateBytes": 69517312,
+            "cpuSeconds": 6.015625
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 90963968,
+            "privateBytes": 48050176,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 548257792,
+            "privateBytes": 795856896,
+            "cpuSeconds": 19.03125
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 71553024,
+            "privateBytes": 26038272,
+            "cpuSeconds": 3.125
+          }
+        ],
+        "workingSet": 1451945984,
+        "privateBytes": 1302712320
+      }
+    },
+    {
+      "batch": 7,
+      "heap": {
+        "usedSize": 6131224,
+        "totalSize": 6553600,
+        "embedderHeapUsedSize": 1793904,
+        "backingStorageSize": 1271195
+      },
+      "processes": {
+        "cpuSeconds": 156.21875,
+        "time": "2026-10-28T11:36:12.4520452+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25477120,
+            "privateBytes": 8040448,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 71012352,
+            "privateBytes": 23162880,
+            "cpuSeconds": 1.875
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 107298816,
+            "privateBytes": 59633664,
+            "cpuSeconds": 40.796875
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 174166016,
+            "privateBytes": 119611392,
+            "cpuSeconds": 30.03125
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.953125
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113610752,
+            "privateBytes": 133505024,
+            "cpuSeconds": 53.703125
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 188297216,
+            "privateBytes": 69537792,
+            "cpuSeconds": 6.125
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 91029504,
+            "privateBytes": 48099328,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 548392960,
+            "privateBytes": 795996160,
+            "cpuSeconds": 19.125
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 70529024,
+            "privateBytes": 24584192,
+            "cpuSeconds": 3.203125
+          }
+        ],
+        "workingSet": 1451257856,
+        "privateBytes": 1301413888
+      }
+    },
+    {
+      "batch": 8,
+      "heap": {
+        "usedSize": 6131384,
+        "totalSize": 6553600,
+        "embedderHeapUsedSize": 1794048,
+        "backingStorageSize": 1271195
+      },
+      "processes": {
+        "cpuSeconds": 157.328125,
+        "time": "2026-10-28T11:36:16.8020993+08:00",
+        "processes": [
+          {
+            "pid": 366652,
+            "name": "conhost",
+            "created": 134376318395807100,
+            "workingSet": 12959744,
+            "privateBytes": 6594560,
+            "cpuSeconds": 0.015625
+          },
+          {
+            "pid": 351940,
+            "name": "msedgewebview2",
+            "created": 134376316269944560,
+            "workingSet": 25477120,
+            "privateBytes": 8040448,
+            "cpuSeconds": 0.046875
+          },
+          {
+            "pid": 355848,
+            "name": "msedgewebview2",
+            "created": 134376316269654820,
+            "workingSet": 71012352,
+            "privateBytes": 23162880,
+            "cpuSeconds": 1.875
+          },
+          {
+            "pid": 358548,
+            "name": "msedgewebview2",
+            "created": 134376316270726060,
+            "workingSet": 106893312,
+            "privateBytes": 59236352,
+            "cpuSeconds": 41.140625
+          },
+          {
+            "pid": 360576,
+            "name": "msedgewebview2",
+            "created": 134376316283523470,
+            "workingSet": 173486080,
+            "privateBytes": 119050240,
+            "cpuSeconds": 30.28125
+          },
+          {
+            "pid": 361652,
+            "name": "msedgewebview2",
+            "created": 134376316268249550,
+            "workingSet": 48484352,
+            "privateBytes": 12648448,
+            "cpuSeconds": 0.953125
+          },
+          {
+            "pid": 365160,
+            "name": "msedgewebview2",
+            "created": 134376316269665170,
+            "workingSet": 113631232,
+            "privateBytes": 133550080,
+            "cpuSeconds": 54.09375
+          },
+          {
+            "pid": 366824,
+            "name": "msedgewebview2",
+            "created": 134376316267153800,
+            "workingSet": 188305408,
+            "privateBytes": 69550080,
+            "cpuSeconds": 6.140625
+          },
+          {
+            "pid": 368760,
+            "name": "msedgewebview2",
+            "created": 134376316289889460,
+            "workingSet": 91033600,
+            "privateBytes": 48103424,
+            "cpuSeconds": 0.34375
+          },
+          {
+            "pid": 366536,
+            "name": "opencode",
+            "created": 134376318395504560,
+            "workingSet": 548384768,
+            "privateBytes": 795996160,
+            "cpuSeconds": 19.15625
+          },
+          {
+            "pid": 361884,
+            "name": "yume",
+            "created": 134376316265550460,
+            "workingSet": 70488064,
+            "privateBytes": 24543232,
+            "cpuSeconds": 3.28125
+          }
+        ],
+        "workingSet": 1450156032,
+        "privateBytes": 1300475904
+      }
+    }
+  ],
+  "activeWorkers": 0,
+  "tail": {
+    "heapMin": 6124728,
+    "heapMax": 6131384,
+    "heapLastMinusFirst": 6656,
+    "rssMin": 1449873408,
+    "rssMax": 1456783360,
+    "rssLastMinusFirst": -6627328
+  }
+}

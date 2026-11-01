@@ -1,0 +1,177 @@
+diff --git a/scripts/worklog-qa/provider.js b/scripts/worklog-qa/provider.js
+index d072068..59b603e 100644
+--- a/scripts/worklog-qa/provider.js
++++ b/scripts/worklog-qa/provider.js
+@@ -64,7 +64,7 @@ const server = Bun.serve({
+     if (mode !== "success") return Response.json({ error: { message: "Synthetic QA provider failure", type: mode === "unauthorized" ? "authentication_error" : "server_error" } }, { status: mode === "unauthorized" ? 401 : 503 });
+     if (invoke && pending === state.nextTool) state.nextTool = null;
+     const content = latestTool ? `合成模型工具回执：${typeof latestTool.content === "string" ? latestTool.content : JSON.stringify(latestTool.content)}` : (frozenReport(messages) ?? state.report);
+-    const toolCalls = invoke ? [{ index: 0, id: `call_qa_${crypto.randomUUID().replaceAll("-", "")}`, type: "function", function: { name: pending.name, arguments: JSON.stringify(pending.input) } }] : undefined;
++    const toolCalls = invoke ? [{ index: 0, id: `call_qa_${crypto.randomUUID().replaceAll("-", "")}`, type: "function", function: { name: pending.name, arguments: JSON.stringify(permitted.has(pending.name) ? { input: pending.input } : pending.input) } }] : undefined;
+     const message = invoke ? { role: "assistant", tool_calls: toolCalls } : { role: "assistant", content };
+     const finishReason = invoke ? "tool_calls" : "stop";
+     const base = { id: `chatcmpl-${crypto.randomUUID()}`, created: Math.floor(Date.now() / 1000), model: "model-a" };
+diff --git a/scripts/worklog-qa/provider-models.test.ts b/scripts/worklog-qa/provider-models.test.ts
+index eed614e..d89d9fe 100644
+--- a/scripts/worklog-qa/provider-models.test.ts
++++ b/scripts/worklog-qa/provider-models.test.ts
+@@ -25,6 +25,32 @@ function parseStatus(text: string): ProviderStatus {
+ 
+ afterAll(() => child.kill());
+ 
++test("wraps all five worklog tool inputs in both JSON and streaming responses", async () => {
++  const post = (url: string, value: unknown) => new Promise<{ status: number; body: string }>((resolve, reject) => {
++    const payload = JSON.stringify(value);
++    const request = httpRequest(url, { method: "POST", headers: { "content-type": "application/json", "content-length": Buffer.byteLength(payload) } }, response => {
++      const chunks: Buffer[] = [];
++      response.on("data", chunk => chunks.push(chunk));
++      response.on("end", () => resolve({ status: response.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") }));
++    });
++    request.on("error", reject);
++    request.end(payload);
++  });
++  for (const name of ["worklog_record", "worklog_query", "worklog_update", "worklog_generate_report", "worklog_schedule_report"]) {
++    for (const stream of [false, true]) {
++      const input = { mode: "direct", text: "合成工作记录" };
++      const control = await post(receipt.controlUrl, { mode: "success", nextTool: { name, input } });
++      expect(control.status).toBe(200);
++      const response = await post(`${receipt.baseUrl}/chat/completions`, { stream, messages: [], tools: [{ type: "function", function: { name } }] });
++      const raw = response.body;
++      const body = JSON.parse(stream ? raw.split("\n")[0].slice(6) : raw);
++      const call = (stream ? body.choices[0].delta : body.choices[0].message).tool_calls[0];
++      expect(call.function.name).toBe(name);
++      expect(JSON.parse(call.function.arguments)).toEqual({ input });
++    }
++  }
++});
++
+ test("records bounded model discovery receipt", async () => {
+   const request = (url: string) => new Promise<{ status: number; body: string }>((resolve, reject) => {
+     get(url, (response) => { const chunks: Buffer[] = []; response.on("data", (chunk) => chunks.push(chunk)); response.on("end", () => resolve({ status: response.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") })); }).on("error", reject);
+diff --git a/src/chat/useWorklogChat.ts b/src/chat/useWorklogChat.ts
+index 9de1d45..06d6672 100644
+--- a/src/chat/useWorklogChat.ts
++++ b/src/chat/useWorklogChat.ts
+@@ -27,7 +27,7 @@ export function useWorklogChat(sessionId: string | null) {
+     if (session !== sessionRef.current) return;
+     try {
+       const receipt = await verifyWorklogReceipt(operation.requestId);
+-      if (session !== sessionRef.current) return;
++      if (session !== sessionRef.current || !receipt) return;
+       const run = receipt?.entityKind === "run" ? (await listRuns()).find((item) => item.id === receipt.entityId) : undefined;
+       const schedule = receipt?.entityKind === "schedule" ? (await listSchedules()).find((item) => item.id === receipt.entityId) : undefined;
+       if (session !== sessionRef.current) return;
+@@ -58,7 +58,7 @@ export function useWorklogChat(sessionId: string | null) {
+     if (!output) return;
+     const { requestId } = output;
+     const existing = operationsRef.current.find((item) => item.requestId === requestId);
+-    const operation = existing ?? { messageId: part.messageID, requestId, receipt: null, error: output.error, undoable: part.tool === "worklog_record" };
++    const operation = existing ? { ...existing, error: output.error ?? existing.error } : { messageId: part.messageID, requestId, receipt: null, error: output.error, undoable: part.tool === "worklog_record" };
+     update(operation);
+     if (!output.error) void refresh(operation);
+   }, [refresh, update]);
+@@ -73,6 +73,10 @@ export function useWorklogChat(sessionId: string | null) {
+     }
+   }, [acceptTool]);
+ 
++  useEffect(() => {
++    if (sessionId) void recover(sessionId);
++  }, [sessionId, recover]);
++
+   const save = useCallback(async (messageId: string, text: string) => {
+     const session = sessionRef.current;
+     const requestId = crypto.randomUUID();
+diff --git a/src/chat/useWorklogChat.test.tsx b/src/chat/useWorklogChat.test.tsx
+index a2de4cf..8857c22 100644
+--- a/src/chat/useWorklogChat.test.tsx
++++ b/src/chat/useWorklogChat.test.tsx
+@@ -2,14 +2,74 @@ import { afterEach, beforeEach, expect, mock, test } from "bun:test";
+ import { act, cleanup, renderHook } from "@testing-library/react";
+ import * as core from "@tauri-apps/api/core";
+ import * as events from "@tauri-apps/api/event";
++import * as opencode from "../lib/opencode";
+ const invoke = mock<(command: string, args?: unknown) => Promise<unknown>>(() => Promise.resolve(null));
++let changed: (() => void) | undefined;
++const getSessionMessages = mock<(_session: string) => Promise<readonly { parts: readonly unknown[] }[]>>(() => Promise.resolve([]));
+ mock.module("@tauri-apps/api/core", () => ({ ...core, invoke }));
+-mock.module("@tauri-apps/api/event", () => ({ ...events, listen: () => Promise.resolve(() => {}) }));
++mock.module("@tauri-apps/api/event", () => ({ ...events, listen: (_event: string, callback: () => void) => { changed = callback; return Promise.resolve(() => {}); } }));
++mock.module("../lib/opencode", () => ({ ...opencode, getSessionMessages }));
+ const { useWorklogChat } = await import("./useWorklogChat");
+ 
+-beforeEach(() => { invoke.mockReset(); });
++beforeEach(() => { invoke.mockReset(); getSessionMessages.mockReset(); getSessionMessages.mockResolvedValue([]); changed = undefined; });
+ afterEach(cleanup);
+ 
++const requestId = "ae0e8d01-25f2-2d08-3217-8d2de99cbedf";
++const toolOutput = (status: "pending" | "rejected") => ({
++  tool: "worklog_update", messageID: "message", state: { output: JSON.stringify({ requestId, status,
++    ...(status === "rejected" ? { error: { code: "NEEDS_EXPLICIT_REQUEST" } } : {}),
++  }) },
++});
++
++test("opening a native session restores its rejected journal receipt without another reply", async () => {
++  getSessionMessages.mockResolvedValue([{ parts: [toolOutput("rejected")] }]);
++  const hook = renderHook(() => useWorklogChat("reopened"));
++  await act(async () => {});
++  expect(getSessionMessages).toHaveBeenCalledWith("reopened");
++  expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
++});
++
++test("a late history recovery cannot publish receipts into another session", async () => {
++  let finish: (value: readonly { parts: readonly unknown[] }[]) => void = () => {};
++  getSessionMessages.mockImplementation(session => session === "old" ? new Promise(resolve => { finish = resolve; }) : Promise.resolve([]));
++  const hook = renderHook(({session}: {session: string}) => useWorklogChat(session), {initialProps: {session: "old"}});
++  hook.rerender({session: "new"});
++  await act(async () => { finish([{parts: [toolOutput("rejected")]}]); });
++  expect(hook.result.current.operations).toEqual([]);
++});
++
++test("unrelated journal changes do not turn a rejected operation back into pending", async () => {
++  invoke.mockResolvedValue(null);
++  const hook = renderHook(() => useWorklogChat("session"));
++  await act(async () => { hook.result.current.acceptTool(toolOutput("rejected")); });
++  expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
++  await act(async () => { changed?.(); });
++  expect(invoke).toHaveBeenCalledWith("worklog_get_operation", { requestId });
++  expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
++});
++
++test("late empty receipt lookup cannot erase a later rejection", async () => {
++  let finish: (value: unknown) => void = () => {};
++  invoke.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
++  const hook = renderHook(() => useWorklogChat("session"));
++  await act(async () => { hook.result.current.acceptTool(toolOutput("pending")); });
++  await act(async () => { hook.result.current.acceptTool(toolOutput("rejected")); });
++  expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
++  await act(async () => { finish(null); });
++  expect(hook.result.current.operations[0]?.error).toBe("NEEDS_EXPLICIT_REQUEST");
++});
++
++test("a verified host receipt can resolve a previously pending operation", async () => {
++  invoke.mockResolvedValue(null);
++  const hook = renderHook(() => useWorklogChat("session"));
++  await act(async () => { hook.result.current.acceptTool(toolOutput("pending")); });
++  const receipt = { operationId: requestId, entityId: "entry", entityKind: "entry", revision: 1, businessDate: "2026-10-27", status: "committed" as const };
++  invoke.mockResolvedValue(receipt);
++  await act(async () => { changed?.(); });
++  expect(hook.result.current.operations[0]?.receipt).toEqual(receipt);
++  expect(hook.result.current.operations[0]?.error).toBeNull();
++});
++
+ test("an old-session save completes without publishing a receipt into the new chat", async () => {
+   let finishSave: (value: unknown) => void = () => {};
+   const saveResponse = new Promise<unknown>((resolve) => { finishSave = resolve; });
+diff --git a/src/chat/chatPetActivity.test.tsx b/src/chat/chatPetActivity.test.tsx
+index 3dd8eff..92b8458 100644
+--- a/src/chat/chatPetActivity.test.tsx
++++ b/src/chat/chatPetActivity.test.tsx
+@@ -90,7 +90,7 @@ function installOpenCodeTransport(): void {
+       return Promise.resolve(makeJsonResponse({ ses_fixed: { type: abortStatus } }));
+     }
+     if (url.endsWith("/session/ses_fixed/message")) {
+-      if (submissionRead) return submissionRead();
++      if (submissionRead && submittedMessageId) return submissionRead();
+       if (promptTransport === "lost_unknown") return Promise.reject(new Error("sidecar offline"));
+       if (promptTransport === "lost_confirmed" && submittedMessageId) {
+         return Promise.resolve(makeJsonResponse([{ info: {

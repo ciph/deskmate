@@ -207,3 +207,13 @@ pub fn worklog_get_operation(
 #[cfg(test)]
 #[path = "tests/commands.rs"]
 mod tests;
+
+#[tauri::command]
+pub fn worklog_get_operation_states(
+    window: tauri::WebviewWindow,
+    state: tauri::State<WorklogState>,
+    request_ids: Vec<String>,
+) -> WorklogResult<Vec<super::operation_states::OperationState>> {
+    if window.label() != "chat" { return Err(WorklogError::new("FORBIDDEN", "Chat window required")); }
+    state.with_repository(|repo| repo.operation_states(&request_ids))
+}

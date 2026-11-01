@@ -1,0 +1,69 @@
+Window: "YUME B7 Followup QA chat", App: YUME B7 Followup QA.
+0 standard window YUME B7 Followup QA chat, Secondary Actions: Raise
+	1 scroll area
+		2 HTML content Description: YUME chat, URL: tauri://localhost/chat.html
+			3 container
+				4 text 小著 在的,说吧
+				5 button 在工作台打开
+				6 button 历史
+				7 button 设置
+				8 button 关闭
+			9 image 我的头像
+			10 container
+				11 text 附件  ·  b7-fixture.pdf
+			12 text B7_ATTACHMENT_HISTORY_CHECK
+			13 image 小著
+			14 text B7_PDF_TEXT_CONFIRMED: YUME B7 PDF WebKit fixture
+			15 image 我的头像
+			16 container 文件与文件夹
+				17 container b7-clip.mp4
+					18 text b7-clip.mp4 视频  · 71 KB
+					19 container 预览 b7-clip.mp4, URL: chat-resource://localhost/96c99ccc-9cf6-4161-abca-b04d30743bd2
+						20 button Play
+				21 container b7-tone.mp3
+					22 text b7-tone.mp3 音频  · 36 KB
+					23 container 预览 b7-tone.mp3
+						24 container Audio Controls
+							25 button Play
+							26 text Elapsed: 0 seconds
+							27 container
+								28 slider (settable, float) Value: 0, Details: 0 seconds
+									29 value indicator 0
+							30 text Duration: 12 seconds
+							31 button AirPlay
+							32 button More…
+				33 container b7-tone.wav
+					34 text b7-tone.wav 音频  · 376 KB
+					35 container 预览 b7-tone.wav
+						36 container Audio Controls
+							37 button Play
+							38 text Elapsed: 0 seconds
+							39 container
+								40 slider (settable, float) Value: 0, Details: 0 seconds
+									41 value indicator 0
+							42 text Duration: 12 seconds
+							43 button AirPlay
+							44 button More…
+			45 text B7_MEDIA_HISTORY_CHECK
+			46 image 小著
+			47 text B7_PDF_TEXT_CONFIRMED: YUME B7 PDF WebKit fixture
+			48 container 对话导航
+				49 button 第 1 轮：B7ATTACHMENTHISTORYCHECK
+				50 button 第 2 轮：B7MEDIAHISTORYCHECK
+			51 container
+				52 text entry area (settable) Value: [text entry area], Placeholder: 输入消息,Enter 发送
+					53 text 输入消息,Enter 发送
+				54 button 附件
+				55 pop up button 文件夹
+				56 pop up button 重新选择模型
+				57 button (disabled) 发送
+				58 text 模型列表尚未验证或已过期，请在 AI 设置中重新验证。
+59 menu bar
+	60 YUME B7 Followup QA
+	61 File
+	62 Edit
+	63 View
+	64 Window
+	65 Help
+
+The focused UI element is 2 HTML content Description: YUME chat, URL: tauri://localhost/chat.html

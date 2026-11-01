@@ -1,0 +1,8 @@
+{
+  "attempt": "cua.createBrowserTab iab with local report file URL",
+  "result": "blocked by browser security policy; file protocol not allowed",
+  "workaroundAttempted": false,
+  "visualReviewCompleted": false,
+  "staticLinksChecked": 53,
+  "codexOpenRequest": "queued before browser inspection attempt"
+}

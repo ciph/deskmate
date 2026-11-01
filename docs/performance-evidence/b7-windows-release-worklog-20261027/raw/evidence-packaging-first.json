@@ -1,0 +1,7 @@
+{
+  "result": "failed",
+  "fix": "Check all other links first, then create audit result; separate final readback checks every link",
+  "reason": "README referenced final-audit.json before the auditor created its own result",
+  "scope": "evidence packaging script, not product",
+  "attempt": 1
+}

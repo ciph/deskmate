@@ -1,0 +1,131 @@
+{
+  "url": "http://tauri.localhost/workbench/index.html",
+  "body": "DEV\n新建会话\nW\nB7 Windows 1000 messages 10000\nB7 Windows 1000 messages 10000\nSynthetic reply 993\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nconst round = 993;\nItem\tStatus\nB7\tComplete\nBuild · b7-local · 0 秒\nSynthetic question 994\nBuild · b7-local\n · \n13:50\nSynthetic reply 995\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nconst round = 995;\nItem\tStatus\nB7\tComplete\nBuild · b7-local · 0 秒\nSynthetic question 996\nBuild · b7-local\n · \n13:50\nSynthetic reply 997\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nconst round = 997;\nItem\tStatus\nB7\tComplete\nBuild · b7-local · 0 秒\nSynthetic question 998\nBuild · b7-local\n · \n13:50\nSynthetic reply 999\n\nScope: isolated QA data.\n\nCheck state\nKeep evidence\nconst round = 999;\nItem\tStatus\nB7\tComplete\nBuild · b7-local · 0 秒\n随便问点什么， / 可查看命令， @ 可添加上下文...\nb7-local",
+  "buttons": [
+    {
+      "text": "",
+      "label": "OpenCode 菜单",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "主页",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "关闭标签页",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": null,
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "新建会话",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "切换审查",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "跳转到最新",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "查看上下文用量",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "更多选项",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制回复",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "撤销此消息",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制消息",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制回复",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "撤销此消息",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制消息",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制回复",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "撤销此消息",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制消息",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "复制回复",
+      "title": ""
+    },
+    {
+      "text": "",
+      "label": "添加图片和文件",
+      "title": ""
+    },
+    {
+      "text": "b7-local",
+      "label": null,
+      "title": ""
+    }
+  ]
+}

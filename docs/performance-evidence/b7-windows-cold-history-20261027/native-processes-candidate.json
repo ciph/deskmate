@@ -1,0 +1,85 @@
+{
+  "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+  "roots": [
+    "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+    "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7cold20261027e"
+  ],
+  "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\yume.exe",
+  "processes": [
+    {
+      "pid": 105180,
+      "created": 134375533434248299,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\yume.exe"
+    },
+    {
+      "pid": 80228,
+      "created": 134375535531929195,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\yume.exe"
+    },
+    {
+      "pid": 103120,
+      "created": 134375535549866278,
+      "executable": "E:\\Codex\\工作伙伴\\deskmate-windows-b7\\src-tauri\\target\\debug\\resources\\opencode\\opencode.exe"
+    },
+    {
+      "pid": 86180,
+      "created": 134375535534212514,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 103580,
+      "created": 134375535535558228,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 94736,
+      "created": 134375535536992243,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 102284,
+      "created": 134375535537011420,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 96772,
+      "created": 134375535537395846,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 107456,
+      "created": 134375535538350433,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 91756,
+      "created": 134375535545875445,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 101672,
+      "created": 134375535547690792,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe"
+    },
+    {
+      "pid": 93956,
+      "created": 134375535550476213,
+      "executable": "C:\\WINDOWS\\system32\\conhost.exe"
+    }
+  ],
+  "launches": [
+    {
+      "pid": 105180,
+      "created": 134375533434248299,
+      "binarySha256": "9FC073EF9E0065BE8141D19CE871726D3F2428A17C7B80D3A9B46FFBF63696C7",
+      "startedAt": "2026-10-27T13:42:23.6662196+08:00"
+    },
+    {
+      "pid": 80228,
+      "created": 134375535531929195,
+      "binarySha256": "5CAFF2E9773F14808062B2C342E5FE46D86F889A849623C904CA6FED01B5F1C1",
+      "startedAt": "2026-10-27T13:45:53.4456776+08:00"
+    }
+  ],
+  "createdAt": "2026-10-27T13:42:19.6096758+08:00"
+}

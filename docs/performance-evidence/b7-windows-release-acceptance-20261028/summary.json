@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-28",
+  "head": "db07e5bdb02550c4d165da8cd45fb76debefbe17",
+  "branch": "codex/yume-performance-b6",
+  "version": "0.4.21",
+  "status": "B7 in progress",
+  "sourceChangesThisRound": false,
+  "qaBuild": "Reused 2026-10-27 release QA, SHA-256 A2CA7F279B6F4C6C76DABE7AFAE33D9BF853BDE4A1EA8C71009EE443D76DB977",
+  "normalReleaseSha256": "c4c240e698609bd51fb4140c5d9e7afb5b5dfcbfb399d64e2dd53a700ecee638",
+  "baselineFilesUnchanged": 835,
+  "integrity": {
+    "databases": 6,
+    "pass": true,
+    "resources": 3,
+    "links": 3,
+    "limitation": "Six checks ran before discovery of a late owned sidecar; do not describe as all-processes-stopped checks."
+  },
+  "cleanup": {
+    "twoQaRootsRemoved": true,
+    "temporaryPortsClosed": true,
+    "lateSidecar": "Created after last snapshot by isolated host and separately verified/stopped"
+  },
+  "frontend": "2026-10-27 serial run 172/172 files, 1367 pass, 0 fail, 8 skip; not rerun this turn",
+  "remaining": "Active-tool secondary startup, abort wording, remaining recovery and migration checks, PDF heap/RSS, hardware/production comparison, receipt recovery performance, full final gates, true model intent and Mac-specific gates.",
+  "windowsRounds": "2–3 focused rounds, 3–4 if new blocking defects; Mac separate",
+  "committed": false,
+  "pushed": false,
+  "installed": false,
+  "published": false
+}

@@ -1,0 +1,31 @@
+Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.
+timestamp=2026-10-27T08:12:46.680Z level=INFO run=05d9190f message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\xdg-config\\opencode\\config.json"
+timestamp=2026-10-27T08:12:46.685Z level=INFO run=05d9190f message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\xdg-config\\opencode\\opencode.json"
+timestamp=2026-10-27T08:12:46.686Z level=INFO run=05d9190f message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\xdg-config\\opencode\\opencode.jsonc"
+opencode server listening on http://127.0.0.1:50050
+timestamp=2026-10-27T08:12:47.323Z level=INFO run=05d9190f message="global event connected"
+timestamp=2026-10-27T08:12:47.371Z level=INFO run=05d9190f message="creating instance" directory="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\workspace"
+timestamp=2026-10-27T08:12:47.373Z level=INFO run=05d9190f message=fromDirectory directory="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\workspace"
+timestamp=2026-10-27T08:12:47.770Z level=INFO run=05d9190f message=bootstrapping directory="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\workspace"
+timestamp=2026-10-27T08:12:47.774Z level=INFO run=05d9190f message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\xdg-config\\opencode\\config.json"
+timestamp=2026-10-27T08:12:47.775Z level=INFO run=05d9190f message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\xdg-config\\opencode\\opencode.json"
+timestamp=2026-10-27T08:12:47.775Z level=INFO run=05d9190f message=loading path="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\xdg-config\\opencode\\opencode.jsonc"
+timestamp=2026-10-27T08:12:47.801Z level=INFO run=05d9190f message="all LSPs are disabled"
+timestamp=2026-10-27T08:12:47.802Z level=INFO run=05d9190f message="all formatters are disabled"
+timestamp=2026-10-27T08:12:47.802Z level=INFO run=05d9190f message=init
+timestamp=2026-10-27T08:12:47.808Z level=INFO run=05d9190f message=created id=ses_e8394b8c0ffeX4fsYSrUqEIiY6 slug=nimble-meadow version=1.18.21 projectID=6f7028ec2d3ece8d8c894f2b3bcd65fd2ba395c7 directory="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\workspace" path=output/b7-tao-sse/live-SkGAtX/workspace workspaceID=undefined parentID=undefined title="B7 isolated approval SSE" agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1793088767807 time.updated=1793088767807
+timestamp=2026-10-27T08:12:48.514Z level=INFO run=05d9190f message=loop session.id=ses_e8394b8c0ffeX4fsYSrUqEIiY6 step=0
+timestamp=2026-10-27T08:12:49.671Z level=INFO run=05d9190f message=initialized
+timestamp=2026-10-27T08:12:50.072Z level=INFO run=05d9190f message=tracking hash=9ebcb6af57fb54b084952f60e79d4f639e82c190 cwd="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\workspace" git="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\xdg-data\\opencode\\snapshot\\6f7028ec2d3ece8d8c894f2b3bcd65fd2ba395c7\\083cd475cc928fb8b620cd0b24fc9c763b4deb05"
+timestamp=2026-10-27T08:12:50.103Z level=INFO run=05d9190f message="shell tool using shell" shell="C:\\Users\\chenglingxiao\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.EXE"
+timestamp=2026-10-27T08:12:50.658Z level=INFO run=05d9190f message="watcher backend" directory="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\workspace" platform=win32 backend=windows
+timestamp=2026-10-27T08:12:50.664Z level=INFO run=05d9190f message="project copy refresh started" projectID=6f7028ec2d3ece8d8c894f2b3bcd65fd2ba395c7
+timestamp=2026-10-27T08:12:51.198Z level=INFO run=05d9190f message="project copy refresh done" projectID=6f7028ec2d3ece8d8c894f2b3bcd65fd2ba395c7 updated=[] removed=[]
+timestamp=2026-10-27T08:12:51.530Z level=INFO run=05d9190f message="booting location services" directory="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\workspace" workspaceID=undefined
+timestamp=2026-10-27T08:12:51.534Z level=INFO run=05d9190f message=process session.id=ses_e8394b8c0ffeX4fsYSrUqEIiY6 messageID=msg_17c6b4a050019VnOgewWAB11vC
+timestamp=2026-10-27T08:12:51.537Z level=INFO run=05d9190f message=stream providerID=yume modelID=model-a session.id=ses_e8394b8c0ffeX4fsYSrUqEIiY6 small=false agent=build mode=primary
+timestamp=2026-10-27T08:12:51.544Z level=INFO run=05d9190f message="llm runtime selected" llm.runtime=ai-sdk llm.provider=yume llm.model=model-a
+timestamp=2026-10-27T08:12:51.586Z level=INFO run=05d9190f message=evaluated permission=webfetch pattern=http://127.0.0.1:50049/v1/models action.permission=webfetch action.action=ask action.pattern=*
+timestamp=2026-10-27T08:12:51.586Z level=INFO run=05d9190f message=asking id=per_17c6b5602001uYyFYyftbQjphr permission=webfetch patterns="[\"http://127.0.0.1:50049/v1/models\"]"
+timestamp=2026-10-27T08:12:51.600Z level=WARN run=05d9190f message="schema rejection" kind=Body reason="Expected JSON value, got undefined\n  at [0][\"metadata\"][\"timeout\"]"
+timestamp=2026-10-27T08:12:51.935Z level=INFO run=05d9190f message=tracking hash=9ebcb6af57fb54b084952f60e79d4f639e82c190 cwd="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\workspace" git="E:\\Codex\\工作伙伴\\deskmate-windows-b7\\output\\b7-tao-sse\\live-SkGAtX\\xdg-data\\opencode\\snapshot\\6f7028ec2d3ece8d8c894f2b3bcd65fd2ba395c7\\083cd475cc928fb8b620cd0b24fc9c763b4deb05"

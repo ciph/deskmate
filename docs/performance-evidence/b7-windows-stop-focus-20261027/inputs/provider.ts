@@ -1,0 +1,20 @@
+import {writeFileSync} from 'node:fs';
+import {join} from 'node:path';
+const rows:any[]=[]; const root=import.meta.dir;
+function content(size:number){const start='# B7_STREAM_'+size+'\n\n```ts\n';const end='\n```\n\n| Item | Status |\n| --- | --- |\n| B7 | COMPLETE |\n\nB7_STREAM_END_'+size;return start+'const b7 = 123; // synthetic streaming payload\n'.repeat(Math.ceil(size/45)).slice(0,size-start.length-end.length)+end;}
+const save=()=>writeFileSync(join(root,'provider-requests.json'),JSON.stringify(rows,null,2));
+const server=Bun.serve({hostname:'127.0.0.1',port:0,idleTimeout:60,async fetch(req){const url=new URL(req.url);
+ if(url.pathname==='/v1/models')return Response.json({object:'list',data:[{id:'b7-local',object:'model',owned_by:'b7-fixture'}]});
+ if(url.pathname==='/status')return Response.json({requests:rows});
+ if(url.pathname.startsWith('/expected/'))return new Response(content(Number(url.pathname.split('/').at(-1))),{headers:{'content-type':'text/plain'}});
+ if(req.method!=='POST'||url.pathname!='/v1/chat/completions')return new Response('not found',{status:404});
+ const body=await req.json() as any;const last=JSON.stringify(body.messages.filter((x:any)=>x.role==='user').at(-1)?.content||'');
+ const size=last.includes('B7_50K')?50000:last.includes('B7_10K')?10000:last.includes('B7_STOP')?50000:0;
+ const text=size?content(size):'B7_LOCAL_REPLY_OK';const count=last.includes('B7_STARTUP')?3000:size?500:1;const row={id:rows.length,at:new Date().toISOString(),size,plannedHz:50,plannedChunks:count,emitted:0,aborted:false,done:false,times:[] as number[],expectedChars:text.length,expectedSha256:new Bun.CryptoHasher('sha256').update(text).digest('hex')};rows.push(row);save();
+ const base={id:'chatcmpl-b7-'+crypto.randomUUID(),model:'b7-local',created:Math.floor(Date.now()/1000)};
+ if(!body.stream)return Response.json({...base,object:'chat.completion',choices:[{index:0,message:{role:'assistant',content:text},finish_reason:'stop'}]});
+ let cancelled=false;req.signal.addEventListener('abort',()=>{cancelled=true;row.aborted=true;save()},{once:true});
+ return new Response(new ReadableStream({async start(controller){const began=performance.now();try{for(let i=0;i<count&&!cancelled;i++){const target=i*20;await Bun.sleep(Math.max(0,target-(performance.now()-began)));if(cancelled)break;const chunk=text.slice(Math.floor(i*text.length/count),Math.floor((i+1)*text.length/count));controller.enqueue(new TextEncoder().encode('data: '+JSON.stringify({...base,object:'chat.completion.chunk',choices:[{index:0,delta:{...(i===0?{role:'assistant'}:{}),content:chunk},finish_reason:null}]})+'\n\n'));row.times.push(performance.now()-began);row.emitted++;}if(!cancelled){controller.enqueue(new TextEncoder().encode('data: '+JSON.stringify({...base,object:'chat.completion.chunk',choices:[{index:0,delta:{},finish_reason:'stop'}]})+'\n\ndata: [DONE]\n\n'));row.done=true;controller.close();}}catch(e){row.aborted=true;}finally{save();}},cancel(){cancelled=true;row.aborted=true;save();}}),{headers:{'content-type':'text/event-stream','cache-control':'no-cache'}});
+}});
+const receipt={pid:process.pid,port:server.port,baseUrl:`http://127.0.0.1:${server.port}/v1`,startedAt:new Date().toISOString()};writeFileSync(join(root,'provider-session.json'),JSON.stringify(receipt,null,2));console.log(JSON.stringify(receipt));
+for(const signal of ['SIGTERM','SIGINT'] as const)process.on(signal,()=>{server.stop(true);save();writeFileSync(join(root,'provider-stopped.json'),JSON.stringify({pid:process.pid,stoppedAt:new Date().toISOString()}));process.exit(0)});

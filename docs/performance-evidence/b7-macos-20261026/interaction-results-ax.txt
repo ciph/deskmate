@@ -1,0 +1,12 @@
+The following is a diff from the previous accessibility tree for Window: "YUME B7 Followup QA chat" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
++					54 image
++					55 text {const r=localStorage.getItem('b7-interaction-result');if(r){for(let i=0;i<r.length;i+=320)console.log('B7_RESULT_CHUNK '+(i/320)+' '+r.slice(i,i+320))}else console.log(document.body.innerText.slice(-500))};void 0
++					56 image
++					57 text B7_RESULT_CHUNK 0 {"rows":1000,"viewport":[720,760],"listHeight":591,"scrollHeight":205016,"input":{"n":30,"p50":20,"p95":22,"max":22.000000000029104,"samples":[19,22,19,20,20,19,22.000000000029104,18.999999999970896,20,20.000000000029104,20.999999999970896,19,20.000000000029104,20.999999999970896,19,20,21,19,20,21,19.000000000029104,19
++					58 image
++					59 text B7_RESULT_CHUNK 1 .999999999970896,20,20.000000000029104,19.999999999970896,20,20,20,20,20]},"scroll":{"n":30,"p50":20,"p95":20.999999999970896,"max":21,"samples":[19.999999999970896,20,20.000000000029104,19.999999999970896,20,20,20,20,19.000000000029104,20.999999999970896,20.000000000029104,18.999999999970896,21,20.000000000029104,19.9
++					60 image
++					61 text B7_RESULT_CHUNK 2 99999999970896,20,20,20,20,20,20,20,20,20,20.000000000029104,19.999999999970896,20,20.000000000029104,19.999999999970896,20]},"elapsedMs":1405,"method":"programmatic DOM input/scroll to second requestAnimationFrame; 5 warmups + 30 samples; Inspector closed"}
++					62 image
++					63 text undefined
+The focused UI element is 52 text entry area (settable) Console prompt, Value: [text entry area: Console prompt]

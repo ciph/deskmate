@@ -1,0 +1,213 @@
+{
+  "fixture": {
+    "fixtureOnly": true,
+    "stoppedApp": true,
+    "scheduleId": "acb5d577-2399-4477-af54-c616c94d1989",
+    "before": {
+      "id": "acb5d577-2399-4477-af54-c616c94d1989",
+      "kind": "weekly",
+      "weekday_set": "[5]",
+      "local_time": "17:00",
+      "timezone_mode": "system_local",
+      "enabled": 1,
+      "revision": 1,
+      "created_at": "2026-10-27T09:42:17.580521900+00:00",
+      "updated_at": "2026-10-27T09:42:17.580521900+00:00",
+      "next_due_at": "2026-10-30T09:00:00+00:00"
+    },
+    "seededEntryId": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+    "expectedStart": "2026-10-19",
+    "expectedEnd": "2026-10-23",
+    "expectedOccurrenceKey": "acb5d577-2399-4477-af54-c616c94d1989:2026-10-19:2026-10-23",
+    "createdAt": "2026-10-09T09:00:00.000Z",
+    "appliedAt": "2026-10-27T10:08:17.134Z"
+  },
+  "runs": [
+    {
+      "id": "b5e6bac5-1aaf-4bdb-9eaa-606193379fd3",
+      "scheduleId": "acb5d577-2399-4477-af54-c616c94d1989",
+      "kind": "weekly",
+      "periodStart": "2026-10-19",
+      "periodEnd": "2026-10-23",
+      "occurrenceKey": "acb5d577-2399-4477-af54-c616c94d1989:2026-10-19:2026-10-23",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e832a99a7ffe80VFdzAKOYGuhO",
+      "baseReportRevision": null,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+          "revision": 1
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+            "revision": 1
+          },
+          "businessDate": "2026-10-19",
+          "project": "漏周合成测试",
+          "text": "[done] 完成历史周合成验收。"
+        }
+      ],
+      "modelId": "yume/b7-local",
+      "resultReportId": "3a90e193-d6ba-4897-9394-5357b48f3c05",
+      "errorCode": null,
+      "createdAt": "2026-10-27T10:08:41.481334900+00:00",
+      "updatedAt": "2026-10-27T10:08:44.225111900+00:00"
+    },
+    {
+      "id": "274dd301-565c-44b6-b6be-d21104b2519b",
+      "scheduleId": null,
+      "kind": "daily",
+      "periodStart": "2026-10-27",
+      "periodEnd": "2026-10-27",
+      "occurrenceKey": "manual:8ad9b415-32e0-9fdc-3c0b-af94c1f5de92",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e834410a8ffecPcSVFoQ42mC2V",
+      "baseReportRevision": null,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+          "revision": 1
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "ce755513-642c-4d29-8038-6e4ab22b3dc2",
+            "revision": 1
+          },
+          "businessDate": "2026-10-27",
+          "project": "B7 合成验收",
+          "text": "[done] 完成 B7 附件和物理拖放验收。"
+        }
+      ],
+      "modelId": "yume/b7-local",
+      "resultReportId": "47d0e11d-03d4-4935-8b9e-26a01a2e7480",
+      "errorCode": null,
+      "createdAt": "2026-10-27T09:40:53.693778500+00:00",
+      "updatedAt": "2026-10-27T09:40:54.244190900+00:00"
+    }
+  ],
+  "scheduledRuns": [
+    {
+      "id": "b5e6bac5-1aaf-4bdb-9eaa-606193379fd3",
+      "scheduleId": "acb5d577-2399-4477-af54-c616c94d1989",
+      "kind": "weekly",
+      "periodStart": "2026-10-19",
+      "periodEnd": "2026-10-23",
+      "occurrenceKey": "acb5d577-2399-4477-af54-c616c94d1989:2026-10-19:2026-10-23",
+      "state": "succeeded",
+      "attempt": 1,
+      "nextRetryAt": null,
+      "leaseUntil": null,
+      "sessionId": "ses_e832a99a7ffe80VFdzAKOYGuhO",
+      "baseReportRevision": null,
+      "sourceManifest": [
+        {
+          "kind": "entry",
+          "id": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+          "revision": 1
+        }
+      ],
+      "sourceSnapshot": [
+        {
+          "entryStatus": "done",
+          "source": {
+            "kind": "entry",
+            "id": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+            "revision": 1
+          },
+          "businessDate": "2026-10-19",
+          "project": "漏周合成测试",
+          "text": "[done] 完成历史周合成验收。"
+        }
+      ],
+      "modelId": "yume/b7-local",
+      "resultReportId": "3a90e193-d6ba-4897-9394-5357b48f3c05",
+      "errorCode": null,
+      "createdAt": "2026-10-27T10:08:41.481334900+00:00",
+      "updatedAt": "2026-10-27T10:08:44.225111900+00:00"
+    }
+  ],
+  "schedules": [
+    {
+      "id": "acb5d577-2399-4477-af54-c616c94d1989",
+      "kind": "weekly",
+      "weekdaySet": [
+        5
+      ],
+      "localTime": "17:00",
+      "timezoneMode": "system_local",
+      "enabled": true,
+      "revision": 1,
+      "createdAt": "2026-10-09T09:00:00.000Z",
+      "updatedAt": "2026-10-27T09:42:17.580521900+00:00",
+      "nextDueAt": "2026-10-30T09:00:00+00:00"
+    }
+  ],
+  "details": [
+    {
+      "report": {
+        "id": "3a90e193-d6ba-4897-9394-5357b48f3c05",
+        "kind": "weekly",
+        "periodStart": "2026-10-19",
+        "periodEnd": "2026-10-23",
+        "currentVersionId": "471eb345-e0e3-4c87-bf5c-fc0e304f39d0",
+        "revision": 1,
+        "stale": false,
+        "sourceDeleted": false,
+        "updatedAt": "2026-10-27T10:08:44.225111900+00:00"
+      },
+      "versions": [
+        {
+          "id": "471eb345-e0e3-4c87-bf5c-fc0e304f39d0",
+          "reportId": "3a90e193-d6ba-4897-9394-5357b48f3c05",
+          "version": 1,
+          "bodyMarkdown": "## 本周成果（按项目）\n\n漏周合成测试：[done] 完成历史周合成验收。\n\n## 进展\n\n待补充\n\n## 风险\n\n待补充\n\n## 下周计划\n\n待补充\n\n## 缺少素材的日期\n\n2026-10-20、2026-10-21、2026-10-22、2026-10-23\n",
+          "origin": "generated",
+          "sourceRevisionManifest": [
+            {
+              "kind": "entry",
+              "id": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+              "revision": 1
+            }
+          ],
+          "sourceSnapshot": [
+            {
+              "entryStatus": "done",
+              "source": {
+                "kind": "entry",
+                "id": "727a56f2-95a2-4e59-a3cb-917f9601583e",
+                "revision": 1
+              },
+              "businessDate": "2026-10-19",
+              "project": "漏周合成测试",
+              "text": "[done] 完成历史周合成验收。"
+            }
+          ],
+          "coverageDates": [
+            "2026-10-19"
+          ],
+          "generatedAt": "2026-10-27T10:08:44.225111900+00:00",
+          "modelId": "yume/b7-local"
+        }
+      ]
+    }
+  ],
+  "pass": true,
+  "method": "stopped-app synthetic overdue fixture; actual native scheduler and loopback model; OS clock unchanged"
+}

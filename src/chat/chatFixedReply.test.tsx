@@ -29,6 +29,7 @@ const listen = mock<
 >(() => Promise.resolve(() => {}));
 let eventHandler: ((event: OpenCodeEvent) => void) | null = null;
 let ownershipChanged: (() => void) | null = null;
+let catalogChanged: (() => void) | null = null;
 let workbenchOwned = false;
 let workbenchState: "busy" | "idle" | "unavailable" = "idle";
 let workbenchOpenFailure: "history_native_missing" | "history_native_timeout" | Error | null = null;
@@ -38,6 +39,8 @@ let catalogUnavailable = false;
 let catalogRunning = false;
 let promptCount = 0;
 let deferredAbort: (() => Promise<unknown>) | null = null;
+let deferredCreate: (() => Promise<Response>) | null = null;
+let deferredPrompt: (() => Promise<Response>) | null = null;
 const nativeEntry: UnifiedHistoryRow = {
   key: 'native:["test",".","ses_fixed"]',
   identity: { kind: "native", sidecarId: "test", directory: ".", sessionId: "ses_fixed" },
@@ -86,11 +89,12 @@ function installOpenCodeTransport(): void {
       return Promise.resolve(new Response(null, { status: 200 }));
     }
     if (url.endsWith("/session") && init?.method === "POST") {
+      if (deferredCreate) return deferredCreate();
       return Promise.resolve(makeJsonResponse({ id: "ses_fixed", title: "t", directory: "." }));
     }
     if (url.endsWith("/session/ses_fixed/prompt_async") && init?.method === "POST") {
       promptCount += 1;
-      return Promise.resolve(new Response(null, { status: 204 }));
+      return deferredPrompt?.() ?? Promise.resolve(new Response(null, { status: 204 }));
     }
     if (url.endsWith("/session/ses_fixed/abort") && init?.method === "POST") {
       return Promise.resolve(makeJsonResponse(true));
@@ -145,13 +149,17 @@ beforeEach(() => {
   catalogRow = nativeEntry;
   promptCount = 0;
   deferredAbort = null;
+  deferredCreate = null;
+  deferredPrompt = null;
   ownershipChanged = null;
+  catalogChanged = null;
   workbenchOwned = false;
   workbenchState = "idle";
   workbenchOpenFailure = null;
   listen.mockReset();
   listen.mockImplementation((event: string, callback: () => void) => {
     if (event === "workbench://ownership-changed") ownershipChanged = callback;
+    if (event === "history-catalog-changed") catalogChanged = callback;
     return Promise.resolve(() => {});
   });
   invoke.mockReset();
@@ -195,6 +203,8 @@ beforeEach(() => {
       }
       case "chat_abort_session":
         return deferredAbort?.() ?? Promise.resolve();
+      case "cleanup_chat_session":
+        return Promise.resolve({ removed: 0 });
       case "history_save":
         return Promise.resolve(undefined);
       case "workbench_session_owned":
@@ -531,7 +541,9 @@ describe("小著固定名字由来回复", () => {
     });
     expect(document.querySelector(".chat-msg-user .chat-bubble")?.textContent).toBe("解释 **Markdown**");
     expect(document.querySelector(".chat-msg-user strong")).toBeNull();
-    expect(document.querySelector(".chat-msg-assistant strong")?.textContent).toBe("内容");
+    jest.useRealTimers();
+    await waitFor(() => expect(document.querySelector(".chat-msg-assistant strong")?.textContent).toBe("内容"));
+    jest.useFakeTimers();
     expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("这是超过两秒才到的内容");
     expect(document.querySelector(".chat-typing")).not.toBeNull();
 
@@ -562,14 +574,17 @@ describe("小著固定名字由来回复", () => {
       await Promise.resolve();
     });
     await act(async () => { jest.advanceTimersByTime(33); await Promise.resolve(); });
-    expect(scrollTo).toHaveBeenCalledWith({ top: 1000 });
+    // The virtualizer follows size changes. This fixed-height fixture has no
+    // resize, so remaining at the bottom needs no additional scroll command.
+    expect(list.scrollTop).toBe(800);
 
     await act(async () => {
       receive({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
       await Promise.resolve();
     });
+    jest.useRealTimers();
     expect(document.querySelector(".chat-typing")).toBeNull();
-    expect(document.querySelector(".chat-msg-assistant strong")).toBeNull();
+    await waitFor(() => expect(document.querySelector(".chat-msg-assistant strong") === null).toBe(true));
     expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("这是超过两秒才到的**内容甲乙");
   });
 
@@ -752,6 +767,132 @@ describe("小著固定名字由来回复", () => {
 
 
 
+test("Enter keeps the composer focusable while submission is locked and rejects duplicate sends", async () => {
+  let complete!: (response: Response) => void;
+  deferredPrompt = () => new Promise(resolve => { complete = resolve; });
+  render(<ChatApp />);
+  const input = await screen.findByPlaceholderText<HTMLTextAreaElement>("输入消息,Enter 发送");
+  fireEvent.change(input, { target: { value: "普通流式问题" } });
+  input.focus();
+  fireEvent.keyDown(input, { key: "Enter" });
+  await waitFor(() => expect(promptCount).toBe(1));
+  expect(input.readOnly).toBe(true);
+  expect(input.disabled).toBe(false);
+  expect(document.activeElement).toBe(input);
+  fireEvent.keyDown(input, { key: "Enter" });
+  expect(promptCount).toBe(1);
+  await act(async () => { complete(new Response(null, { status: 204 })); });
+  await waitFor(() => expect(input.readOnly).toBe(false));
+  expect(document.activeElement).toBe(input);
+  fireEvent.change(input, { target: { value: "流式期间的新草稿" } });
+  expect(input.value).toBe("流式期间的新草稿");
+  expect(screen.getByRole("button", { name: "停" })).toBeDefined();
+});
+
+test("cold initialization preserves the history view opened while the native project is loading", async () => {
+  let complete: (response: Response) => void = () => { throw new Error("create not started"); };
+  let started = false;
+  deferredCreate = () => new Promise<Response>(resolve => { started = true; complete = resolve; });
+  render(<ChatApp />);
+  await waitFor(() => expect(started).toBe(true));
+  fireEvent.click(screen.getByRole("button", { name: "历史" }));
+  const history = await screen.findByRole("dialog", { name: "会话历史" });
+  await act(async () => {
+    complete(makeJsonResponse({ id: "ses_fixed", title: "t", directory: "." }));
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  await waitFor(() => expect(invoke.mock.calls.some(([command]) => command === "history_chat_selected")).toBe(true));
+  expect(screen.queryByRole("dialog", { name: "会话历史" }) === history).toBe(true);
+  deferredCreate = null;
+  fireEvent.click(screen.getByRole("button", { name: "新会话" }));
+  await waitFor(() => expect(screen.queryByRole("dialog", { name: "会话历史" }) === null).toBe(true));
+  await waitFor(() => expect(invoke.mock.calls.filter(([command]) => command === "history_chat_selected").length).toBe(2));
+});
+
+test.each(["idle", "stop", "Aborted", "AbortError", "MessageAbortedError"] as const)("catalog refresh preserves local reply controls through %s", async (terminal) => {
+  render(<ChatApp />);
+  const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.change(input, { target: { value: "普通流式问题" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptCount).toBe(1));
+  input.focus();
+  fireEvent.change(input, { target: { value: "保留这份草稿" } });
+  catalogRow = { ...nativeEntry, runtime: "running", capabilities: {
+    ...nativeEntry.capabilities, send: false, readOnlyReason: "active_task",
+  } };
+  await act(async () => { catalogChanged?.(); await new Promise(resolve => setTimeout(resolve, 20)); });
+  expect(screen.queryByPlaceholderText("输入消息,Enter 发送")).toBe(input);
+  expect(document.activeElement).toBe(input);
+  expect(screen.getByRole("button", { name: "停" })).toBeDefined();
+
+  catalogRow = nativeEntry;
+  if (terminal !== "idle" && terminal !== "stop") deferredAbort = async () => {
+    eventHandler?.({ type: "session.error", properties: { sessionID: "ses_fixed", error: { name: terminal } } });
+    await new Promise(resolve => setTimeout(resolve, 20));
+    eventHandler?.({ type: "message.part.updated", properties: { part: {
+      sessionID: "ses_fixed", messageID: "late-error", type: "text", text: "错误后的迟到正文",
+    } } });
+  };
+  await act(async () => {
+    if (terminal !== "idle") {
+      const stop = screen.getByRole("button", { name: "停" });
+      // A real pointer/keyboard activation moves focus onto Stop before click.
+      stop.focus();
+      fireEvent.click(stop);
+    }
+    else eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  await waitFor(() => expect(screen.queryByRole("button", { name: "停" })).toBeNull());
+  expect(screen.getByPlaceholderText("输入消息,Enter 发送")).toBe(input);
+  expect(document.activeElement).toBe(input);
+  expect((input as HTMLTextAreaElement).value).toBe("保留这份草稿");
+  expect(screen.queryByText("错误后的迟到正文")).toBeNull();
+  expect(screen.queryByText(/Aborted|AbortError/) === null).toBe(true);
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptCount).toBe(2));
+});
+
+test.each([false, true])("real failures stay visible when local Stop is %s", async (stopping) => {
+  render(<ChatApp />);
+  const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.change(input, { target: { value: "ordinary request" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptCount).toBe(1));
+  const fail = () => eventHandler?.({ type: "session.error", properties: { sessionID: "ses_fixed",
+    error: { name: stopping ? "APIError" : "MessageAbortedError", data: { message: "unexpected upstream failure" } },
+  } });
+  deferredAbort = async () => { fail(); await new Promise(resolve => setTimeout(resolve, 20)); };
+  await act(async () => {
+    if (stopping) fireEvent.click(screen.getByRole("button", { name: "停" }));
+    else fail();
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  expect(screen.queryByText(/unexpected upstream failure/) !== null).toBe(true);
+});
+
+test("a completed local reply does not grant control over a later external run", async () => {
+  render(<ChatApp />);
+  const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.change(input, { target: { value: "普通问题" } });
+  fireEvent.click(screen.getByRole("button", { name: "发送" }));
+  await waitFor(() => expect(promptCount).toBe(1));
+  await act(async () => {
+    eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  catalogRow = { ...nativeEntry, runtime: "running", capabilities: {
+    ...nativeEntry.capabilities, send: false, readOnlyReason: "active_task",
+  } };
+  await act(async () => {
+    eventHandler?.({ type: "session.status", properties: { sessionID: "ses_fixed", status: { type: "busy" } } });
+    catalogChanged?.();
+    await new Promise(resolve => setTimeout(resolve, 20));
+  });
+  expect(screen.queryByPlaceholderText("输入消息,Enter 发送")).toBeNull();
+  expect(screen.queryByRole("button", { name: "停" })).toBeNull();
+});
+
 test("reopening a running read-only native session continues receiving its live text", async () => {
   render(<ChatApp />);
   const input = await screen.findByPlaceholderText("输入消息,Enter 发送");
@@ -768,13 +909,14 @@ test("reopening a running read-only native session continues receiving its live 
   await screen.findByText("载入时的部分");
   expect(screen.queryByPlaceholderText("输入消息,Enter 发送")).toBeNull();
   await act(async () => {
+    localMessages = localMessages.map(message => message.role === "assistant" ? { ...message, text: "重新打开后继续更新的正文" } : message);
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_fixed", messageID: "live-native", type: "text", text: "重新打开后继续更新的正文",
     } } });
     eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
     await new Promise(resolve => setTimeout(resolve, 20));
   });
-  expect(screen.getByText("重新打开后继续更新的正文")).toBeDefined();
+  await waitFor(() => expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("重新打开后继续更新的正文"));
   expect(screen.queryByText("载入时的部分")).toBeNull();
   expect(document.querySelector(".chat-typing")).toBeNull();
 });
@@ -797,6 +939,7 @@ test("switching to another native directory and session rejects the previous str
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_fixed", messageID: "old-message", type: "text", text: "旧会话迟到内容",
     } } });
+    localMessages = localMessages.map(message => message.role === "assistant" ? { ...message, text: "另一会话继续回复" } : message);
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_other", messageID: "other-message", type: "text", text: "另一会话继续回复",
     } } });
@@ -822,6 +965,7 @@ test("native part IDs resume into one assistant row without duplicated restored 
   await screen.findByText("hello world");
   const row = document.querySelector('[data-message-id="m1"]');
   await act(async () => {
+    localMessages = localMessages.map(message => message.partId === "p2" ? { ...message, text: "world!" } : message);
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_fixed", messageID: "m1", id: "p2", type: "text", text: "world!",
     } } });
@@ -831,7 +975,7 @@ test("native part IDs resume into one assistant row without duplicated restored 
     eventHandler?.({ type: "session.idle", properties: { sessionID: "ses_fixed" } });
     await new Promise(resolve => setTimeout(resolve, 20));
   });
-  expect(screen.getByText("hello world!")).toBeDefined();
+  await waitFor(() => expect(document.querySelector(".chat-msg-assistant .chat-bubble")?.textContent).toBe("hello world!"));
   expect(document.querySelectorAll(".chat-msg-assistant")).toHaveLength(1);
   expect(document.querySelector('[data-message-id="m1"]')).toBe(row);
 });
@@ -857,6 +1001,7 @@ test("a Stop confirmation for an old generation cannot cancel a newly selected n
   await act(async () => {
     finishAbort?.();
     await Promise.resolve(); await Promise.resolve();
+    localMessages = localMessages.map(message => message.role === "assistant" ? { ...message, text: "other final after old Stop" } : message);
     eventHandler?.({ type: "message.part.updated", properties: { part: {
       sessionID: "ses_other", messageID: "other-message", id: "other-part", type: "text", text: "other final after old Stop",
     } } });

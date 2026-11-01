@@ -1,0 +1,69 @@
+{
+  "unguardedStartup": {
+    "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027e",
+    "error": "state() called before manage() for HistoryMaintenance",
+    "hostLog": "app-134223406.stderr.log",
+    "sourceReceipt": "candidate-build-before-startup-guard.json",
+    "resolution": "try_state in store and initialize; early catalog access regression test",
+    "probeOutcome": "probe deadline (no result JSON)",
+    "hostPid": 105180
+  },
+  "firstMonitorAttempt": {
+    "phase": "baseline",
+    "error": "Execution context was destroyed",
+    "result": "baseline-first-cold.json",
+    "resolution": "Retry initial React readiness before starting actions"
+  },
+  "frontendDiagnostic": {
+    "exitCode": -1073740791,
+    "logs": [
+      "fixed-reply-after.log",
+      "cold-view-after-targeted.log"
+    ],
+    "resolution": "Use boolean identity assertions to avoid formatting huge DOM in intermediate waitFor errors; final focused suite passes"
+  },
+  "shortBootstrapBudget": {
+    "result": "final-first-cold.json",
+    "identity": "com.deskmate.unifiedhistoryqa.winb7cold20261027f",
+    "outcome": "history_native_timeout followed by automatic discovery",
+    "resolution": "120-second background-only project bootstrap budget",
+    "observedBootstrapSeconds": 63.04,
+    "budgetSeconds": 60
+  },
+  "earlyWarmHistory": {
+    "result": "acceptance-warm-restart.json",
+    "outcome": "early history_state_unavailable then auto recovery in about 1.2 seconds",
+    "resolution": "background list waits for host history state"
+  },
+  "workbenchQaConfig": {
+    "intermediate": "Environment-only CDP did not expose port; watcher returned CDP not ready",
+    "productConfigurationChanged": false,
+    "initial": "Per-window CDP/precise-memory flags differed from dynamic workbench flags; window handle existed but failed to receive messages",
+    "resolution": "Explicit identical base + --remote-debugging-port=9240 for configured windows and YUME_CDP_PORT=9240 for workbench"
+  },
+  "multiwindowAssertions": {
+    "cause": "Probe expected incorrect error strings; host correctly denied both calls",
+    "passed": "multiwindow-before-host-wait-final.json",
+    "logs": [
+      "multiwindow-before-host-wait.json",
+      "multiwindow-before-host-wait-corrected.json"
+    ]
+  },
+  "streamProbeEntry": {
+    "result": "regression-10k.json",
+    "cause": "Probe imported removed QA-only JS after standard frontend restore",
+    "resolution": "Inline pure DOM observer; final real stream regressions pass"
+  },
+  "doctorProbe": {
+    "cause": "Initial explicit files plus scope full was unsupported; initial baseline child git spawn hit sandbox EPERM",
+    "resolution": "Correct files scope and allowed read-only spawn; comparison receipt retains both existing-diagnostic exit 1 results"
+  },
+  "preservationProbe": {
+    "cause": "Initial status command omitted --untracked-files=all; first report README has an earlier follow-up pointer absent from original manifest",
+    "resolution": "Matching porcelain/all status and pointer-only hash verification pass; no old report rewritten"
+  },
+  "productionHashReceipt": {
+    "cause": "Initial capture used deskmate.exe instead of built yume.exe",
+    "resolution": "Build succeeded; corrected yume.exe hash recorded; initial receipt retained"
+  }
+}

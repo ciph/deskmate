@@ -34,6 +34,14 @@ export async function loadSharedConversation(row: UnifiedHistoryRow): Promise<Ca
   return loaded;
 }
 
+/** A running reply blocks another send, not control of the reply started in this view. */
+export function canControlRunningReply(entry: UnifiedHistoryRow | null, localReplyKey: string | undefined): boolean {
+  return entry !== null && entry.identity.kind === "native" && entry.key === localReplyKey
+    && entry.availability === "available" && !entry.archived && !entry.tombstone
+    && entry.ownership === "unowned" && entry.runtime === "running"
+    && entry.capabilities.readOnlyReason === "active_task";
+}
+
 export function conversationReadOnlyReason(entry: UnifiedHistoryRow, language: string): string {
   const zh = language === "zh-CN";
   if (entry.identity.kind === "legacy") return zh ? "旧版文本记录，仅供阅读" : "Legacy text record · read only";

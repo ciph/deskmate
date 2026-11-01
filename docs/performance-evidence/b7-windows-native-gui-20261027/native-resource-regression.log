@@ -1,0 +1,19 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\nativeResourceFlow.test.tsx:
+(pass) native audio video and folder integration > native drops show MP3 WAV M4A and video previews without byte-upload calls [110.35ms]
+(pass) native audio video and folder integration > folder drop lists entries and sends a directory reference without changing workspace [80.39ms]
+(pass) native audio video and folder integration > ordinary audio sends only references and retains a playable preview in the sent message [89.45ms]
+agent catalog adoption failed history_deleted
+(pass) native audio video and folder integration > native picker accepts audio in folder work and includes it in the Agent start request [90.55ms]
+(pass) native audio video and folder integration > an unavailable original file keeps the draft and preview for retry without sending a false success [39.39ms]
+(pass) native audio video and folder integration > an audio-only draft can be sent without typed text [36.07ms]
+(pass) native audio video and folder integration > click and Enter cannot submit twice while native resources are being prepared [62.09ms]
+(pass) native audio video and folder integration > browser WAV drops use the media upload path and display audio controls [33.27ms]
+(pass) native audio video and folder integration > reopened workspace history looks up audio by native message ID when its text part ID differs [78.19ms]
+(pass) reopened native PDF and file-only turns display labels without fetching file bytes [76.08ms]
+
+ 10 pass
+ 0 fail
+ 75 expect() calls
+Ran 10 tests across 1 file. [7.20s]

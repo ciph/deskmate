@@ -1,25 +1,24 @@
 # YUME 仓库 AI 工作入口
 
-## 性能整改接续（2026-10-24）
+## 当前入口与状态
 
-继续性能整改时，先读 [Mac 接续说明](docs/performance-remediation-handoff.md)、[完整施工计划](docs/performance-remediation-plan.md) 和 [验收待办](docs/verification-backlog.md)。B1–B5 已保存并随 Windows 0.4.21 发布，B6/B7 尚未开工；本机路径、分支、工作区和版本须重新核对，从实际最新 `origin/main` 接续，不按历史盘符或原审计基线回退。后续实施及时更新这些入口，保留平台待验边界。
+- 当前 Windows 开发 checkout：`E:\Codex\工作伙伴\deskmate-windows-b7`，分支 `codex/yume-performance-b6`。每次先核对实际路径、分支、Git 状态及 package.json，不能只信聊天 cwd。
+- 最近发布 Windows 0.4.24，发布源码 `b9c5606`；历史 schema 3、记忆 schema 4。[发布回执](docs/performance-evidence/release-v0.4.24-windows/README.md)、[长历史交付](docs/performance-evidence/long-history-closeout-20261029/README.md) 与 [B7 交付报告](docs/performance-evidence/b7-windows-closeout-20261028/README.md) 是当前证据入口。
+- B7 本机整改及长历史 B0–B4 已交付并随 Windows 发布，严格跨平台/硬件 V2 未全部验收。当前边界与后续成本只在 [Windows 状态](docs/performance-windows-handoff.md) 和 [验收待办](docs/verification-backlog.md) 维护，不继续复制历史进度或轮次估计。
+- 内置桌宠“百变小著”（`xiaozhu-morph`，`src/pet/morph`）已整合进 main，尚未随任何公开版本发布。角色设定、已确认的墨镜/形态约束、原生实测与未验范围见 [百变小著](docs/xiaozhu-morph.md)；改动共享宠物逻辑时检查其他角色。
+- 旧 `E:\Codex\工作伙伴\deskmate-public-release`、其他工作树和其中的未提交改动保留。不要因为旧项目入口指向它们就切换施工；不 reset/clean，不移动或删除其 `.git`。
 
-## 保存、提交、push、发布新版本
+## 开发、清理与验证
 
-用户要求“全部保存提交 push，发布新版本”或同义操作时，先读并执行
-[本机发布指南](docs/local-release-runbook.md)。它是这台维护者 Mac 的发布操作入口；
-[macOS release gate](docs/macos-release.md) 补充打包要求。
+- 从 [文档索引](docs/README.md) 查当前契约，脚本职责见 [脚本索引](scripts/README.md)，固定工作台输入见 [构建契约](docs/workbench-build.md)。
+- 保留已有改动和独有证据；清理前按 [文件治理规则](docs/repository-cleanup-plan.md#12-防止再次遗漏) 核对 tracked/untracked/ignored、消费者、路径与正在使用的进程。不能把无静态引用或日期旧直接当删除理由。
+- 生成物可按记录重建；本机输出保留说明在 `output/README.md`，实际清理结果见 [清理进度](docs/repository-cleanup-progress.md)。不删除用户 AppData、凭据、角色作者成果或发布回执。
+- 已通过且源码未变的检查不重复；修改后执行对应范围的必要验证。类型、前端、Rust、原生 GUI 和硬件证据分别记录，不互相替代。
+- 历史文档只保留原时点结论；完成后的规则写回现行契约，未验项转入待办，归档后修复链接。
 
-- 本机已有 Developer ID 签名身份与 `yume-notary` 公证 profile。先按指南在可访问钥匙串的执行上下文中预检；沙箱中的“0 identities”或 GitHub token invalid 不能证明配置缺失。
-- 使用 `DEVELOPER_DIR=/Library/Developer/CommandLineTools`。不为发布修改全局 Xcode 选择或接受全局许可证。
-- 默认走“GitHub Actions 候选包 → 本机 Apple 签名、公证 → Actions updater 签名 → 验证 → 公开 Release”。Tauri updater 私钥在 Actions secrets，无需本地查找或导出。
-- 用户已明确要求提交、推送、发布时，沿用这次任务的授权继续完成。仅分析、写文档或修改代码不自动触发发布；工具明确要求额外授权时，说明具体操作及原因。
-- 长任务记录版本、commit、workflow run ID、本地输出路径、公证 submission ID 和已完成阶段，恢复时从记录继续，避免重复构建、提交公证或上传。
-- 不将密钥、密码、token、未签名候选包、缓存或日志提交/上传为 Release 资产；不修改已经公开的版本来修复新问题。
-- “CI 成功”“上传完成”都不等于“发布完成”。按指南核验公开状态、下载资产、更新清单和实际测试结果后再报告。
+## 提交、推送与发布
 
-已验证的机器配置集中维护在发布指南。配置改变时更新该指南，避免在多份文档中复制凭据位置或历史版本号。
-
-## 仓库审计、文件清理与文档治理
-
-从[文档索引](docs/README.md)进入当前契约和活动工作，按[文件清理规则](docs/repository-cleanup-plan.md#12-防止再次遗漏)核对 tracked、untracked 和忽略目录的职责全集。保留/删除依据覆盖动态、框架、CLI、作者与测试入口；功能完成同步现行文档，先转移未验事项再归档旧记录。历史命令、机器路径和当时授权不作当前执行入口；保留用户改动并按实际范围记录验证与余项。此入口沿用当前任务授权，不新增确认或发布门禁。
+- 沿用用户对本次任务的授权，不为已有授权重复询问。分析、清理或代码修改不自动触发新版本发布；不覆盖已公开 tag/资产。
+- Windows 使用 [release workflow](.github/workflows/release.yml) 和 [版本校验](scripts/check-version.ps1)：同步四处版本、写发布说明、生成草稿、核验安装包与 Tauri 更新签名，再公开并匿名回读。未验范围如实保留。
+- macOS 发布先读 [本机 Mac 发布指南](docs/local-release-runbook.md) 与 [macOS gate](docs/macos-release.md)。Mac 的钥匙串、签名身份和 Apple 命令只在对应 Mac 环境适用，不能当 Windows 本机配置。
+- 发布凭据留在既有安全存储/Actions secrets，不导出秘密。保留 commit、workflow run ID、输出路径和阶段回执；CI 通过或上传草稿均不等于发布完成。

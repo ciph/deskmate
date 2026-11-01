@@ -1,0 +1,29 @@
+{
+  "releaseCommit": "1901fb8fd46346acfd5e34661f707f7aafde7eab",
+  "savedCommits": [
+    {
+      "commit": "870234732b04475ed87873da3e291e5f1ed3be16",
+      "preserved": true
+    },
+    {
+      "commit": "36a3c2ee566accfc7e7e3db474fe9ecf1d755d1a",
+      "preserved": true
+    },
+    {
+      "commit": "2e90c94ce995386e6268aa1155eddcd7fbfb2377",
+      "preserved": true
+    }
+  ],
+  "changedSinceAcceptance": [
+    "docs/release-v0.4.22.md",
+    "package.json",
+    "src-tauri/Cargo.lock",
+    "src-tauri/Cargo.toml",
+    "src-tauri/tauri.conf.json"
+  ],
+  "productLogicUnchanged": true,
+  "localFullTestsRepeated": false,
+  "sourceChecks": "Release tag workflow only; duplicate main/task-branch runs cancelled",
+  "notesSha256": "B7BF6E9649CD1630588497D1E0474567E21B3CEE7AA2B995BFE038B84A122397",
+  "checkedAt": "2026-10-28T12:10:17.6988884+08:00"
+}

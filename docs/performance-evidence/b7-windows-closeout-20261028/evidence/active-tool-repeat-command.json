@@ -1,0 +1,5 @@
+{
+  "code": 0,
+  "out": "10 secondary launches exited 0; primary and sidecar PID/creation-time unchanged.\r\n",
+  "err": ""
+}

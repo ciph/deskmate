@@ -1,5 +1,6 @@
+import { renderMarkdown as render } from "../testing/renderMarkdown";
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, waitFor } from "@testing-library/react";
 import { ChatText } from "./ChatText";
 import { restoreTauriModuleFixture } from "../testing/tauriModuleFixture";
 
@@ -19,7 +20,7 @@ describe("ChatText", () => {
     } });
     try {
       const code = "  const literal = '**星号**';\n\treturn literal;\n";
-      const { getByRole, container } = render(<ChatText text={'```ts\n' + code + '```'} />);
+      const { getByRole, container } = await render(<ChatText text={'```ts\n' + code + '```'} />);
       fireEvent.click(getByRole("button", { name: "复制代码" }));
       await waitFor(() => expect(getByRole("status").textContent).toBe("复制失败，请重试"));
       fail = false;
@@ -46,7 +47,7 @@ describe("ChatText", () => {
       } },
     });
     try {
-      const { getByRole } = render(<ChatText text="[网站](https://example.com)" />);
+      const { getByRole } = await render(<ChatText text="[网站](https://example.com)" />);
       expect(fireEvent.click(getByRole("link"))).toBe(false);
       expect(calls).toEqual([{ command: "open_chat_link", args: { url: "https://example.com" } }]);
       await waitFor(() => expect(getByRole("alert").textContent).toContain("无法打开，请复制链接"));
@@ -58,11 +59,11 @@ describe("ChatText", () => {
     }
   });
 
-  test("does not emphasize signature terms unless the author requests it", () => {
+  test("does not emphasize signature terms unless the author requests it", async () => {
     const message =
       "因为本人：系著名当代游戏电子游戏音乐先锋级选手\n\n您叫我小著就行..嘿嘿..";
 
-    const { container } = render(<ChatText text={message} />);
+    const { container } = await render(<ChatText text={message} />);
     const emphasized = Array.from(
       container.querySelectorAll("strong.chat-emphasis"),
     );
@@ -72,18 +73,18 @@ describe("ChatText", () => {
     expect(container.textContent).toContain("您叫我小著就行");
   });
 
-  test("leaves ordinary copy untouched", () => {
+  test("leaves ordinary copy untouched", async () => {
     const message = "霄·太郎是也~";
-    const { container } = render(<ChatText text={message} />);
+    const { container } = await render(<ChatText text={message} />);
 
     expect(container.textContent).toBe(message);
     expect(container.querySelector("strong.chat-emphasis")).toBeNull();
   });
 
-  test("renders Markdown strong markers without showing the asterisks", () => {
+  test("renders Markdown strong markers without showing the asterisks", async () => {
     const message = "- **AI 边的 SDK 基本都是 TS 优先**。\n\n普通文本";
 
-    const { container } = render(<ChatText text={message} />);
+    const { container } = await render(<ChatText text={message} />);
 
     expect(container.querySelector("li")?.textContent).toBe("AI 边的 SDK 基本都是 TS 优先。");
     expect(container.querySelector("strong")?.textContent).toBe(
@@ -92,17 +93,17 @@ describe("ChatText", () => {
     expect(container.textContent).not.toContain("**");
   });
 
-  test("preserves unmatched strong markers literally", () => {
+  test("preserves unmatched strong markers literally", async () => {
     const message = "保留 **未闭合标记";
 
-    const { container } = render(<ChatText text={message} />);
+    const { container } = await render(<ChatText text={message} />);
 
     expect(container.textContent).toBe(message);
     expect(container.querySelector("strong.chat-markdown-strong")).toBeNull();
   });
 
-  test("renders nested lists, headings, quotations and inline formatting", () => {
-    const { container } = render(<ChatText text={"## 建议\n\n1. **重点**和*说明*\n   - ~~旧方案~~\n\n> 引用\n\n`**literal**`"} />);
+  test("renders nested lists, headings, quotations and inline formatting", async () => {
+    const { container } = await render(<ChatText text={"## 建议\n\n1. **重点**和*说明*\n   - ~~旧方案~~\n\n> 引用\n\n`**literal**`"} />);
     expect(container.querySelector("h2")?.textContent).toBe("建议");
     expect(container.querySelector("ol li ul li del")?.textContent).toBe("旧方案");
     expect(container.querySelector("em")?.textContent).toBe("说明");
@@ -111,8 +112,8 @@ describe("ChatText", () => {
     expect(container.querySelector("code strong")).toBeNull();
   });
 
-  test("preserves code whitespace and gives tables a keyboard scroll region", () => {
-    const { container } = render(<ChatText text={"```ts\n  const x = '**literal**';\n```\n\n|格式|状态|\n|---|---|\n|GIF|正常|"} />);
+  test("preserves code whitespace and gives tables a keyboard scroll region", async () => {
+    const { container } = await render(<ChatText text={"```ts\n  const x = '**literal**';\n```\n\n|格式|状态|\n|---|---|\n|GIF|正常|"} />);
     expect(container.querySelector("pre code")?.textContent).toBe("  const x = '**literal**';\n");
     expect(container.querySelector("pre")?.tabIndex).toBe(0);
     const region = container.querySelector(".chat-markdown-table");
@@ -121,34 +122,34 @@ describe("ChatText", () => {
     expect(region?.querySelector("tbody td")?.textContent).toBe("GIF");
   });
 
-  test("keeps user message Markdown and whitespace literal in plain mode", () => {
+  test("keeps user message Markdown and whitespace literal in plain mode", async () => {
     const text = "**小著**\n\n- `代码`\n  缩进";
-    const { container } = render(<ChatText text={text} format="plain" />);
+    const { container } = await render(<ChatText text={text} format="plain" />);
     expect(container.textContent).toBe(text);
     expect(container.querySelector("strong, ul, code")).toBeNull();
   });
 
-  test("completes partial emphasis only while streaming without remounting blocks", () => {
-    const { container, rerender } = render(<ChatText text="已完成段落。\n\n**正在" streaming />);
+  test("completes partial emphasis only while streaming without remounting blocks", async () => {
+    const { container, rerender } = await render(<ChatText text="已完成段落。\n\n**正在" streaming />);
     const firstParagraph = container.querySelector("p");
     expect(container.querySelector("strong")?.textContent).toBe("正在");
-    rerender(<ChatText text="已完成段落。\n\n**正在回复**" streaming />);
+    await rerender(<ChatText text="已完成段落。\n\n**正在回复**" streaming />);
     expect(container.querySelector("p")).toBe(firstParagraph);
     expect(container.querySelector("strong")?.textContent).toBe("正在回复");
-    rerender(<ChatText text="已完成段落。\n\n**正在回复" />);
+    await rerender(<ChatText text="已完成段落。\n\n**正在回复" />);
     expect(container.querySelector("strong")).toBeNull();
     expect(container.textContent).toContain("**正在回复");
   });
 
-  test("does not make partial links clickable during streaming", () => {
-    const { container } = render(<ChatText text="查看[文档](https://exam" streaming />);
+  test("does not make partial links clickable during streaming", async () => {
+    const { container } = await render(<ChatText text="查看[文档](https://exam" streaming />);
     expect(container.textContent).toContain("文档");
     expect(container.querySelector("a[href]")).toBeNull();
   });
 
-  test("keeps unsafe URLs and HTML inert and never loads Markdown images", () => {
+  test("keeps unsafe URLs and HTML inert and never loads Markdown images", async () => {
     const text = "[危险](javascript:alert%281%29) [本地](file:///C:/secret) [相对](/settings.html)\n\n<img src=x onerror=alert(1)>\n\n![图片说明](https://example.test/tracker.png)\n\n[文档](https://example.test/docs)";
-    const { container } = render(<ChatText text={text} />);
+    const { container } = await render(<ChatText text={text} />);
     expect(container.querySelector("img, script, iframe")).toBeNull();
     expect(container.textContent).toContain("图片说明");
     const links = container.querySelectorAll("a[href]");

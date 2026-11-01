@@ -1,0 +1,27 @@
+bun test v1.3.14 (0d9b296a)
+
+src\chat\useWorklogChat.test.tsx:
+23 | 
+24 | test("opening a native session restores its rejected journal receipt without another reply", async () => {
+25 |   getSessionMessages.mockResolvedValue([{ parts: [toolOutput("rejected")] }]);
+26 |   const hook = renderHook(() => useWorklogChat("reopened"));
+27 |   await act(async () => {});
+28 |   expect(getSessionMessages).toHaveBeenCalledWith("reopened");
+                                  ^
+error: expect(received).toHaveBeenCalledWith(...expected)
+
+Expected: [ "reopened" ]
+But it was not called.
+      at <anonymous> (E:\Codex\工作伙伴\deskmate-windows-b7\src\chat\useWorklogChat.test.tsx:28:30)
+(fail) opening a native session restores its rejected journal receipt without another reply [27.96ms]
+(pass) a late history recovery cannot publish receipts into another session [1.67ms]
+(pass) unrelated journal changes do not turn a rejected operation back into pending [11.30ms]
+(pass) late empty receipt lookup cannot erase a later rejection [15.86ms]
+(pass) a verified host receipt can resolve a previously pending operation [15.64ms]
+(pass) an old-session save completes without publishing a receipt into the new chat [15.94ms]
+(pass) an old-session rejected schedule does not attach an error to the new chat [16.53ms]
+
+ 6 pass
+ 1 fail
+ 13 expect() calls
+Ran 7 tests across 1 file. [4.05s]

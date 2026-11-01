@@ -1,0 +1,56 @@
+{
+  "databases": [
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a\\chat-resources.sqlite3",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a\\deskmate-memory.db",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a\\history-catalog.sqlite",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a\\opencode-home\\xdg-data\\opencode\\opencode.db",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Roaming\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a\\yume-worklog.db",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\chenglingxiao\\AppData\\Local\\com.deskmate.unifiedhistoryqa.winb7closeout20261028a\\EBWebView\\Default\\declarative_performance_observer.db",
+      "checks": [
+        {
+          "integrity_check": "ok"
+        }
+      ]
+    }
+  ],
+  "resourceRows": [],
+  "resourceMessages": [],
+  "pass": true,
+  "time": "2026-10-28T03:53:25.115Z"
+}

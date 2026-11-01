@@ -1,0 +1,31 @@
+{
+  "text": "YUME\n设置\n通用\nAI\n工具权限\n小组件\n快捷键\n桌宠\n记忆\n关于\n通用\n我的头像\n更换头像\n恢复默认\nPNG、JPG、WebP，最大 5 MB\n开机自启\n语言\n简体中文\nEnglish\n日本語\n한국어\n大界面\n聊天大界面\n界面主题\n\n换一套清新配色，设置会自动保存。\n\n深色\n薄荷奶油\n蜜桃奶霜\n薰衣草糖\nv0.4.21",
+  "focus": false,
+  "active": "<button id=\"set-category-general\" class=\"set-tab set-tab-active\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" viewBox=\"0 0 256 256\" class=\"app-icon app-icon-20 set-tab-icon\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0",
+  "inputs": [
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": false,
+      "value": ""
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": false,
+      "value": "on"
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": false,
+      "value": "on"
+    },
+    {
+      "tag": "INPUT",
+      "placeholder": "",
+      "disabled": false,
+      "value": "on"
+    }
+  ]
+}
