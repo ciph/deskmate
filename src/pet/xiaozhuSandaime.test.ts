@@ -10,7 +10,7 @@ test("offers the third generation in the built-in pack without changing the defa
   const persona = personaById(id);
   expect(persona.id).toBe(id);
   expect(persona.packId).toBe("ai-substitute");
-  expect(AI_SUBSTITUTE_PACK.version).toBe("1.2.0");
+  expect(AI_SUBSTITUTE_PACK.version).toBe("1.3.0");
   expect(DEFAULT_PERSONA_ID).toBe("xiaozhu");
   expect(persona.scale).toBe(1);
   expect(persona.embeddedMaterials).toBe(true);
