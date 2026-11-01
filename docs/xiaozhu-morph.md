@@ -37,7 +37,7 @@
 
 功能分支以普通合并提交 `65b4e29` 整合 main（0.4.24），快进推送到 main；未升版本、未打标签、未发布。代码无冲突，两处文档冲突按 main 现行结构保留并补百变小著条目。合并树上 `bun run typecheck`、`bun run test:frontend` 182/182 文件、`bun run test:rust` 978 通过、`bun run build`、`scripts/check-version.ps1`（0.4.24）及 Windows 原生 debug 构建通过；main 上的 GitHub Actions “Source checks” run `41308747131` 三个作业（windows-latest、macos-15、Rebuild pinned workbench）均成功。React Doctor 以 main 为基准的两个 error 级诊断位于与 main 相同的 `ChatApp.tsx` 和证据脚本，不是整合引入。
 
-预览 v5 位于 `E:/Codex/工作伙伴/design-artifacts/xiaozhu-yume-native-v5-20261101`，使用新独立身份 `com.deskmate.unifiedhistoryqa.xiaozhumorphmain20261101`，避免 main 的历史/记忆 schema 迁移升级 v1–v4 的测试数据。通过真实设置界面选择百变小著；真实系统输入复测（125%、三屏、60 Hz）新增覆盖：键盘 1–4 切换四形态（轮廓宽高各异）、空格戳碰、双击与 Enter 打开/收起聊天（双击 48 次全部切换）、单击不打开聊天、聊天打开时不自主移动、空闲约 24 s 后自动散步（散步时约 59 fps）。静止松手（横向 0 px）、甩出（继续滑行 67–228 px）、透明命中、右键菜单、跨三屏落地和墨镜像素稳定与 v4 一致；该身份默认 0.5x 时墨镜格宽为 4 设备像素（96×32 px）。
+预览 v5 位于 `E:/Codex/工作伙伴/design-artifacts/xiaozhu-yume-native-v5-20261101`，使用新独立身份 `com.deskmate.unifiedhistoryqa.xiaozhumorphmain20261101`，避免 main 的历史/记忆 schema 迁移升级 v1–v4 的测试数据。通过真实设置界面选择百变小著；真实系统输入复测（125%、三屏、60 Hz）新增覆盖：键盘 1–4 切换四形态（轮廓宽高各异）、空格戳碰、双击与 Enter 打开/收起聊天（确认光标在宠物上的 24 次及逐毫秒记录的 16 次全部切换；更早的粗采样在 v5 有两组共约 6 次未响应，v4 有 2 次光标确在宠物上仍未响应，未复现、原因未查明，按“双击偶发无响应”保留为已知问题）、单击不打开聊天、聊天打开时不自主移动、空闲约 24 s 后自动散步（散步时约 59 fps）。静止松手（横向 0 px）、甩出（继续滑行 67–228 px）、透明命中、右键菜单、跨三屏落地和墨镜像素稳定与 v4 一致；0.5x、125% 时墨镜格宽取整为 4 设备像素（96×32 px，设计值约 4.44，整体小约 10%），v4 同缩放下相同；v4 早先测到的 6 像素对应的缩放未记录。
 
 ### 实机手感修复版（2026-11-01）
 
