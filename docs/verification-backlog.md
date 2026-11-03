@@ -6,6 +6,14 @@
 
 按改动范围运行 `bun run typecheck`、`bun run test:frontend`、`bun run test:rust`、`bun run build` 或组合入口 `bun run check`。已通过且源码未变的不重复整套；原生 GUI、真实模型和硬件结果单独记录，发布工作流按目标版本执行。
 
+## 桌宠右键 AI 用量
+
+2026-11-02 在 0.5.0 开发树完成源码，未安装或发布。64 项相关前端测试、Rust IPC 边界、类型检查和构建通过；React Doctor 93/100，无新增诊断。[功能契约](ai-provider-support.md#桌宠右键用量2026-11-02)、[验收回执](performance-evidence/pet-ai-usage-20261102/receipt.json)。
+
+- Windows 原生运输已验：独立 QA 身份下创建真实菜单，通过 `popup_pet_menu` 弹出，保持打开时延迟 `setText` 成功，回读文本正确，系统 Esc 结束调用、随后释放资源。
+- Windows 原生操作待验：真实鼠标右键命中/点外关闭、详情进入 AI 页、百变小著及 GIF/rig2d/GLB 菜单视觉、长供应商名称和不同 DPI 下的宽度。截图工具超时、坐标输入不可用；不能把 IPC 探针与组件测试视作这些项目已通过。
+- macOS 原生菜单刷新/关闭待验；真实账户 API 未重测。本轮沿用已有后端来源与统计边界。
+
 ## 百变小著（`xiaozhu-morph`）
 
 2026-11-01 在 0.4.21 分支实现并于 Windows 原生预览（v1–v5）逐版验证，整合进 main 后随 Windows v0.5.0 发布（[回执](performance-evidence/release-v0.5.0-windows/README.md)）；最终安装包未做安装后实测，macOS 未发布。版本记录、命令与原生测量方法见[百变小著](xiaozhu-morph.md#验证与交付边界)。

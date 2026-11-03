@@ -1,5 +1,24 @@
 # AI provider connections and usage
 
+## 桌宠右键用量（2026-11-02）
+
+本轮基于实测为 0.5.0 / `fb2ad51` 的 `build-v0418-9081/deskmate-public-release` 工作树施工；另一 Windows checkout 仍为 0.4.24，不迁移其源码或改动。
+
+本轮按以下顺序完成源码：
+1. 复用 `fetch_ai_usage`，增加当前供应商的两行摘要、60 秒内存缓存与并发请求合并。账户/平台金额和 YUME 本地 tokens 分别标注，跨日或连接配置变更时重新查询。
+2. 在所有角色的原生右键菜单顶部加入摘要和 AI 设置详情入口。先弹菜单，再异步更新；未配置、权限失败、网络失败各有状态。关闭后停止写入菜单资源，切换供应商时忽略旧响应。
+3. 验证摘要数值、缓存/迟到响应、菜单资源与角色操作回归，执行类型检查、生产构建和 React Doctor；单独检查 Windows 原生菜单更新与关闭。
+
+底层注意：当前 Tauri 2.11.5 `plugin:menu|popup` 在模态菜单期间持有 WebView 资源表锁。本功能使用仅接受 pet WebView 资源的 `popup_pet_menu`，先取得菜单的 Arc 并释放锁，再显示菜单，允许异步文字更新。后端查询来源、凭据保存和账本均复用既有实现。
+
+展示规则：库洛为本周剩余额度/百分比及平台今日金额/请求数；DeepSeek 为账户余额及 YUME 今日 tokens/请求数；OpenRouter 为当前 Key 剩余额度（无上限单独注明）及平台今日费用；其他来源显示 YUME 今日记录及本地统计提示。未配置时“配置 AI…”进入现有 AI 设置，其他状态由“查看详情…”进入。金额沿用后端原币种与换算，本地统计不表示平台账单。菜单不常驻轮询，不新增依赖、账本或凭据存储。
+
+验证：64 项相关前端测试、Rust 菜单入口边界测试、类型检查及 Windows 原生 debug 构建通过；React Doctor（相对 HEAD，含未跟踪源码）93/100，未新增诊断。隔离身份 `com.deskmate.unifiedhistoryqa.petaiusage20261102` 下，通过真实菜单 IPC 验证“打开 → 延迟更新 → 文字回读 → Esc 结束 → 资源关闭”；该探针使用合成文本，并非真实账户调用或完整右键操作。详情见[验收回执](performance-evidence/pet-ai-usage-20261102/receipt.json)。
+
+本轮未安装、签名、升版本或发布。Windows 工具截图超时，鼠标定位返回 `coordinate input geometry is unavailable`，无法据此确认视觉宽度、真实鼠标命中与详情跳转；这些项目及 macOS 原生验收见[当前待办](verification-backlog.md#桌宠右键-ai-用量)。
+
+## Provider support
+
 Yume discovers models from the configured provider's model-list endpoint. A successful connection lists only returned chat-capable models when the endpoint provides capability metadata. A model-list response alone does not prove that every returned ID is callable with the current key. To require an actual call per model, or when the provider has no usable model-list endpoint, enter up to 12 comma-separated model IDs in the optional field. Verification then sends a short paid inference request to each ID and adds the set only if all calls succeed. This manual path currently requires an OpenAI-compatible chat endpoint. A model can still fail later because of changed permissions, quotas, or provider-specific features.
 
 | Provider / model family | Example Base URL | Request adapter | Account usage in Yume |

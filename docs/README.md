@@ -1,6 +1,6 @@
 # YUME 文档入口
 
-最近整理：2026-11-01，YUME 0.5.0 / OpenCode 1.18.21。Windows 0.5.0 新增百变小著，[发布回执](performance-evidence/release-v0.5.0-windows/README.md)。B6/B7 本机整改与长历史 B0–B4 已随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.24-windows/README.md) 和 [未验范围](verification-backlog.md) 为现行入口。长历史验收原件保留候选时点的版本及状态，公开发布以本次回执为准。历史记录不再用于安排新的验收轮次。
+最近整理：2026-11-02，YUME 0.5.0 / OpenCode 1.18.21。Windows 0.5.0 新增百变小著，[发布回执](performance-evidence/release-v0.5.0-windows/README.md)。B6/B7 本机整改与长历史 B0–B4 已随 Windows 发布；[当前状态](performance-windows-handoff.md)、[发布回执](performance-evidence/release-v0.4.24-windows/README.md) 和 [未验范围](verification-backlog.md) 为现行入口。长历史验收原件保留候选时点的版本及状态，公开发布以本次回执为准。历史记录不再用于安排新的验收轮次。
 
 ## 当前产品与维护契约
 
@@ -28,6 +28,7 @@
 | 入口 | 当前责任 |
 | --- | --- |
 | [百变小著](xiaozhu-morph.md) | 内置程序化桌宠 `xiaozhu-morph`：四形态、像素墨镜、原生拖放/行走与已实测/未验范围 |
+| [桌宠右键 AI 用量](ai-provider-support.md#桌宠右键用量2026-11-02) | 0.5.0 开发树新增用量摘要、按需缓存和详情入口；源码/Windows IPC 已验，鼠标与视觉验收保留，未发布 |
 | [第一版养成系统方案](companion-life-v1-plan.md) | 方案草案，未实施：小窝、自主活动、轻互动、独立存档与原 Agent 共存 |
 | [长历史交互与回执读取施工方案](long-history-construction-plan.md) / [施工交付记录](performance-evidence/long-history-closeout-20261029/README.md) | B0–B4 已完成，G1–G5 通过；四个提交已推送，随 Windows 0.4.24 发布；测量与原始边界保留于交付记录，公开状态见[发布回执](performance-evidence/release-v0.4.24-windows/README.md) |
 | [性能整改施工计划](performance-remediation-plan.md) / [Windows 接管入口](performance-windows-handoff.md) / [Mac 施工记录](performance-remediation-handoff.md) / [便携证据](performance-evidence/README.md) | 原 20 项审计的设计、已交付修复与证据；B6/B7 已随 Windows 0.4.22 发布，严格平台/硬件未验范围保留；旧施工顺序不自动重启 |

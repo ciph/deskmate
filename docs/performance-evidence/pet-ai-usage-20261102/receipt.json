@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-02",
+  "baseCommit": "fb2ad51",
+  "version": "0.5.0",
+  "branch": "codex/yume-performance-remediation",
+  "state": "uncommitted-source-not-released",
+  "frontend": {
+    "execution": "Each test file ran in its own bun test process",
+    "passed": 64,
+    "failed": 0,
+    "files": {
+      "src/pet/petAiUsage.test.ts": 10,
+      "src/pet/petAiUsageMenu.test.ts": 6,
+      "src/pet/PetApp.menu.test.tsx": 4,
+      "src/pet/PetApp.loading.test.tsx": 12,
+      "src/pet/PetApp.reload.test.tsx": 5,
+      "src/pet/PetApp.glbMood.test.tsx": 3,
+      "src/pet/usePetInteraction.test.tsx": 12,
+      "src/settings/AiUsage.test.tsx": 12
+    }
+  },
+  "typecheck": "bun run typecheck: passed",
+  "build": {
+    "command": "bunx tauri build --debug --no-bundle --features worklog-qa --config output/pet-ai-usage-native-20261102/tauri.preview.conf.json",
+    "result": "passed, including final frontend production build",
+    "existingWarnings": "19 Rust warnings and existing Vite large-chunk notices",
+    "finalConfig": "isolated QA identity; temporary CDP arguments removed"
+  },
+  "rust": {
+    "command": "cargo test --locked --manifest-path src-tauri/Cargo.toml --lib pet_menu_rejects_other_webviews_and_unknown_resources",
+    "passed": 1,
+    "failed": 0,
+    "scope": "Reject non-pet WebViews and unknown menu resources before any native popup"
+  },
+  "reactDoctor": {
+    "command": "npx --yes react-doctor@latest --verbose --scope changed --base HEAD --include-untracked",
+    "filesScanned": 7,
+    "score": 93,
+    "newIssues": 0
+  },
+  "nativeProbe": {
+    "identity": "com.deskmate.unifiedhistoryqa.petaiusage20261102",
+    "method": "CDP test harness creates real Tauri Menu/MenuItem resources and invokes the production popup_pet_menu command; computer-use sends Escape",
+    "syntheticData": true,
+    "eventsMs": {
+      "popupCalled": 1793631218000,
+      "updateRequested": 1793631220009,
+      "updateResolved": 1793631220624,
+      "popupClosedAfterEscape": 1793631276194
+    },
+    "textReadback": "本周剩余 91% · ¥2726 / ¥3000",
+    "resourcesDisposed": true,
+    "limitations": [
+      "This proves native IPC lifecycle, not full production right-click or visual redraw",
+      "Screenshot capture timed out; mouse input returned coordinate input geometry is unavailable",
+      "Details action did not produce a click receipt in the keyboard probe, so native navigation remains unverified",
+      "Attempted account-response injection could not replace immutable Tauri invoke; it is excluded from passing evidence"
+    ]
+  },
+  "cleanup": "Owned QA process tree stopped; CDP port 9235 no longer listening; installed production YUME process preserved. QA data and evidence retained.",
+  "localArtifacts": "output/pet-ai-usage-native-20261102: build logs, Rust test log, React Doctor reports, isolated run receipt and CDP probe outputs",
+  "notPerformed": ["full repository test suite", "live account requests", "macOS GUI", "installation", "signing", "version bump", "commit", "push", "release"]
+}
