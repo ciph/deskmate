@@ -1,7 +1,8 @@
 .set-root,
 .chat-root,
 .composer-popover,
-.pet-root {
+.pet-root,
+.pet-menu-root {
   color-scheme: dark;
   --surface: #181922;
   --surface-acrylic: rgba(24, 25, 34, 0.82);
@@ -43,7 +44,8 @@
 .set-root[data-theme="mint"],
 .chat-root[data-theme="mint"],
 .composer-popover[data-theme="mint"],
-.pet-root[data-theme="mint"] {
+.pet-root[data-theme="mint"],
+.pet-menu-root[data-theme="mint"] {
   color-scheme: light;
   --surface: #f9f6ec;
   --surface-acrylic: rgba(249, 246, 236, 0.85);
@@ -83,7 +85,8 @@
 .set-root[data-theme="peach"],
 .chat-root[data-theme="peach"],
 .composer-popover[data-theme="peach"],
-.pet-root[data-theme="peach"] {
+.pet-root[data-theme="peach"],
+.pet-menu-root[data-theme="peach"] {
   color-scheme: light;
   --surface: #fff8f0;
   --surface-acrylic: rgba(255, 248, 240, 0.85);
@@ -123,7 +126,8 @@
 .set-root[data-theme="lavender"],
 .chat-root[data-theme="lavender"],
 .composer-popover[data-theme="lavender"],
-.pet-root[data-theme="lavender"] {
+.pet-root[data-theme="lavender"],
+.pet-menu-root[data-theme="lavender"] {
   color-scheme: light;
   --surface: #faf7fc;
   --surface-acrylic: rgba(250, 247, 252, 0.85);

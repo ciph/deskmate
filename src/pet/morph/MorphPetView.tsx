@@ -1,8 +1,10 @@
 import {
   useEffect,
+  useId,
   useImperativeHandle,
   useLayoutEffect,
   useRef,
+  useState,
   type Ref,
 } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -12,13 +14,15 @@ import type { GifDisplayState } from "../figure2d";
 import { setGifHitPolygon, type GifPoint } from "../gifGeometry";
 import { Companion, type FormKey } from "./engine";
 import { MorphSignature } from "./MorphSignature";
+import { MilkArtwork } from "./MilkArtwork";
+import { milkOutline, paintMilkBody } from "./milkGeometry";
 import {
   createDesktopMotion,
   nativeMotionHost,
   morphEnvelope,
   type MotionHost,
 } from "./desktopMotion";
-import { loadMorphPreferences, saveMorphPreferences } from "./preferences";
+import { loadMorphPreferences, saveMorphPreferences, type MorphAppearance } from "./preferences";
 import { glassesTransform, type ScreenGrid } from "./pixelSnap";
 
 export interface MorphPetHandle {
@@ -29,11 +33,13 @@ export interface MorphPetHandle {
   walk(): void;
   sleep(): void;
   autonomy(): void;
+  appearance(value: MorphAppearance): void;
   snapshot(): {
     form: FormKey;
     auto: boolean;
     sleeping: boolean;
     walking: boolean;
+    appearance: MorphAppearance;
   };
 }
 interface Props {
@@ -46,8 +52,8 @@ interface Props {
   readonly onError: (message: string | null) => void;
   readonly host?: MotionHost;
 }
-function polygon(engine: Companion): GifPoint[] {
-  const a = engine.model.outline,
+function polygon(engine: Companion, milk: boolean): GifPoint[] {
+  const a = milk ? milkOutline(engine, true) : engine.model.outline,
     points: GifPoint[] = [];
   for (let i = 2; i < a.length; i += 6) {
     const x = i === 2 ? a[0] : a[i - 2],
@@ -80,12 +86,15 @@ export function MorphPetView({
   onError,
   host,
 }: Props) {
+  const [appearance, setAppearance] = useState(() => loadMorphPreferences().appearance);
+  const materialId = useId();
   const svg = useRef<SVGSVGElement>(null),
     body = useRef<SVGPathElement>(null),
     face = useRef<SVGGElement>(null),
     glasses = useRef<SVGGElement>(null),
     mouth = useRef<SVGPathElement>(null),
     brows = useRef<SVGPathElement>(null),
+    feet = useRef<SVGGElement>(null),
     shadow = useRef<SVGEllipseElement>(null),
     signs = useRef<SVGGElement>(null),
     hit = useRef<HTMLSpanElement>(null);
@@ -95,11 +104,13 @@ export function MorphPetView({
     auto: boolean;
     held: boolean;
     update: () => void;
+    draw: () => void;
   } | null>(null);
-  const inputs = useRef({ state, visible, leaving });
+  const inputs = useRef({ state, visible, leaving, appearance });
   useLayoutEffect(() => {
-    inputs.current = { state, visible, leaving };
-  }, [state, visible, leaving]);
+    inputs.current = { state, visible, leaving, appearance };
+    current.current?.draw();
+  }, [state, visible, leaving, appearance]);
   useImperativeHandle(
     api,
     () => ({
@@ -122,7 +133,7 @@ export function MorphPetView({
         const c = current.current;
         if (c) {
           c.engine.selectForm(form);
-          saveMorphPreferences({ form, auto: c.auto });
+          saveMorphPreferences({ form, auto: c.auto, appearance: inputs.current.appearance });
         }
       },
       walk() {
@@ -145,8 +156,13 @@ export function MorphPetView({
           c.auto = !c.auto;
           c.engine.input();
           if (!c.auto) c.engine.stopWalk();
-          saveMorphPreferences({ form: c.engine.form, auto: c.auto });
+          saveMorphPreferences({ form: c.engine.pendingForm ?? c.engine.form, auto: c.auto, appearance: inputs.current.appearance });
         }
+      },
+      appearance(value) {
+        setAppearance(value);
+        const c = current.current;
+        if (c) saveMorphPreferences({ form: c.engine.pendingForm ?? c.engine.form, auto: c.auto, appearance: value });
       },
       snapshot() {
         const c = current.current;
@@ -155,6 +171,7 @@ export function MorphPetView({
           auto: c?.auto ?? true,
           sleeping: !!c && ["asleep", "drowsy"].includes(c.engine.state),
           walking: c?.engine.state === "walking",
+          appearance: inputs.current.appearance,
         };
       },
     }),
@@ -186,6 +203,7 @@ export function MorphPetView({
       auto: preferences.auto,
       held: false,
       update,
+      draw,
     };
     current.current = instance;
     const pet = getCurrentWindow();
@@ -239,18 +257,21 @@ export function MorphPetView({
     }
     function draw() {
       const f = engine.frame();
-      body.current?.setAttribute("d", f.d);
+      const milk = inputs.current.appearance === "milk";
+      if (milk) paintMilkBody(body.current, feet.current, engine);
+      else body.current?.setAttribute("d", f.d);
       face.current?.setAttribute("transform", `translate(${f.face.join(" ")})`);
-      const snapped = glassesTransform(screenGrid(), f.face);
+      const snapped = milk ? null : glassesTransform(screenGrid(), f.face);
+      if (milk) lastGlasses = "";
       if (snapped && snapped !== lastGlasses) {
         lastGlasses = snapped;
         glasses.current?.setAttribute("transform", snapped);
       }
       mouth.current?.setAttribute("d", f.mouth);
-      mouth.current?.setAttribute("stroke-width", String(f.mouthStroke));
+      mouth.current?.setAttribute("stroke-width", String(f.mouthStroke * (milk ? 0.8 : 1)));
       brows.current?.setAttribute("d", f.brows);
       brows.current?.setAttribute("opacity", String(f.expression));
-      shadow.current?.setAttribute("rx", String(f.shadowWidth));
+      shadow.current?.setAttribute("rx", String(f.shadowWidth * (milk ? 1.35 : 1)));
       shadow.current?.setAttribute("opacity", String(f.shadowOpacity));
       signs.current?.setAttribute("opacity", String(f.deep * 0.65));
       signs.current?.setAttribute("transform", `translate(80 ${f.top - 10})`);
@@ -258,7 +279,7 @@ export function MorphPetView({
         svg.current.dataset.motion = engine.state;
         svg.current.dataset.form = engine.form;
       }
-      if (hit.current) setGifHitPolygon(hit.current, polygon(engine));
+      if (hit.current) setGifHitPolygon(hit.current, polygon(engine, milk));
     }
     function animate(stamp: number) {
       frame = 0;
@@ -358,15 +379,18 @@ export function MorphPetView({
         viewBox="-180 -280 360 320"
         aria-label="百变小著桌面伙伴"
         data-activity={state}
+        data-appearance={appearance}
         style={{
           ...placement,
           opacity: visible && !leaving ? 1 : 0,
           transition: leaving ? "opacity 300ms linear" : "none",
         }}
       >
-        <ellipse ref={shadow} cx="0" cy="9" ry="8" fill="#c8b59b" />
+        <ellipse ref={shadow} cx="0" cy={appearance === "milk" ? 3 : 9} ry="8" fill={appearance === "milk" ? `url(#${materialId}-ground)` : "#c8b59b"} />
+        {appearance === "milk" ? <MilkArtwork id={materialId} body={body} face={face} mouth={mouth} feet={feet} /> : <>
         <path
           ref={body}
+          data-morph-body="true"
           fill="#fffdf5"
           stroke="#282725"
           strokeWidth="4.5"
@@ -391,6 +415,7 @@ export function MorphPetView({
             strokeLinejoin="round"
           />
         </g>
+        </>}
         <g ref={signs} fill="#a79b86" fontSize="15">
           <text>z</text>
           <text x="18" y="-18" fontSize="12">

@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { readdirSync, realpathSync, rmSync } from "node:fs";
 import { BUILTIN_PACKS } from "./src/pet/personaCatalog";
 
-// Two entry pages: pet (transparent always-on-top mascot) and chat (chat panel).
+// Separate entry pages keep each native window focused on its own UI.
 export default defineConfig({
   root: realpathSync(__dirname),
   // The browser export uses document.createElement. Markdown also runs in a
@@ -33,6 +33,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         pet: resolve(__dirname, "pet.html"),
+        "pet-menu": resolve(__dirname, "pet-menu.html"),
         chat: resolve(__dirname, "chat.html"),
         settings: resolve(__dirname, "settings.html"),
       },

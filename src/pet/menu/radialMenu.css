@@ -1,0 +1,18 @@
+.pet-menu-root { position:relative;width:100vw;height:100vh;color:var(--text);font:12px/1.35 "Segoe UI","Microsoft YaHei",sans-serif;user-select:none; }
+.radial-dismiss { position:absolute;inset:0; }
+.radial-menu { position:absolute;inset:0;pointer-events:none;animation:radial-enter 160ms ease-out; }
+.radial-definitions { position:absolute;width:0;height:0; }
+.radial-page { position:absolute;inset:0;filter:drop-shadow(0 2px 0 rgb(12 22 18 / 14%)) drop-shadow(0 4px 5px rgb(12 22 18 / 18%));animation:radial-page 130ms ease-out; }
+.radial-sector { position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;background-color:color-mix(in srgb,var(--surface) 76%,transparent);background-image:linear-gradient(145deg,rgb(255 255 255 / 32%),transparent 45%,rgb(16 28 23 / 12%));color:var(--text);font:inherit;cursor:pointer;pointer-events:auto;transition:background-color 120ms ease,color 120ms ease; }
+.radial-sector:hover { background-color:color-mix(in srgb,var(--surface-raised) 90%,transparent);color:var(--accent-ink); }
+.radial-sector:focus-visible { outline:none;background-color:color-mix(in srgb,var(--surface-raised) 90%,transparent); }
+.radial-sector:focus-visible .radial-label { color:var(--accent-ink);text-decoration:underline;text-underline-offset:4px; }
+.radial-sector[aria-pressed="true"] { color:var(--accent-ink);background-color:color-mix(in srgb,var(--surface-raised) 88%,transparent); }
+.radial-sector:disabled { cursor:default;color:var(--text-disabled);background-color:var(--surface-disabled); }
+.radial-rim { position:absolute;inset:0;width:100%;height:100%;pointer-events:none; }
+.radial-label { position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;line-height:1.2;text-align:center;font-weight:600; }
+.radial-marker { position:absolute;right:-1px;top:2px;color:var(--accent-ink);font-size:12px; }
+.radial-back { color:var(--text-dim); }
+@keyframes radial-enter { from { opacity:0;transform:scale(.93); } to { opacity:1;transform:scale(1); } }
+@keyframes radial-page { from { opacity:0; } to { opacity:1; } }
+@media(prefers-reduced-motion:reduce) { .radial-menu,.radial-page { animation:none; }.radial-sector { transition:none; } }

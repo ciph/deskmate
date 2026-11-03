@@ -85,6 +85,7 @@ for (const hz of [60, 120, 144])
     }
   });
 test("four morphs keep one rigid signature; sleep wakes; hidden rendering stops; preferences survive remount", async () => {
+  localStorage.setItem("yume-xiaozhu-morph-v1", JSON.stringify({ appearance: "classic" }));
   const api = createRef<MorphPetHandle>(),
     ready = mock(() => {}),
     error = mock((_message: string | null) => {});
@@ -159,6 +160,7 @@ test("four morphs keep one rigid signature; sleep wakes; hidden rendering stops;
   expect(api.current!.snapshot().form).toBe("ghost");
 });
 test("pixel glasses snap to device pixels while the soft face keeps its smooth offset", async () => {
+  localStorage.setItem("yume-xiaozhu-morph-v1", JSON.stringify({ appearance: "classic" }));
   const ratio = Object.getOwnPropertyDescriptor(globalThis, "devicePixelRatio");
   Object.defineProperty(globalThis, "devicePixelRatio", { configurable: true, value: 1.25 });
   const rect = spyOn(SVGElement.prototype, "getBoundingClientRect").mockReturnValue({
@@ -185,6 +187,54 @@ test("pixel glasses snap to device pixels while the soft face keeps its smooth o
     else Reflect.deleteProperty(globalThis, "devicePixelRatio");
   }
 });
+test("milk and classic switch without restarting motion, and the selection survives remount", async () => {
+  const api = createRef<MorphPetHandle>();
+  const ready = mock(() => {});
+  const props = { width: 160, state: "idle" as const, visible: true, leaving: false, api,
+    onLoaded: ready, onError: () => {}, host: { read: async () => geometry, write: async () => {} } };
+  const view = render(<MorphPetView {...props} />);
+  await act(async () => {});
+  expect(api.current!.snapshot().appearance).toBe("milk");
+  const artwork = view.container.querySelector("[data-morph-signature]")!.innerHTML;
+  expect(view.container.querySelector("[data-morph-expression]")).toBeNull();
+  for (const form of ["pillow", "ricecake", "ghost", "mochi"] as const) {
+    act(() => api.current!.form(form));
+    await advance(1);
+    expect(view.container.querySelector("[data-morph-signature]")!.innerHTML).toBe(artwork);
+    expect(view.container.querySelector("[data-milk-glasses]")!.getAttribute("transform")).toBeNull();
+    expect(view.container.querySelector("[shape-rendering=crispEdges]")).toBeNull();
+    expect(view.container.querySelector("[data-milk-feet]")!.getAttribute("opacity")).toBe(form === "ghost" ? "0" : "1");
+    expect(view.container.querySelector("[data-morph-expression]")).toBeNull();
+  }
+  const restingMouth = view.container.querySelector("[data-morph-mouth]")!.getAttribute("d");
+  act(() => api.current!.drag(true));
+  await advance(0.4);
+  expect(view.container.querySelector("[data-morph-expression]")).toBeNull();
+  expect(view.container.querySelector("[data-morph-mouth]")!.getAttribute("d")).not.toBe(restingMouth);
+  act(() => api.current!.drag(false));
+  await advance(5);
+  expect(view.container.querySelector("[data-morph-mouth]")!.getAttribute("d")).toBe(restingMouth);
+  act(() => { api.current!.autonomy(); api.current!.form("ghost"); });
+  await advance(0.3);
+  const motion = view.container.querySelector("svg")!.dataset.motion;
+  act(() => api.current!.appearance("classic"));
+  expect(view.container.querySelector("svg")!.dataset.motion).toBe(motion);
+  expect(view.container.querySelector("svg")!.dataset.form).toBe("ghost");
+  expect(view.container.querySelector("[data-pixel-glasses]")).not.toBeNull();
+  expect(view.container.querySelector("[data-morph-expression]")).not.toBeNull();
+  expect(view.container.querySelector("image")).toBeNull();
+  expect(api.current!.snapshot()).toMatchObject({ form: "ghost", auto: false, appearance: "classic" });
+  expect(ready).toHaveBeenCalledTimes(1);
+  await advance(1);
+  view.unmount();
+  const remounted = render(<MorphPetView {...props} />);
+  await act(async () => {});
+  expect(api.current!.snapshot()).toMatchObject({ form: "ghost", auto: false, appearance: "classic" });
+  act(() => api.current!.appearance("milk"));
+  expect(document.querySelector("[data-milk-glasses] image")).not.toBeNull();
+  expect(remounted.container.querySelector("[data-morph-expression]")).toBeNull();
+});
+
 test("opening chat stops walking and pauses autonomy until it closes", async () => {
   const api = createRef<MorphPetHandle>();
   const view = render(

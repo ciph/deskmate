@@ -151,3 +151,21 @@ test("pointer cancellation releases a held body without executing a click", () =
   // Then hold is cleared and no chat action runs.
   expect(held.mock.calls).toEqual([[true], [false]]); expect(invoke).not.toHaveBeenCalled();
 });
+
+
+test("a popup-owned hold survives focus transfer until explicit release", () => {
+  let release: (() => void) | undefined;
+  function PopupSurface() {
+    const root = useRef<HTMLDivElement>(null);
+    const interaction = usePetInteraction({ root, active: true, gif: false, identity: "popup", onHeldChange: held }, lock);
+    return <div ref={root}><button onClick={() => { release = interaction.hold(true); }}>Menu</button></div>;
+  }
+  const view = render(<PopupSurface />);
+  fireEvent.click(view.getByRole("button"));
+  window.dispatchEvent(new Event("blur")); window.dispatchEvent(new Event("pointercancel"));
+  expect(lock.mock.calls.at(-1)).toEqual([true]);
+  expect(held.mock.calls.at(-1)).toEqual([true]);
+  release!();
+  expect(lock.mock.calls.at(-1)).toEqual([false]);
+  expect(held.mock.calls.at(-1)).toEqual([false]);
+});

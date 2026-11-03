@@ -476,7 +476,7 @@ export class Companion {
         q.wave = 2.5;
       }
     } else if (ghost) {
-      q.lift = -28 - 3 * Math.sin(this.clock * 1.8);
+      q.lift = (-28 - 3 * Math.sin(this.clock * 1.8)) * ghost;
     }
     return q;
   }

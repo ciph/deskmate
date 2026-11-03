@@ -33,6 +33,20 @@ export function setGifHitPolygon(element: Element, polygon: readonly GifPoint[] 
   silhouettes.set(element, polygon);
 }
 
+/** Use the painted silhouette, not the oversized transparent interaction button. */
+export function petContentBounds(root: HTMLElement): GifRect | null {
+  const element = root.querySelector(".gif-pet-image");
+  if (!element || element.getAttribute("data-hit-disabled") === "true") return null;
+  const rect = element.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return null;
+  const polygon = silhouettes.get(element);
+  if (!polygon?.length) return { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+  const xs = polygon.map(point => point[0]), ys = polygon.map(point => point[1]);
+  const left = Math.min(...xs), top = Math.min(...ys);
+  return { left: rect.left + left * rect.width / 240, top: rect.top + top * rect.height / 240,
+    width: (Math.max(...xs) - left) * rect.width / 240, height: (Math.max(...ys) - top) * rect.height / 240 };
+}
+
 export function pointInPetContent(root: HTMLElement, x: number, y: number): boolean {
   return [...root.querySelectorAll(".gif-pet-image, .pet-pomodoro, .pet-load-error")].some((element) => {
     if (element.getAttribute("data-hit-disabled") === "true") return false;

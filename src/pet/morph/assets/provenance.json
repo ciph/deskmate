@@ -1,0 +1,11 @@
+{
+  "asset": "milk-glasses.png",
+  "date": "2026-11-03",
+  "generator": "OpenAI built-in image_gen",
+  "source": "xiaozhu-milk-motion-v1-20261103/assets/glasses-soft.png",
+  "reference": "User-approved four-form soft milk character comparison, second glasses design",
+  "promptSummary": "Front-view compact stepped sunglasses with softened corners, matte black finish, slight bevel and thickness, two small square highlights and a thin bridge; true transparent background, no body or text.",
+  "sha256": "7030e33af41b2a2aa237d7ff9b893befb822b6746b1421008b0e972c90d34dd0",
+  "processing": "PNG unchanged; SVG viewport 232 157 1709 447 locates the visible subject. No pixel snapping.",
+  "presentation": "2026-11-03 revision 03: display at 146 x 44 SVG units to match the reference's wider, taller lens proportions; runtime geometry stays rigid during motion."
+}

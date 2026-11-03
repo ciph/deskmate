@@ -115,6 +115,24 @@ check("rapid shape changes preserve the current outline", () => {
     ),
   );
 });
+check("ghost lands while morphing back into mochi", () => {
+  const p = make("ghost");
+  tick(p, 1);
+  const hover = p.p.lift;
+  p.selectForm("mochi");
+  assert.equal(p.p.lift, hover);
+  tick(p, 0.4);
+  assert.ok(p.morph, "shape transition must still be in progress");
+  assert.ok(p.model.ghost > 0 && p.model.ghost < 1);
+  assert.ok(p.p.lift > hover + 6, "descent must start before morphing ends");
+  assert.ok(p.p.lift < -5, "descent must stay gradual");
+  tick(p, 0.4);
+  assert.equal(p.morph, null);
+  assert.ok(Math.abs(p.p.lift) < 2, "reach the floor with the new shape");
+  tick(p, 0.5);
+  assert.ok(Math.abs(p.p.lift) < 0.02);
+  assert.equal(p.state, "idle");
+});
 check("cancelled drag releases safely", () => {
   const p = make("pillow");
   p.beginDrag({ x: 420, y: 360, time: 0 });

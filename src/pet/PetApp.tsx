@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { Menu, MenuItem } from "@tauri-apps/api/menu";
 import { getSettings, onPetScalePreview, onSettingsChanged, type Settings } from "../lib/settings";
 import type { PetRenderer } from "./PetRenderer";
 import { PetPomodoro } from "./PetPomodoro";
@@ -15,13 +14,12 @@ import { Rig2dPetView, rig2dEnvelope } from "./rig2d/Rig2dPetView";
 import { useGifVisibility } from "./useGifVisibility";
 import { usePetInteraction } from "./usePetInteraction";
 import { useGifPassthrough } from "./useGifPassthrough";
-import { gifEnvelope } from "./gifGeometry";
+import { gifEnvelope, petContentBounds } from "./gifGeometry";
 import { MorphPetView, type MorphPetHandle } from "./morph/MorphPetView";
 import { morphEnvelope } from "./morph/desktopMotion";
 import { FORM_KEYS } from "./morph/engine";
 import { defaultGifTiming } from "./gifState";
-import { PetAiUsageCache } from "./petAiUsage";
-import { appendPetAiUsageMenu, type PetMenuItem } from "./petAiUsageMenu";
+import { usePetRadialMenu } from "./menu/usePetRadialMenu";
 import type { LoadedGifPersona, loadGifPersona } from "./gifAssets";
 import "./gifPet.css";
 
@@ -44,11 +42,6 @@ export default function PetApp({ gifLoad, glbLoad = loadGlbView, clock }: { read
   const rootRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<PetRenderer | null>(null);
   const morphRef = useRef<MorphPetHandle | null>(null);
-  const [usageCache] = useState(() => new PetAiUsageCache());
-  const usageMenuRef = useRef<Awaited<ReturnType<typeof appendPetAiUsageMenu>> | null>(null);
-  const contextMenuOpen = useRef(false);
-  const latestSettings = useRef<Settings | null>(null);
-  const mounted = useRef(false);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [petScale, setPetScale] = useState(0.5);
@@ -82,21 +75,18 @@ export default function PetApp({ gifLoad, glbLoad = loadGlbView, clock }: { read
   }, setLocked);
   const loaded = useCallback((data: LoadedGifPersona) => setReadyGif({ identity: personaIdentity, data }), [personaIdentity]);
   useEffect(() => {
-    mounted.current = true;
     let disposed = false;
     const apply = (next: Settings) => {
       if (disposed) return;
-      latestSettings.current = next;
       setSettings(next);
       setPetScale(next.petScale);
-      usageMenuRef.current?.update(next);
     };
     let changed = false;
     const unlisten = onSettingsChanged((next) => { changed = true; apply(next); });
     void getSettingsWithRetry().then((next) => { if (!changed) apply(next); })
       .catch((error: unknown) => { if (!disposed) setLoadError(error instanceof Error ? error.message : String(error)); });
     const scale = onPetScalePreview((value) => { if (!disposed) setPetScale(value); });
-    return () => { disposed = true; mounted.current = false; void usageMenuRef.current?.dispose(); void unlisten.then((stop) => stop()); void scale.then((stop) => stop()); };
+    return () => { disposed = true; void unlisten.then((stop) => stop()); void scale.then((stop) => stop()); };
   }, []);
   const loadedRig = useCallback(() => setReadyRig(personaIdentity), [personaIdentity]);
   const loadedMorph = useCallback(() => setReadyMorph(personaIdentity), [personaIdentity]);
@@ -119,52 +109,15 @@ export default function PetApp({ gifLoad, glbLoad = loadGlbView, clock }: { read
     if (settingsReady) void invoke("configure_pet_geometry", { gif: twoDimensional, envelope }).catch(report);
   }, [twoDimensional, envelope, settingsReady]);
 
-  const onContextMenu = (event: MouseEvent) => {
-    event.preventDefault();
-    if (!settings || contextMenuOpen.current || !interaction.hit(event)) return;
-    contextMenuOpen.current = true;
-    const release = interaction.hold();
-    void (async () => {
-      const items: PetMenuItem[] = [];
-      let menu: Menu | null = null;
-      try {
-        usageMenuRef.current = await appendPetAiUsageMenu(items, settings, usageCache, report);
-        if (!mounted.current) return;
-        if (latestSettings.current !== settings && latestSettings.current) usageMenuRef.current.update(latestSettings.current);
-        if (morph) {
-          const zh = settings?.language.startsWith("zh") ?? true;
-          const status = morphRef.current?.snapshot();
-          items.push(await MenuItem.new({ id: "morph-chat", text: zh ? "聊天（也可双击小著）" : "Chat (or double-click)", action: () => { void invoke("toggle_chat").catch(report); } }));
-          const names = zh ? ["团子", "枕头", "年糕", "幽灵"] : ["Dumpling", "Pillow", "Rice cake", "Ghost"];
-          const forms = await Promise.allSettled(FORM_KEYS.map((form, index) => MenuItem.new({ id: `morph-${form}`, text: `${status?.form === form ? "✓ " : ""}${names[index]}`, action: () => morphRef.current?.form(form) })));
-          for (const result of forms) if (result.status === "fulfilled") items.push(result.value);
-          const failed = forms.find(result => result.status === "rejected");
-          if (failed?.status === "rejected") throw failed.reason;
-          items.push(await MenuItem.new({ id: "morph-poke", text: zh ? "戳一下" : "Poke", enabled: activity.idle, action: () => morphRef.current?.poke() }));
-          items.push(await MenuItem.new({ id: "morph-walk", text: zh ? "散个步" : "Take a walk", enabled: activity.idle, action: () => morphRef.current?.walk() }));
-          items.push(await MenuItem.new({ id: "morph-sleep", text: status?.sleeping ? (zh ? "叫醒小著" : "Wake up") : (zh ? "睡个小觉" : "Take a nap"), enabled: activity.idle, action: () => morphRef.current?.sleep() }));
-          items.push(await MenuItem.new({ id: "morph-auto", text: `${status?.auto ? "✓ " : ""}${zh ? "自己活动" : "Wander on its own"}`, action: () => morphRef.current?.autonomy() }));
-        }
-        items.push(await MenuItem.new({ id: "open-widget-settings", text: "小组件", action: () => { void invoke("open_widget_settings").catch(report); } }));
-        items.push(await MenuItem.new({ id: "open-pet-settings", text: "设置", action: openSettings }));
-        if (!twoDimensional) items.push(await MenuItem.new({ id: "poke-pet", text: "戳", action: () => rendererRef.current?.playNudge() }));
-        menu = await Menu.new({ items });
-        if (!mounted.current) return;
-        await invoke("popup_pet_menu", { rid: menu.rid });
-      } finally {
-        await usageMenuRef.current?.dispose();
-        usageMenuRef.current = null;
-        const resources = menu === null ? items : [menu, ...items];
-        const results = await Promise.allSettled(resources.map((resource) => resource.close()));
-        for (const result of results) if (result.status === "rejected") report(result.reason);
-      }
-    })().catch(report).finally(() => { contextMenuOpen.current = false; release(); });
-  };
+  const openMenu = usePetRadialMenu({ anchor: () => rootRef.current ? petContentBounds(rootRef.current) : null, settings, identity: runtimeId, active: visible && !leaving && ready, idle: activity.idle,
+    morph: morph ? morphRef.current : null, nudge: !twoDimensional ? () => rendererRef.current?.playNudge() : undefined, hold: interaction.hold });
+  const onContextMenu = (event: MouseEvent) => { event.preventDefault(); if (interaction.hit(event)) openMenu(); };
   return <div ref={rootRef} className="pet-root" data-sleep-state={sleep.state} data-theme={settings?.theme ?? "dark"}>
     {settings !== null && <button type="button" className="pet-interaction" aria-label={morph ? "百变小著：单击互动，拖动拎起，双击聊天，右键切换形态" : "Open chat"} style={twoDimensional ? { width: layout.width * 2 * (envelope?.horizontal ?? 0.5), height: layout.width * ((envelope?.top ?? 1) + (envelope?.bottom ?? 0)) } : undefined}
       onMouseDown={interaction.onMouseDown} onMouseMove={interaction.onMouseMove} onMouseUp={interaction.onMouseUp} onContextMenu={onContextMenu}
       onDoubleClick={morph ? (event) => { if (interaction.hit(event)) void invoke("toggle_chat").catch(report); } : undefined}
       onKeyDown={(event) => {
+        if (event.key === "ContextMenu" || (event.shiftKey && event.key === "F10")) { event.preventDefault(); openMenu(); return; }
         if (morph && visible && ready && !event.repeat) {
           const index = ["1", "2", "3", "4"].indexOf(event.key);
           if (index >= 0) { event.preventDefault(); morphRef.current?.form(FORM_KEYS[index]); return; }

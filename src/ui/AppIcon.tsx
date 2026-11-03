@@ -1,3 +1,9 @@
+import { PaletteIcon } from "@phosphor-icons/react/dist/csr/Palette";
+import { HandTapIcon } from "@phosphor-icons/react/dist/csr/HandTap";
+import { MoonIcon } from "@phosphor-icons/react/dist/csr/Moon";
+import { PersonSimpleWalkIcon } from "@phosphor-icons/react/dist/csr/PersonSimpleWalk";
+import { ArrowLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { ChatCircleIcon } from "@phosphor-icons/react/dist/csr/ChatCircle";
 import { ArrowCounterClockwiseIcon } from "@phosphor-icons/react/dist/csr/ArrowCounterClockwise";
 import { BrainIcon } from "@phosphor-icons/react/dist/csr/Brain";
 import { CaretDownIcon } from "@phosphor-icons/react/dist/csr/CaretDown";
@@ -23,6 +29,13 @@ import { ShieldCheckIcon } from "@phosphor-icons/react/dist/csr/ShieldCheck";
 import "./icons.css";
 
 const ICONS = {
+  chat: ChatCircleIcon,
+  back: ArrowLeftIcon,
+  walk: PersonSimpleWalkIcon,
+  sleep: MoonIcon,
+  poke: HandTapIcon,
+  appearance: PaletteIcon,
+
   general: GearSixIcon,
   network: GlobeSimpleIcon,
   ai: SparkleIcon,

@@ -11,12 +11,13 @@ export function usePetInteraction(surface: InteractionSurface, setLocked: (locke
   const downAt = useRef<{ readonly x: number; readonly y: number; readonly t: number } | null>(null);
   const holding = useRef(false);
   const dragging = useRef(false);
+  const persistentHold = useRef(false);
   const epoch = useRef(0);
-  const reset = useCallback(() => { const wasHeld = holding.current || downAt.current !== null; epoch.current += 1; downAt.current = null; holding.current = false; setLocked(false); if (dragging.current) { dragging.current = false; callbacks.current.onDragChange?.(false); } if (wasHeld) callbacks.current.onHeldChange?.(false); }, [setLocked]);
+  const reset = useCallback(() => { const wasHeld = holding.current || downAt.current !== null; epoch.current += 1; downAt.current = null; holding.current = false; persistentHold.current = false; setLocked(false); if (dragging.current) { dragging.current = false; callbacks.current.onDragChange?.(false); } if (wasHeld) callbacks.current.onHeldChange?.(false); }, [setLocked]);
   useEffect(() => {
     reset();
     // Native dragging can cancel WebView input; its physical-button poll owns release.
-    const cancelPointer = () => { if (!dragging.current) reset(); };
+    const cancelPointer = () => { if (!dragging.current && !persistentHold.current) reset(); };
     window.addEventListener("blur", cancelPointer);
     window.addEventListener("pointercancel", cancelPointer);
     const mouseup = () => { if (!holding.current) reset(); };
@@ -26,7 +27,7 @@ export function usePetInteraction(surface: InteractionSurface, setLocked: (locke
     return () => { reset(); window.removeEventListener("blur", cancelPointer); window.removeEventListener("pointercancel", cancelPointer); window.removeEventListener("mouseup", mouseup); document.removeEventListener("visibilitychange", hidden); };
   }, [reset, surface.active, surface.identity]);
   const hit = (event: MouseEvent) => surface.active && (!surface.gif || (surface.root.current !== null && pointInPetContent(surface.root.current, event.clientX, event.clientY)));
-  const hold = () => { epoch.current += 1; holding.current = true; setLocked(true); callbacks.current.onHeldChange?.(true); const generation = epoch.current; return () => { if (generation === epoch.current) reset(); }; };
+  const hold = (persistOnBlur = false) => { persistentHold.current = persistOnBlur; epoch.current += 1; holding.current = true; setLocked(true); callbacks.current.onHeldChange?.(true); const generation = epoch.current; return () => { if (generation === epoch.current) reset(); }; };
   const activate = () => { callbacks.current.onInteract?.(); if (callbacks.current.onActivate) callbacks.current.onActivate(); else void invoke("toggle_chat").catch(report); };
   return {
     hit, hold,

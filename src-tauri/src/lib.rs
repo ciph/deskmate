@@ -35,6 +35,7 @@ mod memory;
 mod packs;
 mod pet_geometry;
 mod pet_input;
+mod pet_menu;
 mod pet_placement;
 mod pet_recovery;
 mod pet_startup;
@@ -308,20 +309,6 @@ mod tests {
     use std::path::Path;
     use std::process::Command;
     use tauri::{PhysicalPosition, WindowEvent};
-
-    #[test]
-    fn pet_menu_rejects_other_webviews_and_unknown_resources() {
-        let app = tauri::test::mock_app();
-        for label in ["settings", "pet"] {
-            let window = tauri::WebviewWindowBuilder::new(&app, label, Default::default()).build().unwrap();
-            let error = tauri::async_runtime::block_on(super::popup_pet_menu(window.as_ref().clone(), 999)).unwrap_err();
-            if label == "settings" {
-                assert_eq!(error, "pet_menu_window_required");
-            } else {
-                assert_ne!(error, "pet_menu_window_required");
-            }
-        }
-    }
 
     #[test]
     fn settings_can_authenticate_model_requests_without_exposing_credentials_to_other_windows() {
@@ -1438,18 +1425,6 @@ fn open_settings(app: tauri::AppHandle) {
 }
 
 #[tauri::command]
-async fn popup_pet_menu<R: tauri::Runtime>(webview: tauri::Webview<R>, rid: tauri::ResourceId) -> Result<(), String> {
-    use tauri::menu::ContextMenu;
-    if webview.label() != "pet" {
-        return Err("pet_menu_window_required".into());
-    }
-    // Drop the resource-table lock before the modal popup so usage labels can update.
-    let menu = webview.resources_table().get::<tauri::menu::Menu<R>>(rid)
-        .map_err(|error| error.to_string())?;
-    menu.popup(webview.window()).map_err(|error| error.to_string())
-}
-
-#[tauri::command]
 fn open_widget_settings(app: tauri::AppHandle) {
     show_settings_window(&app);
     let _ = app.emit("deskmate://settings-tab", "widget");
@@ -1568,6 +1543,7 @@ pub fn run() {
             });
         })
         .on_window_event(|window, event| {
+            pet_menu::window_event(window, event);
             // Configured WebviewWindows dispatch native drops as WindowEvents.
             if window.label() == "chat" {
                 // QA can distinguish native delivery from frontend-only event mocks,
@@ -1617,6 +1593,7 @@ pub fn run() {
         .manage(workbench::WorkbenchHandoff::default())
         .manage(workbench::WorkbenchWindow::default())
         .manage(workbench::WorkbenchOwnership::default())
+        .manage(pet_menu::MenuState::default())
         .manage(pomodoro::PomodoroState::default())
         .manage(AttachmentStore::default())
         .manage(agent::AgentPermissionState::default())
@@ -1729,7 +1706,11 @@ pub fn run() {
             fetch_ai_usage,
             record_ai_usage,
             open_settings,
-            popup_pet_menu,
+            pet_menu::open_pet_radial_menu,
+            pet_menu::update_pet_radial_menu,
+            pet_menu::get_pet_radial_menu,
+            pet_menu::pet_radial_menu_ready,
+            pet_menu::finish_pet_radial_menu,
             open_widget_settings,
             open_ai_model_settings,
             hide_settings,
