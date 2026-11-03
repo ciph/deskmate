@@ -15,7 +15,9 @@
 
 验证：64 项相关前端测试、Rust 菜单入口边界测试、类型检查及 Windows 原生 debug 构建通过；React Doctor（相对 HEAD，含未跟踪源码）93/100，未新增诊断。隔离身份 `com.deskmate.unifiedhistoryqa.petaiusage20261102` 下，通过真实菜单 IPC 验证“打开 → 延迟更新 → 文字回读 → Esc 结束 → 资源关闭”；该探针使用合成文本，并非真实账户调用或完整右键操作。详情见[验收回执](performance-evidence/pet-ai-usage-20261102/receipt.json)。
 
-本轮未安装、签名、升版本或发布。Windows 工具截图超时，鼠标定位返回 `coordinate input geometry is unavailable`，无法据此确认视觉宽度、真实鼠标命中与详情跳转；这些项目及 macOS 原生验收见[当前待办](verification-backlog.md#桌宠右键-ai-用量)。
+2026-11-03 已提交并推送源码 `6b8ee44`，对应 Windows/macOS 源码检查及固定工作台重建 CI 全部通过。已从该提交构建 0.5.0 Windows 本地安装包，完成原位更新并重新打开 YUME；安装后的主程序与包内文件 SHA-256 一致，21 项资源校验通过，无障碍接口读到百变小著桌宠。旧安装目录已备份；没有升版本、签名或公开发布。见[本地安装回执](performance-evidence/pet-ai-usage-20261102/local-install-20261103.json)。
+
+安装后再次尝试原生右键验收：Windows 工具截图超时，鼠标定位仍返回 `coordinate input geometry is unavailable`，键盘替代也未取得菜单结果。因此尚未确认实际菜单显示、真实账户摘要刷新与详情跳转；这些项目及 macOS 原生验收见[当前待办](verification-backlog.md#桌宠右键-ai-用量)。
 
 ## Provider support
 

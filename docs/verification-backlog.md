@@ -8,10 +8,10 @@
 
 ## 桌宠右键 AI 用量
 
-2026-11-02 在 0.5.0 开发树完成源码，未安装或发布。64 项相关前端测试、Rust IPC 边界、类型检查和构建通过；React Doctor 93/100，无新增诊断。[功能契约](ai-provider-support.md#桌宠右键用量2026-11-02)、[验收回执](performance-evidence/pet-ai-usage-20261102/receipt.json)。
+2026-11-02 在 0.5.0 开发树完成源码。64 项相关前端测试、Rust IPC 边界、类型检查和构建通过；React Doctor 93/100，无新增诊断。2026-11-03 已推送源码 `6b8ee44`，Windows/macOS 源码检查及固定工作台重建 CI 全部通过，并完成本机 0.5.0 原位更新、文件校验与重开；没有公开发布。[功能契约](ai-provider-support.md#桌宠右键用量2026-11-02)、[源码验收回执](performance-evidence/pet-ai-usage-20261102/receipt.json)、[本地安装回执](performance-evidence/pet-ai-usage-20261102/local-install-20261103.json)。
 
 - Windows 原生运输已验：独立 QA 身份下创建真实菜单，通过 `popup_pet_menu` 弹出，保持打开时延迟 `setText` 成功，回读文本正确，系统 Esc 结束调用、随后释放资源。
-- Windows 原生操作待验：真实鼠标右键命中/点外关闭、详情进入 AI 页、百变小著及 GIF/rig2d/GLB 菜单视觉、长供应商名称和不同 DPI 下的宽度。截图工具超时、坐标输入不可用；不能把 IPC 探针与组件测试视作这些项目已通过。
+- Windows 原生操作待验：真实鼠标右键命中/点外关闭、真实账户摘要刷新、详情进入 AI 页、百变小著及 GIF/rig2d/GLB 菜单视觉、长供应商名称和不同 DPI 下的宽度。2026-11-03 安装后无障碍接口确认百变小著界面，但截图工具仍超时、坐标输入不可用，键盘尝试未取得菜单结果；不能把启动成功、IPC 探针与组件测试视作这些项目已通过。
 - macOS 原生菜单刷新/关闭待验；真实账户 API 未重测。本轮沿用已有后端来源与统计边界。
 
 ## 百变小著（`xiaozhu-morph`）

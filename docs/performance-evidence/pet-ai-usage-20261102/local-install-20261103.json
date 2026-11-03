@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-03",
+  "sourceCommit": "6b8ee44e9a3d0d5a3536a506d63ecc413b888982",
+  "branch": "codex/yume-performance-remediation",
+  "version": "0.5.0",
+  "state": "source-pushed-local-update-installed-native-menu-verification-blocked",
+  "ci": {
+    "runId": 41561758615,
+    "url": "https://github.com/ciph/deskmate/actions/runs/41561758615",
+    "conclusion": "success",
+    "jobs": ["Rebuild pinned workbench", "Source checks (macos-15)", "Source checks (windows-latest)"]
+  },
+  "build": {
+    "mode": "production NSIS, normal application identifier and capabilities, no QA feature or remote debugging",
+    "command": "bunx tauri build --bundles nsis --ci --config <artifactDirectory>/local-build.conf.json",
+    "configOverride": { "bundle": { "createUpdaterArtifacts": false } },
+    "workbenchCommit": "826d9ad46a22bef0294998e08daa3c4904fea28f",
+    "result": "passed",
+    "installerBytes": 117711015,
+    "installerSha256": "A25AF4E932A234E3AF35199809E078DE429A38AAD782D7EFBC9C820A8DBA5F29",
+    "packagedExeSha256": "FBC4FD62E034C75E2D1878D759D5BE45AB0100D6FB6039FA62066E5ADE8E5780",
+    "packageIntegrity": "7z integrity passed; packaged executable equals compiled executable after the documented three-byte Tauri bundle marker change from UNK to NSS",
+    "authenticode": "NotSigned",
+    "updaterSignature": "not requested for local installation"
+  },
+  "installation": {
+    "method": "NSIS /S /UPDATE into existing per-user YUME directory",
+    "exitCode": 0,
+    "installedExeMatchesPackage": true,
+    "verifiedResourceCount": 21,
+    "previousInstallBackup": "<artifactDirectory>/previous-install",
+    "userdata": "preserved by in-place update; no settings, credentials or application databases deleted",
+    "oldProcessId": 1439328,
+    "newProcessId": 1776540,
+    "restart": "installed yume.exe restarted and process verified running"
+  },
+  "installedUi": {
+    "windowTitle": "YUME",
+    "windowId": 20522426,
+    "accessibility": "YUME pet document and 百变小著 interaction button observed after restart",
+    "realMouseRightClick": "not verified: coordinate input geometry is unavailable",
+    "screenshots": "not available: window capture timed out / FrameArrived timed out",
+    "keyboardFallback": "Tab and Shift+F10 did not produce an observable menu; further input reported user input was detected in this window",
+    "menuDisplay": "unverified",
+    "realAccountSummaryRefresh": "unverified",
+    "detailsNavigation": "unverified",
+    "leftRunning": true
+  },
+  "artifactDirectory": "E:/Codex/工作伙伴/release-artifacts/local-ai-usage-6b8ee44-20261103",
+  "artifacts": ["build-inputs.json", "build.log", "resources.json", "YUME_0.5.0_x64-setup.exe", "package-integrity.log", "package-extract.log", "package-verification.json", "installation.json", "previous-install"],
+  "publicRelease": false,
+  "versionBump": false,
+  "previousReceipt": "receipt.json is retained as the historical 2026-11-02 source/QA result; installation does not close its unverified native UI items"
+}
