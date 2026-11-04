@@ -108,10 +108,16 @@ pub(crate) async fn open_pet_radial_menu(webview: tauri::Webview, mut menu: Mode
     }
     let opened = (|| -> Result<(), String> {
         if app.get_webview_window(WINDOW).is_none() {
-            tauri::WebviewWindowBuilder::new(app, WINDOW, tauri::WebviewUrl::App("pet-menu.html".into()))
+            let mut builder = tauri::WebviewWindowBuilder::new(app, WINDOW, tauri::WebviewUrl::App("pet-menu.html".into()))
                 .title("YUME pet menu").inner_size(INITIAL_DIAMETER, INITIAL_DIAMETER).decorations(false).transparent(true)
                 .shadow(false).resizable(false).always_on_top(true).skip_taskbar(true)
-                .visible(false).focused(false).disable_drag_drop_handler().build().map_err(|e| e.to_string())?;
+                .visible(false).focused(false).disable_drag_drop_handler();
+            // WebView2 windows sharing a profile must use the same browser arguments.
+            if let Some(args) = app.config().app.windows.iter().find(|window| window.label == "pet")
+                .and_then(|window| window.additional_browser_args.as_deref()) {
+                builder = builder.additional_browser_args(args);
+            }
+            builder.build().map_err(|e| e.to_string())?;
         }
         app.emit_to(WINDOW, UPDATE, &menu).map_err(|e| e.to_string())
     })();
@@ -233,6 +239,92 @@ pub(crate) fn window_event(window: &tauri::Window, event: &tauri::WindowEvent) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(windows)]
+    #[test]
+    #[ignore = "requires a built frontend and the real Windows WebView2 runtime"]
+    fn native_menu_page_loads_and_completes_the_ready_handshake() {
+        struct TestLogger;
+        impl log::Log for TestLogger {
+            fn enabled(&self, _: &log::Metadata<'_>) -> bool { true }
+            fn log(&self, record: &log::Record<'_>) { eprintln!("{}: {}", record.target(), record.args()); }
+            fn flush(&self) {}
+        }
+        static LOGGER: TestLogger = TestLogger;
+        let _ = log::set_logger(&LOGGER);
+        log::set_max_level(log::LevelFilter::Warn);
+        use std::borrow::Cow;
+        use tauri::utils::assets::{AssetKey, AssetsIter, CspHash};
+        struct BuiltAssets(std::path::PathBuf);
+        impl tauri::Assets<tauri::Wry> for BuiltAssets {
+            fn get(&self, key: &AssetKey) -> Option<Cow<'_, [u8]>> {
+                let path = self.0.join(key.as_ref().trim_start_matches('/'));
+                std::fs::read(&path).ok().map(Cow::Owned)
+            }
+            fn iter(&self) -> Box<AssetsIter<'_>> { Box::new(std::iter::empty()) }
+            fn csp_hashes(&self, _: &AssetKey) -> Box<dyn Iterator<Item = CspHash<'_>> + '_> { Box::new(std::iter::empty()) }
+        }
+        let mut context = tauri::generate_context!();
+        let mut pet = context.config().app.windows.iter().find(|window| window.label == "pet").unwrap().clone();
+        pet.url = tauri::WebviewUrl::External("about:blank".parse().unwrap());
+        pet.visible = false; pet.focus = false;
+        context.config_mut().identifier = "com.deskmate.petmenuhandshake20261103".into();
+        for window in &mut context.config_mut().app.windows { window.create = false; }
+        context.config_mut().build.dev_url = None;
+        context.set_assets(Box::new(BuiltAssets(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../dist"))));
+        let app = tauri::Builder::<tauri::Wry>::default().any_thread()
+            .manage(MenuState::default()).on_window_event(window_event)
+            .invoke_handler(tauri::generate_handler![get_pet_radial_menu, pet_radial_menu_ready, finish_pet_radial_menu])
+            .setup(move |app| {
+                tauri::WebviewWindowBuilder::from_config(app, &pet)?.build()?;
+                Ok(())
+            }).build(context).unwrap();
+        let (send, receive) = std::sync::mpsc::channel();
+        let mut pending = Some(send);
+        app.run_return(move |app, event| {
+            if !matches!(event, tauri::RunEvent::Ready) { return; }
+            let Some(send) = pending.take() else { return };
+            let app = app.clone();
+            std::thread::spawn(move || {
+                let pet = app.get_webview_window("pet").unwrap();
+                let result = (|| -> Result<(), String> {
+                    for attempt in 1..=2 {
+                        let id = format!("native-handshake-{attempt}");
+                        let model: Model = serde_json::from_value(serde_json::json!({
+                            "id":id, "revision":1, "title":"百变小著", "theme":"mint", "language":"zh-CN",
+                            "anchor":{"left":80,"top":130,"width":160,"height":140},
+                            "items":[{"id":"chat","label":"聊天","icon":"chat","enabled":true},
+                                {"id":"ai-usage","label":"AI 用量","icon":"ai","enabled":true}]
+                        })).unwrap();
+                        tauri::async_runtime::block_on(open_pet_radial_menu(pet.as_ref().clone(), model))?;
+                        let window = app.get_webview_window(WINDOW).ok_or("menu window missing")?;
+                        // build() can succeed before native creation fails; query the actual window.
+                        window.url().map_err(|e| format!("native menu creation failed: {e}"))?;
+                        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(12);
+                        loop {
+                            let ready = app.state::<MenuState>().0.lock().unwrap().as_ref()
+                                .is_some_and(|session| session.model.id == id && session.shown);
+                            if ready && window.is_visible().map_err(|e| e.to_string())? { break; }
+                            if std::time::Instant::now() >= deadline {
+                                return Err(format!("menu {attempt} did not complete its ready handshake and show"));
+                            }
+                            std::thread::sleep(std::time::Duration::from_millis(50));
+                        }
+                        finish_pet_radial_menu(window.as_ref().clone(), id, Some("chat".into()))?;
+                        if app.state::<MenuState>().0.lock().unwrap().is_some()
+                            || window.is_visible().map_err(|e| e.to_string())? {
+                            return Err("menu did not release its session and hide".into());
+                        }
+                        eprintln!("native menu {attempt}: real page ready, visible, action accepted, hidden");
+                    }
+                    Ok(())
+                })();
+                let _ = send.send(result);
+                app.exit(0);
+            });
+        });
+        receive.recv_timeout(std::time::Duration::from_secs(5)).unwrap().unwrap();
+    }
+
     #[test]
     fn clipped_bounds_preserve_the_pet_center_at_edges_and_across_dpi() {
         let work = Rect { x: -1920, y: -100, width: 1920, height: 1040 };

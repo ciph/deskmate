@@ -5816,6 +5816,7 @@ dependencies = [
  "chrono",
  "flate2",
  "keyring",
+ "log",
  "notify",
  "png 0.17.16",
  "reqwest",

@@ -8,6 +8,8 @@
 
 ## 分层扇形菜单（2026-11-03）
 
+2026-11-04 修复安装版右键无菜单：动态菜单窗口使用了 WebView2 默认启动参数，与共享配置目录的 pet/chat/settings 不一致，原生创建异步失败（`0x8007139F`），但 Tauri `build()` 已返回成功。菜单改为直接沿用 pet 配置的 `additionalBrowserArgs`。新增真实 Windows WebView2 集成测试，加载构建后的菜单页面并调用产品 IPC；首开、可见、完成动作、隐藏、复开均通过，连同 3 项原有 Rust 测试共 4 项通过。回归命令：先 `bun run build`，再 `cargo test --manifest-path src-tauri/Cargo.toml --lib pet_menu::tests -- --include-ignored --nocapture`。测试使用独立应用身份，不读取用户账户；其调用 IPC 不等于物理鼠标命中验收。修复前失败及修复后日志位于 `E:/Codex/工作伙伴/design-artifacts/xiaozhu-radial-menu-r04-20261103`。r04 包正在构建，实际安装版右键/失焦关闭及混合 DPI 继续待验。
+
 第三版缩小内圈留白和选项区，新增半透明渐变、轮廓高光与薄投影。13 项菜单前端测试、3 项 Rust 定位/动作边界测试、类型检查与构建通过，React Doctor 93/100 无新增诊断；浏览器实际组件核对了紧凑尺寸、角落排布、浅深色主题、四形态和经典 2D。Windows 包完整性、样式、图标与资源校验通过，安装器退出码 0，安装后的程序与 21 个资源均与包一致；第二版已备份，启动后无障碍接口确认桌宠加载。原生截图再次捕获超时，浏览器不能代替实际桌面透底、鼠标、焦点与混合 DPI 验收；macOS 未验，未公开发布。证据目录为 `E:/Codex/工作伙伴/design-artifacts/xiaozhu-radial-menu-r03-20261103`；包和安装回执为 `E:/Codex/工作伙伴/release-artifacts/xiaozhu-radial-menu-r03-20261103`。
 
 第二版将圆心改为透明并对齐真实身体，靠屏幕边缘时在可见方向展开扇环，不移动或复制桌宠。AI 用量只保留设置入口，打开菜单不再查询摘要。浏览器使用实际组件与模拟原生宿主验证居中、底边、角落、四形态、经典 2D 及 AI 设置入口。33 项相关前端测试、3 项 Rust 测试、类型检查和构建通过，React Doctor 93/100 无新增诊断。本机安装器退出码 0，安装后的 EXE 和 21 个资源与包一致；旧安装已备份，重开后无障碍接口确认桌宠加载。物理混合 DPI、Windows 原生鼠标/焦点和 macOS 仍需单独验收，未公开发布。第二版证据：`E:/Codex/工作伙伴/design-artifacts/xiaozhu-radial-menu-r02-20261103`；包、安装与源码回执：`E:/Codex/工作伙伴/release-artifacts/xiaozhu-radial-menu-r02-20261103`。
