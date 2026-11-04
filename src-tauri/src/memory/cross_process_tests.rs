@@ -178,6 +178,25 @@ fn concurrent_processes_do_not_lose_writes_or_corrupt_the_database() {
 }
 
 #[test]
+fn opening_waits_for_another_process_to_release_the_schema_lock() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join(DB_FILE_NAME);
+    let writer = rusqlite::Connection::open(&path).unwrap();
+    writer.execute_batch("CREATE TABLE sentinel(value TEXT); BEGIN EXCLUSIVE; INSERT INTO sentinel VALUES('initializing');").unwrap();
+
+    // Windows file locks must be exercised from another process, not a thread.
+    let mut child = spawn_writer(&path, 1, 9000);
+    std::thread::sleep(std::time::Duration::from_millis(800));
+    writer.execute_batch("COMMIT").unwrap();
+    let status = child.wait().unwrap();
+    assert!(status.success(), "opening failed before the initializer released its lock: {status:?}");
+    let store = MemoryStore::open(&path).unwrap();
+    assert_eq!(store.schema_version().unwrap(), super::storage::SCHEMA_VERSION);
+    let repository = MemoryRepository::new(store, SystemClock);
+    assert_eq!(repository.list(&MemoryQuery::default()).unwrap().len(), 1);
+}
+
+#[test]
 fn simultaneous_first_launches_migrate_the_database_exactly_once() {
     let dir = temp_dir("cross-migrate");
     let path = dir.join(DB_FILE_NAME);

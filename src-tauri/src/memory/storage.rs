@@ -251,11 +251,15 @@ fn open_connection(path: &Path) -> MemoryResult<Connection> {
 /// finite lock wait for the three windows, and overwritten (not just unlinked)
 /// deleted content.
 fn configure(connection: &Connection) -> MemoryResult<()> {
+    // The schema read also waits for a competing initializer's exclusive lock.
+    connection
+        .busy_timeout(std::time::Duration::from_secs(5))
+        .map_err(|error| MemoryError::storage_unavailable(error.to_string()))?;
     // Reject a future schema before changing persistent journal settings.
+    reject_future_schema(read_schema_version(connection)?)?;
     connection
         .busy_timeout(std::time::Duration::from_millis(100))
         .map_err(|error| MemoryError::storage_unavailable(error.to_string()))?;
-    reject_future_schema(read_schema_version(connection)?)?;
     let started = std::time::Instant::now();
     let budget = std::time::Duration::from_secs(5);
     loop {
