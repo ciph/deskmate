@@ -95,6 +95,7 @@ impl AgentRunState {
     pub(crate) fn read(&self) -> Result<RunListing, String> {
         let data = self.data.lock().map_err(|_| "agent_state_unavailable")?;
         Ok(RunListing {
+            active_catalog_key: data.active.as_ref().and_then(RunRecord::catalog_key),
             active: data.active.clone(),
             recent: data.recent.iter().take(20).cloned().collect(),
             artifacts: data

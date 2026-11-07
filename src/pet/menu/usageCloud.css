@@ -1,0 +1,25 @@
+.pet-usage-root { width: 100vw; height: 100vh; background: transparent; opacity: 0; }
+.pet-usage-root[data-phase="visible"] { animation: pet-usage-fade-in 300ms linear both; }
+.pet-usage-root[data-phase="leaving"] { animation: pet-usage-fade-out 300ms linear both; }
+@keyframes pet-usage-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pet-usage-fade-out { from { opacity: var(--pet-usage-fade-from); } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .pet-usage-root[data-phase] { animation: none; }
+  .pet-usage-root[data-phase="visible"] { opacity: 1; }
+}
+.pet-usage-cloud {
+  position: relative; display: block; width: 100%; height: 100%;
+  border: 0; padding: 0; background: transparent; color: var(--text);
+  font: 12px/1.3 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  cursor: pointer; user-select: none;
+}
+.pet-usage-outline { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 16%)); }
+.pet-usage-outline path, .pet-usage-outline ellipse { fill: var(--surface-raised); stroke: var(--line-strong); stroke-width: 1; }
+.pet-usage-content { position: absolute; inset: 25% 12% 23%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+.pet-usage-title { color: var(--text-dim); font-size: 11px; }
+.pet-usage-percent { font-size: 28px; font-weight: 650; line-height: 1.05; color: var(--accent-ink); }
+.pet-usage-amount { font-size: 16px; font-weight: 600; }
+.pet-usage-percent, .pet-usage-amount { font-variant-numeric: tabular-nums; }
+.pet-usage-note { color: var(--text-dim); font-size: 10px; text-align: center; overflow-wrap: anywhere; }
+.pet-usage-cloud:focus-visible { outline: none; }
+.pet-usage-cloud:focus-visible .pet-usage-outline path, .pet-usage-cloud:hover .pet-usage-outline path { stroke: var(--accent-ink); stroke-width: 2; }

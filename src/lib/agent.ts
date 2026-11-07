@@ -16,7 +16,7 @@ export type AgentRun = {
   readonly callIds: readonly string[];
 };
 export type AgentArtifact = { readonly reference: string; readonly runId: string; readonly kind: "file" | "command"; readonly label: string; readonly path: string | null; readonly command: string | null; readonly result: string | null; readonly verified: boolean };
-export type AgentProjection = { readonly active: AgentRun | null; readonly recent: readonly AgentRun[]; readonly artifacts: readonly AgentArtifact[] };
+export type AgentProjection = { readonly active: AgentRun | null; readonly activeCatalogKey?: string | null; readonly recent: readonly AgentRun[]; readonly artifacts: readonly AgentArtifact[] };
 
 export class AgentWireError extends Error {
   readonly name = "AgentWireError";
@@ -53,7 +53,7 @@ export async function readAgentRuns(): Promise<AgentProjection> {
   const value = record(await invoke("agent_run_read"));
   if (!Array.isArray(value.recent)) throw new AgentWireError("recent");
   if (!Array.isArray(value.artifacts)) throw new AgentWireError("recent");
-  return { active: value.active === null ? null : parseRun(value.active), recent: value.recent.map(parseRun), artifacts: value.artifacts.map(parseArtifact) };
+  return { active: value.active === null ? null : parseRun(value.active), ...(value.activeCatalogKey === undefined ? {} : { activeCatalogKey: optionalText(value.activeCatalogKey) }), recent: value.recent.map(parseRun), artifacts: value.artifacts.map(parseArtifact) };
 }
 export async function startAgentRun(workspacePath: string | null, input: string, historyId?: string, catalogKey?: string, modelSelection?: ConversationModelSelection, expectedModel?: ChatModelChoice, resourceIds?: readonly string[]): Promise<AgentRun> {
   const modelRequest = { ...(modelSelection ? { modelSelection } : {}), ...(expectedModel ? { expectedModel: { providerId: expectedModel.sidecarId, modelId: expectedModel.modelId } } : {}), ...(resourceIds?.length ? { resourceIds } : {}) };

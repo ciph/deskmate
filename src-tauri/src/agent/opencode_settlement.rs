@@ -32,6 +32,21 @@ struct PendingInteraction {
 }
 
 impl OpenCodeClient {
+    pub(crate) fn idle_without_interactions(&self, session: &str) -> Result<bool, String> {
+        // A missing status is only evidence of idle after this exact scoped session is verified.
+        crate::history::native_api::NativeHistoryClient::new(&self.endpoint.base_url, &self.endpoint.auth_header)
+            .map_err(|error| error.to_string())?
+            .get(&super::super::opencode_wire_directory(&self.endpoint.workspace), session)
+            .map_err(|error| error.to_string())?;
+        if self.is_busy(session)? { return Ok(false); }
+        for kind in ["permission", "question"] {
+            if self.pending_interactions(kind)?.iter().any(|request| request.session_id == session) {
+                return Ok(false);
+            }
+        }
+        Ok(true)
+    }
+
     pub(crate) fn abort_with_interaction_cleanup(&self, session: &str) -> Result<(), String> {
         self.abort_confirmed(session)?;
         self.reject_pending(session, "permission")?;

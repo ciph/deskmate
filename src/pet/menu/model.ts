@@ -24,6 +24,13 @@ export interface RadialModel {
   readonly anchor: GifRect | null;
   readonly layout?: RadialLayout;
   readonly items: readonly RadialItem[];
+  readonly usage?: UsageCloud;
+}
+export interface UsageCloud {
+  readonly label: string;
+  readonly percent: number | null;
+  readonly amount: string;
+  readonly note: string;
 }
 export const MENU_UPDATE = "deskmate://pet-menu-update";
 export const MENU_RESULT = "deskmate://pet-menu-result";
@@ -62,6 +69,22 @@ export function sector(index: number, count: number, layout: RadialLayout, arc =
   const offset = arc.sweep === Math.PI * 2 ? -step / 2 : 0;
   const start = arc.start + offset + index * step + .015, end = arc.start + offset + (index + 1) * step - .015;
   const outer = layout.outerRadius, inner = layout.innerRadius;
-  const path = `M ${normalized(outer, start)} A ${outer / layout.width} ${outer / layout.height} 0 0 1 ${normalized(outer, end)} L ${normalized(inner, end)} A ${inner / layout.width} ${inner / layout.height} 0 0 0 ${normalized(inner, start)} Z`;
+  const halfSweepSin = Math.sin(Math.min(Math.PI, end - start) / 2);
+  const corner = Math.min(8, (outer - inner) / 2, outer * halfSweepSin / (1 + halfSweepSin), inner * halfSweepSin / (1 - halfSweepSin));
+  // Circular fillets are tangent to both the radial edges and the inner/outer arcs.
+  const outerInset = Math.asin(corner / (outer - corner)), innerInset = Math.asin(corner / (inner + corner));
+  const outerEdge = Math.sqrt(outer * (outer - 2 * corner)), innerEdge = Math.sqrt(inner * (inner + 2 * corner));
+  const round = `A ${corner / layout.width} ${corner / layout.height} 0 0 1`;
+  const path = [
+    `M ${normalized(outer, start + outerInset)}`,
+    `A ${outer / layout.width} ${outer / layout.height} 0 ${end - start - 2 * outerInset > Math.PI ? 1 : 0} 1 ${normalized(outer, end - outerInset)}`,
+    `${round} ${normalized(outerEdge, end)}`,
+    `L ${normalized(innerEdge, end)}`,
+    `${round} ${normalized(inner, end - innerInset)}`,
+    `A ${inner / layout.width} ${inner / layout.height} 0 ${end - start - 2 * innerInset > Math.PI ? 1 : 0} 0 ${normalized(inner, start + innerInset)}`,
+    `${round} ${normalized(innerEdge, start)}`,
+    `L ${normalized(outerEdge, start)}`,
+    `${round} ${normalized(outer, start + outerInset)} Z`,
+  ].join(" ");
   return { path, label: point((inner + outer) / 2, (start + end) / 2), start, end };
 }

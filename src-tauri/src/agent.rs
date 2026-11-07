@@ -24,6 +24,7 @@ mod permissions;
 mod permissions_escape_tests;
 mod record_store;
 mod recovery;
+mod idle_recovery;
 #[cfg(test)]
 mod recovery_permission_tests;
 pub(crate) mod run_commands;

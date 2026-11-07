@@ -27,6 +27,9 @@ pub(crate) struct Layout { width: f64, height: f64, center_x: f64, center_y: f64
 #[derive(Debug, Clone)]
 struct Placement { bounds: Rect, layout: Layout }
 #[derive(Clone, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct UsageCloud { label: String, percent: Option<f64>, amount: String, note: String }
+#[derive(Clone, Deserialize, Serialize)]
 pub(crate) struct Model {
     id: String,
     revision: u32,
@@ -37,6 +40,8 @@ pub(crate) struct Model {
     #[serde(skip_deserializing)]
     layout: Option<Layout>,
     items: Vec<Item>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    usage: Option<UsageCloud>,
 }
 #[derive(Clone, Serialize)]
 struct ResultEvent { id: String, action: Option<String> }
@@ -71,7 +76,11 @@ fn validate(model: &Model) -> Result<(), String> {
     if model.id.is_empty() || model.id.len() > 80 || model.title.len() > 160 || model.theme.len() > 32
         || model.language.len() > 16 || model.anchor.as_ref().is_some_and(|a|
             [a.left, a.top, a.width, a.height].iter().any(|v| !v.is_finite() || v.abs() > 5000.0) || a.width <= 0.0 || a.height <= 0.0)
-        || !items_valid(&model.items, 0, &mut Default::default()) {
+        || match &model.usage {
+            Some(usage) => !model.items.is_empty() || usage.label.len() > 160 || usage.amount.len() > 160 || usage.note.len() > 320
+                || usage.percent.is_some_and(|value| !value.is_finite() || !(0.0..=100.0).contains(&value)),
+            None => !items_valid(&model.items, 0, &mut Default::default()),
+        } {
         return Err("invalid_pet_menu".into());
     }
     Ok(())
@@ -98,7 +107,7 @@ pub(crate) async fn open_pet_radial_menu(webview: tauri::Webview, mut menu: Mode
     require_window(webview.label(), "pet")?;
     validate(&menu)?;
     let app = webview.app_handle();
-    let placement = placement_for_pet(app, menu.anchor.as_ref())?;
+    let placement = placement_for_pet(app, menu.anchor.as_ref(), menu.usage.is_some())?;
     menu.layout = Some(placement.layout.clone());
     {
         let state = app.state::<MenuState>();
@@ -143,6 +152,7 @@ pub(crate) fn update_pet_radial_menu(webview: tauri::Webview, mut menu: Model) -
         let state = app.state::<MenuState>();
         let mut active = state.0.lock().map_err(|e| e.to_string())?;
         let Some(session) = active.as_mut().filter(|s| s.model.id == menu.id && s.model.revision < menu.revision) else { return Ok(()) };
+        if session.model.usage.is_some() != menu.usage.is_some() { return Err("invalid_pet_menu".into()); }
         menu.anchor = session.model.anchor.clone();
         menu.layout = session.model.layout.clone();
         session.model = menu.clone();
@@ -170,7 +180,17 @@ fn position(pet: Rect, work: Rect, scale: f64) -> Result<Placement, String> {
     Ok(Placement { layout: Layout { width: bounds.width as f64 / scale, height: bounds.height as f64 / scale,
         center_x: (center_x - x as f64) / scale, center_y: (center_y - y as f64) / scale, inner_radius, outer_radius }, bounds })
 }
-fn placement_for_pet(app: &tauri::AppHandle, anchor: Option<&Anchor>) -> Result<Placement, String> {
+fn usage_position(pet: Rect, work: Rect, scale: f64) -> Placement {
+    let width = ((248.0 * scale).ceil() as i64).min(work.width);
+    let height = ((172.0 * scale).ceil() as i64).min(work.height);
+    let x = (pet.x + (pet.width - width) / 2).clamp(work.x, work.x + work.width - width);
+    let y = (pet.y - height - (6.0 * scale).ceil() as i64).clamp(work.y, work.y + work.height - height);
+    Placement { bounds: Rect { x, y, width, height }, layout: Layout {
+        width: width as f64 / scale, height: height as f64 / scale,
+        center_x: 0.0, center_y: 0.0, inner_radius: 0.0, outer_radius: 0.0,
+    } }
+}
+fn placement_for_pet(app: &tauri::AppHandle, anchor: Option<&Anchor>, usage: bool) -> Result<Placement, String> {
     let pet = app.get_webview_window("pet").ok_or("pet_window_missing")?;
     let scale = pet.scale_factor().map_err(|e| e.to_string())?;
     let origin = pet.inner_position().map_err(|e| e.to_string())?;
@@ -183,7 +203,8 @@ fn placement_for_pet(app: &tauri::AppHandle, anchor: Option<&Anchor>) -> Result<
         .map_err(|e| e.to_string())?.or(pet.current_monitor().map_err(|e| e.to_string())?).ok_or("pet_monitor_missing")?;
     let area = monitor.work_area();
     let work = Rect { x: area.position.x.into(), y: area.position.y.into(), width: area.size.width.into(), height: area.size.height.into() };
-    position(bounds, work, monitor.scale_factor())
+    if usage { Ok(usage_position(bounds, work, monitor.scale_factor())) }
+    else { position(bounds, work, monitor.scale_factor()) }
 }
 #[tauri::command]
 pub(crate) async fn pet_radial_menu_ready(webview: tauri::Webview, id: String) -> Result<(), String> {
@@ -227,7 +248,7 @@ pub(crate) fn window_event(window: &tauri::Window, event: &tauri::WindowEvent) {
         let Some(session) = active.as_mut() else { return };
         match event {
             tauri::WindowEvent::Focused(true) => { session.focused = true; None }
-            tauri::WindowEvent::Focused(false) if session.focused => Some(session.model.id.clone()),
+            tauri::WindowEvent::Focused(false) if session.focused && session.model.usage.is_none() => Some(session.model.id.clone()),
             tauri::WindowEvent::CloseRequested { api, .. } => { api.prevent_close(); Some(session.model.id.clone()) }
             tauri::WindowEvent::Destroyed => Some(session.model.id.clone()),
             _ => None,
@@ -287,14 +308,18 @@ mod tests {
             std::thread::spawn(move || {
                 let pet = app.get_webview_window("pet").unwrap();
                 let result = (|| -> Result<(), String> {
-                    for attempt in 1..=2 {
+                    for attempt in 1..=4 {
                         let id = format!("native-handshake-{attempt}");
-                        let model: Model = serde_json::from_value(serde_json::json!({
+                        let mut model: Model = serde_json::from_value(serde_json::json!({
                             "id":id, "revision":1, "title":"百变小著", "theme":"mint", "language":"zh-CN",
                             "anchor":{"left":80,"top":130,"width":160,"height":140},
                             "items":[{"id":"chat","label":"聊天","icon":"chat","enabled":true},
                                 {"id":"ai-usage","label":"AI 用量","icon":"ai","enabled":true}]
                         })).unwrap();
+                        if attempt >= 3 {
+                            model.items.clear();
+                            model.usage = Some(UsageCloud { label: "本周剩余".into(), percent: Some(91.0), amount: "¥2726.00".into(), note: "".into() });
+                        }
                         tauri::async_runtime::block_on(open_pet_radial_menu(pet.as_ref().clone(), model))?;
                         let window = app.get_webview_window(WINDOW).ok_or("menu window missing")?;
                         // build() can succeed before native creation fails; query the actual window.
@@ -309,7 +334,19 @@ mod tests {
                             }
                             std::thread::sleep(std::time::Duration::from_millis(50));
                         }
-                        finish_pet_radial_menu(window.as_ref().clone(), id, Some("chat".into()))?;
+                        if attempt >= 3 {
+                            window_event(&window.as_ref().window(), &tauri::WindowEvent::Focused(true));
+                            window_event(&window.as_ref().window(), &tauri::WindowEvent::Focused(false));
+                            if app.state::<MenuState>().0.lock().unwrap().is_none() { return Err("usage cloud closed on blur".into()); }
+                            window.eval("document.querySelector('.pet-usage-cloud').click()").map_err(|e| e.to_string())?;
+                            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(3);
+                            while app.state::<MenuState>().0.lock().unwrap().is_some() || window.is_visible().map_err(|e| e.to_string())? {
+                                if std::time::Instant::now() >= deadline { return Err("usage cloud click did not close the native window".into()); }
+                                std::thread::sleep(std::time::Duration::from_millis(20));
+                            }
+                        } else {
+                            finish_pet_radial_menu(window.as_ref().clone(), id, Some("chat".into()))?;
+                        }
                         if app.state::<MenuState>().0.lock().unwrap().is_some()
                             || window.is_visible().map_err(|e| e.to_string())? {
                             return Err("menu did not release its session and hide".into());
@@ -358,7 +395,7 @@ mod tests {
         let leaf = Item { id: "chat".into(), label: "Chat".into(), icon: "chat".into(), enabled: true, checked: None, children: None };
         let usage = Item { id: "ai-usage".into(), ..leaf.clone() };
         let mut model = Model { id: "session".into(), revision: 1, title: "Pet".into(), theme: "mint".into(), language: "en-US".into(),
-            anchor: None, layout: None, items: vec![leaf.clone(), usage.clone()] };
+            anchor: None, layout: None, items: vec![leaf.clone(), usage.clone()], usage: None };
         assert!(validate(&model).is_ok());
         model.items[1] = leaf;
         assert!(validate(&model).is_err());
@@ -367,5 +404,41 @@ mod tests {
         model.items[1] = usage;
         model.anchor = Some(Anchor { left: 0.0, top: f64::NAN, width: 100.0, height: 100.0 });
         assert!(validate(&model).is_err());
+    }
+
+    #[test]
+    fn usage_cloud_stays_above_pet_and_inside_work_area_at_each_dpi() {
+        let work = Rect { x: -1920, y: -100, width: 1920, height: 1040 };
+        for scale in [1.0, 1.25, 1.5, 2.0] {
+            let pet = Rect { x: -1100, y: 600, width: 160, height: 140 };
+            let p = usage_position(pet, work, scale);
+            assert!(p.bounds.y + p.bounds.height < pet.y);
+            assert!((p.bounds.x + p.bounds.width / 2 - (pet.x + pet.width / 2)).abs() <= 1);
+            for (x, y) in [(-1920, -100), (-160, 730), (-1100, 400)] {
+                let p = usage_position(Rect { x, y, ..pet }, work, scale);
+                assert!(p.bounds.x >= work.x && p.bounds.y >= work.y);
+                assert!(p.bounds.x + p.bounds.width <= work.x + work.width);
+                assert!(p.bounds.y + p.bounds.height <= work.y + work.height);
+            }
+        }
+    }
+
+    #[test]
+    fn usage_cloud_accepts_only_bounded_display_data_and_no_actions() {
+        let mut model: Model = serde_json::from_value(serde_json::json!({
+            "id":"cloud", "revision":0, "title":"AI 用量", "theme":"mint", "language":"zh-CN",
+            "items":[], "usage":{"label":"本周剩余", "percent":91, "amount":"¥2726.00", "note":""}
+        })).unwrap();
+        assert!(validate(&model).is_ok());
+        assert!(!enabled_action(&model.items, "ai-usage"));
+        model.usage.as_mut().unwrap().percent = Some(101.0);
+        assert!(validate(&model).is_err());
+        model.usage.as_mut().unwrap().percent = None;
+        assert!(validate(&model).is_ok());
+        model.usage.as_mut().unwrap().note = "x".repeat(321);
+        assert!(validate(&model).is_err());
+        assert!(serde_json::from_value::<UsageCloud>(serde_json::json!({
+            "label":"", "percent":null, "amount":"", "note":"", "apiKey":"secret"
+        })).is_err());
     }
 }

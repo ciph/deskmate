@@ -39,3 +39,17 @@ test("full circles and clipped fans keep every sector and label visible while cl
     }
   }
 });
+
+test("every sector has four circular corners in both square and clipped windows", () => {
+  for (const width of [368, 274]) {
+    const layout = { width, height: 264, centerX: 184, centerY: 184, innerRadius: 110, outerRadius: 174 };
+    for (const count of [3, 5, 7]) for (let index = 0; index < count; index++) {
+      const wedge = sector(index, count, layout);
+      const arcs = [...wedge.path.matchAll(/A ([\d.e+-]+) ([\d.e+-]+)/g)];
+      expect(arcs).toHaveLength(6);
+      const corners = arcs.filter(([, x, y]) => Math.abs(Number(x) * width - 8) < 1e-8 && Math.abs(Number(y) * layout.height - 8) < 1e-8);
+      expect(corners).toHaveLength(4);
+      expect(wedge.path).not.toMatch(/NaN|Infinity/);
+    }
+  }
+});

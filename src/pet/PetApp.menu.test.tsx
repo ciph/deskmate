@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { emit } from "@tauri-apps/api/event";
 import { clearMocks, mockIPC, mockWindows } from "@tauri-apps/api/mocks";
 import { MENU_RESULT, type RadialModel } from "./menu/model";
-import type { Settings } from "../lib/settings";
+import type { AiUsage, Settings } from "../lib/settings";
 import { legacySettingsFixture } from "../testing/settingsFixtures";
 import { setGifHitPolygon } from "./gifGeometry";
 import PetApp from "./PetApp";
@@ -22,6 +22,8 @@ function deferred<T>() {
 }
 let settings: Settings;
 let opening: Promise<void> | null = null;
+let usage: AiUsage | Promise<AiUsage>;
+const usageProviders: string[] = [];
 const commands: string[] = [];
 const models: RadialModel[] = [];
 const cancellations: string[] = [];
@@ -29,10 +31,14 @@ beforeEach(() => {
   localStorage.clear();
   settings = legacySettingsFixture({ personaId: "xiaozhu-morph" });
   opening = null; commands.length = 0; models.length = 0; cancellations.length = 0;
+  usageProviders.length = 0;
+  usage = { remainingCny: 27260000, limitCny: 30000000, remainingPct: 91,
+    daysUntilReset: 3, todayCostCny: 100, todayRequests: 1, topModels: [] };
   mockWindows("pet");
   mockIPC((command, raw) => {
     commands.push(command);
-    const args = raw as { menu: RadialModel; id: string };
+    const args = raw as { menu: RadialModel; id: string; providerId: string };
+    if (command === "fetch_ai_usage") { usageProviders.push(args.providerId); return usage; }
     if (command === "get_settings") return settings;
     if (command === "get_pet_visibility" || command === "plugin:window|is_visible") return true;
     if (command === "plugin:window|cursor_position") return { x: -100, y: -100 };
@@ -84,14 +90,66 @@ test("classic 2D and milk remain selectable and selected appearance is reflected
   expect(document.querySelector("[data-appearance=milk] [data-milk-glasses]")).not.toBeNull();
 });
 
-test("AI entry opens existing settings without fetching a summary or exposing provider data", async () => {
+test("AI entry opens a usage cloud, fetches only the active provider and never opens settings", async () => {
+  const { button } = await setup(); await rightClick(button);
+  await choose("ai-usage");
+  expect(commands).not.toContain("open_ai_model_settings");
+  expect(commands).not.toContain("open_settings");
+  expect(usageProviders).toEqual([settings.activeProviderId]);
+  const cloud = models.at(-1)!;
+  expect(cloud.items).toEqual([]);
+  expect(cloud.usage).toEqual({ label: "本周剩余", percent: 91, amount: "¥2726.00", note: "" });
+  expect(JSON.stringify(cloud)).not.toContain("configured-key");
+  expect(JSON.stringify(cloud)).not.toContain("provider-kuro");
+  await choose(null);
+  await rightClick(button);
+  expect(models.at(-1)!.usage).toBeUndefined();
+});
+
+test("unconfigured AI opens a dismissible status cloud without requesting usage", async () => {
   const { button } = await setup(); await rightClick(button);
   await act(async () => { await emit("deskmate://settings-changed", { ...settings, providers: [], activeProviderId: "" }); });
   expect(models.at(-1)!.items.filter(item => item.id === "ai-usage")).toHaveLength(1);
   expect(JSON.stringify(models.at(-1))).not.toContain("provider-kuro");
   await choose("ai-usage");
-  expect(commands).toContain("open_ai_model_settings");
+  expect(commands).not.toContain("open_ai_model_settings");
   expect(commands).not.toContain("fetch_ai_usage");
+  expect(models.at(-1)!.usage?.note).toBe("填写 API Key 后即可查看用量");
+  await choose(null);
+});
+
+test("closing a loading cloud ignores its late response and reopening fetches afresh", async () => {
+  const pending = deferred<AiUsage>(); const result = usage as AiUsage; usage = pending.promise;
+  const { button } = await setup(); await rightClick(button); await choose("ai-usage");
+  expect(models.at(-1)!.usage?.note).toBe("正在读取 AI 用量…");
+  await choose(null);
+  const count = models.length;
+  await act(async () => { pending.resolve(result); });
+  expect(models).toHaveLength(count);
+  usage = result;
+  await rightClick(button); await choose("ai-usage");
+  expect(usageProviders).toHaveLength(2);
+  expect(models.at(-1)!.usage?.percent).toBe(91);
+});
+
+test("changing provider closes the cloud and ignores stale usage", async () => {
+  const pending = deferred<AiUsage>(); const result = usage as AiUsage; usage = pending.promise;
+  const { button } = await setup(); await rightClick(button); await choose("ai-usage");
+  const id = models.at(-1)!.id;
+  await act(async () => { await emit("deskmate://settings-changed", { ...settings, activeProviderId: "other" }); });
+  expect(cancellations).toContain(id);
+  const count = models.length;
+  await act(async () => { pending.resolve(result); });
+  expect(models).toHaveLength(count);
+});
+
+test("failed usage lookup leaves a closable error cloud without a settings redirect", async () => {
+  const { button } = await setup(); await rightClick(button);
+  usage = Promise.reject(new Error("status:403"));
+  await choose("ai-usage");
+  expect(models.at(-1)!.usage?.note).toBe("当前 API Key 没有用量查询权限");
+  expect(commands).not.toContain("open_ai_model_settings");
+  await choose(null);
 });
 
 test("other 2D pets retain chat, usage, and settings; transparent areas do not open a menu", async () => {

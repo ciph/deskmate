@@ -34,9 +34,12 @@ pub(crate) fn history_model_selection_set(
     selection: crate::settings::ConversationModelSelection,
 ) -> Result<(), String> {
     crate::tool_permissions::runtime::require_chat(&window)?;
+    let runs = app.state::<crate::agent::AgentRunState>();
+    let _operation = runs.lock_operation()?;
     let catalog = store(&app)?;
     let entry = catalog.get(&key)?;
-    if entry.tombstone.is_some() || entry.archived || entry.runtime != RuntimeState::Idle
+    if runs.read()?.active_catalog_key.as_deref() == Some(key.as_str())
+        || entry.tombstone.is_some() || entry.archived || entry.runtime != RuntimeState::Idle
         || entry.availability != Availability::Available || entry.ownership == Ownership::Workbench
         || !matches!(entry.identity, CatalogIdentity::Native { .. }) {
         return Err("history_model_selection_locked".into());

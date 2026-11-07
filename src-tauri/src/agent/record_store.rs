@@ -44,8 +44,20 @@ pub(crate) struct RunRecord {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct RunListing {
     pub(crate) active: Option<RunRecord>,
+    pub(crate) active_catalog_key: Option<String>,
     pub(crate) recent: Vec<RunRecord>,
     pub(crate) artifacts: Vec<super::artifacts::AgentArtifact>,
+}
+
+impl RunRecord {
+    pub(crate) fn catalog_key(&self) -> Option<String> {
+        use crate::history::catalog_model::{canonical_directory, CatalogIdentity, SIDECAR_ID};
+        Some(CatalogIdentity::Native {
+            sidecar_id: SIDECAR_ID.into(),
+            directory: canonical_directory(&self.workspace_path.to_string_lossy()).ok()?,
+            session_id: self.session_id.clone()?,
+        }.key())
+    }
 }
 
 #[derive(Clone, Debug)]

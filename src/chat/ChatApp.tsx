@@ -162,15 +162,6 @@ function historyChatMessages<T extends Pick<HistorySession, "messages">>(session
   return result;
 }
 
-function runMatchesConversation(run: { sessionId: string | null; workspacePath: string } | null, entry: UnifiedHistoryRow | null): boolean {
-  if (!run || entry?.identity.kind !== "native" || run.sessionId !== entry.identity.sessionId) return false;
-  const normalize = (path: string) => {
-    const slash = path.replace(/\\/g, "/").replace(/\/+$/, "");
-    return /^[A-Za-z]:/.test(slash) || slash.startsWith("//") ? slash.toLowerCase() : slash;
-  };
-  return normalize(run.workspacePath) === normalize(entry.identity.directory);
-}
-
 export default function ChatApp() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [indexMessages] = useState(createConversationIndex);
@@ -195,6 +186,9 @@ export default function ChatApp() {
   const [resolvedModel, setResolvedModel] = useState<ChatModelChoice | null>(null);
   const [modelNotice, setModelNotice] = useState<string | null>(null);
   const modelRequestRef = useRef(0);
+  const modelLockedRef = useRef(true);
+  const modelSelectingRef = useRef(false);
+  const [isSelectingModel, setIsSelectingModel] = useState(false);
   const [settingsRevision, setSettingsRevision] = useState(0);
   const [pendingWorkspace, setPendingWorkspace] = useState<{ path: string; generation: number } | null>(null);
   const [openPicker, setOpenPicker] = useState<"folder" | "model" | null>(null);
@@ -329,18 +323,7 @@ export default function ChatApp() {
   const sessionRef = useRef<string | null>(null);
   const permissions = useToolPermissions(currentSessionId, status === "busy");
   const agent = useAgentRun(lang);
-  useEffect(() => {
-    if (status === "busy" || agent.busy) return;
-    const token = ++modelRequestRef.current;
-    void resolveConversationModel(modelSelection).then(model => {
-      if (token !== modelRequestRef.current) return;
-      setResolvedModel(model); setModelNotice(null);
-    }).catch(cause => {
-      if (token !== modelRequestRef.current) return;
-      setResolvedModel(null);
-      setModelNotice(modelErrorCopy(lang, cause));
-    });
-  }, [modelSelection, settingsRevision, status, agent.busy, lang]);
+  const agentOwnsConversation = !!agent.projection.active && !!catalogEntry && agent.projection.activeCatalogKey === catalogEntry.key;
   const {
     viewedId: agentHistoryId,
     archive: agentHistoryArchive,
@@ -352,6 +335,22 @@ export default function ChatApp() {
     && catalogEntry?.ownership === "agent" && !catalogEntry.archived && catalogEntry.availability === "available";
   const controlsCurrentReply = canControlRunningReply(catalogEntry, status === "busy" ? replyRequestRef.current?.catalogKey ?? settlingReplyKeyRef.current : undefined);
   const readOnlyHistory = catalogEntry !== null && !catalogEntry.capabilities.send && !canContinueAgentHistory && !controlsCurrentReply;
+  const modelLocked = isSubmitting || status !== "ready" || agent.isStarting || agentOwnsConversation
+    || historyLoading || sessionOwnedByWorkbench || readOnlyHistory || !catalogEntry || catalogEntry.runtime !== "idle";
+  useLayoutEffect(() => { modelLockedRef.current = modelLocked; }, [modelLocked]);
+  useEffect(() => {
+    const token = ++modelRequestRef.current;
+    if (modelLocked || isSelectingModel) return;
+    void resolveConversationModel(modelSelection).then(model => {
+      if (token !== modelRequestRef.current) return;
+      setResolvedModel(model); setModelNotice(null);
+    }).catch(cause => {
+      if (token !== modelRequestRef.current) return;
+      setResolvedModel(null);
+      setModelNotice(modelErrorCopy(lang, cause));
+    });
+    return () => { modelRequestRef.current += 1; };
+  }, [modelSelection, settingsRevision, modelLocked, isSelectingModel, lang, catalogEntry?.key]);
   const refreshSelectedConversation = useCallback(async (key: string) => {
     const displayed = catalogEntryRef.current;
     const generation = viewGenerationRef.current;
@@ -991,7 +990,7 @@ export default function ChatApp() {
   const send = async () => {
     // Resource preparation crosses IPC before status becomes busy. Lock synchronously
     // so repeated Enter/click events cannot submit or discard the same draft twice.
-    if (submittingRef.current) return;
+    if (submittingRef.current || modelSelectingRef.current) return;
     submittingRef.current = true;
     setIsSubmitting(true);
     try { await sendCurrentDraft(); }
@@ -1434,16 +1433,24 @@ export default function ChatApp() {
   }, [agent, leaveAgentHistory, resetSession]);
 
   const selectModel = async (selection: ConversationModelSelection): Promise<void> => {
-    if (status === "busy" || agent.busy || historyLoading || sessionOwnedByWorkbench || readOnlyHistory) throw new Error("model selection locked");
+    if (modelLockedRef.current || submittingRef.current || modelSelectingRef.current) throw new Error("model selection locked");
     const key = catalogEntryRef.current?.key;
     const generation = viewGenerationRef.current;
     if (!key) throw new Error("conversation unavailable");
-    if (selection.mode === "override") await resolveConversationModel(selection);
-    await setConversationModel(key, selection);
-    if (generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key) return;
-    modelSelectionRef.current = selection;
-    setModelSelection(selection);
-    setResolvedModel(null);
+    modelSelectingRef.current = true;
+    setIsSelectingModel(true);
+    try {
+      const model = await resolveConversationModel(selection);
+      if (modelLockedRef.current || submittingRef.current || generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key) return;
+      await setConversationModel(key, selection);
+      if (generation !== viewGenerationRef.current || catalogEntryRef.current?.key !== key) return;
+      modelSelectionRef.current = selection;
+      setModelSelection(selection);
+      setResolvedModel(model);
+    } finally {
+      modelSelectingRef.current = false;
+      setIsSelectingModel(false);
+    }
   };
 
   const folderLocked = status !== "ready" || agent.busy || agent.isStopping || historyLoading || sessionOwnedByWorkbench || readOnlyHistory;
@@ -1491,7 +1498,7 @@ export default function ChatApp() {
   };
   const returnToAgentTask = async (): Promise<void> => {
     const run = agent.projection.active;
-    if (!run?.sessionId) return;
+    if (!run?.sessionId) { setMemoryNotice(tRef.current.historyLoadFailed); return; }
     try {
       const key = await invoke<string>("history_catalog_native_key", { directory: run.workspacePath, sessionId: run.sessionId });
       const loaded = await catalogLoad(key);
@@ -1654,15 +1661,15 @@ export default function ChatApp() {
             </div>
           )}
 
-          {agent.projection.active && !runMatchesConversation(agent.projection.active, catalogEntry) && (
+          {agent.projection.active && !agentOwnsConversation && (
             <div className="chat-memory-notice" role="status">{t.agentBusy}
               <button type="button" className="chat-memory-action" onClick={() => void returnToAgentTask()}>{composerCopy(lang).returnTask}</button>
             </div>
           )}
-          {runMatchesConversation(agent.projection.active, catalogEntry) && agent.requests.length > 0 && (
+          {agentOwnsConversation && agent.requests.length > 0 && (
             <div className="chat-agent-approval-dock"><ToolApprovalCards requests={agent.requests} error={false} onReply={agent.reply} t={t} /></div>
           )}
-          {sessionOwnedByWorkbench || (readOnlyHistory && !runMatchesConversation(agent.projection.active, catalogEntry)) || historyLoading ? (
+          {sessionOwnedByWorkbench || (readOnlyHistory && !agentOwnsConversation) || historyLoading ? (
             <div className="chat-memory-notice" role="status" aria-live="polite">
               {historyLoading ? t.loading : readOnlyHistory
                 ? (catalogEntry ? conversationReadOnlyReason(catalogEntry, lang) : t.sessionStateUnknown)
@@ -1735,10 +1742,10 @@ export default function ChatApp() {
                   open={openPicker === "folder"} onOpenChange={open => setOpenPicker(open ? "folder" : null)} />
                 <div className="chat-composer-spacer" />
                 <ModelPicker language={lang} theme={theme} anchor={composerAnchor} selection={modelSelection} resolved={resolvedModel}
-                  locked={isSubmitting || status === "busy" || agent.busy || historyLoading || readOnlyHistory || sessionOwnedByWorkbench}
+                  locked={modelLocked || isSelectingModel}
                   onSelect={selectModel} onManage={() => void invoke("open_ai_model_settings")}
                   open={openPicker === "model"} onOpenChange={open => setOpenPicker(open ? "model" : null)} />
-                {status === "busy" || runMatchesConversation(agent.projection.active, catalogEntry) ? (
+                {status === "busy" || agentOwnsConversation ? (
                   <button className="chat-send chat-abort" type="button"
                     onClick={() => {
                       inputRef.current?.focus({ preventScroll: true });
@@ -1749,7 +1756,7 @@ export default function ChatApp() {
                   </button>
                 ) : (
                   <button className="chat-send" type="button" onClick={() => void send()}
-                    disabled={isSubmitting || agent.busy || status !== "ready" || attachmentBusy || !resolvedModel ||
+                    disabled={isSubmitting || isSelectingModel || agent.busy || status !== "ready" || attachmentBusy || !resolvedModel ||
                       (!input.trim() && localResources.resources.length === 0 && (agent.workspace || agentHistoryId ? true : chatAttachments.items.length === 0))}>
                     {t.chatSend}
                   </button>

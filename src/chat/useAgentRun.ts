@@ -84,7 +84,7 @@ export function useAgentRun(language: string) {
     try {
       const run = await startAgentRun(historyId ? null : workspace, input.trim(), historyId, catalogKey, modelSelection, expectedModel, resourceIds);
       ownedRun.current = run.runId;
-      setProjection((current) => ({ ...current, active: run }));
+      setProjection((current) => ({ ...current, active: run, activeCatalogKey: null }));
       if (run.sessionId) broadcastPetActivity({ sessionId: run.sessionId, requestId: run.runId, type: "start" });
       await refresh();
       return run;
@@ -132,7 +132,7 @@ export function useAgentRun(language: string) {
   const clear = useCallback(() => { if (!busy) setWorkspace(null); }, [busy]);
   const clearSelection = useCallback(() => setWorkspace(null), []);
   const selectWorkspace = useCallback((path: string) => { if (!busy) setWorkspace(path); }, [busy]);
-  return { projection, workspace, requests, error, busy, isStopping, choose, clear, clearSelection, selectWorkspace, start, stop, reply, locate, refresh };
+  return { projection, workspace, requests, error, busy, isStarting, isStopping, choose, clear, clearSelection, selectWorkspace, start, stop, reply, locate, refresh };
 }
 
 export type AgentRunController = ReturnType<typeof useAgentRun>;

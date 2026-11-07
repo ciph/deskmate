@@ -28,7 +28,7 @@
 | 入口 | 当前责任 |
 | --- | --- |
 | [百变小著](xiaozhu-morph.md) | 四形态、奶团与经典 2D 外观、围绕角色的紧凑半透明分层圆环；本机已安装，原生未验范围保留，未公开发布 |
-| [桌宠右键 AI 用量](ai-provider-support.md#桌宠右键用量2026-11-02) | 圆环仅保留 AI 设置入口，不再查询或显示中心用量摘要；旧实现记录及现行边界 |
+| [桌宠右键 AI 用量](ai-provider-support.md#桌宠右键用量2026-11-02) | 点击入口后在头顶显示剩余百分比和金额云朵，单击关闭；数据来源与验收边界 |
 | [第一版养成系统方案](companion-life-v1-plan.md) | 方案草案，未实施：小窝、自主活动、轻互动、独立存档与原 Agent 共存 |
 | [长历史交互与回执读取施工方案](long-history-construction-plan.md) / [施工交付记录](performance-evidence/long-history-closeout-20261029/README.md) | B0–B4 已完成，G1–G5 通过；四个提交已推送，随 Windows 0.4.24 发布；测量与原始边界保留于交付记录，公开状态见[发布回执](performance-evidence/release-v0.4.24-windows/README.md) |
 | [性能整改施工计划](performance-remediation-plan.md) / [Windows 接管入口](performance-windows-handoff.md) / [Mac 施工记录](performance-remediation-handoff.md) / [便携证据](performance-evidence/README.md) | 原 20 项审计的设计、已交付修复与证据；B6/B7 已随 Windows 0.4.22 发布，严格平台/硬件未验范围保留；旧施工顺序不自动重启 |

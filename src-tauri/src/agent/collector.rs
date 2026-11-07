@@ -9,6 +9,7 @@ use tauri::Manager;
 
 pub(super) enum SnapshotRead {
     Messages(Vec<NativeMessage>),
+    IdleInterrupted(Vec<NativeMessage>),
     SidecarLost,
 }
 
@@ -99,7 +100,7 @@ where
         return Ok(());
     }
     let prepared = match &snapshot {
-        Ok(SnapshotRead::Messages(messages)) => {
+        Ok(SnapshotRead::Messages(messages) | SnapshotRead::IdleInterrupted(messages)) => {
             if candidate.pending_outcome.is_some()
                 && messages.iter().any(|message| {
                     message.parent_id.as_deref() == Some(&candidate.run_id)
@@ -140,6 +141,8 @@ where
             return Ok(());
         }
 
+        let idle_interrupted = matches!(&snapshot, Ok(SnapshotRead::IdleInterrupted(_)))
+            && matches!(&pending, Some(Ok(requests)) if requests.is_empty());
         match snapshot {
             Err(error) => {
                 eprintln!("agent snapshot {}: {error}", candidate.run_id);
@@ -150,7 +153,7 @@ where
                 state.set_collection_error(&candidate.run_id, Some(summary))?;
                 reported_error = Some(summary.to_owned());
             }
-            Ok(SnapshotRead::Messages(messages)) => {
+            Ok(SnapshotRead::Messages(messages) | SnapshotRead::IdleInterrupted(messages)) => {
                 if current.pending_outcome.is_some()
                     && messages.iter().any(|message| {
                         message.parent_id.as_deref() == Some(&current.run_id)
@@ -170,6 +173,8 @@ where
                         outcome,
                         current.pending_error_summary.clone(),
                     )?;
+                } else if idle_interrupted {
+                    state.finish(&candidate.run_id, RunOutcome::Interrupted, Some("agent_execution_lost".into()))?;
                 } else {
                     state.reconcile(&candidate.run_id, &messages)?;
                 }
@@ -307,7 +312,7 @@ fn collect_active_run_with_snapshot(
                 }
                 let settings = super::run_commands::current_start_settings(app)?;
                 let client = super::run_commands::lifecycle_client(app, &settings, &record.workspace_path);
-                snapshot(record, &client).map(SnapshotRead::Messages)
+                snapshot(record, &client).map(|messages| super::idle_recovery::inspect(&client, record, messages))
             },
             pending: |record: &RunRecord| {
                 if mode == CollectionMode::Recovery {

@@ -51,6 +51,10 @@ export function setMessageResources(messageId: string, resources: readonly Local
 const defaultModel = { configuredProviderId: "test-entry", sidecarId: "yume-2", modelId: "claude-sonnet-4.5", modelName: "Claude Sonnet 4.5" };
 const alternativeModel = { configuredProviderId: "test-entry", sidecarId: "yume-2", modelId: "selected-model-b", modelName: "Selected Model B" };
 let verifiedModels = [defaultModel, alternativeModel];
+let pendingModelSelection: Promise<void> | null = null;
+let releaseModelSelection: (() => void) | null = null;
+export function deferModelSelection(): void { pendingModelSelection = new Promise(resolve => { releaseModelSelection = resolve; }); }
+export function finishModelSelection(): void { releaseModelSelection?.(); pendingModelSelection = null; }
 const modelSelections = new Map<string, unknown>();
 export function removeAlternativeModel(): void { verifiedModels = [defaultModel]; }
 export function addSyntheticModels(count: number): void {
@@ -73,6 +77,7 @@ export const agentRun = {
 };
 let agentProjection: {
   active: typeof agentRun | null;
+  activeCatalogKey?: string | null;
   recent: readonly (typeof agentRun)[];
   artifacts: readonly object[];
 } = { active: null, recent: [], artifacts: [] };
@@ -195,6 +200,8 @@ export function registerChatAttachmentHarness(): void {
   resourcePreparationPending = null;
   releaseResourcePreparation = null;
   verifiedModels = [defaultModel, alternativeModel];
+  pendingModelSelection = null;
+  releaseModelSelection = null;
   modelSelections.clear();
   agentProjection = { active: null, recent: [], artifacts: [] };
   selectedWorkspace = null;
@@ -216,7 +223,7 @@ export function registerChatAttachmentHarness(): void {
           if (selection?.mode === "inherit") return Promise.resolve(defaultModel);
           const chosen = verifiedModels.find(model => model.configuredProviderId === selection?.configuredProviderId
             && model.sidecarId === selection?.sidecarId && model.modelId === selection?.modelId);
-          return chosen ? Promise.resolve(chosen) : Promise.reject(new Error("chat_model_selection_invalid"));
+          return chosen ? (pendingModelSelection ?? Promise.resolve()).then(() => chosen) : Promise.reject(new Error("chat_model_selection_invalid"));
         }
       case "chat_model_catalog":
         return Promise.resolve({ models: verifiedModels, defaultModel });
@@ -313,7 +320,7 @@ export function registerChatAttachmentHarness(): void {
         if (agentStartError) return Promise.reject(new Error(agentStartError));
         const request = (args as { request?: { historyId?: string } } | undefined)?.request;
         const finish = () => {
-          agentProjection = { active: request?.historyId ? { ...agentRun, sessionId: request.historyId } : agentRun, recent: [], artifacts: [] };
+          setAgentProjection(request?.historyId ? { ...agentRun, sessionId: request.historyId } : agentRun);
         };
         if (!holdAgentStart) {
           finish();
@@ -411,7 +418,9 @@ function stageResponse(args: unknown, options?: InvokeOptions): unknown {
 export function selectWorkspace(path: string | null): void { selectedWorkspace = path; }
 export function deferAgentStart(): void { holdAgentStart = true; }
 export function finishAgentStart(): void { releaseAgentStart?.(); }
-export function setAgentProjection(active: typeof agentRun | null): void { agentProjection = { active, recent: [], artifacts: [] }; }
+export function setAgentProjection(active: typeof agentRun | null, key?: string): void {
+  agentProjection = { active, activeCatalogKey: active ? key ?? nativeHistoryFixture(active.sessionId, agentRun.workspacePath).key : null, recent: [], artifacts: [] };
+}
 export function setAgentStartError(error: string | null): void { agentStartError = error; }
 export function setHistory(records: Record<string, HistorySession>): void { historyRecords = records; }
 export function historyRecord(id: string): HistorySession | undefined { return historyRecords[id]; }
