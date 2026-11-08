@@ -21,6 +21,8 @@ type PlatformKey = "win32-x64" | "darwin-arm64" | "linux-x64";
 interface PlatformAsset {
   /** Release asset file name. */
   asset: string;
+  /** Immutable asset ID for the same release, used if its download URL fails. */
+  assetId: number;
   /** File name inside the archive. */
   entry: string;
   /** SHA-256 of the extracted executable; the build fails on any mismatch. */
@@ -32,6 +34,7 @@ interface PlatformAsset {
 const ASSETS: Record<PlatformKey, PlatformAsset> = {
   "win32-x64": {
     asset: `ncmdump-${NCMDUMP_VERSION}-windows-amd64.zip`,
+    assetId: 300702365,
     entry: "ncmdump.exe",
     binarySha256:
       "a1f6f6ce87500b7b1f2a89dbf85b13e81d327eea4641daf8afe0ab840f2c518c",
@@ -39,6 +42,7 @@ const ASSETS: Record<PlatformKey, PlatformAsset> = {
   },
   "darwin-arm64": {
     asset: `ncmdump-${NCMDUMP_VERSION}-macos-arm64.zip`,
+    assetId: 300702603,
     entry: "ncmdump",
     binarySha256:
       "8d655ea31ea5ea543f8f9a45979c59a1410bcc016e542765eb2fd4d751941a94",
@@ -46,6 +50,7 @@ const ASSETS: Record<PlatformKey, PlatformAsset> = {
   },
   "linux-x64": {
     asset: `ncmdump-${NCMDUMP_VERSION}-linux-amd64.zip`,
+    assetId: 300702363,
     entry: "ncmdump",
     binarySha256:
       "1fb62a06487c1c2a4bcc4bdf61bd9191e6dd83dfd61cd3425b56a4379f916eea",
@@ -79,12 +84,28 @@ async function alreadyPrepared(
   return sha256(await readFile(path)) === expectedSha256;
 }
 
-async function download(url: string): Promise<Uint8Array> {
-  const response = await fetch(url, { redirect: "follow" });
+async function downloadFrom(url: string): Promise<Uint8Array> {
+  const response = await fetch(url, {
+    redirect: "follow",
+    headers: { Accept: "application/octet-stream" },
+    signal: AbortSignal.timeout(30_000),
+  });
   if (!response.ok) {
+    await response.body?.cancel();
     throw new Error(`could not download ${url}: ${response.status}`);
   }
   return new Uint8Array(await response.arrayBuffer());
+}
+
+export async function download(url: string, assetId: number): Promise<Uint8Array> {
+  try {
+    return await downloadFrom(url);
+  } catch {
+    // GitHub release URLs can return 504 while the same pinned asset's API works.
+    // Both paths still pass through the executable SHA-256 check in main().
+    console.warn("ncmdump release download failed; trying the pinned GitHub asset API");
+    return downloadFrom(`https://api.github.com/repos/taurusxin/ncmdump/releases/assets/${assetId}`);
+  }
 }
 
 async function extract(
@@ -130,7 +151,7 @@ async function main() {
   await mkdir(workDir, { recursive: true });
 
   try {
-    const archive = await download(`${RELEASE_BASE}/${spec.asset}`);
+    const archive = await download(`${RELEASE_BASE}/${spec.asset}`, spec.assetId);
     const binary = await extract(archive, spec.entry, workDir);
 
     const actual = sha256(binary);
@@ -155,4 +176,4 @@ async function main() {
   );
 }
 
-await main();
+if (import.meta.main) await main();

@@ -12,6 +12,8 @@
 
 本机 `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib` 复跑通过：993 passed / 0 failed / 25 ignored。首轮 992 passed / 1 failed / 25 ignored，既有事件连接用例 `generation_change_interrupts_silent_connection_and_worker_reconnects` 遇到 Windows socket `WouldBlock`；单项重跑及完整复跑均通过，未修改该用例或跳过检查。原始日志保存在开发工作树 `output/model-selection-dispatch-20261108/`。此记录覆盖源码和 mock IPC，不代表重新安装或原生 GUI 验收；合并以修复后提交的 Windows/macOS Source checks 结果为准。
 
+同轮 CI 的 Windows 两次在准备 ncmdump 时遇到发布下载 URL 的 HTTP 504，尚未执行源码测试；macOS 与固定工作台构建通过。构建脚本补充同一固定发布资产的 GitHub 官方 asset API 备用路径，每条请求限时 30 秒，双重失败继续终止，原有可执行文件 SHA-256 校验不变。3 项下载回归及类型检查通过；本机真实复现主地址失败后从备用路径下载 406438 字节，解压后二进制哈希匹配原 pin。最终候选重新执行两平台完整 CI，不能沿用前一提交的绿灯。
+
 ## 任务残留与模型选择（2026-11-06）
 
 用户确认保留圆角菜单后，本轮修复活动任务 Windows 路径误识别、其他任务全局误锁模型、已提交但无助手回复的空闲任务未结算。类型检查、189/189 个前端测试文件、Rust 990 passed / 0 failed / 25 ignored、生产前端构建通过。新增前端用例覆盖返回/停止、跨目录身份、无关任务下切模型及选择/发送竞态；新增 Rust 用例覆盖恢复后重启、busy/retry/审批/提问/网络未知/路径边界、迟到完成及世代/取消竞态。React Doctor changed 范围无新增诊断（本轮 14 文件得分 82，前轮 9 文件得分 83，不把空诊断报告当作全仓无债务）。圆角轮廓源码与已安装版哈希一致。

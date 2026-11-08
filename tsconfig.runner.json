@@ -19,6 +19,8 @@
     "scripts/agent-qa/p5-windows-e2e.ts",
     "scripts/pack-personas.ts",
     "scripts/prepare-personas.ts",
+    "scripts/prepare-ncmdump.ts",
+    "scripts/prepare-ncmdump.test.ts",
     "scripts/prepare-persona-envelopes.ts",
     "scripts/prepare-persona-envelopes.test.ts",
     "scripts/persona-asset-policy.ts",
