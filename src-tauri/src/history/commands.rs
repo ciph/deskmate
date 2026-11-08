@@ -29,27 +29,36 @@ pub(crate) fn history_model_selection_get(window: tauri::WebviewWindow, app: tau
 }
 
 #[tauri::command]
-pub(crate) fn history_model_selection_set(
-    window: tauri::WebviewWindow, app: tauri::AppHandle, key: String,
+pub(crate) async fn history_model_selection_set<R: tauri::Runtime>(
+    window: tauri::WebviewWindow<R>, app: tauri::AppHandle<R>, key: String,
     selection: crate::settings::ConversationModelSelection,
 ) -> Result<(), String> {
     crate::tool_permissions::runtime::require_chat(&window)?;
-    let runs = app.state::<crate::agent::AgentRunState>();
-    let _operation = runs.lock_operation()?;
-    let catalog = store(&app)?;
-    let entry = catalog.get(&key)?;
-    if runs.read()?.active_catalog_key.as_deref() == Some(key.as_str())
-        || entry.tombstone.is_some() || entry.archived || entry.runtime != RuntimeState::Idle
-        || entry.availability != Availability::Available || entry.ownership == Ownership::Workbench
-        || !matches!(entry.identity, CatalogIdentity::Native { .. }) {
-        return Err("history_model_selection_locked".into());
-    }
-    if matches!(selection, crate::settings::ConversationModelSelection::Override { .. }) {
-        let settings = app.state::<crate::settings::SettingsState>().0.lock().map_err(|_| "chat_model_settings_unavailable")?.clone();
-        crate::settings::resolve_chat_model(&app, &settings, &selection)?;
-    }
-    catalog.set_model_selection(&key, &selection)
+    // Agent cancellation can hold this lock across native I/O; never wait on the UI thread.
+    tauri::async_runtime::spawn_blocking(move || {
+        let runs = app.state::<crate::agent::AgentRunState>();
+        let _operation = runs.lock_operation()?;
+        let catalog = store(&app)?;
+        let entry = catalog.get(&key)?;
+        if runs.read()?.active_catalog_key.as_deref() == Some(key.as_str())
+            || entry.tombstone.is_some() || entry.archived || entry.runtime != RuntimeState::Idle
+            || entry.availability != Availability::Available || entry.ownership == Ownership::Workbench
+            || !matches!(entry.identity, CatalogIdentity::Native { .. }) {
+            return Err("history_model_selection_locked".into());
+        }
+        if matches!(selection, crate::settings::ConversationModelSelection::Override { .. }) {
+            let settings = app.state::<crate::settings::SettingsState>().0.lock().map_err(|_| "chat_model_settings_unavailable")?.clone();
+            crate::settings::resolve_chat_model(&app, &settings, &selection)?;
+        }
+        catalog.set_model_selection(&key, &selection)
+    })
+    .await
+    .map_err(|_| "history_model_selection_worker_failed".to_owned())?
 }
+
+#[cfg(test)]
+#[path = "model_selection_command_tests.rs"]
+mod model_selection_command_tests;
 
 #[tauri::command]
 pub(crate) fn history_recent_workspaces(window: tauri::WebviewWindow, app: tauri::AppHandle) -> Result<Vec<String>, String> {

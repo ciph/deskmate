@@ -373,7 +373,7 @@ pub(crate) struct ChatModelCatalog {
     pub(crate) default_model: Option<ChatModelChoice>,
 }
 
-pub(crate) fn verified_chat_models(app: &tauri::AppHandle, settings: &Settings) -> Result<ChatModelCatalog, String> {
+pub(crate) fn verified_chat_models<R: tauri::Runtime>(app: &tauri::AppHandle<R>, settings: &Settings) -> Result<ChatModelCatalog, String> {
     let provider = settings.providers.iter()
         .find(|provider| provider.id == settings.active_provider_id)
         .ok_or("chat_model_provider_missing")?;
@@ -389,8 +389,8 @@ pub(crate) fn verified_chat_models(app: &tauri::AppHandle, settings: &Settings) 
     Ok(ChatModelCatalog { models, default_model })
 }
 
-pub(crate) fn resolve_chat_model(
-    app: &tauri::AppHandle,
+pub(crate) fn resolve_chat_model<R: tauri::Runtime>(
+    app: &tauri::AppHandle<R>,
     settings: &Settings,
     selection: &ConversationModelSelection,
 ) -> Result<ChatModelChoice, String> {
@@ -1499,7 +1499,7 @@ pub fn agent_permission_approval_remove(
     Ok(remaining)
 }
 
-fn model_catalog_path(app: &tauri::AppHandle) -> PathBuf {
+fn model_catalog_path<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> PathBuf {
     app.path()
         .app_data_dir()
         // SAFE-EXPECT: Tauri provides an app data directory after app setup.
@@ -1507,8 +1507,8 @@ fn model_catalog_path(app: &tauri::AppHandle) -> PathBuf {
         .join(legacy_model_catalog_relative_path())
 }
 
-fn model_catalog_path_for_provider(
-    app: &tauri::AppHandle,
+fn model_catalog_path_for_provider<R: tauri::Runtime>(
+    app: &tauri::AppHandle<R>,
     provider_id: &str,
 ) -> Result<PathBuf, String> {
     Ok(app
@@ -1618,8 +1618,8 @@ fn api_key_fingerprint(api_key: &str) -> String {
     format!("{:x}", Sha256::digest(api_key.trim().as_bytes()))
 }
 
-pub(crate) fn load_model_catalog_for_provider(
-    app: &tauri::AppHandle,
+pub(crate) fn load_model_catalog_for_provider<R: tauri::Runtime>(
+    app: &tauri::AppHandle<R>,
     provider_id: &str,
 ) -> Option<ModelCatalog> {
     let path = if provider_id.is_empty() {
@@ -1654,8 +1654,8 @@ fn model_catalog_matches_verified_binding(
         && catalog.manual_model_ids == expected_manual
 }
 
-pub(crate) fn load_verified_model_catalog_for_provider(
-    app: &tauri::AppHandle,
+pub(crate) fn load_verified_model_catalog_for_provider<R: tauri::Runtime>(
+    app: &tauri::AppHandle<R>,
     provider_id: &str,
     expected_base_url: &str,
     api_key: &str,

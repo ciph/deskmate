@@ -6,6 +6,12 @@
 
 按改动范围运行 `bun run typecheck`、`bun run test:frontend`、`bun run test:rust`、`bun run build` 或组合入口 `bun run check`。已通过且源码未变的不重复整套；原生 GUI、真实模型和硬件结果单独记录，发布工作流按目标版本执行。
 
+## 模型选择主线程阻塞修复（2026-11-08）
+
+`history_model_selection_set` 改为异步 IPC 命令，任务锁等待、目录读写和模型校验进入阻塞工作线程；拿锁后仍重读活动会话与目录状态，保持与任务启动互斥。新增 3 项真实生成 IPC handler 的隔离回归：无关任务持锁时派发线程可继续、等待期间目标任务启动后拒绝写入、非聊天窗口及未验证模型被拒绝。旧同步实现先跑出 2 failed / 1 passed，修复后 3 passed。
+
+本机 `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib` 复跑通过：993 passed / 0 failed / 25 ignored。首轮 992 passed / 1 failed / 25 ignored，既有事件连接用例 `generation_change_interrupts_silent_connection_and_worker_reconnects` 遇到 Windows socket `WouldBlock`；单项重跑及完整复跑均通过，未修改该用例或跳过检查。原始日志保存在开发工作树 `output/model-selection-dispatch-20261108/`。此记录覆盖源码和 mock IPC，不代表重新安装或原生 GUI 验收；合并以修复后提交的 Windows/macOS Source checks 结果为准。
+
 ## 任务残留与模型选择（2026-11-06）
 
 用户确认保留圆角菜单后，本轮修复活动任务 Windows 路径误识别、其他任务全局误锁模型、已提交但无助手回复的空闲任务未结算。类型检查、189/189 个前端测试文件、Rust 990 passed / 0 failed / 25 ignored、生产前端构建通过。新增前端用例覆盖返回/停止、跨目录身份、无关任务下切模型及选择/发送竞态；新增 Rust 用例覆盖恢复后重启、busy/retry/审批/提问/网络未知/路径边界、迟到完成及世代/取消竞态。React Doctor changed 范围无新增诊断（本轮 14 文件得分 82，前轮 9 文件得分 83，不把空诊断报告当作全仓无债务）。圆角轮廓源码与已安装版哈希一致。
