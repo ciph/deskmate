@@ -1,444 +1,61 @@
 # YUME
 
-YUME is a desktop pet application built with Tauri, React, TypeScript, and Bun.
+桌面上的 AI 伙伴。陪你聊天、处理任务，也帮你记住重要的事、整理每天的工作。
 
-OpenCode is pinned as a project dependency and bundled into release builds.
-Users of the packaged app do not need to install OpenCode separately.
+[下载安装](https://github.com/ciph/deskmate/releases) · [使用与开发文档](docs/README.md)
 
-Windows UI control is optional. Settings → Tools and permissions downloads the
-pinned Windows x64 component (51.7 MiB) on first enable, verifies the archive and
-executable, and retains it in app data for offline reuse. Downloads can be cancelled
-or retried. Changes wait for active tasks to finish and the workbench to close
-before restarting the AI service. Upgrades with an enabled preference but no cached
-component show a download/repair entry. Core chat and the workbench remain bundled.
+## 主要功能
 
-The [documentation index](docs/README.md) lists current contracts, active work,
-verification gates and historical records.
+- **桌宠陪伴**：内置小著系列角色，支持拖动、互动和角色切换，也可导入 `.dmpack` 角色包。
+- **AI 对话与工作台**：连接自己的模型服务，进行对话、发送附件、使用工具和管理历史会话。
+- **长期记忆**：保存偏好与重要信息，支持查看、编辑、导出和删除，可分别控制自动记忆与 AI 使用记忆。
+- **工作日志**：记录工作进展，整理日报、周报，支持修改、导出和定时生成。
+- **个性化与小组件**：自定义聊天头像，查看每日星运，按需启用 Windows 桌面控制。
 
-Model replies and tool activity appear as soon as they arrive. Local fixed persona
-replies retain their intentional typing cadence. Pet activity follows the current
-request, so late events from an older request do not override it.
+## 开始使用
 
-## Chat avatars
+1. 从[发布页](https://github.com/ciph/deskmate/releases)下载并安装适合系统的版本。当前 0.5.0 提供 Windows x64 安装包；macOS 本版未更新。
+2. 打开 **设置 → AI**，填写模型服务信息，点击 **验证并连接**，再选择模型。
+3. 选择喜欢的角色，打开聊天即可开始使用；工具权限可在设置中调整。
+4. 在设置中按需配置记忆、工作日志和小组件。有适用的新版本时，设置页会显示 **下载更新**。
 
-Chat shows rounded-square avatars beside both participants' messages. Settings →
-General → My avatar (设置 → 通用 → 我的头像) accepts PNG, JPG and WebP up to 5 MB;
-images are center-cropped to a 128px PNG and stored locally in settings. Change or
-reset applies immediately to open chats and remains after restart. All your
-messages, including history, use your current avatar; assistant messages use the
-persona recorded for that turn, including sessions that changed roles. Old native
-history recovers explicit persona IDs or exact installed prompt matches; replies
-follow their original user-message link. Records without reliable identity stay
-neutral. New turns persist an explicit role marker; local fixed replies also keep
-their role. The three bundled Xiaozhu generations have distinct
-static portraits. Imported personas can provide `personas/<id>/avatar.png`, with
-the pack cover and then a name badge as fallbacks. No avatar is sent to the AI.
+Windows 桌面控制首次启用时需下载可选组件，完成后可复用本地缓存。找不到桌宠时，可从系统托盘菜单选择 **找回桌宠**。
 
-## Daily horoscope
+## 数据与隐私
 
-Settings → Widgets → Daily horoscope (设置 → 小组件 → 今日星运) shows today's
-brightest sign and details for all twelve signs. Choosing **My sign** adds a
-shortcut to that sign; the choice can be cleared. Fortunes are generated
-entirely on the device from the local calendar date and a fixed content version.
-They change at local midnight, recover after sleep or date changes, and need no
-network connection or AI provider.
+记忆和工作日志保存在本机，可在设置中管理。记忆数据库未加密，依赖系统文件权限保护；删除聊天记录不会自动删除独立归档的工作日志。
 
-## Work journal and reports
+AI 对话、记忆提取和报告生成会将相关内容发送给你配置的模型服务。新安装默认启用自动记忆与工作归档，可分别关闭；定时报告默认关闭，执行时应用需保持运行。
 
-When automatic archiving is enabled, the host extracts explicit work progress
-in the background. Ordinary statements do not authorize a duplicate tool write
-or a report schedule. Ask the pet to query, correct or supplement work records,
-generate a daily report, or explicitly schedule a weekly report.
-Settings → Widgets → Work journal (设置 → 小组件 → 工作日志) lets you correct dates and
-projects, archive a complete daily report, edit report versions, copy or export
-Markdown/plain text, and change or pause schedules. Automatic reports start off.
+## 本地开发
 
-Entries and reports are stored in a separate local database shared by all
-personas. Deleting chat history does not delete archived work records. Report
-generation sends the selected material to your configured AI provider. Background
-reports use their own sessions and do not interrupt the current conversation.
-The computer must be running the app to execute a schedule; after restart, the
-latest missed occurrence is caught up. An empty range makes no model request.
-Receipts distinguish saved data, queued reports, pending results and failures.
-Work dates change at 03:00 local time. Recall queries return entries and reports;
-failed or incomplete queries cannot establish that a record is missing.
+项目使用 **Tauri 2、React、TypeScript 和 Bun**。需安装 Bun、Rust 及对应平台的系统构建依赖，工具版本参见 [CI 配置](.github/workflows/check.yml)。
 
-Automatic memory and work journal processing commit independently, with source
-identities, receipts and forgetting barriers. The managed OpenCode context plugin
-uses an authenticated local host bridge for turn registration and current memory
-context; internal extraction and report sessions are excluded. Lightweight chat
-retains its per-turn system context, and the plugin deduplicates injected blocks.
-
-Manual edits are retained when a regenerated candidate arrives. Deleting an
-entry marks dependent reports and offers deletion of linked reports; report
-text may still contain the source unless those reports are deleted too. Previously
-exported files and sidecar/provider logs are not erased by deleting local entries.
-
-## Development
-
-Install dependencies:
-
-```powershell
-bun install
-```
-
-Prepare the workbench from the pinned OpenCode source before desktop development
-or packaging. Check out `anomalyco/opencode` at
-`826d9ad46a22bef0294998e08daa3c4904fea28f` (OpenCode 1.18.21), install its dependencies
-with `bun install --frozen-lockfile`, then run:
+安装项目依赖：
 
 ```sh
-YUME_OPENCODE_SRC=/absolute/path/to/opencode-v1.18.21 bun run prepare:workbench
+bun install --frozen-lockfile
 ```
 
-PowerShell users can set `$env:YUME_OPENCODE_SRC` before running the same command.
-`public/workbench/` is ignored build output. The desktop dev hook prepares native
-resources but does not rebuild the workbench. An ordinary frontend build also
-does not prove a complete workbench rebuild.
+桌面开发和打包前，先按[构建说明](docs/workbench-build.md)准备完整工作台资源，再启动应用：
 
-Run the desktop app in development:
-
-```powershell
+```sh
 bun run tauri dev
 ```
 
-The Tauri dev/build hooks run `bun run prepare:sidecar`, which fetches the
-binary build inputs into the app resources. These artifacts are intentionally
-ignored by Git:
+常用命令：
 
-- **OpenCode sidecar** — copied from the version pinned in the lockfile.
-- **ncmdump** — downloaded from its pinned upstream release
-  ([taurusxin/ncmdump](https://github.com/taurusxin/ncmdump), MIT).
+| 命令 | 用途 |
+| --- | --- |
+| `bun run check` | 类型检查、前端测试、Rust 测试及前端构建 |
+| `bun run build` | 仅构建前端 |
+| `bun run tauri build` | 构建桌面应用；发布签名要求见平台文档 |
 
-Each download is verified against a pinned SHA-256, so a swapped or truncated
-artifact fails the build instead of shipping.
+macOS 开发环境需先设置 `DEVELOPER_DIR=/Library/Developer/CommandLineTools`。平台打包与发布流程见[文档索引](docs/README.md)。
 
-YUME includes its own managed OpenCode engine. In Settings → AI, enter the
-provider details, choose **Verify and connect**, then select a model. No separate
-OpenCode or CC Switch installation is required. External deployment has been
-retired; upgrades leave existing external clients and their configuration intact.
-See [provider setup and legacy recovery](docs/ai-provider-support.md).
+## 更多文档
 
-Run current-source checks with `bun run check`, or individually with
-`bun run typecheck`, `bun run test:frontend`, `bun run test:rust`, and `bun run build`.
-On macOS set `DEVELOPER_DIR=/Library/Developer/CommandLineTools` first. The frontend
-runner discovers only `src/`, `scripts/`, and root Vite config tests, then runs
-each file in its own Bun process with the DOM preload. `bun run test:frontend --list`
-prints the sorted absolute paths. `YUME_TEST_TIMEOUT_MS` sets each child's budget
-(default 120000, permitted 100–600000); `YUME_TEST_BUN` can select a Bun executable.
-Logs and the machine-readable summary are saved in `output/audit-remediation/`.
-Tests with HTTP fixtures require permission to bind loopback ports. Avoid running
-a second frontend build while the suite's build fixtures are executing.
-
-For isolated native remediation acceptance on macOS, run
-`bun scripts/audit-remediation/verify-native.ts` after preparing the sidecar.
-It uses a synthetic localhost provider and temporary workspace, checks recovery
-without prompt replay and lifecycle behavior during persistent history failure,
-then verifies process, port, and temporary directory cleanup. Its Rust fixture is
-explicitly ignored in the default suite because it requires this live runtime.
-
-The Source checks workflow defines macOS and Windows jobs for pushes and PRs.
-Releases depend on the same workflow; a separate job rebuilds the pinned workbench from source. Required
-branch-protection checks must still be configured in GitHub. See the
-[remediation progress](docs/audit-remediation-progress.md) for actual validation
-and outstanding platform and host checks.
-
-## Persona packs
-
-Only the built-in 「AI 替身」pack (小著, ~375 KB) ships inside the app, so the
-installer stays small. Everything else is a **persona pack**: a `.dmpack`
-archive the user imports from 设置 → 角色 → 导入角色包, and can remove again.
-
-Build a pack from the assets in `public/personas`:
-
-```powershell
-bun scripts/pack-personas.ts aki 1.0.1 aki-1.0.1.dmpack changli jinxi
-# omit the persona ids to pack every directory under public/personas
-```
-
-A pack is a ZIP archive with a root-level `pack.json`:
-
-```json
-{
-  "packId": "aki",
-  "version": "1.0.1",
-  "name": {
-    "zh": "aki 团子",
-    "en": "aki Dango",
-    "ja": "aki 団子",
-    "ko": "aki 당고"
-  },
-  "thumbnail": "personas/aimisi/pack-thumbnail.png",
-  "personas": [{ "id": "aimisi" }]
-}
-```
-
-`name` and `thumbnail` describe the pack card. The thumbnail is a
-relative path to a PNG shipped inside that same archive, under one of its
-included personas. These fields do not change individual persona names, models,
-animation clips, or scale. Legacy packs without display metadata still import;
-their cards use the pack id and a placeholder cover.
-
-The authoring definitions live in `scripts/pack-metadata.ts`, with cover files
-in `scripts/persona-packs/`. Add a definition there before authoring another
-pack id. These build inputs stay outside the app's public assets. When building
-an aki subset without aimisi, the script puts the cover under the first included
-persona and writes that path to the manifest. It rejects duplicate or unsafe
-persona ids and existing output files, and uses a unique staging directory for
-each run.
-
-Imported packs are unpacked to `<appData>/packs/<packId>/` and read through the
-asset protocol, whose scope is restricted to that directory. Only personas a
-pack actually shipped are offered in the selector, so a pack built with a subset
-of its manifest cannot leave the pet without a model.
-
-To fetch the original 3D assets for packing, a maintainer needs read access to
-the private `clxgame/deskmate-assets` repository:
-
-```powershell
-$env:DESKMATE_ASSETS_TOKEN = "<token with read access>"
-bun run fetch:persona-assets
-```
-
-This is a maintainer-only step; building and running the app does not need it.
-
-Build the frontend only:
-
-```powershell
-bun run build
-```
-
-Build the signed Windows installer and updater artifacts:
-
-```powershell
-bun run tauri build
-```
-
-Build an unsigned local macOS app (development only, not for distribution):
-
-```bash
-bun run tauri build --no-sign --bundles app
-```
-
-The macOS build enables Tauri's private transparency API for the frameless pet
-window, so it is intended for direct distribution rather than the Mac App Store.
-
-If a pet is lost after changing displays or scaling, use **找回桌宠** (Find pet)
-in the tray menu to show it on the primary display. Startup and settled display
-or pet-size changes automatically recover out-of-bounds positions within about
-two seconds once the app has initialized. Valid positions are preserved; ordinary dragging is not constrained.
-Use the [macOS runtime checks](docs/macos-runtime-checks.md) before distributing a build.
-
-## Memory
-
-The companion can remember things about you. Memory is a local, inspectable
-feature, not a hidden extension of chat history.
-
-### What is remembered
-
-When automatic memory is enabled, the host processes new, verified conversation
-turns in the background. It retains explicit user facts, stable preferences and
-ongoing work context; quoted material, assistant guesses and unverified completion
-claims are not sufficient evidence. The chat no longer has a fixed
-**记住这件事** action beneath every message.
-
-New installations enable automatic memory and work journal archiving by default.
-An existing explicit choice to disable automatic memory is preserved. Automatic
-extraction, **允许 AI 使用记忆**, and automatic work archiving remain separate
-settings; disabling a branch invalidates its pending writes, and re-enabling it
-does not scan all old conversations. Existing memory remains usable when only
-automatic extraction is disabled and AI memory use remains enabled.
-
-Processing failures and retries are visible in Settings. A pending extraction is
-not reported as saved. Memory and work records commit independently, using source
-identities, receipts and forgetting barriers. Real-model semantic accuracy has
-not completed full acceptance; see the [memory/work journal contract](docs/memory-and-worklog.md)
-and [verification record](docs/automatic-memory-verification.md).
-
-Memories have two scopes:
-
-- **Shared** — how you want to be addressed, stable preferences, boundaries,
-  routines, goals, and dated events. Every persona sees these.
-- **Persona-only** — shared moments and relationship notes. Only the persona
-  that created them can see or use them; switching personas never leaks them.
-
-Project facts and ongoing items also carry workspace/topic applicability and
-complete source identities, so a different project cannot borrow their context.
-
-A changed stable fact replaces the old value rather than piling up, and the
-previous value stays visible under **显示已替换和已过期** so you can see what
-changed.
-
-### What is refused
-
-Credentials are rejected outright and never stored, exported, logged, or sent to
-a model: passwords, API keys, tokens, private keys, recovery codes, payment-card
-numbers, and government identifiers.
-
-Private categories (health, finance, address, identity documents, intimate
-relationships, confidential work) are never saved automatically. They require an
-explicit confirmation that states where the data will live.
-
-The companion will not store conclusions it inferred about you — personality
-labels, diagnoses, political or religious identity — unless you state the fact
-yourself and ask for it to be remembered.
-
-### Where it lives
-
-The legacy `deskmate-memory.db` file remains in the app data directory, next to `settings.json`, so existing YUME installations keep their memories:
-
-```
-%APPDATA%\com.deskmate.desktop\deskmate-memory.db
-```
-
-The file is **not encrypted**; it relies on your operating system's file
-permissions, like the existing chat history. Forgetting a memory is a hard
-delete: the content, its provenance, and its search index are removed, and the
-write-ahead log is flushed so nothing lingers. Only a content-free audit record
-("a memory was forgotten at this time") remains.
-
-### What is sent to the AI
-
-When a memory is relevant to what you are saying, it is included in the request
-to the AI provider that owns the conversation's selected model, or the configured
-default when the conversation inherits it. You can keep
-multiple gateways configured; selecting a model switches the provider and model
-together, while each provider's usage card refreshes independently. Base memory
-retrieval is limited to 8 records and 1,200 characters, inside a clearly delimited
-untrusted-data block that the model is told is factual background rather than
-instructions. An explicit continuation request can also receive bounded excerpts
-from recent, trusted user turns whose extraction is still pending; these are
-labelled as temporary source context and do not claim that memory was saved.
-
-Turn off **允许 AI 使用记忆** in Settings → 记忆 to stop sending memories
-entirely. Local memory management keeps working.
-
-### Managing it
-
-Settings → **记忆** lists everything with its type, scope, date, and the reason
-it exists. From there you can search, edit, forget a single memory, export
-everything to JSON, clear one persona, or clear all memory. Deleting a
-conversation also offers to delete the memories that came only from it, on by
-default.
-
-If the database cannot be opened, memory is disabled for that run and the pet
-and chat keep working normally.
-
-## Releases and updater
-
-The public updater repository is `clxgame/deskmate`. Windows and Apple Silicon
-Mac builds use its shared `latest.json` feed with separately signed updater
-payloads. Settings silently checks for updates and displays **下载更新** (Download update)
-only when a newer version is available for the current platform. Without an
-update it shows the local version. Clicking the button starts the existing
-install-and-restart flow; on macOS it downloads and verifies the tarball, waits
-for running tasks to finish, installs and restarts. DMG/ZIP downloads remain
-available for first installation and migration from older clients without the
-automatic installer.
-
-For the maintainer's Mac, follow the [local release runbook](docs/local-release-runbook.md).
-It includes the existing keychain configuration, execution permissions and the
-complete save/commit/push/release sequence. AI agents start from [AGENTS.md](AGENTS.md).
-
-Updater signing prerequisites (already configured in repository Actions secrets
-for the normal CI path; local Windows signing uses these environment variables):
-
-- `TAURI_SIGNING_PRIVATE_KEY`
-- `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
-
-Keep Windows updater signing keys in the local environment or GitHub Actions secrets only. Apple Developer ID keys stay in the maintainer's local keychain. Never commit or publish private signing keys, passwords, tokens, or `.env` files.
-
-Before tagging, keep these versions identical:
-
-- `package.json`
-- `src-tauri/Cargo.toml`
-- the `yume` package entry in `src-tauri/Cargo.lock`
-- `src-tauri/tauri.conf.json`
-
-Check the release version locally:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\check-version.ps1 -TagName v0.1.1
-```
-
-Local signed build:
-
-```powershell
-$env:TAURI_SIGNING_PRIVATE_KEY = "<private key>"
-$env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD = "<password>"
-powershell -ExecutionPolicy Bypass -File scripts\release.ps1 -Tag v0.1.1
-```
-
-Local draft publish for already-built artifacts:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\publish.ps1 -Tag v0.1.1
-```
-
-The GitHub Actions release workflow runs on `v*` tags. It checks the tag against the app version and creates a draft GitHub Release first, then builds Windows and macOS in parallel. Windows uploads the signed NSIS updater installer, signatures, and `latest.json`. macOS runs regression tests and stores an explicitly **unsigned build candidate as an Actions artifact**, never as a Release download. A green CI run does not mean macOS is ready to publish.
-
-On the maintainer's Mac, `scripts/release-macos.sh` bundles portable dependencies,
-signs with Developer ID, notarizes/staples the App and DMG, and verifies the DMG,
-ZIP and updater tarball. The normal path uses `scripts/upload-macos-payloads.sh`
-to upload those payloads to the draft, then `finalize-macos-release.yml` signs the
-updater tarball using Actions secrets and merges `darwin-aarch64` into the feed
-while retaining Windows entries. Apple keys stay in the local keychain; no local
-updater private key is required. Follow the [macOS release gate](docs/macos-release.md).
-Unsigned or unnotarized Apps are rejected. Intel Mac packages are not provided.
-
-For a public release, bump the app version and push a matching tag. Complete both
-CI jobs, local Apple signing and notarization, the macOS finalizer, local payload
-verification and runtime upgrade checks before publishing the draft with its
-cross-platform updater manifest and verified downloads. Then confirm the public
-latest feed serves the target version.
-
-Pet rendering and attachment transport follow the current [runtime lifecycle](docs/runtime-lifecycle.md)
-and [local attachment](docs/local-resource-attachments.md) contracts. Hidden rig2d and GLB pets
-stop their render loops; cursor polling also stops. Rig2d keeps a 60 fps default. Built-in variant models can use
-hash-checked animation bounds. Texture candidates and the 30 fps idle budget remain experiments
-pending native visual acceptance; the production character assets are retained.
-
-### GIF character packs
-
-Schema v1 GIF packs require YUME 0.3.4 or newer with schema v1 support.
-YUME 0.3.5 and newer support both `figure2d` schemas v1 and v2. YUME 0.3.4
-does **not** support schema v2 and cannot import the new 1.1.0 pack; upgrade the
-application before importing it. Pack versions are independent of application
-versions.
-Existing packs without `renderType` continue to use GLB.
-
-The optional `xiaoxiongchong-1.1.0.dmpack` contains the original seven 240×240 GIFs,
-a PNG cover, and the persona text. Import it in Settings → Persona packs, then select
-小熊虫. Its assets are excluded from the application build and remain an optional
-local import. The source GIFs retain their original framing and loop behavior.
-The upgrade is optional and never automatically overwrites an imported pack.
-Importing it explicitly replaces the same pack ID after validation. The original
-1.0.0 and 1.0.1 packs remain compatible with this source tree.
-
-Each GIF persona declares `"renderType": "gif"` in `pack.json` and includes
-`persona.md` plus `figure2d.json`. Schema v1 has `schemaVersion: 1`, a 240×240
-`canvas`, and `animations` entries for `idle`, `thinking`, `working`, `talking`,
-`success`, `error`, and `leaving`. Each entry has a safe relative `.gif` `file`,
-`scale` (0.1–1), and upward `offsetY` (0–240×(1−scale)). Paths may contain ASCII
-letters, digits, underscores, hyphens, and directory separators; external URLs,
-absolute paths, and traversal are rejected.
-
-The configuration also specifies `feedback.successMs` / `errorMs`,
-`thinkingEscalationMs`, and `leaving.durationMs`, `translateXRatio`,
-`positionEasing`, `opacityEasing`. Schema v1 supports leftward ratios −0.35 (legacy 1.0.0 pack) and −0.5
-(1.0.1 pack) with `ease-in-out` position and `linear` opacity. 小熊虫 uses 1400/1440 ms
-feedback, 8000 ms thinking escalation, and 910 ms departure. Import validates the
-configuration and referenced GIF resources before replacing an installed pack.
-
-Schema v2 keeps the seven actions, canvas, feedback, and leaving settings, but
-replaces `thinkingEscalationMs` with `thinkingSelection: "random"`. Each new
-thinking episode selects `thinking` or `working` with 50% probability and keeps
-that selection until the episode ends. Explicit working events still use working.
-Each action adds `offsetX` and a simple `hitPolygon` of 3–64 source-coordinate
-points; scale is 0.1–2 and both offsets are −240–240. Rendering and subject hit
-testing use the same fixed transform, so transparent space and separate props
-do not capture subject clicks. The 1.1.0 calibration aligns the seven actions to
-idle while preserving idle size; the transparent host expands to fit the motion.
-The original GIF bytes are unchanged, including any cropping already in the
-source. Departure remains leftward by half the displayed action width with a
-910 ms fade. Existing schema v1 packs retain their eight-second thinking behavior.
+- [模型连接与用量](docs/ai-provider-support.md)
+- [记忆与工作日志](docs/memory-and-worklog.md)
+- [维护与构建脚本](scripts/README.md)
+- [当前验收与待办](docs/verification-backlog.md)
