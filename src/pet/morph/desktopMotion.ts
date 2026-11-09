@@ -134,6 +134,12 @@ export function createDesktopMotion(
   };
   return {
     sync,
+    get groundOffset(): number | null {
+      if (!geometry) return null;
+      // Use the observed native position: the OS owns movement while dragging.
+      return (geometry.area.y + geometry.area.height - geometry.position.y - geometry.size.height) /
+        geometry.ratio / engine.scale;
+    },
     setActive(value: boolean) {
       active = value;
       if (!value) {
@@ -148,6 +154,7 @@ export function createDesktopMotion(
         sample(position, true);
         return;
       }
+      geometry = { ...geometry, position };
       if (
         written &&
         Math.hypot(position.x - written.x, position.y - written.y) < 3

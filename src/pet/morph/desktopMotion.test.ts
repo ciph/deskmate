@@ -21,6 +21,47 @@ test("desktop coordinates round-trip on a negative-origin screen at 200% DPI", (
     geometry.position,
   );
 });
+
+test("the ground projection follows native bounds across DPI changes and acknowledged writes", async () => {
+  const engine = new Companion({ size: 160, auto: false });
+  let native = { ...geometry };
+  const motion = createDesktopMotion(engine, {
+    read: async () => native,
+    write: async position => {
+      native = { ...native, position };
+      motion.moved(position);
+    },
+  }, error => { throw error; });
+  const assertGround = () => {
+    const projected = native.position.y + native.size.height + motion.groundOffset! * engine.scale * native.ratio;
+    expect(projected).toBeCloseTo(native.area.y + native.area.height, 6);
+  };
+  expect(motion.groundOffset).toBeNull();
+  await motion.sync();
+  motion.setActive(true);
+  assertGround();
+  motion.drag(true);
+  native = { ...native, position: { x: -900, y: 260 } };
+  motion.moved(native.position);
+  motion.tick(0.05);
+  assertGround();
+  native = {
+    position: { x: 300, y: 650 }, size: { width: 400, height: 303 }, ratio: 1.25,
+    area: { x: 0, y: -100, width: 1920, height: 1180 },
+  };
+  await motion.sync();
+  assertGround();
+  motion.drag(false);
+  await flush();
+  await flush();
+  for (let n = 0; n < 120; n++) {
+    motion.tick(1 / 60);
+    await flush();
+    assertGround();
+  }
+  expect(engine.y).toBe(engine.floor);
+  expect(motion.groundOffset).toBeCloseTo(0, 6);
+});
 test("native walking moves the window; hiding and disposal stop all writes", async () => {
   const engine = new Companion({ size: 160, auto: false });
   const writes: { x: number; y: number }[] = [];

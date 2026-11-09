@@ -51,6 +51,49 @@ const geometry: DesktopGeometry = {
   ratio: 1,
   area: { x: 0, y: 0, width: 1600, height: 1000 },
 };
+for (const appearance of ["milk", "classic"] as const)
+  test(`${appearance}: the ground shadow stays on the desktop, fades in the air and returns on landing`, async () => {
+    localStorage.setItem("yume-xiaozhu-morph-v1", JSON.stringify({ appearance, auto: false }));
+    const api = createRef<MorphPetHandle>();
+    const scale = 160 / 270;
+    let native = { ...geometry, position: { x: 300, y: 758 } };
+    const move = async (position: { x: number; y: number }) => {
+      native = { ...native, position };
+      await emit("tauri://move", position);
+    };
+    const view = render(<MorphPetView width={160} state="idle" visible leaving={false} api={api}
+      onLoaded={() => {}} onError={message => { if (message) throw new Error(message); }}
+      host={{ read: async () => native, write: move }} />);
+    await act(async () => {});
+    const shadow = view.container.querySelector(`[data-appearance-layer="${appearance}"] > ellipse`)!;
+    const opacity = () => Number(shadow.getAttribute("opacity"));
+    const screenY = () => native.position.y + native.size.height - 160 * 0.2 + Number(shadow.getAttribute("cy")) * scale;
+    for (const form of ["mochi", "pillow", "ricecake", "ghost"] as const) {
+      act(() => api.current!.form(form));
+      await advance(1.5);
+      const floorY = screenY();
+      const restingOpacity = opacity();
+      expect(restingOpacity).toBeGreaterThan(0.3);
+      act(() => api.current!.drag(true));
+      await act(async () => { await move({ x: 420, y: 758 - 10 * scale }); });
+      await advance(0.3);
+      expect(screenY()).toBeCloseTo(floorY, 3);
+      expect(opacity()).toBeGreaterThan(0);
+      expect(opacity()).toBeLessThan(restingOpacity);
+      await act(async () => { await move({ x: 420, y: 500 }); });
+      await advance(0.3);
+      expect(screenY()).toBeCloseTo(floorY, 3);
+      expect(opacity()).toBe(0);
+      act(() => api.current!.drag(false));
+      await act(async () => {});
+      await advance(0.1);
+      expect(opacity()).toBe(0);
+      await advance(6);
+      expect(view.container.querySelector("svg")?.dataset.motion).toBe("idle");
+      expect(opacity()).toBeCloseTo(restingOpacity, 2);
+      expect(screenY()).toBeCloseTo(floorY, 3);
+    }
+  });
 for (const hz of [60, 120, 144])
   test(`60 fps keeps its time budget on a ${hz} Hz screen`, async () => {
     const update = spyOn(Companion.prototype, "update");
@@ -194,26 +237,29 @@ test("milk and classic switch without restarting motion, and the selection survi
     onLoaded: ready, onError: () => {}, host: { read: async () => geometry, write: async () => {} } };
   const view = render(<MorphPetView {...props} />);
   await act(async () => {});
+  const milk = view.container.querySelector('[data-appearance-layer="milk"]')!;
+  const classic = view.container.querySelector('[data-appearance-layer="classic"]')!;
   expect(api.current!.snapshot().appearance).toBe("milk");
-  const artwork = view.container.querySelector("[data-morph-signature]")!.innerHTML;
-  expect(view.container.querySelector("[data-morph-expression]")).toBeNull();
+  const artwork = milk.querySelector("[data-morph-signature]")!.innerHTML;
+  expect(milk.querySelector("[data-morph-expression]")).toBeNull();
+  expect(classic.getAttribute("display")).toBe("none");
   for (const form of ["pillow", "ricecake", "ghost", "mochi"] as const) {
     act(() => api.current!.form(form));
     await advance(1);
-    expect(view.container.querySelector("[data-morph-signature]")!.innerHTML).toBe(artwork);
-    expect(view.container.querySelector("[data-milk-glasses]")!.getAttribute("transform")).toBeNull();
-    expect(view.container.querySelector("[shape-rendering=crispEdges]")).toBeNull();
-    expect(view.container.querySelector("[data-milk-feet]")!.getAttribute("opacity")).toBe(form === "ghost" ? "0" : "1");
-    expect(view.container.querySelector("[data-morph-expression]")).toBeNull();
+    expect(milk.querySelector("[data-morph-signature]")!.innerHTML).toBe(artwork);
+    expect(milk.querySelector("[data-milk-glasses]")!.getAttribute("transform")).toBeNull();
+    expect(milk.querySelector("[shape-rendering=crispEdges]")).toBeNull();
+    expect(milk.querySelector("[data-milk-feet]")!.getAttribute("opacity")).toBe(form === "ghost" ? "0" : "1");
+    expect(milk.querySelector("[data-morph-expression]")).toBeNull();
   }
-  const restingMouth = view.container.querySelector("[data-morph-mouth]")!.getAttribute("d");
+  const restingMouth = milk.querySelector("[data-morph-mouth]")!.getAttribute("d");
   act(() => api.current!.drag(true));
   await advance(0.4);
-  expect(view.container.querySelector("[data-morph-expression]")).toBeNull();
-  expect(view.container.querySelector("[data-morph-mouth]")!.getAttribute("d")).not.toBe(restingMouth);
+  expect(milk.querySelector("[data-morph-expression]")).toBeNull();
+  expect(milk.querySelector("[data-morph-mouth]")!.getAttribute("d")).not.toBe(restingMouth);
   act(() => api.current!.drag(false));
   await advance(5);
-  expect(view.container.querySelector("[data-morph-mouth]")!.getAttribute("d")).toBe(restingMouth);
+  expect(milk.querySelector("[data-morph-mouth]")!.getAttribute("d")).toBe(restingMouth);
   act(() => { api.current!.autonomy(); api.current!.form("ghost"); });
   await advance(0.3);
   const motion = view.container.querySelector("svg")!.dataset.motion;
@@ -222,17 +268,88 @@ test("milk and classic switch without restarting motion, and the selection survi
   expect(view.container.querySelector("svg")!.dataset.form).toBe("ghost");
   expect(view.container.querySelector("[data-pixel-glasses]")).not.toBeNull();
   expect(view.container.querySelector("[data-morph-expression]")).not.toBeNull();
-  expect(view.container.querySelector("image")).toBeNull();
+  expect(milk.getAttribute("opacity")).toBe("1");
   expect(api.current!.snapshot()).toMatchObject({ form: "ghost", auto: false, appearance: "classic" });
   expect(ready).toHaveBeenCalledTimes(1);
   await advance(1);
+  expect(milk.getAttribute("display")).toBe("none");
+  expect(classic.getAttribute("opacity")).toBe("1");
   view.unmount();
   const remounted = render(<MorphPetView {...props} />);
   await act(async () => {});
   expect(api.current!.snapshot()).toMatchObject({ form: "ghost", auto: false, appearance: "classic" });
   act(() => api.current!.appearance("milk"));
   expect(document.querySelector("[data-milk-glasses] image")).not.toBeNull();
-  expect(remounted.container.querySelector("[data-morph-expression]")).toBeNull();
+  await advance(0.5);
+  expect(remounted.container.querySelector('[data-appearance-layer="classic"]')?.getAttribute("display")).toBe("none");
+  expect(remounted.container.querySelector('[data-appearance-layer="milk"] [data-morph-expression]')).toBeNull();
+});
+
+test("appearance fades share the live pose, reverse continuously and finish while held", async () => {
+  const api = createRef<MorphPetHandle>();
+  const ready = mock(() => {});
+  const view = render(<MorphPetView width={160} state="idle" visible leaving={false} api={api}
+    onLoaded={ready} onError={() => {}} host={{ read: async () => geometry, write: async () => {} }} />);
+  await act(async () => {});
+  await advance(1);
+  const milk = view.container.querySelector('[data-appearance-layer="milk"]')!;
+  const classic = view.container.querySelector('[data-appearance-layer="classic"]')!;
+  const weight = () => Number(milk.getAttribute("opacity"));
+  act(() => { api.current!.drag(true); api.current!.appearance("classic"); });
+  expect(weight()).toBe(1);
+  await advance(0.2);
+  expect(weight()).toBeCloseTo(0.5, 2);
+  expect(Number(classic.getAttribute("opacity")) + weight()).toBeCloseTo(1, 6);
+  expect(classic.querySelector("[data-morph-mouth]")?.getAttribute("d"))
+    .toBe(milk.querySelector("[data-morph-mouth]")?.getAttribute("d"));
+  const pose = milk.querySelector("[data-morph-mouth]")!.getAttribute("d");
+  act(() => api.current!.appearance("milk"));
+  expect(weight()).toBeCloseTo(0.5, 2);
+  await advance(0.1);
+  expect(weight()).toBeGreaterThan(0.5);
+  expect(weight()).toBeLessThan(1);
+  expect(milk.querySelector("[data-morph-mouth]")!.getAttribute("d")).not.toBe(pose);
+  act(() => api.current!.appearance("milk"));
+  await advance(0.3);
+  expect(weight()).toBe(1);
+  expect(classic.getAttribute("display")).toBe("none");
+  act(() => { api.current!.drag(false); api.current!.hold(true); api.current!.appearance("classic"); });
+  await act(async () => {});
+  await advance(0.5);
+  expect(weight()).toBe(0);
+  expect(classic.getAttribute("opacity")).toBe("1");
+  expect(milk.getAttribute("display")).toBe("none");
+  expect(ready).toHaveBeenCalledTimes(1);
+  view.unmount();
+  expect(callbacks.size).toBe(0);
+});
+
+for (const reduce of [false, true])
+test(`reduced motion=${reduce}: hidden appearance changes stop rendering and resume at the selected style`, async () => {
+  const preference = spyOn(window, "matchMedia").mockReturnValue({ matches: reduce } as MediaQueryList);
+  try {
+    const api = createRef<MorphPetHandle>();
+    const props = { width: 160, state: "idle" as const, visible: true, leaving: false, api,
+      onLoaded: () => {}, onError: () => {}, host: { read: async () => geometry, write: async () => {} } };
+    const view = render(<MorphPetView {...props} />);
+    await act(async () => {});
+    await advance(0.1);
+    act(() => api.current!.appearance("classic"));
+    if (reduce) {
+      expect(view.container.querySelector('[data-appearance-layer="classic"]')?.getAttribute("opacity")).toBe("1");
+      expect(view.container.querySelector('[data-appearance-layer="milk"]')?.getAttribute("display")).toBe("none");
+    } else {
+      await advance(0.2);
+      expect(Number(view.container.querySelector('[data-appearance-layer="classic"]')?.getAttribute("opacity"))).toBeCloseTo(0.5, 2);
+    }
+    view.rerender(<MorphPetView {...props} visible={false} />);
+    act(() => api.current!.appearance("milk"));
+    await advance(1);
+    expect(callbacks.size).toBe(0);
+    view.rerender(<MorphPetView {...props} visible />);
+    await advance(0.5);
+    expect(view.container.querySelector('[data-appearance-layer="milk"]')?.getAttribute("opacity")).toBe("1");
+  } finally { preference.mockRestore(); }
 });
 
 test("opening chat stops walking and pauses autonomy until it closes", async () => {

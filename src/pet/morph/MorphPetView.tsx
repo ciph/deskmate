@@ -89,13 +89,19 @@ export function MorphPetView({
   const [appearance, setAppearance] = useState(() => loadMorphPreferences().appearance);
   const materialId = useId();
   const svg = useRef<SVGSVGElement>(null),
+    classicLayer = useRef<SVGGElement>(null),
+    milkLayer = useRef<SVGGElement>(null),
     body = useRef<SVGPathElement>(null),
+    milkBody = useRef<SVGPathElement>(null),
     face = useRef<SVGGElement>(null),
+    milkFace = useRef<SVGGElement>(null),
     glasses = useRef<SVGGElement>(null),
     mouth = useRef<SVGPathElement>(null),
+    milkMouth = useRef<SVGPathElement>(null),
     brows = useRef<SVGPathElement>(null),
     feet = useRef<SVGGElement>(null),
     shadow = useRef<SVGEllipseElement>(null),
+    milkShadow = useRef<SVGEllipseElement>(null),
     signs = useRef<SVGGElement>(null),
     hit = useRef<HTMLSpanElement>(null);
   const current = useRef<{
@@ -242,6 +248,11 @@ export function MorphPetView({
     // The SVG box only moves on resize or DPI change; measure it then, not every frame.
     let grid: ScreenGrid | null = null,
       lastGlasses = "";
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let milkMix = inputs.current.appearance === "milk" ? 1 : 0,
+      fadeFrom = milkMix,
+      fadeTo = milkMix,
+      fadeTime = 0.4;
     const regrid = () => {
       grid = null;
     };
@@ -255,31 +266,52 @@ export function MorphPetView({
       grid = { scale, ratio, x: box.left + 180 * scale, y: box.top + 280 * scale };
       return grid;
     }
-    function draw() {
+    function draw(dt = 0) {
       const f = engine.frame();
-      const milk = inputs.current.appearance === "milk";
-      if (milk) paintMilkBody(body.current, feet.current, engine);
-      else body.current?.setAttribute("d", f.d);
-      face.current?.setAttribute("transform", `translate(${f.face.join(" ")})`);
-      const snapped = milk ? null : glassesTransform(screenGrid(), f.face);
-      if (milk) lastGlasses = "";
+      const target = inputs.current.appearance === "milk" ? 1 : 0;
+      if (target !== fadeTo) {
+        fadeFrom = milkMix;
+        fadeTo = target;
+        fadeTime = 0;
+      }
+      fadeTime = reducedMotion.matches ? 0.4 : Math.min(0.4, fadeTime + dt);
+      const t = fadeTime / 0.4;
+      milkMix = fadeFrom + (fadeTo - fadeFrom) * t * t * (3 - 2 * t);
+      const snapped = milkMix < 1 ? glassesTransform(screenGrid(), f.face) : null;
       if (snapped && snapped !== lastGlasses) {
         lastGlasses = snapped;
         glasses.current?.setAttribute("transform", snapped);
       }
-      mouth.current?.setAttribute("d", f.mouth);
-      mouth.current?.setAttribute("stroke-width", String(f.mouthStroke * (milk ? 0.8 : 1)));
-      brows.current?.setAttribute("d", f.brows);
-      brows.current?.setAttribute("opacity", String(f.expression));
-      shadow.current?.setAttribute("rx", String(f.shadowWidth * (milk ? 1.35 : 1)));
-      shadow.current?.setAttribute("opacity", String(f.shadowOpacity));
+      if (milkMix < 1) {
+        brows.current?.setAttribute("d", f.brows);
+        brows.current?.setAttribute("opacity", String(f.expression));
+      }
+      const ground = motion.groundOffset;
+      // Fade out before the projected shadow reaches the small SVG/window's bottom edge.
+      const contact = ground === null ? 0 : Math.max(0, 1 - Math.max(0, ground) / 22);
+      for (const [milk, weight, layer, outline, expression, lips, groundShadow] of [
+        [false, 1 - milkMix, classicLayer, body, face, mouth, shadow],
+        [true, milkMix, milkLayer, milkBody, milkFace, milkMouth, milkShadow],
+      ] as const) {
+        layer.current?.setAttribute("opacity", String(weight));
+        layer.current?.setAttribute("display", weight > 0 ? "inline" : "none");
+        if (weight === 0) continue;
+        if (milk) paintMilkBody(outline.current, feet.current, engine);
+        else outline.current?.setAttribute("d", f.d);
+        expression.current?.setAttribute("transform", `translate(${f.face.join(" ")})`);
+        lips.current?.setAttribute("d", f.mouth);
+        lips.current?.setAttribute("stroke-width", String(f.mouthStroke * (milk ? 0.8 : 1)));
+        groundShadow.current?.setAttribute("cy", String((milk ? 3 : 9) + (ground ?? 0)));
+        groundShadow.current?.setAttribute("rx", String(f.shadowWidth * (milk ? 1.35 : 1)));
+        groundShadow.current?.setAttribute("opacity", String(f.shadowOpacity * contact * contact * (3 - 2 * contact)));
+      }
       signs.current?.setAttribute("opacity", String(f.deep * 0.65));
       signs.current?.setAttribute("transform", `translate(80 ${f.top - 10})`);
       if (svg.current) {
         svg.current.dataset.motion = engine.state;
         svg.current.dataset.form = engine.form;
       }
-      if (hit.current) setGifHitPolygon(hit.current, polygon(engine, milk));
+      if (hit.current) setGifHitPolygon(hit.current, polygon(engine, milkMix >= 0.5));
     }
     function animate(stamp: number) {
       frame = 0;
@@ -301,12 +333,10 @@ export function MorphPetView({
           !instance.held &&
           !chatVisible &&
           inputs.current.state === "idle";
-        if (!instance.held || engine.state === "dragging")
-          motion.tick(
-            last === null ? 0 : Math.min(0.05, (stamp - last) / 1000),
-          );
+        const dt = last === null ? 0 : Math.min(0.05, (stamp - last) / 1000);
+        if (!instance.held || engine.state === "dragging") motion.tick(dt);
         last = stamp;
-        draw();
+        draw(dt);
       }
       frame = requestAnimationFrame(animate);
     }
@@ -382,12 +412,14 @@ export function MorphPetView({
         data-appearance={appearance}
         style={{
           ...placement,
+          isolation: "isolate",
           opacity: visible && !leaving ? 1 : 0,
           transition: leaving ? "opacity 300ms linear" : "none",
         }}
       >
-        <ellipse ref={shadow} cx="0" cy={appearance === "milk" ? 3 : 9} ry="8" fill={appearance === "milk" ? `url(#${materialId}-ground)` : "#c8b59b"} />
-        {appearance === "milk" ? <MilkArtwork id={materialId} body={body} face={face} mouth={mouth} feet={feet} /> : <>
+        {/* Additive blending keeps the shared opaque body from flashing translucent midway. */}
+        <g ref={classicLayer} data-appearance-layer="classic" opacity="0" style={{ mixBlendMode: "plus-lighter" }}>
+        <ellipse ref={shadow} cx="0" cy="9" ry="8" fill="#c8b59b" />
         <path
           ref={body}
           data-morph-body="true"
@@ -415,7 +447,11 @@ export function MorphPetView({
             strokeLinejoin="round"
           />
         </g>
-        </>}
+        </g>
+        <g ref={milkLayer} data-appearance-layer="milk" opacity="0" style={{ mixBlendMode: "plus-lighter" }}>
+          <ellipse ref={milkShadow} cx="0" cy="3" ry="8" fill={`url(#${materialId}-ground)`} />
+          <MilkArtwork id={materialId} body={milkBody} face={milkFace} mouth={milkMouth} feet={feet} />
+        </g>
         <g ref={signs} fill="#a79b86" fontSize="15">
           <text>z</text>
           <text x="18" y="-18" fontSize="12">
