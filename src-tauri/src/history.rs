@@ -23,6 +23,7 @@ pub(crate) mod catalog_preview;
 mod catalog_details;
 pub(crate) mod catalog_local;
 mod catalog_import;
+pub(crate) use catalog_import::canonical_directory;
 mod reconcile;
 pub(crate) mod commands;
 pub(crate) mod catalog_mutation;
@@ -30,9 +31,12 @@ pub(crate) mod catalog_mutation;
 mod catalog_tests;
 #[cfg(test)]
 mod catalog_migration_tests;
+#[cfg(test)]
+mod history_chain_tests;
 mod native_index;
 mod recovery;
 mod storage;
+mod session_storage;
 mod staged_snapshot;
 pub(crate) mod view;
 
@@ -118,7 +122,7 @@ impl HistoryState {
     }
 }
 
-fn history_path(app: &tauri::AppHandle) -> Result<PathBuf, String> {
+fn history_path<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<PathBuf, String> {
     app.path()
         .app_data_dir()
         .map(|path| path.join("history.json"))

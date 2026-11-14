@@ -23,6 +23,7 @@ pub(super) struct LiveRefresh {
     created_at: String,
     messages: Vec<NativeMessage>,
     last_full: Option<Instant>,
+    unconfirmed: bool,
 }
 
 impl LiveRefresh {
@@ -50,7 +51,7 @@ impl LiveRefresh {
             self.scope = Some(scope.clone());
             self.created_at = record.created_at.clone();
         }
-        if self.last_full.is_none_or(|last| now.saturating_duration_since(last) >= FULL_RECONCILE)
+        if self.unconfirmed || self.last_full.is_none_or(|last| now.saturating_duration_since(last) >= FULL_RECONCILE)
             || !changes.connected || changes.full || record.pending_outcome.is_some()
             || changes.message_ids.len() > MAX_MESSAGE_FETCHES
         {
@@ -68,17 +69,22 @@ impl LiveRefresh {
     }
 
     pub(super) fn fetch_with(
-        &self,
+        &mut self,
         record: &RunRecord,
         plan: &RefreshPlan,
         mut full: impl FnMut() -> Result<Vec<NativeMessage>, String>,
         mut message: impl FnMut(&str) -> Result<NativeMessage, String>,
     ) -> Result<FetchedSnapshot, String> {
+        // Move the cache through collection. A failed or superseded pass forces
+        // authoritative reconciliation; no uncommitted snapshot is reused.
+        self.unconfirmed = true;
         if *plan == RefreshPlan::Full {
             return full().map(|messages| FetchedSnapshot { messages, full: true });
         }
-        let mut messages = self.messages.clone();
+        let mut messages = std::mem::take(&mut self.messages);
         if let RefreshPlan::Messages(ids) = plan {
+            let mut positions: std::collections::HashMap<_, _> = messages.iter().enumerate().map(|(i,m)| (m.id.clone(),i)).collect();
+            let mut order_changed = false;
             for id in ids {
                 let update = match message(id) {
                     Ok(update) => update,
@@ -90,14 +96,17 @@ impl LiveRefresh {
                     }
                     Err(error) => return Err(error),
                 };
-                if let Some(old) = messages.iter_mut().find(|item| item.id == update.id) {
-                    *old = update;
+                if let Some(&index) = positions.get(&update.id) {
+                    order_changed |= messages[index].created != update.created;
+                    messages[index] = update;
                 } else {
+                    positions.insert(update.id.clone(), messages.len());
                     messages.push(update);
+                    order_changed = true;
                 }
             }
             // The pinned native list orders by creation time, then ID, not ID alone.
-            messages.sort_by(|left, right| left.created.cmp(&right.created).then_with(|| left.id.cmp(&right.id)));
+            if order_changed { messages.sort_by(|left, right| left.created.cmp(&right.created).then_with(|| left.id.cmp(&right.id))); }
         }
         if terminal_candidate(record, &messages) {
             return full().map(|messages| FetchedSnapshot { messages, full: true });
@@ -107,6 +116,7 @@ impl LiveRefresh {
 
     pub(super) fn confirm(&mut self, fetched: FetchedSnapshot, now: Instant) {
         self.messages = fetched.messages;
+        self.unconfirmed = false;
         if fetched.full { self.last_full = Some(now); }
     }
 }

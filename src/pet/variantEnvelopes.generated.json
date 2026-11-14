@@ -1,7 +1,7 @@
 {
   "xiaozhu-sandaime": {
     "algorithm": "variant-bounds-v1-three-182-samples-24",
-    "modelSha256": "5d06149a7a6c8c9fe89a395e127fd44104814e55057bd6d88d0cfa0597722d4c",
+    "modelSha256": "22db87c21c2a17e8c949e8aab616f9ed5e4390ccd4aca4a7cf799d32fa1fe270",
     "scale": 1,
     "clipRoots": {
       "等待": "Sandaime_等待",

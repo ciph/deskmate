@@ -49,6 +49,7 @@
       },
       {
         "label": "settings",
+        "create": false,
         "url": "settings.html",
         "title": "YUME 设置",
         "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection",

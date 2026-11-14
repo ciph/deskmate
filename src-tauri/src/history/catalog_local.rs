@@ -23,6 +23,10 @@ pub(super) fn append_local(path: &std::path::Path, list: &mut Vec<HistorySession
 }
 
 pub(super) fn combine_messages(entry: CatalogRow, native: Vec<HistoryMessage>, local: &[HistorySession], workspace: &str) -> (CatalogRow, Vec<HistoryMessage>) {
+    combine_page_messages(entry, native, local, workspace, true)
+}
+
+pub(super) fn combine_page_messages(entry: CatalogRow, native: Vec<HistoryMessage>, local: &[HistorySession], workspace: &str, allow_legacy: bool) -> (CatalogRow, Vec<HistoryMessage>) {
     let mut entry = entry;
     let linked = local.iter().find(|session| !session.deleted && session.local_link.as_ref().is_some_and(|identity| identity.key() == entry.key));
     let old = match &entry.entry.identity {
@@ -32,7 +36,7 @@ pub(super) fn combine_messages(entry: CatalogRow, native: Vec<HistoryMessage>, l
         CatalogIdentity::Native { .. } | CatalogIdentity::Legacy { .. } => None,
     };
     let mut messages = native;
-    if messages.is_empty() {
+    if allow_legacy && messages.is_empty() {
         if let Some(old) = old.filter(|session| !session.messages.is_empty() && session.messages.iter().any(|message| !message.local_only)) {
             messages.extend(old.messages.iter().cloned());
             entry.entry.source = ConversationSource::Legacy;
@@ -55,6 +59,8 @@ fn authorize_local_window(label: &str) -> Result<(), String> {
 pub(crate) async fn history_save_local_messages(window: tauri::WebviewWindow, app: tauri::AppHandle, key: String, messages: Vec<HistoryMessage>) -> Result<(), String> {
     authorize_local_window(window.label())?;
     tauri::async_runtime::spawn_blocking(move || {
+        let maintenance = app.state::<super::maintenance::HistoryMaintenance>();
+        let _selection = maintenance.used.lock().map_err(|_| "history_state_unavailable")?;
         let runs = app.state::<crate::agent::AgentRunState>();
         let _operation = runs.lock_operation()?;
         let entry = commands::store(&app)?.get(&key)?;

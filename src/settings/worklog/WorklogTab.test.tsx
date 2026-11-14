@@ -12,6 +12,54 @@ const { dict } = await import("../../lib/i18n");
 const entry: Entry = { id: "e1", revision: 3, businessDate: "2026-09-08", project: "YUME", text: "完成登录联调", originalText: "完成登录联调", status: "done", sourceSessionId: null, sourceMessageId: null, createdAt: "2026-09-08T01:00:00Z", updatedAt: "2026-09-08T01:00:00Z" };
 beforeEach(() => { setSystemTime(new Date("2026-09-12T12:00:00+08:00")); invoke.mockClear(); invoke.mockImplementation(() => Promise.resolve([])); });
 afterEach(() => { cleanup(); setSystemTime(); });
+
+test("entry targets load by ID without fetching every business date", async () => {
+  invoke.mockImplementation((command) => Promise.resolve(command === "worklog_get_entry" ? entry : []));
+  render(<WorklogTab language="zh-CN" t={dict("zh-CN")} target={{ kind: "entry", id: entry.id }} />);
+  expect((await screen.findByRole("textbox", { name: "内容" }) as HTMLTextAreaElement).value).toBe(entry.text);
+  expect(invoke.mock.calls.find(([command]) => command === "worklog_get_entry")?.[1]).toEqual({ id: entry.id });
+  expect(JSON.stringify(invoke.mock.calls)).not.toContain("0001-01-01");
+});
+
+test("a missing entry target can retry without opening an empty editor", async () => {
+  let available = false;
+  invoke.mockImplementation((command) => Promise.resolve(command === "worklog_get_entry" ? available ? entry : null : []));
+  render(<WorklogTab language="zh-CN" t={dict("zh-CN")} target={{ kind: "entry", id: entry.id }} />);
+  await screen.findByRole("alert");
+  expect(screen.queryByRole("textbox", { name: "内容" })).toBeNull();
+  available = true;
+  fireEvent.click(screen.getByRole("button", { name: "重试" }));
+  expect((await screen.findByRole("textbox", { name: "内容" }) as HTMLTextAreaElement).value).toBe(entry.text);
+});
+
+test("a delayed entry lookup cannot replace a newer target", async () => {
+  let finishOld: (value: Entry) => void = () => { throw new Error("lookup not started"); };
+  const pending = new Promise<Entry>((resolve) => { finishOld = resolve; });
+  const newer = { ...entry, id: "newer", text: "最新目标" };
+  invoke.mockImplementation((command, args) => command === "worklog_get_entry" ? (args as { id: string }).id === entry.id ? pending : Promise.resolve(newer) : Promise.resolve([]));
+  const view = render(<WorklogTab language="zh-CN" t={dict("zh-CN")} target={{ kind: "entry", id: entry.id }} />);
+  await waitFor(() => expect(invoke.mock.calls.some(([command]) => command === "worklog_get_entry")).toBe(true));
+  view.rerender(<WorklogTab language="zh-CN" t={dict("zh-CN")} target={{ kind: "entry", id: newer.id }} />);
+  expect((await screen.findByRole("textbox", { name: "内容" }) as HTMLTextAreaElement).value).toBe(newer.text);
+  finishOld(entry);
+  await waitFor(() => expect((screen.getByRole("textbox", { name: "内容" }) as HTMLTextAreaElement).value).toBe(newer.text));
+});
+
+test("reloading an entry uses its primary key and handles a deleted result", async () => {
+  const user = userEvent.setup();
+  let current: Entry | null = entry;
+  invoke.mockImplementation((command) => Promise.resolve(command === "worklog_get_entry" ? current : []));
+  render(<WorklogTab language="zh-CN" t={dict("zh-CN")} target={{ kind: "entry", id: entry.id }} />);
+  await screen.findByRole("textbox", { name: "内容" });
+  current = { ...entry, revision: 4, text: "其他窗口保存的新内容" };
+  await user.click(screen.getByRole("button", { name: "加载最新版本" }));
+  await waitFor(() => expect((screen.getByRole("textbox", { name: "内容" }) as HTMLTextAreaElement).value).toBe("其他窗口保存的新内容"));
+  current = null;
+  await user.click(screen.getByRole("button", { name: "加载最新版本" }));
+  await waitFor(() => expect(screen.queryByRole("textbox", { name: "内容" })).toBeNull());
+  expect(invoke.mock.calls.filter(([command]) => command === "worklog_get_entry")).toHaveLength(3);
+  expect(JSON.stringify(invoke.mock.calls)).not.toContain("0001-01-01");
+});
 test("shows empty state when no persisted records exist", async () => {
   // Given an empty host repository.
   // When the work records center opens.

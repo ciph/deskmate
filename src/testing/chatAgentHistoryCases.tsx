@@ -2,7 +2,7 @@ import { nativeHistoryFixture } from "./historyCatalogFixtures";
 import type { HistorySession } from "../lib/history";
 import { describe, expect, test } from "bun:test";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { agentRun, ChatApp, histories, invoke, promptRequests, sendOrdinaryEvent, sessionCreates, setAgentProjection, setAgentStartError, setHistory, setHistoryLoader  } from "../chat/chatAttachmentSendHarness.test";
+import { agentRun, ChatApp, histories, invoke, promptRequests, sendOrdinaryEvent, sessionCreates, setAgentProjection, setAgentStartError, setHistory, setHistoryLoader, setCatalogPageLoader  } from "../chat/chatAttachmentSendHarness.test";
 
 describe("Agent history view", () => {
   test("opens Agent history locally and continues the exact native session", async () => {
@@ -195,10 +195,32 @@ test("selected externally started Agent conversation refreshes completion while 
     messages: [{ role: "assistant", text: "外部任务最终结果", time: 3 }],
   };
 
+  await act(async () => { sendOrdinaryEvent({ type: "session.idle", properties: { sessionID: "ses_external" } }); });
   // Then the selected scoped view refreshes without another selection or a new run.
   await screen.findByText("外部任务最终结果", {}, { timeout: 3_000 });
   expect(screen.queryByText("外部任务处理中") === null).toBe(true);
   expect(sessionCreates()).toBe(1);
   expect(invoke.mock.calls.filter(([command]) => command === "agent_run_start")).toHaveLength(0);
+  expect(promptRequests).toHaveLength(0);
+});
+
+
+test("native history exposes bounded older-page navigation without copying or creating a session", async () => {
+  const record: HistorySession={id:"ses_pages",title:"分页历史",created:1,updated:2,originRunId:"msg_origin",messages:[],
+    agentDetails:{workspacePath:agentRun.workspacePath,status:"completed",source:"interactive",availability:"ready"}};
+  histories().ses_pages=record;
+  const entry={...nativeHistoryFixture("ses_pages",agentRun.workspacePath),ownership:"agent" as const};
+  setCatalogPageLoader(async (_key,before)=>({entry,originRunId:record.originRunId,agentDetails:record.agentDetails,
+    nextCursor:before?undefined:"older-page",messages:Array.from({length:100},(_,i)=>({role:"assistant",text:`第 ${i+(before?0:100)} 条`,time:i+(before?0:100),messageId:`msg_${i+(before?0:100)}`,partId:`part_${i+(before?0:100)}`}))}));
+  render(<ChatApp />);
+  await screen.findByPlaceholderText("输入消息,Enter 发送");
+  fireEvent.click(screen.getByRole("button",{name:"历史"}));
+  fireEvent.click(await screen.findByRole("button",{name:"打开 分页历史"}));
+  const earlier=await screen.findByRole("button",{name:"加载更早消息"});
+  fireEvent.click(earlier);
+  await waitFor(()=>expect(screen.queryByRole("button",{name:"加载更早消息"})).toBeNull());
+  await waitFor(()=>expect(document.querySelector('[data-logical-rows="201"]')).not.toBeNull());
+  expect(invoke.mock.calls.some(([command,args])=>command==="history_catalog_load" && typeof args==="object" && args!==null && "before" in args && args.before==="older-page")).toBe(true);
+  expect(sessionCreates()).toBe(1);
   expect(promptRequests).toHaveLength(0);
 });

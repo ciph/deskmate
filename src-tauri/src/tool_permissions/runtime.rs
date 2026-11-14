@@ -75,6 +75,7 @@ fn pending(base: &str) -> Result<Vec<PermissionRequest>, String> {
     pending_url(&format!("{base}/permission"))
 }
 pub(super) fn pending_url(url: &str) -> Result<Vec<PermissionRequest>, String> {
+    let Some(_residency)=crate::sidecar_residency::Lease::for_url(url,false)? else {return Ok(Vec::new())};
     authed(client().get(url))
         .call()
         .map_err(|error| match error {
@@ -96,6 +97,7 @@ pub(super) fn respond_url(
     request: &PermissionRequest,
     reply: Reply,
 ) -> Result<(), String> {
+    let _residency=crate::sidecar_residency::Lease::for_url(url,true)?;
     if !crate::worklog::bridge::safe_id(&request.id) {
         return Err("permission_invalid_id".into());
     }

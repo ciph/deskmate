@@ -129,3 +129,6 @@ mod source_tests;
 #[cfg(test)]
 #[path = "tests/repository.rs"]
 mod tests;
+#[cfg(test)]
+#[path = "tests/report_view.rs"]
+mod view_tests;

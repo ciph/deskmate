@@ -196,7 +196,6 @@ impl WorkbenchOwnership {
 
 const WORKBENCH_LABEL: &str = "workbench";
 /// Attachment reads are capped so a stray picker result cannot exhaust memory.
-const MAX_PICKED_FILE_BYTES: u64 = 64 * 1024 * 1024;
 
 /// Create the workbench window (hidden until `workbench_show`). Declared in
 /// code rather than config so navigation stays gated: only the app shell,
@@ -610,64 +609,34 @@ pub async fn workbench_pick_directory(
     Ok(directories)
 }
 
-#[derive(Serialize)]
-pub struct PickedFile {
-    name: String,
-    path: String,
-    size: u64,
-}
-
 #[tauri::command]
 pub async fn workbench_pick_files(
     window: tauri::WebviewWindow,
     title: Option<String>,
     extensions: Option<Vec<String>>,
-) -> Result<Vec<PickedFile>, String> {
+) -> Result<Vec<crate::workbench_files::PickedFile>, String> {
     require_workbench(&window)?;
     let picked = crate::file_picker::pick_files(&window, title, extensions)?;
-    let mut out = Vec::new();
-    for path_buf in picked {
-        let meta = std::fs::metadata(&path_buf).map_err(|_| "picked file missing".to_string())?;
-        if !meta.is_file() {
-            continue;
-        }
-        if meta.len() > MAX_PICKED_FILE_BYTES {
-            return Err("picked file too large".to_string());
-        }
-        out.push(PickedFile {
-            name: path_buf
-                .file_name()
-                .map(|name| name.to_string_lossy().into_owned())
-                .unwrap_or_else(|| "file".to_string()),
-            path: path_buf.to_string_lossy().into_owned(),
-            size: meta.len(),
-        });
-    }
-    Ok(out)
+    tauri::async_runtime::spawn_blocking(move || crate::workbench_files::pick(picked))
+        .await.map_err(|_| "attachment selection failed".to_string())?
 }
 
-/// Read a previously picked file's bytes (base64). The path must exist and
-/// stay under the size cap; no directory scoping — the user picked the file.
 #[tauri::command]
 pub async fn workbench_read_file(
     window: tauri::WebviewWindow,
-    path: String,
-) -> Result<String, String> {
+    token: String,
+    offset: u64,
+) -> Result<tauri::ipc::Response, String> {
     require_workbench(&window)?;
-    use base64::Engine;
-    tauri::async_runtime::spawn_blocking(move || {
-        let meta = std::fs::metadata(&path).map_err(|_| "file missing".to_string())?;
-        if !meta.is_file() {
-            return Err("not a file".to_string());
-        }
-        if meta.len() > MAX_PICKED_FILE_BYTES {
-            return Err("file too large".to_string());
-        }
-        let bytes = std::fs::read(&path).map_err(|_| "file unreadable".to_string())?;
-        Ok(base64::engine::general_purpose::STANDARD.encode(bytes))
-    })
-    .await
-    .map_err(|_| "read failed".to_string())?
+    tauri::async_runtime::spawn_blocking(move || crate::workbench_files::read(&token, offset).map(tauri::ipc::Response::new))
+        .await.map_err(|_| "read failed".to_string())?
+}
+
+#[tauri::command]
+pub async fn workbench_release_files(window: tauri::WebviewWindow, tokens: Vec<String>) -> Result<(), String> {
+    require_workbench(&window)?;
+    tauri::async_runtime::spawn_blocking(move || crate::workbench_files::release(&tokens))
+        .await.map_err(|_|"attachment release failed".to_string())?
 }
 
 #[tauri::command]

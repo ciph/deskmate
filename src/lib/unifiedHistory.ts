@@ -53,6 +53,7 @@ export interface CatalogPage {
   readonly directories: readonly string[];
 }
 export interface CatalogLoadResult {
+  readonly nextCursor?: string;
   readonly entry: UnifiedHistoryRow;
   readonly messages: HistoryMessage[];
   readonly agentDetails?: AgentHistoryDetails;
@@ -85,8 +86,8 @@ export function catalogList(query: CatalogQuery, refresh = false): Promise<Catal
 export function catalogAccess(key: string): Promise<UnifiedHistoryRow> {
   return invoke<UnifiedHistoryRow>("history_catalog_access", { key });
 }
-export function catalogLoad(key: string): Promise<CatalogLoadResult> {
-  return invoke<CatalogLoadResult>("history_catalog_load", { key });
+export function catalogLoad(key: string, page?: { readonly before?: string }): Promise<CatalogLoadResult> {
+  return invoke<CatalogLoadResult>("history_catalog_load", { key, ...(page ? { paged: true, ...(page.before ? { before: page.before } : {}) } : {}) });
 }
 
 export function catalogPreviews(keys: readonly string[]): Promise<CatalogPreview[]> {

@@ -1948,6 +1948,7 @@ fn with_desktop_mcp(app: &tauri::AppHandle, settings: &Settings, config: String)
 /// instead of maintaining two divergent model values (§3.4). Best-effort: the
 /// sidecar may be down or restarting, and a failed write must not block saving.
 fn sync_workbench_default_model(app: &tauri::AppHandle, settings: &Settings) {
+    let Ok(_residency)=crate::sidecar_residency::Lease::acquire(true) else {return};
     if settings.provider_id.is_empty() || settings.model_id.is_empty() {
         return;
     }

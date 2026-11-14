@@ -46,5 +46,13 @@
   ],
   "images": 10,
   "meshes": 7,
-  "outputBytes": 75641656
+  "outputBytes": 65365560,
+  "losslessOptimization": {
+    "method": "lossless PNG IDAT replacement; original IHDR and ancillary chunks retained",
+    "beforeBytes": 75641656,
+    "afterSha256": "22db87c21c2a17e8c949e8aab616f9ed5e4390ccd4aca4a7cf799d32fa1fe270",
+    "pixelsAndColorMetadataUnchanged": true,
+    "gpuTextureDimensionsUnchanged": true,
+    "receipt": "xiaozhu-sandaime.lossless.json"
+  }
 }

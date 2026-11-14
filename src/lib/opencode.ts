@@ -146,7 +146,7 @@ async function authHeaders(): Promise<Record<string, string>> {
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const base = await getBaseUrl();
-  const res = await fetch(`${base}${path}`, {
+  const res = await sidecarFetch(`${base}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -167,7 +167,7 @@ export async function waitForServer(timeoutMs = 30_000): Promise<void> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     try {
-      const res = await fetch(`${base}/session`, {
+      const res = await fetch(`${base}/global/health`, {
         method: "GET",
         headers: await authHeaders(),
       });
@@ -316,7 +316,7 @@ export async function subscribeEvents(
     while (!closed) {
       try {
         const scope = directory ? `?${new URLSearchParams({ directory })}` : "";
-        const res = await fetch(`${base}/event${scope}`, {
+        const res = await sidecarFetch(`${base}/event${scope}`, {
           headers,
           signal: controller.signal,
         });
@@ -351,3 +351,4 @@ export async function subscribeEvents(
     controller.abort();
   };
 }
+import { sidecarFetch } from "./sidecarFetch";

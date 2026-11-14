@@ -10,7 +10,7 @@ const expectedDurations = { 等待: 4.966667, 思考: 3.133333, 打招呼: 1.8, 
 
 test("preserves all seven authored rigs and binds each clip only to its own variant", async () => {
   const loader = new GLTFLoader();
-  // Texture pixels are checked in the browser; this CPU test exercises real geometry and animation parsing.
+  // PNG pixels have a separate golden test; this exercises real geometry and animation parsing.
   loader.register(() => ({ name: "cpu_texture_fixture", loadTexture: async () => new Texture() }));
   const gltf = await loader.parseAsync(await file.arrayBuffer(), "");
   const roots = personaById("xiaozhu-sandaime").clipRoots;
@@ -19,7 +19,7 @@ test("preserves all seven authored rigs and binds each clip only to its own vari
   expect(gltf.animations).toHaveLength(7);
   expect(file.size).toBe(provenance.outputBytes);
   expect(provenance.sourceFiles.map((source) => source.action).sort()).toEqual(Object.keys(roots).sort());
-  expect(file.size).toBeLessThan(80 * 1024 * 1024);
+  expect(file.size).toBeLessThan(64 * 1024 * 1024);
   const nodeNames: string[] = [];
   gltf.scene.traverse((node) => nodeNames.push(node.name));
   expect(new Set(nodeNames).size).toBe(nodeNames.length);

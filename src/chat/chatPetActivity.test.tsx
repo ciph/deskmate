@@ -68,7 +68,7 @@ function installOpenCodeTransport(): void {
         ),
       );
     }
-    if (url.endsWith("/session") && init?.method === "GET") {
+    if (url.endsWith("/global/health") && init?.method === "GET") {
       return Promise.resolve(new Response(null, { status: 200 }));
     }
     if (url.endsWith("/session") && init?.method === "POST") {

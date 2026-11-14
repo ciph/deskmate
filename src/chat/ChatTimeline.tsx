@@ -6,7 +6,7 @@ import { retainedRange } from "./timelineRange";
 import { markdownScheduler } from "./markdownScheduler";
 import "./chat-timeline.css";
 
-export interface TimelineControl { jump(index: number): void }
+export interface TimelineControl { jump(index: number): void; preserve?(): void }
 interface Props {
   readonly ids: readonly string[];
   readonly listRef: RefObject<HTMLDivElement | null>;
@@ -15,6 +15,7 @@ interface Props {
   readonly renderRow: (index: number) => ReactNode;
   readonly onVisible: (index: number) => void;
   readonly geometry: string;
+  readonly onRequestAll?: () => Promise<boolean>;
 }
 const rowOf = (node: Node | null) => (node instanceof Element ? node : node?.parentElement)?.closest<HTMLElement>("[data-timeline-index]");
 const rowIndex = (node: Node | null) => { const row = rowOf(node); return row ? Number(row.dataset.timelineIndex) : null; };
@@ -41,7 +42,7 @@ function TimelineRow({ index, count, id, start, measure, horizontal, children }:
     data-timeline-id={id} aria-posinset={index + 1} aria-setsize={count} className="chat-virtual-row" style={{ transform: `translateY(${start}px)` }}>{children}</li>;
 }
 
-export function ChatTimeline({ ids, listRef, controlRef, followRef, renderRow, onVisible, geometry }: Props) {
+export function ChatTimeline({ ids, listRef, controlRef, followRef, renderRow, onVisible, geometry, onRequestAll }: Props) {
   useEffect(() => () => markdownScheduler.clearCache(), []);
   const [pinIds, setPins] = useState<ReadonlySet<string>>(new Set());
   const [selectionIds, setSelection] = useState<readonly [string, string] | null>(null);
@@ -49,6 +50,7 @@ export function ChatTimeline({ ids, listRef, controlRef, followRef, renderRow, o
   const playing = useRef(new Set<HTMLMediaElement>());
   const horizontal = useRef(new Map<string, number[]>());
   const frame = useRef(0), lastVisible = useRef(-1);
+  const readingAnchor = useRef<{ id: string; offset: number } | null>(null);
   const positions = useMemo(() => new Map(ids.map((id, index) => [id, index])), [ids]);
   const pins = useMemo(() => new Set([...pinIds].flatMap(id => positions.has(id) ? [positions.get(id)!] : [])), [pinIds, positions]);
   const selection = useMemo<readonly [number, number] | null>(() => {
@@ -72,7 +74,22 @@ export function ChatTimeline({ ids, listRef, controlRef, followRef, renderRow, o
   });
   virtual.shouldAdjustScrollPositionOnItemSizeChange = (item, _delta, instance) => item.end <= (instance.scrollOffset ?? 0);
   useLayoutEffect(() => {
-    controlRef.current = { jump(index) { followRef.current = false; virtual.scrollToIndex(index, { align: "start" }); } };
+    const anchor = readingAnchor.current;
+    readingAnchor.current = null;
+    if (anchor && !followRef.current) {
+      const index = positions.get(anchor.id);
+      if (index !== undefined) {
+        const offset = virtual.getOffsetForIndex(index, "start");
+        if (offset) virtual.scrollToOffset(offset[0] + anchor.offset);
+      }
+    }
+  }, [ids, positions, virtual, followRef]);
+  useLayoutEffect(() => {
+    controlRef.current = { jump(index) { followRef.current = false; virtual.scrollToIndex(index, { align: "start" }); }, preserve() {
+      const scroll = virtual.scrollOffset ?? 0;
+      const item = virtual.getVirtualItems().find(row => row.end > scroll);
+      readingAnchor.current = item ? { id: String(item.key), offset: scroll - item.start } : null;
+    } };
     return () => { controlRef.current = null; };
   }, [controlRef, followRef, virtual]);
   useLayoutEffect(() => { if (followRef.current && ids.length) virtual.scrollToIndex(ids.length - 1, { align: "end" }); }, [ids.length, followRef, virtual]);
@@ -111,6 +128,18 @@ export function ChatTimeline({ ids, listRef, controlRef, followRef, renderRow, o
     }
     setPins(previous => previous.size === next.size && [...next].every(index => previous.has(index)) ? previous : next);
   }
+  async function selectEntireHistory(list: HTMLDivElement) {
+    try {
+      if (onRequestAll && !(await onRequestAll())) return;
+      if (!list.isConnected) return;
+      flushSync(() => setSelectAll(true));
+      const range = document.createRange(); range.selectNodeContents(list);
+      const selected = document.getSelection(); selected?.removeAllRanges(); selected?.addRange(range);
+    } catch {
+      // The owning chat reports load errors; a failed full read must not select
+      // a partial transcript as though it were complete.
+    }
+  }
   return <div className="chat-list chat-virtual-list" ref={listRef} data-logical-rows={ids.length}
     data-retained-rows={pins.size + (selection ? selection[1] - selection[0] + 1 : 0)} data-selection-all={selectAll || undefined}
     onFocusCapture={retain} onBlurCapture={() => queueMicrotask(retain)}
@@ -122,9 +151,8 @@ export function ChatTimeline({ ids, listRef, controlRef, followRef, renderRow, o
       const target = event.target as HTMLElement;
       if (target.closest("input,textarea,[contenteditable='true']")) return;
       if (event.nativeEvent.isTrusted && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
-        event.preventDefault(); flushSync(() => setSelectAll(true));
-        const range = document.createRange(); range.selectNodeContents(event.currentTarget);
-        const selected = document.getSelection(); selected?.removeAllRanges(); selected?.addRange(range);
+        event.preventDefault();
+        void selectEntireHistory(event.currentTarget);
       }
       if (event.key === "Tab") {
         const row = rowOf(target), index = rowIndex(target);

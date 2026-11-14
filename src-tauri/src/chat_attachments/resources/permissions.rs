@@ -134,6 +134,8 @@ pub(crate) fn enable_session_reads(
     directory: &str,
     session: &str,
 ) -> Result<PathBuf, String> {
+    let residency=crate::sidecar_residency::Lease::acquire(true)?;
+    residency.directory(directory)?;
     let mut url = url::Url::parse(&format!("{}/session/{session}", crate::sidecar_url(app)))
         .map_err(|_| "resource_permission_failed")?;
     url.query_pairs_mut().append_pair("directory", directory);

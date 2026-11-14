@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { historyLoad, type HistorySession } from "../lib/history";
 import type { CatalogLoadResult, UnifiedHistoryRow } from "../lib/unifiedHistory";
+import { historyRefresh } from "./historyRefresh";
 import { loadSharedConversation } from "./sharedConversation";
 
 function scopedArchive(loaded: CatalogLoadResult): HistorySession | null {
@@ -16,13 +17,18 @@ export type AgentHistoryOpenResult =
   | { readonly kind: "missing" }
   | { readonly kind: "stale" };
 
-export function useAgentHistoryView(activeSessionId: string | null, onLoaded?: (loaded: CatalogLoadResult) => void) {
+export function useAgentHistoryView(activeSessionId: string | null, onLoaded?: (loaded: CatalogLoadResult) => CatalogLoadResult | void, visible = true) {
   const [viewedId, setViewedId] = useState<string | null>(null);
   const [archive, setArchive] = useState<HistorySession | null>(null);
   const viewedRef = useRef<string | null>(null);
   const scopeRef = useRef<UnifiedHistoryRow | null>(null);
   const generationRef = useRef(0);
   const previousActiveRef = useRef<string | null>(activeSessionId);
+  const previousVisibleRef = useRef(visible);
+  const visibleRef = useRef(visible);
+  useLayoutEffect(() => { visibleRef.current = visible; }, [visible]);
+  const invalidateRef = useRef<() => void>(() => {});
+  const invalidate = useCallback(() => invalidateRef.current(), []);
 
   const leave = useCallback(() => {
     generationRef.current += 1;
@@ -40,9 +46,10 @@ export function useAgentHistoryView(activeSessionId: string | null, onLoaded?: (
     if (
       generation !== generationRef.current ||
       viewedRef.current !== id ||
+      !visibleRef.current || document.visibilityState === "hidden" ||
       !session?.originRunId
     ) return null;
-    if (loaded) onLoaded?.(loaded);
+    if (loaded) return scopedArchive(onLoaded?.(loaded) ?? loaded);
     return session;
   }, [onLoaded]);
 
@@ -102,31 +109,27 @@ export function useAgentHistoryView(activeSessionId: string | null, onLoaded?: (
   useEffect(() => {
     const previousActive = previousActiveRef.current;
     previousActiveRef.current = activeSessionId;
+    const becameVisible = visible && !previousVisibleRef.current;
+    previousVisibleRef.current = visible;
     if (!viewedId) return;
     const isActive = activeSessionId === viewedId || selectedRunActive;
     const justFinished = previousActive === viewedId && !isActive;
-    if (!isActive && !justFinished) return;
-
-    let cancelled = false;
-    let loading = false;
-    const load = async () => {
-      if (cancelled || loading) return;
-      loading = true;
-      try {
-        const session = await readCurrent(viewedId);
-        if (!cancelled && session) setArchive(session);
-      } finally { loading = false; }
-    };
-    void load();
-    if (!isActive) return () => { cancelled = true; };
-    const timer = globalThis.setInterval(() => void load(), 1000);
+    const subscription = historyRefresh({
+      visible: () => visibleRef.current,
+      read: () => readCurrent(viewedId),
+      apply: setArchive,
+      active: isActive,
+    });
+    invalidateRef.current = subscription.invalidate;
+    if (isActive || justFinished || becameVisible) void subscription.load();
     return () => {
-      cancelled = true;
-      globalThis.clearInterval(timer);
+      subscription.dispose();
+      generationRef.current += 1;
+      invalidateRef.current = () => {};
     };
-  }, [activeSessionId, readCurrent, selectedRunActive, viewedId]);
+  }, [activeSessionId, readCurrent, selectedRunActive, viewedId, visible]);
 
-  return { viewedId, archive, open, openScoped, adopt, leave };
+  return { viewedId, archive, open, openScoped, adopt, leave, invalidate };
 }
 
 

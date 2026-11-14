@@ -60,7 +60,7 @@ fn fts_upgrade_preserves_records_provenance_search_and_readonly_original() {
     let mut identities=None;
     for _ in 0..2 {
         let store=MemoryStore::open(&path).unwrap();
-        assert_eq!(store.schema_version().unwrap(),4);
+        assert_eq!(store.schema_version().unwrap(),SCHEMA_VERSION);
         store.with_connection(|db| {
             assert_eq!(data(db),before);
             assert_eq!(fts(db),searchable);
@@ -116,7 +116,7 @@ fn late_fts_migration_failure_restores_old_triggers_rowids_schema_and_version() 
         Ok(())
     }).unwrap();
     store.migrate().unwrap();
-    assert_eq!(store.schema_version().unwrap(),4);
+    assert_eq!(store.schema_version().unwrap(),SCHEMA_VERSION);
     store.with_connection(|db| { consistent(db); Ok(()) }).unwrap();
 }
 
@@ -164,7 +164,7 @@ fn fts_open_failure_preserves_wal_then_concurrent_openers_rebuild_once() {
         std::thread::spawn(move || {
             barrier.wait();
             let store=MemoryStore::open(&path).unwrap();
-            assert_eq!(store.schema_version().unwrap(),4);
+            assert_eq!(store.schema_version().unwrap(),SCHEMA_VERSION);
             store.with_connection(|db| { consistent(db); Ok((data(db),fts(db),mapping(db))) }).unwrap()
         })
     }).collect();

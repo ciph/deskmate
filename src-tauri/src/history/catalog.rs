@@ -15,16 +15,17 @@ impl CatalogStore {
         let store = Self { path: path.to_owned(), associations: None };
         let mut connection = store.connection()?;
         let version: u32 = connection.query_row("PRAGMA user_version", [], |row| row.get(0)).map_err(db_error)?;
-        if version == 3 { return Ok(store); }
-        if version > 3 { return Err("history_catalog_version_unsupported".into()); }
+        if version == 4 { return Ok(store); }
+        if version > 4 { return Err("history_catalog_version_unsupported".into()); }
 
         let transaction = connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(db_error)?;
         let version: u32 = transaction.query_row("PRAGMA user_version", [], |row| row.get(0)).map_err(db_error)?;
-        if version > 3 { return Err("history_catalog_version_unsupported".into()); }
+        if version > 4 { return Err("history_catalog_version_unsupported".into()); }
         if version < 2 {
             transaction.execute_batch("CREATE TABLE IF NOT EXISTS entries (key TEXT PRIMARY KEY NOT NULL, metadata TEXT NOT NULL); CREATE TABLE IF NOT EXISTS directories (directory TEXT PRIMARY KEY NOT NULL); CREATE TABLE IF NOT EXISTS model_selections (key TEXT PRIMARY KEY NOT NULL, selection TEXT NOT NULL); CREATE TABLE IF NOT EXISTS recent_workspaces (directory TEXT PRIMARY KEY NOT NULL, selected_at INTEGER NOT NULL); PRAGMA user_version = 2;").map_err(db_error)?;
         }
         if version < 3 { super::catalog_schema::migrate_v3(&transaction)?; }
+        if version < 4 { super::catalog_schema::migrate_v4(&transaction)?; }
         transaction.commit().map_err(db_error)?;
         Ok(store)
     }
@@ -153,9 +154,42 @@ impl CatalogStore {
     }
 
     pub(crate) fn update<T>(&self, edit: impl FnOnce(&mut Vec<CatalogEntry>) -> Result<T, String>) -> Result<T, String> {
+        self.update_with(read_rows, edit)
+    }
+
+    /// Complete discovery reads exactly one directory; partial discovery reads
+    /// only the provided identities. The write reservation spans read and diff.
+    pub(super) fn update_scoped<T>(&self, directory: &str, keys: Option<&[String]>, edit: impl FnOnce(&mut Vec<CatalogEntry>) -> Result<T, String>) -> Result<T, String> {
+        self.update_with(|connection| {
+            if let Some(keys) = keys {
+                let mut seen = std::collections::HashSet::new();
+                let mut rows = Vec::new();
+                for key in keys { if seen.insert(key) { if let Some(row) = read_entry(connection, key)? { rows.push(row); } } }
+                Ok(rows)
+            } else {
+                projections_ready(connection)?;
+                read_query(connection, "SELECT e.key,e.metadata FROM entry_projection p JOIN entries e ON e.key=p.key WHERE p.directory=?1 ORDER BY p.key", [directory])
+            }
+        }, |rows| {
+            let result = edit(rows)?;
+            if rows.iter().any(|row| !matches!(&row.identity, super::catalog_model::CatalogIdentity::Native {directory: actual, ..} if actual == directory)) { return Err("history_identity_invalid".into()); }
+            if let Some(keys) = keys { if rows.iter().any(|row| !keys.contains(&row.key())) { return Err("history_identity_invalid".into()); } }
+            Ok(result)
+        })
+    }
+
+    /// Keyset batches bound decoded payloads and release SQLite before network
+    /// calls or edits. Callers recheck authority and deletion guards at commit.
+    pub(super) fn maintenance_batch(&self, kind: u8, after: &str) -> Result<Vec<CatalogEntry>, String> {
+        let connection = self.connection()?;
+        projections_ready(&connection)?;
+        read_query(&connection, "SELECT e.key,e.metadata FROM entry_projection p JOIN entries e ON e.key=p.key WHERE p.maintenance=?1 AND p.key>?2 ORDER BY p.key LIMIT 128", rusqlite::params![kind, after])
+    }
+
+    fn update_with<T>(&self, read: impl FnOnce(&Connection) -> Result<Vec<CatalogEntry>, String>, edit: impl FnOnce(&mut Vec<CatalogEntry>) -> Result<T, String>) -> Result<T, String> {
         let mut connection = self.connection()?;
         let transaction = connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(db_error)?;
-        let mut rows = read_rows(&transaction)?;
+        let mut rows = read(&transaction)?;
         let before: std::collections::HashMap<_, _> = rows.iter().map(|row| (row.key(), row.clone())).collect();
         let result = edit(&mut rows)?;
         let mut keys = std::collections::HashSet::new();
@@ -230,3 +264,15 @@ thread_local! { pub(super) static DECODED_ROWS: std::cell::Cell<usize> = const {
 mod tests;
 
 pub(super) fn db_error(_: rusqlite::Error) -> String { "history_catalog_unavailable".into() }
+
+fn projections_ready(connection: &Connection) -> Result<(), String> {
+    let dirty: bool = connection.query_row("SELECT EXISTS(SELECT 1 FROM catalog_projection_dirty)", [], |row| row.get(0)).map_err(db_error)?;
+    if dirty { return Err("history_catalog_invalid".into()); }
+    Ok(())
+}
+
+fn read_query(connection: &Connection, sql: &str, params: impl rusqlite::Params) -> Result<Vec<CatalogEntry>, String> {
+    let mut statement = connection.prepare(sql).map_err(db_error)?;
+    let raw = statement.query_map(params, |row| Ok((row.get::<_, String>(0)?,row.get::<_, String>(1)?))).map_err(db_error)?;
+    raw.map(|row| { let (key,metadata) = row.map_err(db_error)?; decode_row(&key,&metadata) }).collect()
+}

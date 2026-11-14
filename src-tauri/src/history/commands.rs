@@ -7,13 +7,16 @@ pub(crate) fn store<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<Cata
     Ok(CatalogStore::open(&app.path().app_data_dir().map_err(|_| "history_catalog_unavailable")?.join("history-catalog.sqlite"))?
         .track_associations(state.associations.clone()))
 }
-pub(crate) fn client(app: &tauri::AppHandle) -> Result<NativeHistoryClient, String> {
-    NativeHistoryClient::new(&crate::sidecar_url(app), &crate::sidecar_auth_header(app)).map_err(|error| error.to_string())
+pub(crate) fn client<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<NativeHistoryClient, String> {
+    NativeHistoryClient::new(&crate::sidecar_url(app), &crate::sidecar_auth_header(app)).and_then(|client|client.with_residency(false)).map_err(|error| error.to_string())
+}
+pub(crate) fn background_client<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<NativeHistoryClient, String> {
+    NativeHistoryClient::new(&crate::sidecar_url(app), &crate::sidecar_auth_header(app)).and_then(|client|client.with_residency(true)).map_err(|error| error.to_string())
 }
 pub(crate) fn now() -> Result<u64, String> {
     u64::try_from(chrono::Utc::now().timestamp_millis()).map_err(|_| "history_clock_invalid".into())
 }
-pub(crate) fn workspace(app: &tauri::AppHandle) -> Result<String, String> {
+pub(crate) fn workspace<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<String, String> {
     Ok(catalog_import::canonical_directory(&app.path().app_data_dir().map_err(|_| "history_catalog_unavailable")?.join("workspace").to_string_lossy()))
 }
 pub(crate) fn register_known_directory(app: &tauri::AppHandle, directory: &str) -> Result<(), String> {
@@ -36,6 +39,9 @@ pub(crate) async fn history_model_selection_set<R: tauri::Runtime>(
     crate::tool_permissions::runtime::require_chat(&window)?;
     // Agent cancellation can hold this lock across native I/O; never wait on the UI thread.
     tauri::async_runtime::spawn_blocking(move || {
+        // Wait for draft deletion before taking the Agent control lock.
+        let maintenance = app.state::<super::maintenance::HistoryMaintenance>();
+        let _selection = maintenance.used.lock().map_err(|_| "history_state_unavailable")?;
         let runs = app.state::<crate::agent::AgentRunState>();
         let _operation = runs.lock_operation()?;
         let catalog = store(&app)?;
@@ -183,7 +189,7 @@ pub(crate) fn register_native(app: &tauri::AppHandle, session_id: &str, source: 
 }
 
 #[tauri::command]
-pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: tauri::AppHandle, key: String) -> Result<CatalogLoaded, String> {
+pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: tauri::AppHandle, key: String, paged: Option<bool>, before: Option<String>) -> Result<CatalogLoaded, String> {
     authorize_history_window(window.label()).map_err(|error| error.to_string())?;
     let owner = window.label().to_owned();
     tauri::async_runtime::spawn_blocking(move || {
@@ -191,26 +197,30 @@ pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: taur
         super::maintenance::protect(&app, &owner, &key)?;
         let store = store(&app)?;
         let entry = store.get(&key)?;
+        let records = app.state::<crate::agent::AgentRunState>().all_records()?;
         if entry.tombstone.is_some() { return Err("history_deleted".into()); }
         match &entry.identity {
             CatalogIdentity::Legacy { history_id } => {
                 let session = app.state::<HistoryState>().0.lock().map_err(|_| "history_state_unavailable")?.iter().find(|session| &session.id == history_id && !session.deleted).ok_or("history_not_found")?.clone();
-                let agent_details = super::catalog_details::for_entry(&entry, &app.state::<crate::agent::AgentRunState>().all_records()?, session.origin_run_id.as_deref());
-                Ok(CatalogLoaded { entry: entry.into(), messages: session.messages.into_iter().map(Into::into).collect(), agent_details, origin_run_id: session.origin_run_id, worklog_outcomes: Vec::new() })
+                let agent_details = super::catalog_details::for_entry(&entry, &records, session.origin_run_id.as_deref());
+                Ok(CatalogLoaded { next_cursor: None, entry: entry.into(), messages: session.messages.into_iter().map(Into::into).collect(), agent_details, origin_run_id: session.origin_run_id, worklog_outcomes: Vec::new() })
             }
             CatalogIdentity::Native { directory, session_id, .. } => {
                 let client = client(&app)?;
                 let native = client.get(directory, session_id).map_err(|error| error.to_string())?;
                 let (snapshot, statuses) = std::thread::scope(|scope| {
                     let status = scope.spawn(|| client.statuses(directory));
-                    let snapshot = crate::agent::read_scoped_snapshot(&app, std::path::Path::new(directory), session_id);
+                    let snapshot = if paged.unwrap_or(false) { crate::agent::read_scoped_page(&app, std::path::Path::new(directory), session_id, before.as_deref()) } else { crate::agent::read_scoped_snapshot(&app, std::path::Path::new(directory), session_id).map(|messages| (messages, None, Vec::new())) };
                     (snapshot, status.join().unwrap_or(Err(super::native_api::NativeApiError::Unavailable)))
                 });
-                super::reconcile::apply_discovery(&store, directory, &[native], statuses.as_ref().ok(), &app.state::<crate::agent::AgentRunState>().all_records()?, false)?;
-                let snapshot = snapshot?;
+                super::reconcile::apply_discovery(&store, directory, &[native], statuses.as_ref().ok(), &records, false)?;
+                let (snapshot, next_cursor, parents) = snapshot?;
+                let allow_legacy = !paged.unwrap_or(false) || (before.is_none() && snapshot.is_empty() && next_cursor.is_none());
                 let worklog_outcomes = super::worklog_outcomes::project(&snapshot);
                 let profiles = app.path().app_data_dir().ok().map(|path| super::persona::cached_profiles(&path)).unwrap_or_default();
-                let identities = super::persona::message_personas(&snapshot, &profiles);
+                let mut identities = super::persona::message_personas(&snapshot, &profiles);
+                let parent_identities = super::persona::message_personas(&parents, &profiles);
+                for message in &snapshot { if let Some(persona) = message.parent_id.as_ref().and_then(|id| parent_identities.get(id)) { identities.insert(message.id.clone(), persona.clone()); } }
                 let files = super::native_files::collect(&snapshot);
                 let mut messages: Vec<_> = snapshot.into_iter().flat_map(|message| {
                     let persona_id = identities.get(&message.id).cloned();
@@ -220,11 +230,12 @@ pub(crate) async fn history_catalog_load(window: tauri::WebviewWindow, app: taur
                 super::native_files::include_file_only_messages(&mut messages, &files);
                 let mut rows = vec![store.get(&key)?]; apply_ownership(&app, &mut rows)?;
                 let entry = rows.remove(0);
-                let agent_details = super::catalog_details::for_entry(&entry, &app.state::<crate::agent::AgentRunState>().all_records()?, None);
-                let origin_run_id = super::catalog_details::native_origin(&entry, &app.state::<crate::agent::AgentRunState>().all_records()?);
-                let local = app.state::<HistoryState>().0.lock().map_err(|_| "history_state_unavailable")?.clone();
-                let (entry, messages) = super::catalog_local::combine_messages(entry.into(), messages, &local, &workspace(&app)?);
-                Ok(CatalogLoaded { entry, messages: super::native_files::attach(messages, files), agent_details, origin_run_id, worklog_outcomes })
+                let agent_details = super::catalog_details::for_entry(&entry, &records, None);
+                let origin_run_id = super::catalog_details::native_origin(&entry, &records);
+                let local_state = app.state::<HistoryState>();
+                let local = local_state.0.lock().map_err(|_| "history_state_unavailable")?;
+                let (entry, messages) = super::catalog_local::combine_page_messages(entry.into(), messages, &local, &workspace(&app)?, allow_legacy);
+                Ok(CatalogLoaded { next_cursor, entry, messages: super::native_files::attach(messages, files), agent_details, origin_run_id, worklog_outcomes })
             }
         }
     }).await.map_err(|_| "history_load_unavailable".to_owned())?
@@ -262,18 +273,16 @@ pub(super) fn refresh_history(app: &tauri::AppHandle) -> Result<Vec<String>, Str
         return Err(error);
     }
     let runs = app.state::<crate::agent::AgentRunState>();
-    let mut errors = {
-        let _operation = runs.lock_operation()?;
-        super::reconcile::reconcile(&store(app)?, &client(app)?, &runs.all_records()?)?
-    };
+    let mut errors = super::reconcile::reconcile(&store(app)?, &background_client(app)?, &runs, &app.state::<crate::Sidecar>())?;
     // Preview entries retain their bounded TTL instead of flashing on every refresh.
     initialize(app)?;
-    errors.extend(super::catalog_content::refresh(&store(app)?, &client(app)?)?);
+    errors.extend(super::catalog_content::refresh(&store(app)?, &background_client(app)?)?);
     errors.extend(super::maintenance::prune_empty(app)?);
     Ok(errors)
 }
 
 pub(crate) fn refresh_after_ready(app: tauri::AppHandle) {
+    if let Ok(directory)=workspace(&app) {crate::sidecar_residency::restarted(&directory);}
     super::maintenance::start_cleanup(app.clone());
     tauri::async_runtime::spawn_blocking(move || {
         let refreshed = (|| -> Result<(), String> {

@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { getAiUsage, type AiUsage as AiUsageData, type DeepSeekAiUsage, type GatewayAiUsage, type LocalAiUsage, type OpenRouterAiUsage } from "../lib/settings";
 import type { Dict } from "../lib/i18n";
 import { invoke } from "@tauri-apps/api/core";
 import "./ai-usage.css";
+import { SettingsVisibilityContext } from "./settingsVisibility";
+import { useVisiblePoll } from "./useVisiblePoll";
 
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 const CNY_UNIT_DIVISOR = 10000;
@@ -29,21 +31,14 @@ function formatYuan(amount: number, digits: number): string {
 }
 
 export function AiUsage({ enabled, providerId, label, index, t }: AiUsageProps) {
-  const [view, setView] = useState<AiUsageView>({ kind: "loading" });
-  const [refreshVersion, setRefreshVersion] = useState(0);
-
-  useEffect(() => {
-    let active = true;
-    if (!enabled) {
-      setView({ kind: "missing-key" });
-      return;
-    }
-
-    const load = async (): Promise<void> => {
-      setView({ kind: "loading" });
+  const [result, setView] = useState<AiUsageView>({ kind: "loading" });
+  const view: AiUsageView = enabled ? result : { kind: "missing-key" };
+  const visible = useContext(SettingsVisibilityContext);
+  const load = useCallback(async (current: () => boolean): Promise<void> => {
+      if (current()) setView({ kind: "loading" });
       try {
         const usage = await getAiUsage(providerId);
-        if (active) setView({ kind: "ready", usage });
+        if (current()) setView({ kind: "ready", usage });
       } catch (error) {
         const message = (error instanceof Error ? error.message : String(error)).replace(
           /^Error:?\s*/i,
@@ -53,25 +48,12 @@ export function AiUsage({ enabled, providerId, label, index, t }: AiUsageProps) 
           message === "unauthorized" ||
           message === "status:401" ||
           message === "status:403";
-        if (active) {
+        if (current()) {
           setView({ kind: message === "deepseek_auth_failed" ? "invalid-key" : isUnauthorized ? "unauthorized" : "unavailable" });
         }
       }
-    };
-
-    const initialDelayMs = refreshVersion === 0 ? index * 3000 : 0;
-    const initialTimer =
-      initialDelayMs === 0
-        ? null
-        : window.setTimeout(() => void load(), initialDelayMs);
-    if (initialTimer === null) void load();
-    const refreshTimer = window.setInterval(() => void load(), REFRESH_INTERVAL_MS);
-    return () => {
-      active = false;
-      if (initialTimer !== null) window.clearTimeout(initialTimer);
-      window.clearInterval(refreshTimer);
-    };
-  }, [enabled, index, providerId, refreshVersion]);
+  }, [providerId]);
+  const refresh = useVisiblePoll(load, visible && enabled, REFRESH_INTERVAL_MS, index * 3000);
 
   const isLoading = view.kind === "loading";
   const titleId = `ai-usage-title-${providerId}`;
@@ -85,7 +67,7 @@ export function AiUsage({ enabled, providerId, label, index, t }: AiUsageProps) 
         <button
           className="set-ai-usage-refresh"
           type="button"
-          onClick={() => setRefreshVersion((version) => version + 1)}
+          onClick={refresh}
           disabled={isLoading || view.kind === "missing-key"}
         >
           {t.aiUsageRefresh}

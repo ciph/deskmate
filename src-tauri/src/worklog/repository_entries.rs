@@ -96,6 +96,11 @@ impl Repository {
             receipt(db,OperationReceipt { operation_id:request.request_id.clone(),entity_kind:"entry".into(),entity_id:request.id.clone(),revision:request.expected_revision+1,business_date:Some(request.business_date.clone()),status:"committed".into() },request)
         })
     }
+    pub fn get_entry(&self, id: &str) -> WorklogResult<Option<Entry>> {
+        self.store.with_connection(|db| {
+            Ok(db.query_row("SELECT * FROM work_entries WHERE id=?1", [id], entry_from_row).optional()?)
+        })
+    }
     pub fn query_entries(&self, query: &DateQuery) -> WorklogResult<Vec<Entry>> {
         range(&query.start, &query.end)?;
         self.store.with_connection(|db| {

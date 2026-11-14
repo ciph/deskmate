@@ -3,7 +3,7 @@ import { localWorklogDate as today } from "../../lib/worklogDate";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Dict } from "../../lib/i18n";
 import { getSettings } from "../../lib/settings";
-import { asWorklogError, generateReport, getReport, listReports, listRuns, listSchedules, onWorklogChanged, queryEntries, type Entry, type Report, type ReportDetail, type Run, type Schedule } from "../../lib/worklog";
+import { asWorklogError, generateReport, getEntry, getReport, listReports, listRuns, listSchedules, onWorklogChanged, queryEntries, type Entry, type Report, type ReportDetail, type Run, type Schedule } from "../../lib/worklog";
 import { EntryEditor } from "./EntryEditor";
 import { ReportEditor } from "./ReportEditor";
 import { ReportSchedulePanel } from "./ReportSchedulePanel";
@@ -90,8 +90,7 @@ export function WorklogTab({ language, t, target, targetRequestId, autoArchive, 
             break;
           }
           case "entry": {
-            const records = await queryEntries({ start: "0001-01-01", end: "9999-12-31", project: null });
-            const entry = records.find((item) => item.id === target.id);
+            const entry = await getEntry(target.id);
             if (!cancelled) { setView("daily"); if (entry) { setDay(entry.businessDate); setDetail({ kind: "entry", entry }); } else setTargetState((current) => ({ ...current, failure: "NOT_FOUND" })); }
             break;
           }
@@ -108,8 +107,7 @@ export function WorklogTab({ language, t, target, targetRequestId, autoArchive, 
       switch (detail.kind) {
         case "entry": {
           if (!detail.entry) { setDetail(null); break; }
-          const records = await queryEntries({ start: "0001-01-01", end: "9999-12-31", project: null });
-          const entry = records.find((record) => record.id === detail.entry?.id);
+          const entry = await getEntry(detail.entry.id);
           setDetail(entry ? { kind: "entry", entry } : null); break;
         }
         case "report": setDetail(detail.detail ? { kind: "report", detail: await getReport(detail.detail.report.id) } : null); break;

@@ -39,6 +39,23 @@ fn primed(record: &RunRecord, now: Instant, messages: Vec<NativeMessage>) -> Liv
 }
 
 #[test]
+fn cached_and_single_message_refresh_move_unchanged_large_payloads_without_cloning() {
+    let record=record(); let now=Instant::now();
+    let mut large=message("msg_a",1); large.parts[0].text=Some("payload".repeat(1_000_000));
+    let mut refresh=primed(&record,now,vec![large,message("msg_b",2)]);
+    let pointer=refresh.messages[0].parts[0].text.as_ref().unwrap().as_ptr();
+    let cached=refresh.fetch_with(&record,&RefreshPlan::Cached,||panic!("full fetch"),|_|panic!("message fetch")).unwrap();
+    assert_eq!(cached.messages[0].parts[0].text.as_ref().unwrap().as_ptr(),pointer);
+    refresh.confirm(cached,now);
+    let fetched=refresh.fetch_with(&record,&RefreshPlan::Messages(vec!["msg_b".into()]),||panic!("full fetch"),|_|Ok(message("msg_b",2))).unwrap();
+    assert_eq!(fetched.messages[0].parts[0].text.as_ref().unwrap().as_ptr(),pointer);
+    // An unconfirmed pass may never be reused, even on an otherwise quiet tick.
+    let scope=LiveRefresh::scope(&record,7).unwrap();
+    assert_eq!(refresh.plan(&record,&scope,&changes(&[]),now,false),Some(RefreshPlan::Full));
+    println!("HISTORY_SCALE unchanged_payload_bytes=7000000 cached_deep_copies=0 incremental_deep_copies=0");
+}
+
+#[test]
 fn initial_then_idle_then_thirty_second_reconciliation() {
     let record = record();
     let now = Instant::now();
@@ -121,7 +138,7 @@ fn partial_snapshot_replaces_appends_and_preserves_native_creation_order() {
             next.parts[0].text = Some("updated".into());
             Ok(next)
         }).unwrap();
-    assert_eq!(refresh.messages[1].parts[0].text.as_deref(), Some("original"), "fetch alone cannot commit");
+    assert!(refresh.messages.is_empty() && refresh.unconfirmed, "fetch alone cannot commit");
     assert_eq!(fetched.messages.iter().map(|m| m.id.as_str()).collect::<Vec<_>>(), ["msg_z", "msg_b", "msg_a"]);
     refresh.confirm(fetched, now + Duration::from_secs(1));
     assert_eq!(refresh.messages[1].parts[0].text.as_deref(), Some("updated"));
@@ -147,15 +164,15 @@ fn missing_or_incomplete_message_uses_full_snapshot_to_remove_stale_data() {
 fn failed_get_does_not_commit_a_partial_prefix_or_advance_full_deadline() {
     let record = record();
     let now = Instant::now();
-    let refresh = primed(&record, now, vec![message("msg_a", 1)]);
-    let before = format!("{:?}", refresh.messages);
+    let mut refresh = primed(&record, now, vec![message("msg_a", 1)]);
     let fetched = refresh.fetch_with(&record, &RefreshPlan::Messages(vec!["msg_a".into(), "msg_b".into()]),
         || panic!("transport errors must not silently become successful full reads"), |id| {
             if id == "msg_b" { Err("agent_transport_failure".into()) }
             else { let mut next = message(id, 1); next.parts[0].text = Some("uncommitted".into()); Ok(next) }
         });
     assert_eq!(fetched.err().as_deref(), Some("agent_transport_failure"));
-    assert_eq!(format!("{:?}", refresh.messages), before);
+    assert!(refresh.messages.is_empty() && refresh.unconfirmed);
+    assert_eq!(refresh.plan(&record,&LiveRefresh::scope(&record,7).unwrap(),&changes(&[]),now,false),Some(RefreshPlan::Full));
     assert_eq!(refresh.last_full, Some(now));
     assert_eq!(refresh.fetch_with(&record, &RefreshPlan::Full, || Err("agent_http_500".into()), |_| panic!("full")).err().as_deref(), Some("agent_http_500"));
     assert_eq!(refresh.last_full, Some(now));
@@ -165,7 +182,7 @@ fn failed_get_does_not_commit_a_partial_prefix_or_advance_full_deadline() {
 fn terminal_partial_read_requires_full_confirmation_and_cannot_finish_a_newer_turn() {
     let record = record();
     let now = Instant::now();
-    let refresh = primed(&record, now, vec![message("msg_a", 1)]);
+    let mut refresh = primed(&record, now, vec![message("msg_a", 1)]);
     let mut terminal = message("msg_a", 1);
     terminal.completed = true;
     terminal.finish = Some("stop".into());
@@ -184,7 +201,7 @@ fn terminal_partial_read_requires_full_confirmation_and_cannot_finish_a_newer_tu
     assert!(state.active_record("msg_run").is_ok(), "later unfinished message must prevent finish");
     assert_eq!(refresh.fetch_with(&record, &RefreshPlan::Messages(vec!["msg_a".into()]),
         || Err("agent_transport_failure".into()), |_| Ok(terminal.clone())).err().as_deref(), Some("agent_transport_failure"));
-    assert!(!refresh.messages[0].completed, "failed terminal confirmation keeps prior cache");
+    assert!(refresh.messages.is_empty() && refresh.unconfirmed, "failed terminal confirmation invalidates the cache");
     std::fs::remove_dir_all(root).unwrap();
 }
 
@@ -192,7 +209,7 @@ fn terminal_partial_read_requires_full_confirmation_and_cannot_finish_a_newer_tu
 fn owned_error_is_terminal_but_foreign_terminal_does_not_force_full() {
     let record = record();
     let now = Instant::now();
-    let refresh = primed(&record, now, vec![]);
+    let mut refresh = primed(&record, now, vec![]);
     let mut foreign = message("msg_foreign", 1);
     foreign.parent_id = Some("msg_another_run".into());
     foreign.completed = true;
@@ -251,6 +268,7 @@ fn approval_and_owned_tool_timers_reuse_cache_without_message_http() {
             || panic!("timer must reuse cache"), |_| panic!("timer has no dirty message")).unwrap();
         assert!(!fetched.full);
         assert_eq!(fetched.messages[0].parts[0].state.as_ref().unwrap().status, status);
+        refresh.confirm(fetched, now);
         refresh.messages[0].parent_id = Some("msg_foreign".into());
         assert_eq!(refresh.plan(&record, &scope, &changes(&[]), now, false), None);
     }

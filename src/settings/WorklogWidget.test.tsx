@@ -9,7 +9,7 @@ import type { Entry, ReportDetail, Schedule, Run } from "../lib/worklog";
 const entry: Entry = { id: "entry-widget", revision: 1, businessDate: "2026-09-09", project: "YUME", text: "已完成联调", originalText: "已完成联调", status: "done", sourceSessionId: null, sourceMessageId: null, createdAt: "2026-09-09T01:00:00Z", updatedAt: "2026-09-09T01:00:00Z" };
 const run: Run = { id: "run1", scheduleId: null, kind: "weekly", periodStart: "2026-09-07", periodEnd: "2026-09-11", occurrenceKey: "manual", state: "running", attempt: 1, nextRetryAt: null, leaseUntil: null, sessionId: null, baseReportRevision: null, sourceManifest: [], sourceSnapshot: [], modelId: "test", resultReportId: null, errorCode: null, createdAt: entry.createdAt, updatedAt: entry.updatedAt };
 const listeners = new Map<string, (event: { readonly payload: unknown }) => void>();
-const report: ReportDetail = { report: { id: "r1", revision: 1, kind: "weekly", periodStart: "2026-09-07", periodEnd: "2026-09-11", currentVersionId: "v1", stale: false, sourceDeleted: false, updatedAt: entry.updatedAt }, versions: [{ id: "v1", reportId: "r1", version: 1, bodyMarkdown: "归档周报", origin: "manual", sourceRevisionManifest: [], sourceSnapshot: [], coverageDates: [], generatedAt: entry.createdAt, modelId: null }] };
+const report: ReportDetail = { report: { id: "r1", revision: 1, kind: "weekly", periodStart: "2026-09-07", periodEnd: "2026-09-11", currentVersionId: "v1", stale: false, sourceDeleted: false, updatedAt: entry.updatedAt }, versions: [{ id: "v1", reportId: "r1", version: 1, origin: "manual", generatedAt: entry.createdAt, modelId: null }], currentVersion: { id: "v1", reportId: "r1", version: 1, bodyMarkdown: "归档周报", origin: "manual", sourceCount: 0, coverageDates: [], generatedAt: entry.createdAt, modelId: null } };
 const schedule: Schedule = { id: "s1", revision: 1, kind: "weekly", weekdaySet: [5], localTime: "17:00", enabled: true, timezoneMode: "system_local", createdAt: entry.createdAt, updatedAt: entry.updatedAt, nextDueAt: null };
 function hostInvoke(command: string): Promise<unknown> {
   switch (command) {
@@ -17,6 +17,7 @@ function hostInvoke(command: string): Promise<unknown> {
     case "get_settings": return Promise.resolve(legacySettingsFixture());
     case "app_version": return Promise.resolve("0.3.2");
     case "worklog_get_report": return Promise.resolve(report);
+    case "worklog_get_entry": return Promise.resolve(entry);
     case "worklog_list_runs": return Promise.resolve([run]);
     case "worklog_list_schedules": return Promise.resolve([schedule]);
     case "worklog_query": return Promise.resolve([entry]);
@@ -25,15 +26,34 @@ function hostInvoke(command: string): Promise<unknown> {
   }
 }
 const invoke = mock(hostInvoke);
-mock.module("@tauri-apps/api/core", () => ({ ...core, invoke }));
+let native = false;
+mock.module("@tauri-apps/api/core", () => ({ ...core, invoke, isTauri: () => native }));
 mock.module("@tauri-apps/api/event", () => ({ ...events, listen: (name: string, callback: (event: { readonly payload: unknown }) => void) => { listeners.set(name, callback); return Promise.resolve(() => listeners.delete(name)); } }));
 const SettingsApp = (await import("./SettingsApp")).default;
 const t = dict("zh-CN");
-beforeEach(() => { listeners.clear(); invoke.mockClear(); invoke.mockImplementation(hostInvoke); });
+beforeEach(() => { native = false; listeners.clear(); invoke.mockClear(); invoke.mockImplementation(hostInvoke); });
 afterEach(cleanup);
 async function openWidgets() { render(<SettingsApp />); await screen.findByRole("checkbox", { name: t.autostart }); fireEvent.click(screen.getByRole("button", { name: t.tabWidget })); }
 async function emit(name: string, payload: unknown) { await act(async () => { listeners.get(`deskmate://${name}`)?.({ payload }); }); }
 async function openLog() { fireEvent.click(screen.getByRole("button", { name: "工作日志" })); await screen.findByRole("button", { name: /已完成联调/ }); }
+
+test("first native ready handshake consumes the queued deep link and plain reopen preserves a draft", async () => {
+  native = true; let pending: unknown = { tab: "worklog", target: { kind: "entry", id: entry.id } };
+  invoke.mockImplementation(command => {
+    if (command === "get_settings_visibility") return Promise.resolve(true);
+    if (command === "consume_settings_request") { const result = pending; pending = null; return Promise.resolve(result); }
+    return hostInvoke(command);
+  });
+  render(<SettingsApp />);
+  const content = await screen.findByRole("textbox", { name: "内容" });
+  expect((content as HTMLTextAreaElement).value).toBe(entry.text);
+  fireEvent.change(content, { target: { value: "跨隐藏窗口保留的草稿" } });
+  await emit("settings-visibility", false); await emit("settings-visibility", true); await emit("settings-request", null);
+  expect((screen.getByRole("textbox", { name: "内容" }) as HTMLTextAreaElement).value).toBe("跨隐藏窗口保留的草稿");
+  expect(invoke.mock.calls.filter(([cmd]) => cmd === "consume_settings_request")).toHaveLength(2);
+  pending = { tab: "worklog", target: { kind: "report", id: "r1" } };
+  await emit("settings-request", null); expect(await screen.findByText("归档周报")).toBeTruthy();
+});
 
 test("shows work journal as a lazy peer widget without a separate sidebar", async () => {
   // Given the settings widget selector.

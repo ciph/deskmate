@@ -19,6 +19,11 @@ mod sidecar_supervisor;
 mod sidecar_logs;
 mod agent;
 mod ai_usage;
+#[cfg(test)]
+mod database_command_tests;
+
+#[cfg(test)]
+mod database_measurements;
 #[cfg(feature = "legacy-ai-recovery")]
 pub mod legacy_ai_recovery;
 mod retired_tools;
@@ -47,11 +52,14 @@ mod pomodoro;
 mod qa_identity;
 mod settings;
 mod settings_window;
+mod settings_lifecycle;
 mod startup_settings;
 mod tool_permissions;
 mod updater;
 mod window_layout;
 mod workbench;
+mod workbench_files;
+mod sidecar_residency;
 mod workbench_theme;
 mod worklog;
 mod yume_context;
@@ -81,7 +89,7 @@ impl Sidecar {
     }
 }
 
-pub(crate) fn sidecar_generation(app: &tauri::AppHandle) -> Result<u64, String> {
+pub(crate) fn sidecar_generation<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<u64, String> {
     app.state::<Sidecar>().generation.read().map(|generation| *generation)
         .map_err(|_| "sidecar generation poisoned".to_owned())
 }
@@ -128,7 +136,7 @@ pub(crate) fn sidecar_stopping(app: &tauri::AppHandle) -> bool {
 }
 
 /// Basic-auth header value for the current managed sidecar.
-pub(crate) fn sidecar_auth_header(app: &tauri::AppHandle) -> String {
+pub(crate) fn sidecar_auth_header<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> String {
     use base64::Engine;
     let password = &app.state::<Sidecar>().password;
     format!(
@@ -180,7 +188,7 @@ fn sidecar_auth(
     }))
 }
 
-pub(crate) fn sidecar_url(app: &tauri::AppHandle) -> String {
+pub(crate) fn sidecar_url<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> String {
     format!("http://127.0.0.1:{}", app.state::<Sidecar>().port)
 }
 
@@ -1376,23 +1384,10 @@ pub(crate) fn toggle_pet_visibility(app: &tauri::AppHandle) {
 }
 
 fn show_settings_window(app: &tauri::AppHandle) {
-    let Some(win) = app.get_webview_window("settings") else {
-        return;
-    };
-    let _ = win.set_always_on_top(true);
-    let large = app
-        .state::<SettingsState>()
-        .0
-        .lock()
-        .map(|s| s.settings_large)
-        .map_err(|error| error.to_string());
-    if let Ok(large) = large {
-        if let Err(error) = settings_window::apply(app, large) {
-            eprintln!("settings window resize failed: {error}");
-        }
-    }
-    let _ = win.show();
-    let _ = win.set_focus();
+    let app = app.clone();
+    tauri::async_runtime::spawn(async move {
+        if let Err(error) = settings_lifecycle::open(app, None).await { eprintln!("settings window failed: {error}"); }
+    });
 }
 
 fn restore_settings_focus_if_visible(app: &tauri::AppHandle) {
@@ -1410,37 +1405,30 @@ fn restore_settings_focus_if_visible(app: &tauri::AppHandle) {
     let _ = win.set_focus();
 }
 
-/// Frontend close button: move offscreen instead of hide, so IPC stays alive.
+/// Hide without destroying the mounted settings and drafts.
 #[tauri::command]
 fn hide_settings(app: tauri::AppHandle) {
-    if let Some(win) = app.get_webview_window("settings") {
-        let _ = win.set_always_on_top(false);
-        let _ = win.hide();
-    }
+    settings_lifecycle::hide(&app);
 }
 
 #[tauri::command]
-fn open_settings(app: tauri::AppHandle) {
-    show_settings_window(&app);
+async fn open_settings(app: tauri::AppHandle) -> Result<(), String> {
+    settings_lifecycle::open(app, None).await
 }
 
 #[tauri::command]
-fn open_widget_settings(app: tauri::AppHandle) {
-    show_settings_window(&app);
-    let _ = app.emit("deskmate://settings-tab", "widget");
+async fn open_widget_settings(app: tauri::AppHandle) -> Result<(), String> {
+    settings_lifecycle::open(app, Some(settings_lifecycle::SettingsRequest { tab: "widget", target: None })).await
 }
 
 #[tauri::command]
-fn open_ai_model_settings(app: tauri::AppHandle) {
-    show_settings_window(&app);
-    let _ = app.emit("deskmate://settings-tab", "ai");
+async fn open_ai_model_settings(app: tauri::AppHandle) -> Result<(), String> {
+    settings_lifecycle::open(app, Some(settings_lifecycle::SettingsRequest { tab: "ai", target: None })).await
 }
 
 #[tauri::command]
-fn open_worklog_settings(app: tauri::AppHandle, target: Option<serde_json::Value>) {
-    show_settings_window(&app);
-    let _ = app.emit("deskmate://settings-tab", "worklog");
-    let _ = app.emit("deskmate://worklog-target", target);
+async fn open_worklog_settings(app: tauri::AppHandle, target: Option<serde_json::Value>) -> Result<(), String> {
+    settings_lifecycle::open(app, Some(settings_lifecycle::SettingsRequest { tab: "worklog", target })).await
 }
 
 #[cfg(feature = "worklog-qa")]
@@ -1542,7 +1530,15 @@ pub fn run() {
                 }
             });
         })
+        .on_page_load(|webview,payload| {
+            if matches!(payload.event(),tauri::webview::PageLoadEvent::Started) {
+                sidecar_residency::release_page(webview.app_handle(),webview.label());
+            }
+        })
         .on_window_event(|window, event| {
+            if matches!(event,tauri::WindowEvent::Destroyed) {
+                sidecar_residency::release_page(window.app_handle(),window.label());
+            }
             pet_menu::window_event(window, event);
             // Configured WebviewWindows dispatch native drops as WindowEvents.
             if window.label() == "chat" {
@@ -1592,6 +1588,8 @@ pub fn run() {
         .manage(component_activation::ActivationState::default())
         .manage(workbench::WorkbenchHandoff::default())
         .manage(workbench::WorkbenchWindow::default())
+        .manage(settings_lifecycle::SettingsWindow::default())
+        .manage(sidecar_residency::SidecarRequests::default())
         .manage(workbench::WorkbenchOwnership::default())
         .manage(pet_menu::MenuState::default())
         .manage(pomodoro::PomodoroState::default())
@@ -1633,9 +1631,12 @@ pub fn run() {
             worklog::commands::worklog_record,
             worklog::commands::worklog_update,
             worklog::commands::worklog_query,
+            worklog::commands::worklog_get_entry,
             worklog::commands::worklog_delete_entry,
             worklog::commands::worklog_list_reports,
             worklog::commands::worklog_get_report,
+            worklog::commands::worklog_get_report_version,
+            worklog::commands::worklog_get_report_sources,
             worklog::commands::worklog_save_report,
             worklog::commands::worklog_apply_version,
             worklog::commands::worklog_delete_report,
@@ -1668,6 +1669,9 @@ pub fn run() {
             workbench::workbench_pick_directory,
             workbench::workbench_pick_files,
             workbench::workbench_read_file,
+            workbench::workbench_release_files,
+            sidecar_residency::sidecar_request_begin,
+            sidecar_residency::sidecar_request_end,
             workbench::workbench_save_file,
             workbench::workbench_open_path,
             workbench::workbench_reveal_path,
@@ -1714,6 +1718,8 @@ pub fn run() {
             open_widget_settings,
             open_ai_model_settings,
             hide_settings,
+            settings_lifecycle::get_settings_visibility,
+            settings_lifecycle::consume_settings_request,
             app_version,
             history::commands::history_catalog_list,
             history::commands::history_model_selection_get,
@@ -1844,6 +1850,7 @@ pub fn run() {
                 agent::recover_after_start(handle.clone());
             }
             start_sidecar_supervisor(handle.clone());
+            sidecar_residency::start(handle.clone());
             app.manage(tool_permissions::events::PermissionEvents::start_managed(handle.clone(), format!(
                 "http://127.0.0.1:{port}"
             )));

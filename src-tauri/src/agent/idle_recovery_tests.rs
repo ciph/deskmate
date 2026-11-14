@@ -93,7 +93,7 @@ fn inspect_fixture(f: &Fixture, mode: &str) -> SnapshotRead {
 fn submitted_user_only_idle_run_is_interrupted_and_stays_terminal_after_restart() {
     let f = Fixture::new();
     let snapshot = inspect_fixture(&f, "idle");
-    assert!(matches!(&snapshot, SnapshotRead::IdleInterrupted(_)));
+    assert!(matches!(&snapshot, SnapshotRead::Idle(_)));
     f.collect(snapshot, true);
     let reloaded = AgentRunState::load(RunStore::new(f.root.join("runs"))).unwrap().read().unwrap();
     assert!(reloaded.active.is_none());
@@ -106,7 +106,7 @@ fn submitted_user_only_idle_run_is_interrupted_and_stays_terminal_after_restart(
 fn busy_retry_interactions_foreign_scope_and_unknown_network_remain_active() {
     for mode in ["busy","retry","permission","question","network","malformed","foreign","late-busy"] {
         let f = Fixture::new(); let snapshot = inspect_fixture(&f, mode);
-        assert!(matches!(&snapshot, SnapshotRead::Messages(_)), "{mode}");
+        assert!(matches!(&snapshot, SnapshotRead::Ready(_)), "{mode}");
         f.collect(snapshot, true); assert!(f.runs.read().unwrap().active.is_some(), "{mode}");
     }
 }

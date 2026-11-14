@@ -6,6 +6,13 @@ use crate::history::{
     catalog::CatalogStore, catalog_import::new_entry, catalog_model::*, reconcile,
 };
 
+fn states(root: &std::path::Path) -> (crate::agent::AgentRunState, crate::Sidecar) {
+    (crate::agent::AgentRunState::new(crate::agent::RunStore::new(root.join("runs"))), crate::Sidecar {
+        child: std::sync::Mutex::new(None), generation: std::sync::RwLock::new(1),
+        logs: std::sync::Mutex::new(None), port: 0, password: "fixture".into(),
+    })
+}
+
 fn pending_store() -> (std::path::PathBuf, CatalogStore) {
     let root = std::env::temp_dir().join(format!("yume-delete-retry-{}", uuid::Uuid::new_v4()));
     let store = CatalogStore::open(&root.join("catalog.sqlite")).unwrap();
@@ -44,7 +51,8 @@ fn pending_delete_does_not_contact_mutation_when_native_task_is_busy() {
     ]);
     let client = NativeHistoryClient::new(&url, "Basic fixture").unwrap();
     // When refreshing discovers the current task state.
-    let errors = reconcile::reconcile(&store, &client, &[]).unwrap();
+    let (runs, sidecar) = states(&root);
+    let errors = reconcile::reconcile(&store, &client, &runs, &sidecar).unwrap();
     // Then deletion stays pending without issuing an unsafe retry.
     assert!(
         errors.is_empty(),
@@ -78,7 +86,8 @@ fn delete_retry_survives_remote_failure_and_confirms_only_observed_removal() {
         (404, "{}".into()),
     ]);
     let client = NativeHistoryClient::new(&url, "Basic fixture").unwrap();
-    let failure = reconcile::reconcile(&store, &client, &[]).unwrap();
+    let (runs, sidecar) = states(&root);
+    let failure = reconcile::reconcile(&store, &client, &runs, &sidecar).unwrap();
     assert_eq!(failure, ["history_native_http_503"]);
     let reopened = CatalogStore::open(&root.join("catalog.sqlite")).unwrap();
     assert!(
@@ -89,7 +98,7 @@ fn delete_retry_survives_remote_failure_and_confirms_only_observed_removal() {
             .remote_deleted
     );
     // When the next refresh retries against the recovered native service.
-    let errors = reconcile::reconcile(&reopened, &client, &[]).unwrap();
+    let errors = reconcile::reconcile(&reopened, &client, &runs, &sidecar).unwrap();
     // Then the row stays hidden and confirmed removal is durable.
     assert!(errors.is_empty());
     let removed = reopened.all().unwrap().remove(0);

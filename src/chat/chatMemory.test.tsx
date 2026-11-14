@@ -45,7 +45,7 @@ function installOpenCodeTransport(): void {
   const fetchMock = mock((input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(String(input)).pathname;
     if (url === "/event") return Promise.resolve(eventStreamFixture(init?.signal));
-    if (url.endsWith("/session") && init?.method === "GET") {
+    if (url.endsWith("/global/health") && init?.method === "GET") {
       return Promise.resolve(new Response(null, { status: 200 }));
     }
     if (url.endsWith("/session") && init?.method === "POST") {

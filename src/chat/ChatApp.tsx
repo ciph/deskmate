@@ -82,6 +82,8 @@ import { ModelPicker, WorkspacePicker } from "./ComposerPickers";
 import { composerCopy, folderErrorCopy, modelErrorCopy } from "./composerCopy";
 import { INHERIT_MODEL, getConversationModel, resolveConversationModel, setConversationModel, type ChatModelChoice, type ConversationModelSelection } from "../lib/conversationModel";
 import { useAgentRun } from "./useAgentRun";
+import { mergeHistoryPage } from "./historyPages";
+import { useChatVisible } from "./useChatVisible";
 import { useAgentHistoryView } from "./useAgentHistoryView";
 import { HistoryOrganizer } from "./HistoryOrganizer";
 import { catalogAccess, catalogLoad, saveLocalMessages, type UnifiedHistoryRow, type CatalogLoadResult } from "../lib/unifiedHistory";
@@ -207,10 +209,18 @@ export default function ChatApp() {
   const [conversationEvents] = useState(() => createConversationEvents(event => eventHandlers.current.deliver(event), scope => eventHandlers.current.reconcile(scope)));
   const [worklogSnapshot, setWorklogSnapshot] = useState<{ generation: number; loaded: CatalogLoadResult } | null>(null);
   const [eventSnapshotRevision, setEventSnapshotRevision] = useState(0);
+  const historyWindowRef = useRef<{ generation: number; loaded: CatalogLoadResult; expanded: boolean } | null>(null);
+  const [loadingEarlier, setLoadingEarlier] = useState(false);
+  const earlierFlight = useRef(false);
   const rememberLoaded = useCallback((loaded: CatalogLoadResult, generation = viewGenerationRef.current) => {
-    if (generation !== viewGenerationRef.current) return;
+    if (generation !== viewGenerationRef.current) return loaded;
+    const previous = historyWindowRef.current;
+    const expanded = !!previous?.expanded && previous.generation === generation && previous.loaded.entry.key === loaded.entry.key;
+    if (expanded) loaded = mergeHistoryPage(previous.loaded, loaded, false);
+    historyWindowRef.current = { generation, loaded, expanded };
     if (loaded.entry.identity.kind === "native") conversationEvents.snapshot({ key: loaded.entry.key, directory: loaded.entry.identity.directory, sessionId: loaded.entry.identity.sessionId, generation }, loaded.entry.runtime === "running");
     setWorklogSnapshot({ generation, loaded });
+    return loaded;
   }, [conversationEvents]);
   const currentDirectory = catalogEntry?.identity.kind === "native" ? catalogEntry.identity.directory : undefined;
   const sessionDirectory = () => catalogEntryRef.current?.identity.kind === "native" ? catalogEntryRef.current.identity.directory : undefined;
@@ -323,6 +333,7 @@ export default function ChatApp() {
   const sessionRef = useRef<string | null>(null);
   const permissions = useToolPermissions(currentSessionId, status === "busy");
   const agent = useAgentRun(lang);
+  const chatVisible = useChatVisible();
   const agentOwnsConversation = !!agent.projection.active && !!catalogEntry && agent.projection.activeCatalogKey === catalogEntry.key;
   const {
     viewedId: agentHistoryId,
@@ -330,7 +341,8 @@ export default function ChatApp() {
     open: openHistory,
     openScoped: openScopedAgentHistory,
     leave: leaveAgentHistory,
-  } = useAgentHistoryView(agent.projection.active?.sessionId ?? null, rememberLoaded);
+    invalidate: invalidateAgentHistory,
+  } = useAgentHistoryView(agent.projection.active?.sessionId ?? null, rememberLoaded, chatVisible);
   const canContinueAgentHistory = agentHistoryId !== null && agentHistoryArchive?.agentDetails?.status !== "active"
     && catalogEntry?.ownership === "agent" && !catalogEntry.archived && catalogEntry.availability === "available";
   const controlsCurrentReply = canControlRunningReply(catalogEntry, status === "busy" ? replyRequestRef.current?.catalogKey ?? settlingReplyKeyRef.current : undefined);
@@ -690,7 +702,7 @@ export default function ChatApp() {
       const part = props.part as { sessionID?: string; type?: string } | undefined;
       if (part?.type === "tool" && part.sessionID === sessionRef.current) worklogRef.current.acceptTool(part);
     }
-    if (agentHistoryActiveRef.current) return;
+    if (agentHistoryActiveRef.current) { invalidateAgentHistory(); return; }
 
     switch (e.type) {
       case "message.updated": {
@@ -817,16 +829,16 @@ export default function ChatApp() {
         break;
       }
     }
-  }, []);
+  }, [invalidateAgentHistory]);
 
   useLayoutEffect(() => {
     eventHandlers.current.deliver = handleEvent;
     eventHandlers.current.reconcile = async (scope) => {
       const entry = catalogEntryRef.current;
       if (!entry || entry.key !== scope.key || viewGenerationRef.current !== scope.generation) return;
-      const loaded = await loadSharedConversation(entry);
+      let loaded = await loadSharedConversation(entry);
       if (viewGenerationRef.current !== scope.generation || catalogEntryRef.current?.key !== scope.key) return;
-      rememberLoaded(loaded, scope.generation);
+      loaded = rememberLoaded(loaded, scope.generation);
       streamText.reset();
       streamText.restore(loaded.messages.filter(message => message.role === "assistant" && !message.localOnly));
       if (loaded.agentDetails) openScopedAgentHistory(loaded);
@@ -936,7 +948,7 @@ export default function ChatApp() {
         if (run.sessionId) {
           try {
             const key = await invoke<string>("history_catalog_native_key", { directory: run.workspacePath, sessionId: run.sessionId });
-            const loaded = await catalogLoad(key);
+            const loaded = await catalogLoad(key, {});
             if (generation !== viewGenerationRef.current) return;
             rememberLoaded(loaded, generation);
             openScopedAgentHistory(loaded);
@@ -1501,12 +1513,58 @@ export default function ChatApp() {
     if (!run?.sessionId) { setMemoryNotice(tRef.current.historyLoadFailed); return; }
     try {
       const key = await invoke<string>("history_catalog_native_key", { directory: run.workspacePath, sessionId: run.sessionId });
-      const loaded = await catalogLoad(key);
+      const loaded = await catalogLoad(key, {});
       await resumeSession(loaded.entry);
     } catch (cause) {
       setMemoryNotice(tRef.current.historyLoadFailed);
       console.warn("agent task return failed", cause instanceof Error ? cause.message : String(cause));
     }
+  };
+
+  const loadEarlier = async () => {
+    const window = historyWindowRef.current;
+    const cursor = window?.loaded.nextCursor;
+    if (!window || !cursor || earlierFlight.current) return;
+    earlierFlight.current = true;
+    setLoadingEarlier(true);
+    try {
+      const page = await catalogLoad(window.loaded.entry.key, { before: cursor });
+      const current = historyWindowRef.current;
+      if (viewGenerationRef.current !== window.generation || current?.generation !== window.generation || current.loaded.entry.key !== window.loaded.entry.key || current.loaded.nextCursor !== cursor) return;
+      if (page.nextCursor === cursor) throw new Error("history cursor did not advance");
+      const loaded = mergeHistoryPage(current.loaded, page, true);
+      timelineControl.current?.preserve?.();
+      historyWindowRef.current = { generation: window.generation, loaded, expanded: true };
+      setWorklogSnapshot({ generation: window.generation, loaded });
+      followLatestRef.current = false;
+      if (loaded.agentDetails) openScopedAgentHistory(loaded);
+      else setMessages(historyChatMessages(loaded));
+    } catch {
+      if (viewGenerationRef.current === window.generation) setMemoryNotice(tRef.current.historyLoadFailed);
+    } finally { earlierFlight.current = false; setLoadingEarlier(false); }
+  };
+
+  const loadAllHistory = async (): Promise<boolean> => {
+    const current = historyWindowRef.current;
+    if (!current?.loaded.nextCursor) return true;
+    if (earlierFlight.current) return false;
+    earlierFlight.current = true;
+    setLoadingEarlier(true);
+    try {
+      // Full selection is explicit; ordinary viewing and refresh stay paged.
+      const loaded = await catalogLoad(current.loaded.entry.key);
+      if (viewGenerationRef.current !== current.generation || catalogEntryRef.current?.key !== current.loaded.entry.key) return false;
+      if (loaded.entry.key !== current.loaded.entry.key || JSON.stringify(loaded.entry.identity) !== JSON.stringify(current.loaded.entry.identity)) throw new Error("history identity changed");
+      historyWindowRef.current = { generation: current.generation, loaded, expanded: true };
+      setWorklogSnapshot({ generation: current.generation, loaded });
+      if (loaded.agentDetails) openScopedAgentHistory(loaded);
+      else setMessages(historyChatMessages(loaded));
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+      return viewGenerationRef.current === current.generation;
+    } catch {
+      if (viewGenerationRef.current === current.generation) setMemoryNotice(tRef.current.historyLoadFailed);
+      return false;
+    } finally { earlierFlight.current = false; setLoadingEarlier(false); }
   };
 
   const closeChat = async (): Promise<void> => {
@@ -1615,9 +1673,14 @@ export default function ChatApp() {
           }} />
       ) : (
         <>
+          {worklogSnapshot?.generation === viewGeneration && worklogSnapshot.loaded.entry.key === catalogEntry?.key && worklogSnapshot.loaded.nextCursor && (
+            <button className="history-load-earlier" type="button" disabled={loadingEarlier || historyLoading} onClick={() => void loadEarlier()}>
+              {loadingEarlier ? t.loading : lang === "zh-CN" ? "加载更早消息" : "Load earlier messages"}
+            </button>
+          )}
           <div className="chat-timeline" data-message-count={messages.length}>
           <ChatTimeline key={`${catalogEntry?.key ?? "new"}:${viewGenerationRef.current}`} ids={timelineIds} listRef={listRef}
-            controlRef={timelineControl} followRef={followLatestRef} onVisible={setVisibleMessageIndex} geometry={`${lang}:${theme}`}
+            controlRef={timelineControl} followRef={followLatestRef} onVisible={setVisibleMessageIndex} geometry={`${lang}:${theme}`} onRequestAll={loadAllHistory}
             renderRow={(index) => {
               const m = messages[index];
               if (!m) {

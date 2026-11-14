@@ -2,16 +2,18 @@ import type { MarkdownBlock, MarkdownResult } from "./markdownPipeline";
 
 export const MARKDOWN_INTERVAL_MS = 125;
 export const MARKDOWN_CACHE_BYTES = 16 * 1024 * 1024;
+export const MARKDOWN_IDLE_MS = 10_000;
 export interface MarkdownSnapshot { text: string; streaming: boolean; blocks: readonly MarkdownBlock[]; unavailable?: boolean }
 interface Job { id: number; version: number; text: string; streaming: boolean; terminal?: boolean; publish: (snapshot: MarkdownSnapshot) => void }
-interface Client { job: Job; lastStart: number; previous?: MarkdownSnapshot }
+interface Client { job: Job; lastStart: number; interval: number; previous?: MarkdownSnapshot }
 type WorkerPort = Pick<Worker, "postMessage" | "terminate" | "onmessage" | "onerror">;
 
 /** One window, one worker, one running request and at most one pending per view. */
-export function createMarkdownScheduler(factory: () => WorkerPort) {
+export function createMarkdownScheduler(factory: () => WorkerPort, idleMs = MARKDOWN_IDLE_MS) {
   let worker: WorkerPort | null = null, failures = 0, sequence = 0;
   let running: Job | null = null, workerSource: Job | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let idleTimer: ReturnType<typeof setTimeout> | undefined;
   const clients = new Map<number, Client>();
   const pending = new Map<number, Job>();
   const cache = new Map<string, { snapshot: MarkdownSnapshot; bytes: number }>();
@@ -19,6 +21,21 @@ export function createMarkdownScheduler(factory: () => WorkerPort) {
   let observe: ((event: { kind: "start" | "finish"; id: number; version: number; at: number; chars: number; streaming: boolean; terminal: boolean; parseMs?: number }) => void) | undefined;
   const stats = { starts: 0, maxRunning: 0, maxPendingPerMessage: 0, parseMs: 0, failures: 0, cacheBytes: 0 };
   const keyOf = (job: Job) => `${job.streaming ? "stream:" : "final:"}${job.text}`;
+  function stopWorker() {
+    if (worker) { worker.onmessage = null; worker.onerror = null; worker.terminate(); }
+    worker = null; workerSource = null; running = null;
+  }
+  function clearCache() { cache.clear(); cacheBytes = 0; stats.cacheBytes = 0; }
+  function releaseIdle() {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      idleTimer = undefined;
+      if (clients.size) return;
+      // A parse whose last view closed has no consumer; it can also be cancelled.
+      clearTimeout(timer); timer = undefined; pending.clear();
+      stopWorker(); clearCache(); failures = 0;
+    }, idleMs);
+  }
   function publish(job: Job, snapshot: MarkdownSnapshot) {
     const client = clients.get(job.id);
     if (!client || client.job.version !== job.version) return;
@@ -26,10 +43,8 @@ export function createMarkdownScheduler(factory: () => WorkerPort) {
     job.publish(snapshot);
   }
   function failed() {
-    worker?.terminate(); worker = null; workerSource = null;
-    failures += 1; stats.failures = failures;
     if (running && !pending.has(running.id) && clients.has(running.id)) pending.set(running.id, running);
-    running = null;
+    stopWorker(); failures += 1; stats.failures += 1;
     for (const client of clients.values()) client.lastStart = -Infinity;
     if (failures > 1) {
       for (const job of pending.values()) publish(job, { text: job.text, streaming: job.streaming, blocks: [], unavailable: true });
@@ -40,20 +55,24 @@ export function createMarkdownScheduler(factory: () => WorkerPort) {
     if (worker) return true;
     try {
       worker = factory();
-      worker.onerror = () => failed();
+      const owner = worker;
+      worker.onerror = () => { if (worker === owner) failed(); };
       worker.onmessage = event => {
+        if (worker !== owner) return;
         const result = event.data as MarkdownResult & { id: number; version: number };
         const job = running;
         if (!job || result.id !== job.id || result.version !== job.version) return;
         running = null;
         stats.parseMs += result.parseMs;
+        const measuredClient = clients.get(job.id);
+        if (measuredClient) measuredClient.interval = Math.max(MARKDOWN_INTERVAL_MS, Math.min(2000, result.parseMs * 3));
         observe?.({ kind: "finish", id: job.id, version: job.version, at: performance.now(), chars: job.text.length, streaming: job.streaming, terminal: !!job.terminal, parseMs: result.parseMs });
         const previous = clients.get(job.id)?.previous;
         const oldBlocks = new Map(previous?.blocks.map(block => [block.key, block]));
         const blocks = result.blocks.map(block => oldBlocks.get(block.key)?.fingerprint === block.fingerprint ? oldBlocks.get(block.key)! : block);
         const snapshot = { text: job.text, streaming: job.streaming, blocks };
         const key = keyOf(job);
-        if (result.bytes <= MARKDOWN_CACHE_BYTES) {
+        if (clients.has(job.id) && !job.streaming && result.bytes <= MARKDOWN_CACHE_BYTES) {
           cacheBytes -= cache.get(key)?.bytes ?? 0;
           cache.delete(key); cache.set(key, { snapshot, bytes: result.bytes }); cacheBytes += result.bytes;
           while (cacheBytes > MARKDOWN_CACHE_BYTES) {
@@ -83,7 +102,7 @@ export function createMarkdownScheduler(factory: () => WorkerPort) {
     for (const job of jobs) {
       const client = clients.get(job.id);
       if (!client) { pending.delete(job.id); continue; }
-      const wait = job.streaming ? Math.max(0, client.lastStart + MARKDOWN_INTERVAL_MS - now) : 0;
+      const wait = job.streaming ? Math.max(0, client.lastStart + client.interval - now) : 0;
       if (wait > 0) { delay = Math.min(delay, wait); continue; }
       const cached = cache.get(keyOf(job));
       if (cached) {
@@ -106,20 +125,27 @@ export function createMarkdownScheduler(factory: () => WorkerPort) {
     stats,
     observe(listener: typeof observe) { observe = listener; return () => { if (observe === listener) observe = undefined; }; },
     open(publishResult: Job["publish"]) {
+      clearTimeout(idleTimer); idleTimer = undefined;
       const id = ++sequence;
-      const client: Client = { lastStart: -Infinity, job: { id, version: 0, text: "", streaming: false, publish: publishResult } };
+      const client: Client = { lastStart: -Infinity, interval: MARKDOWN_INTERVAL_MS, job: { id, version: 0, text: "", streaming: false, publish: publishResult } };
       clients.set(id, client);
       return {
         update(text: string, streaming: boolean) {
+          if (!clients.has(id)) return;
           client.job = { ...client.job, version: client.job.version + 1, text, streaming, terminal: client.job.streaming && !streaming };
           if (failures > 1) { publish(client.job, { text, streaming, blocks: [], unavailable: true }); return; }
           pending.set(id, client.job); stats.maxPendingPerMessage = 1; pump();
         },
-        close() { clients.delete(id); pending.delete(id); },
+        close() {
+          if (!clients.delete(id)) return;
+          pending.delete(id); client.previous = undefined;
+          client.job = { ...client.job, text: "", publish: () => {} };
+          if (!clients.size) releaseIdle();
+        },
       };
     },
-    clearCache() { cache.clear(); cacheBytes = 0; stats.cacheBytes = 0; },
-    dispose() { clearTimeout(timer); worker?.terminate(); worker = null; clients.clear(); pending.clear(); cache.clear(); cacheBytes = 0; running = null; },
+    clearCache,
+    dispose() { clearTimeout(timer); clearTimeout(idleTimer); timer = undefined; idleTimer = undefined; stopWorker(); clients.clear(); pending.clear(); clearCache(); failures = 0; },
   };
 }
 

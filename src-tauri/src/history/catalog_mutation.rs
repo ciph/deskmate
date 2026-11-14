@@ -52,6 +52,8 @@ pub(crate) async fn history_catalog_mutate(window: tauri::WebviewWindow, app: ta
 
 fn mutate(app: &tauri::AppHandle, key: &str, mutation: &CatalogMutation) -> Result<Option<CatalogRow>, String> {
     commands::initialize(app)?;
+    let maintenance = app.state::<super::maintenance::HistoryMaintenance>();
+    let _selection = maintenance.used.lock().map_err(|_| "history_state_unavailable")?;
     let runs = app.state::<crate::agent::AgentRunState>();
     // Share the launch/stop operation lock so an active run cannot race permanent deletion.
     let _guard = runs.lock_operation()?;

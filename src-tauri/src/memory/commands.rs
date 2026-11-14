@@ -61,81 +61,107 @@ fn with_repository<T>(
     body(repository)
 }
 
-fn notify(app: &tauri::AppHandle, change: MemoryChange) {
+fn notify<R: tauri::Runtime>(app: &tauri::AppHandle<R>, change: MemoryChange) {
     // A failed notification must not fail the write that already committed.
     let _ = app.emit(MEMORY_CHANGED_EVENT, change);
 }
 
 #[tauri::command]
-pub fn memory_available(state: tauri::State<MemoryState>) -> bool {
-    state.0.lock().map(|guard| guard.is_some()).unwrap_or(false)
+pub async fn memory_available<R: tauri::Runtime>(app: tauri::AppHandle<R>) -> bool {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        state.0.lock().map(|guard| guard.is_some()).unwrap_or(false)
+    })
+    .await
+    .unwrap_or(false)
 }
 
 #[tauri::command]
-pub fn memory_create(
-    app: tauri::AppHandle,
-    state: tauri::State<MemoryState>,
+pub async fn memory_create<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     memory: NewMemory,
 ) -> Result<Memory, MemoryError> {
-    let created = with_repository(&state, |repository| repository.create(&memory))?;
-    notify(
-        &app,
-        MemoryChange::for_memory(MemoryAction::Created, &created),
-    );
-    Ok(created)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        let created = with_repository(&state, |repository| repository.create(&memory))?;
+        notify(
+            &app,
+            MemoryChange::for_memory(MemoryAction::Created, &created),
+        );
+        Ok(created)
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[tauri::command]
-pub fn memory_update(
-    app: tauri::AppHandle,
-    state: tauri::State<MemoryState>,
+pub async fn memory_update<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     update: MemoryUpdate,
 ) -> Result<Memory, MemoryError> {
-    let updated = with_repository(&state, |repository| repository.update(&update))?;
-    notify(
-        &app,
-        MemoryChange::for_memory(MemoryAction::Updated, &updated),
-    );
-    Ok(updated)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        let updated = with_repository(&state, |repository| repository.update(&update))?;
+        notify(
+            &app,
+            MemoryChange::for_memory(MemoryAction::Updated, &updated),
+        );
+        Ok(updated)
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[tauri::command]
-pub fn memory_list(
-    state: tauri::State<MemoryState>,
+pub async fn memory_list<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     query: MemoryQuery,
 ) -> Result<Vec<MemoryRecord>, MemoryError> {
-    with_repository(&state, |repository| repository.list(&query))
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        with_repository(&state, |repository| repository.list(&query))
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[tauri::command]
-pub fn memory_forget(
-    app: tauri::AppHandle,
-    state: tauri::State<MemoryState>,
+pub async fn memory_forget<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     id: String,
 ) -> Result<(), MemoryError> {
-    let forgotten = with_repository(&state, |repository| repository.forget(&id))?;
-    notify(
-        &app,
-        MemoryChange::for_memory(MemoryAction::Forgotten, &forgotten),
-    );
-    Ok(())
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        let forgotten = with_repository(&state, |repository| repository.forget(&id))?;
+        notify(
+            &app,
+            MemoryChange::for_memory(MemoryAction::Forgotten, &forgotten),
+        );
+        Ok(())
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[tauri::command]
-pub fn memory_clear(
-    app: tauri::AppHandle,
-    state: tauri::State<MemoryState>,
+pub async fn memory_clear<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     scope: Option<MemoryScope>,
     persona_id: Option<String>,
 ) -> Result<u64, MemoryError> {
-    let removed = with_repository(&state, |repository| {
-        repository.clear(scope, persona_id.as_deref())
-    })?;
-    let mut change = MemoryChange::new(MemoryAction::Cleared);
-    change.scope = scope;
-    change.persona_id = persona_id;
-    notify(&app, change);
-    Ok(removed)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        let removed = with_repository(&state, |repository| {
+            repository.clear(scope, persona_id.as_deref())
+        })?;
+        let mut change = MemoryChange::new(MemoryAction::Cleared);
+        change.scope = scope;
+        change.persona_id = persona_id;
+        notify(&app, change);
+        Ok(removed)
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 /// Called when a conversation is deleted and the user opted to drop memories
@@ -174,36 +200,40 @@ fn forget_catalog_conversation(
 }
 
 #[tauri::command]
-pub fn memory_forget_conversation(
-    window: tauri::WebviewWindow,
-    app: tauri::AppHandle,
-    state: tauri::State<MemoryState>,
+pub async fn memory_forget_conversation<R: tauri::Runtime>(
+    window: tauri::WebviewWindow<R>,
+    app: tauri::AppHandle<R>,
     conversation_id: String,
     catalog_key: Option<String>,
 ) -> Result<u64, MemoryError> {
-    let entries = if catalog_key.is_some() {
-        crate::history::native_api::authorize_history_window(window.label())
-            .map_err(|_| MemoryError::validation_failed("memory_conversation_window_denied"))?;
-        Some(
-            crate::history::commands::store(&app)
-                .and_then(|store| store.all())
-                .map_err(MemoryError::storage_unavailable)?,
-        )
-    } else {
-        None
-    };
-    let removed = with_repository(&state, |repository| {
-        match (catalog_key.as_deref(), entries.as_deref()) {
-            (Some(key), Some(entries)) => {
-                forget_catalog_conversation(repository, entries, &conversation_id, key)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        let entries = if catalog_key.is_some() {
+            crate::history::native_api::authorize_history_window(window.label())
+                .map_err(|_| MemoryError::validation_failed("memory_conversation_window_denied"))?;
+            Some(
+                crate::history::commands::store(&app)
+                    .and_then(|store| store.all())
+                    .map_err(MemoryError::storage_unavailable)?,
+            )
+        } else {
+            None
+        };
+        let removed = with_repository(&state, |repository| {
+            match (catalog_key.as_deref(), entries.as_deref()) {
+                (Some(key), Some(entries)) => {
+                    forget_catalog_conversation(repository, entries, &conversation_id, key)
+                }
+                _ => repository.forget_conversation(&conversation_id),
             }
-            _ => repository.forget_conversation(&conversation_id),
+        })?;
+        if removed > 0 {
+            notify(&app, MemoryChange::new(MemoryAction::Forgotten));
         }
-    })?;
-    if removed > 0 {
-        notify(&app, MemoryChange::new(MemoryAction::Forgotten));
-    }
-    Ok(removed)
+        Ok(removed)
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[cfg(test)]
@@ -212,115 +242,147 @@ mod forget_tests;
 
 /// Assemble the memory block for one outgoing chat turn.
 #[tauri::command]
-pub fn memory_context(
+pub async fn memory_context(
     app: tauri::AppHandle,
-    state: tauri::State<MemoryState>,
     persona_id: String,
     user_text: String,
     enabled: bool,
     directory: Option<String>,
 ) -> Result<RetrievalContext, MemoryError> {
-    super::automatic::synchronize_work_links(&app);
-    // Retrieval must never break a chat turn: a disabled or broken store simply
-    // contributes no context.
-    match with_repository(&state, |repository| {
-        retrieval::context_for_turn_scoped(
-            repository,
-            &persona_id,
-            &user_text,
-            enabled,
-            directory.as_deref(),
-        )
-    }) {
-        Ok(mut context) => {
-            if enabled {
-                let workspace = directory.as_deref().filter(|d| {
-                    crate::history::commands::workspace(&app).ok().as_deref() != Some(*d)
-                });
-                context
-                    .prompt_block
-                    .push_str(&super::automatic::pending_context(
-                        &app,
-                        &persona_id,
-                        &user_text,
-                        workspace,
-                    ));
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        super::automatic::synchronize_work_links(&app);
+        // Retrieval must never break a chat turn: a disabled or broken store simply
+        // contributes no context.
+        match with_repository(&state, |repository| {
+            retrieval::context_for_turn_scoped(
+                repository,
+                &persona_id,
+                &user_text,
+                enabled,
+                directory.as_deref(),
+            )
+        }) {
+            Ok(mut context) => {
+                if enabled {
+                    let workspace = directory.as_deref().filter(|d| {
+                        crate::history::commands::workspace(&app).ok().as_deref() != Some(*d)
+                    });
+                    context
+                        .prompt_block
+                        .push_str(&super::automatic::pending_context(
+                            &app,
+                            &persona_id,
+                            &user_text,
+                            workspace,
+                        ));
+                }
+                Ok(context)
             }
-            Ok(context)
+            Err(error) => {
+                eprintln!("memory context skipped: {error}");
+                Ok(RetrievalContext::empty())
+            }
         }
-        Err(error) => {
-            eprintln!("memory context skipped: {error}");
-            Ok(RetrievalContext::empty())
-        }
-    }
+    })
+    .await
+    .unwrap_or_else(|_| Ok(RetrievalContext::empty()))
 }
 
 #[tauri::command]
-pub fn memory_export(
-    app: tauri::AppHandle,
-    state: tauri::State<MemoryState>,
+pub async fn memory_export<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
 ) -> Result<MemoryExport, MemoryError> {
-    let version = app.package_info().version.to_string();
-    with_repository(&state, |repository| export::build(repository, &version))
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        let version = app.package_info().version.to_string();
+        with_repository(&state, |repository| export::build(repository, &version))
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[tauri::command]
-pub fn memory_relationship(
-    state: tauri::State<MemoryState>,
+pub async fn memory_relationship<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     persona_id: String,
 ) -> Result<RelationshipState, MemoryError> {
-    with_repository(&state, |repository| repository.relationship(&persona_id))
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        with_repository(&state, |repository| repository.relationship(&persona_id))
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[tauri::command]
-pub fn memory_set_relationship_summary(
-    app: tauri::AppHandle,
-    state: tauri::State<MemoryState>,
+pub async fn memory_set_relationship_summary<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     persona_id: String,
     summary: String,
     expected_revision: i64,
 ) -> Result<RelationshipState, MemoryError> {
-    let updated = with_repository(&state, |repository| {
-        repository.set_relationship_summary(&persona_id, &summary, expected_revision)
-    })?;
-    let mut change = MemoryChange::new(MemoryAction::RelationshipUpdated);
-    change.persona_id = Some(updated.persona_id.clone());
-    change.revision = Some(updated.revision);
-    notify(&app, change);
-    Ok(updated)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        let updated = with_repository(&state, |repository| {
+            repository.set_relationship_summary(&persona_id, &summary, expected_revision)
+        })?;
+        let mut change = MemoryChange::new(MemoryAction::RelationshipUpdated);
+        change.persona_id = Some(updated.persona_id.clone());
+        change.revision = Some(updated.revision);
+        notify(&app, change);
+        Ok(updated)
+    })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[tauri::command]
-pub fn memory_link_task(
-    state: tauri::State<MemoryState>,
+pub async fn memory_link_task<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     memory_id: String,
     task_id: String,
 ) -> Result<(), MemoryError> {
-    with_repository(&state, |repository| {
-        repository.link_task(&memory_id, &task_id)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        with_repository(&state, |repository| {
+            repository.link_task(&memory_id, &task_id)
+        })
     })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[tauri::command]
-pub fn memory_unlink_task(
-    state: tauri::State<MemoryState>,
+pub async fn memory_unlink_task<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     memory_id: String,
     task_id: String,
 ) -> Result<(), MemoryError> {
-    with_repository(&state, |repository| {
-        repository.unlink_task(&memory_id, &task_id)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        with_repository(&state, |repository| {
+            repository.unlink_task(&memory_id, &task_id)
+        })
     })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 /// Called when a scheduled task is deleted: drops its links, never a memory.
 #[tauri::command]
-pub fn memory_unlink_deleted_task(
-    state: tauri::State<MemoryState>,
+pub async fn memory_unlink_deleted_task<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     task_id: String,
 ) -> Result<u64, MemoryError> {
-    with_repository(&state, |repository| {
-        repository.unlink_task_everywhere(&task_id)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<MemoryState>();
+        with_repository(&state, |repository| {
+            repository.unlink_task_everywhere(&task_id)
+        })
     })
+    .await
+    .map_err(|_| MemoryError::storage_unavailable("memory worker failed"))?
 }
 
 #[cfg(test)]

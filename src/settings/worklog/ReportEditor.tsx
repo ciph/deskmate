@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatText } from "../../chat/ChatText";
-import { applyReportVersion, deleteReport, saveReport, type ReportDetail, type ReportKind, type ReportVersion } from "../../lib/worklog";
+import { applyReportVersion, deleteReport, getReportVersion, saveReport, type ReportDetail, type ReportKind } from "../../lib/worklog";
+import { ReportSources } from "./ReportSources";
 import { DeleteConfirmation, WorklogFeedback } from "./WorklogFeedback";
 import { copyReport, exportReport } from "./reportExport";
 import { useWorklogAction } from "./useWorklogAction";
@@ -17,30 +18,34 @@ export function missingReportDates(start: string, end: string, coverage: readonl
   return missing;
 }
 
-function ReportSources({ detail, version, labels }: { readonly detail: ReportDetail; readonly version: ReportVersion; readonly labels: WorklogLabels }) {
-  const missing = missingReportDates(detail.report.periodStart, detail.report.periodEnd, version.coverageDates);
-  return <details><summary>{labels.sources} · {version.sourceSnapshot.length}</summary>
-    {missing.length > 0 && <p className="worklog-warning">{labels.missing}: {missing.join(", ")}</p>}
-    <ul className="worklog-list">{version.sourceSnapshot.map((source) => <li className="worklog-item" key={`${source.source.kind}:${source.source.id}`}>
-      <p className="worklog-meta">{[source.businessDate, source.project, source.source.id, `r${source.source.revision}`].filter(Boolean).join(" · ")}</p><p className="worklog-source-text">{source.text}</p>
-    </li>)}</ul>
-  </details>;
-}
-
 export function ReportEditor({ detail, kind, start, end, labels, language = "zh-CN", onBack, onChanged, onReload }: {
   readonly detail: ReportDetail | null; readonly kind: ReportKind; readonly start: string; readonly end: string;
   readonly labels: WorklogLabels; readonly onBack: () => void; readonly onChanged: () => void; readonly onReload: () => void;
   readonly language?: string;
 }) {
-  const initial = detail?.versions.find((version) => version.id === detail.report.currentVersionId) ?? detail?.versions[0];
-  const [selectedId, setSelectedId] = useState(initial?.id ?? "");
+  const initial = detail?.currentVersion;
+  const [version, setVersion] = useState(initial);
   const [body, setBody] = useState(initial?.bodyMarkdown ?? "");
   const [preview, setPreview] = useState(Boolean(initial?.bodyMarkdown));
   const [confirm, setConfirm] = useState(false);
   const action = useWorklogAction(labels);
-  const version = detail?.versions.find((item) => item.id === selectedId);
+  const selection = useRef(0);
+  const [loadingVersion, setLoadingVersion] = useState(false);
+  useEffect(() => () => { selection.current += 1; }, []);
   const report = detail?.report;
   const edited = body !== (version?.bodyMarkdown ?? "");
+  async function selectVersion(id: string) {
+    if (!report) return;
+    const generation = ++selection.current;
+    setLoadingVersion(true);
+    try {
+      await action.run(`version:${id}`, async () => {
+        const selected = await getReportVersion(report.id, id);
+        if (generation === selection.current) { setVersion(selected); setBody(selected.bodyMarkdown); }
+        return "";
+      });
+    } finally { if (generation === selection.current) setLoadingVersion(false); }
+  }
   async function save() {
     const draft = { kind: report?.kind ?? kind, periodStart: report?.periodStart ?? start, periodEnd: report?.periodEnd ?? end, expectedRevision: report?.revision ?? null, bodyMarkdown: body };
     if (await action.run(JSON.stringify(draft), async (requestId) => { await saveReport({ requestId, ...draft }); })) { onChanged(); onReload(); }
@@ -48,16 +53,13 @@ export function ReportEditor({ detail, kind, start, end, labels, language = "zh-
   return <div className="worklog-detail"><button className="set-btn" type="button" disabled={action.busy} onClick={onBack}>{labels.back}</button>
     <p className="worklog-meta">{report?.periodStart ?? start} — {report?.periodEnd ?? end}</p>
     {report?.stale && <p className="worklog-warning" role="status">{labels.stale}</p>}
-    {detail && <label className="worklog-field">{labels.version}<select className="set-select" value={selectedId} disabled={action.busy || edited} onChange={(e) => {
-      const selected = detail.versions.find((item) => item.id === e.target.value);
-      if (selected) { setSelectedId(selected.id); setBody(selected.bodyMarkdown); }
-    }}>{detail.versions.map((item) => <option key={item.id} value={item.id}>{item.version} · {item.id === report?.currentVersionId ? labels.current : item.origin === "generated" ? labels.candidate : labels.edit} · {item.generatedAt}</option>)}</select></label>}
+    {detail && <label className="worklog-field">{labels.version}<select className="set-select" value={version?.id ?? ""} disabled={action.busy || edited || loadingVersion} onChange={event => { void selectVersion(event.target.value); }}>{detail.versions.map((item) => <option key={item.id} value={item.id}>{item.version} · {item.id === report?.currentVersionId ? labels.current : item.origin === "generated" ? labels.candidate : labels.edit} · {item.generatedAt}</option>)}</select></label>}
     <form className="worklog-form" onSubmit={(e) => { e.preventDefault(); void save(); }}>
       <div className="worklog-actions"><button className="set-btn" type="button" disabled={action.busy}
         onClick={() => setPreview((value) => !value)}>{preview ? labels.edit : labels.preview}</button></div>
       {preview ? <section className="worklog-report-preview worklog-item" aria-label={`${labels.content} · ${labels.preview}`}>
         <ChatText text={body} lang={language} />
-      </section> : <label className="worklog-field">{labels.content}<textarea className="set-input worklog-textarea" rows={10} value={body} maxLength={20000} required onChange={(e) => setBody(e.target.value)} /></label>}
+      </section> : <label className="worklog-field">{labels.content}<textarea className="set-input worklog-textarea" rows={10} value={body} maxLength={20000} disabled={action.busy || loadingVersion} required onChange={(e) => setBody(e.target.value)} /></label>}
       <div className="worklog-actions"><button className="set-btn" type="submit" disabled={action.busy || !body.trim()}>{action.busy ? labels.working : labels.save}</button>
         {report && <button className="set-btn" type="button" disabled={action.busy} onClick={onReload}>{labels.reload}</button>}
         {report && version && version.id !== report.currentVersionId && <button className="set-btn" type="button" disabled={action.busy || edited} onClick={() => {
@@ -72,7 +74,7 @@ export function ReportEditor({ detail, kind, start, end, labels, language = "zh-
         void action.run(`export:${version.id}:${format}`, async () => { const receipt = await exportReport(report.id, version.id, format); return `${labels.exported} ${receipt.fileName}`; });
       }}>{format === "markdown" ? labels.exportMd : labels.exportTxt}</button>)}
       <button className="set-btn set-btn-danger" type="button" disabled={action.busy} onClick={() => setConfirm(true)}>{labels.remove}</button>
-    </div><ReportSources detail={detail} version={version} labels={labels} /></>}
+    </div><ReportSources key={version.id} version={version} missing={missingReportDates(report.periodStart, report.periodEnd, version.coverageDates)} labels={labels} /></>}
     {confirm && report && <DeleteConfirmation labels={labels} busy={action.busy} onCancel={() => setConfirm(false)} onConfirm={() => {
       void action.run(`delete:${report.id}`, async (requestId) => { await deleteReport({ requestId, id: report.id, expectedRevision: report.revision }); onChanged(); onBack(); });
     }} />}

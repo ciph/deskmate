@@ -3,7 +3,7 @@ import type { InvokeOptions } from "@tauri-apps/api/core";
 import { requireBinaryUpload, wrapUploadResponse } from "./binaryUploadTestHelpers.test";
 import type { AgentHistoryDetails, HistorySession } from "../lib/history";
 import { catalogPageFixture, historyArgument, nativeHistoryFixture, registeredHistoryFixture } from "../testing/historyCatalogFixtures";
-import type { UnifiedHistoryRow } from "../lib/unifiedHistory";
+import type { CatalogLoadResult, UnifiedHistoryRow } from "../lib/unifiedHistory";
 import { afterEach, beforeEach, expect, mock } from "bun:test";
 import * as tauriCore from "@tauri-apps/api/core";
 import { cleanup } from "@testing-library/react";
@@ -85,6 +85,7 @@ let selectedWorkspace: string | null = null;
 let holdAgentStart = false;
 let releaseAgentStart: (() => void) | null = null;
 let historyRecords: Record<string, HistorySession> = {};
+let catalogPageOverride: ((key: string, before?: string) => Promise<CatalogLoadResult>) | null = null;
 let historyLoadOverride: ((id: string) => Promise<HistorySession | null>) | null = null;
 const archivedHistory = new Set<string>();
 const deletedHistory = new Set<string>();
@@ -122,7 +123,7 @@ function installOpenCodeTransport(): void {
   const fetchMock = mock((input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(String(input)).pathname;
     if (url === "/event") return Promise.resolve(eventStreamFixture(init?.signal, send => { activeEventSource = { onmessage: message => send(JSON.parse(String(message.data))) }; }));
-    if (url.endsWith("/session") && init?.method === "GET") {
+    if (url.endsWith("/global/health") && init?.method === "GET") {
       return Promise.resolve(new Response(null, { status: 200 }));
     }
     if (url.endsWith("/session") && init?.method === "POST") {
@@ -209,6 +210,7 @@ export function registerChatAttachmentHarness(): void {
   releaseAgentStart = null;
   historyRecords = {};
   historyLoadOverride = null;
+  catalogPageOverride = null;
   archivedHistory.clear();
   deletedHistory.clear();
   registeredEntry = null;
@@ -341,6 +343,7 @@ export function registerChatAttachmentHarness(): void {
       case "history_register_native_session":
         registeredEntry = nativeHistoryFixture(historyArgument(args, "sessionId"), historyArgument(args, "directory"));
         return Promise.resolve(registeredHistoryFixture(args));
+      case "get_chat_visibility": return Promise.resolve(true);
       case "history_catalog_list":
         return Promise.resolve(catalogPageFixture(Object.values(historyRecords).filter(record => !archivedHistory.has(record.id) && !deletedHistory.has(record.id)).map(agentHistoryEntry)));
       case "history_catalog_mutate": {
@@ -368,6 +371,7 @@ export function registerChatAttachmentHarness(): void {
       }
     case "history_catalog_load": {
         const key = historyArgument(args, "key");
+        if (catalogPageOverride) return catalogPageOverride(key, typeof args === "object" && args !== null && "before" in args && typeof args.before === "string" ? args.before : undefined);
         if (registeredEntry?.key === key) return Promise.resolve({ entry: registeredEntry, messages: [] });
         const record = Object.values(historyRecords).find(record => agentHistoryEntry(record).key === key);
         if (!record || deletedHistory.has(record.id)) throw new Error("history_deleted");
@@ -441,3 +445,5 @@ function agentHistoryDetails(record: HistorySession): AgentHistoryDetails {
   return { workspacePath: agentRun.workspacePath, status: agentProjection.active?.sessionId === record.id ? "active" : "completed",
     source: "interactive", availability: agentStartError === "agent_history_workspace_missing" ? "workspace_missing" : "ready" };
 }
+
+export function setCatalogPageLoader(loader: (key: string, before?: string) => Promise<CatalogLoadResult>): void { catalogPageOverride = loader; }

@@ -44,7 +44,7 @@ impl WorklogState {
         self.repository()?.has_running_run()
     }
 }
-fn configured_model(app: &tauri::AppHandle) -> WorklogResult<String> {
+fn configured_model<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> WorklogResult<String> {
     let state = app.state::<crate::settings::SettingsState>();
     let settings = state
         .0
@@ -58,162 +58,271 @@ fn configured_model(app: &tauri::AppHandle) -> WorklogResult<String> {
     }
     Ok(format!("{}/{}", settings.provider_id, settings.model_id))
 }
-fn notify(app: &tauri::AppHandle) {
+fn notify<R: tauri::Runtime>(app: &tauri::AppHandle<R>) {
     let _ = app.emit(WORKLOG_CHANGED_EVENT, ());
 }
 
 #[tauri::command]
-pub fn worklog_available(state: tauri::State<WorklogState>) -> bool {
-    state.repository().is_ok()
+pub async fn worklog_available<R: tauri::Runtime>(app: tauri::AppHandle<R>) -> bool {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        state.repository().is_ok()
+    })
+    .await
+    .unwrap_or(false)
 }
 #[tauri::command]
-pub fn worklog_record(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_record<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: RecordEntry,
 ) -> WorklogResult<OperationReceipt> {
-    let result = state.with_repository(|repo| repo.record_entry(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let result = state.with_repository(|repo| repo.record_entry(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_update(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_update<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: UpdateEntry,
 ) -> WorklogResult<OperationReceipt> {
-    let result = state.with_repository(|repo| repo.update_entry(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let result = state.with_repository(|repo| repo.update_entry(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_query(
-    state: tauri::State<WorklogState>,
+pub async fn worklog_get_entry<R: tauri::Runtime>(
+    window: tauri::WebviewWindow<R>,
+    app: tauri::AppHandle<R>,
+    id: String,
+) -> WorklogResult<Option<Entry>> {
+    if window.label() != "settings" {
+        return Err(WorklogError::new("FORBIDDEN", "Settings window required"));
+    }
+    tauri::async_runtime::spawn_blocking(move || {
+        app.state::<WorklogState>().with_repository(|repo| repo.get_entry(&id))
+    }).await.map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
+}
+#[tauri::command]
+pub async fn worklog_query<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     query: DateQuery,
 ) -> WorklogResult<Vec<Entry>> {
-    state.with_repository(|repo| repo.query_entries(&query))
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        state.with_repository(|repo| repo.query_entries(&query))
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_delete_entry(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_delete_entry<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: DeleteRecord,
 ) -> WorklogResult<OperationReceipt> {
-    let result = state.with_repository(|repo| repo.delete_entry(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let result = state.with_repository(|repo| repo.delete_entry(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_list_reports(
-    state: tauri::State<WorklogState>,
+pub async fn worklog_list_reports<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     query: DateQuery,
 ) -> WorklogResult<Vec<Report>> {
-    state.with_repository(|repo| repo.list_reports(&query))
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        state.with_repository(|repo| repo.list_reports(&query))
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_get_report(
-    state: tauri::State<WorklogState>,
+pub async fn worklog_get_report<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     id: String,
-) -> WorklogResult<ReportDetail> {
-    state.with_repository(|repo| repo.get_report(&id))
+) -> WorklogResult<ReportView> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        state.with_repository(|repo| repo.report_view(&id))
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_save_report(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_get_report_version<R:tauri::Runtime>(app:tauri::AppHandle<R>,report_id:String,version_id:String) -> WorklogResult<ReportVersionContent> {
+    tauri::async_runtime::spawn_blocking(move || app.state::<WorklogState>().with_repository(|repo|repo.report_version_content(&report_id,&version_id)))
+        .await.map_err(|_|WorklogError::new("STORAGE_UNAVAILABLE","Journal worker failed"))?
+}
+#[tauri::command]
+pub async fn worklog_get_report_sources<R:tauri::Runtime>(app:tauri::AppHandle<R>,report_id:String,version_id:String,offset:usize) -> WorklogResult<ReportSourcePage> {
+    tauri::async_runtime::spawn_blocking(move || app.state::<WorklogState>().with_repository(|repo|repo.report_source_page(&report_id,&version_id,offset)))
+        .await.map_err(|_|WorklogError::new("STORAGE_UNAVAILABLE","Journal worker failed"))?
+}
+#[tauri::command]
+pub async fn worklog_save_report<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: SaveReport,
 ) -> WorklogResult<OperationReceipt> {
-    let result = state.with_repository(|repo| repo.save_report(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let result = state.with_repository(|repo| repo.save_report(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_apply_version(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_apply_version<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: ApplyVersion,
 ) -> WorklogResult<OperationReceipt> {
-    let result = state.with_repository(|repo| repo.apply_version(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let result = state.with_repository(|repo| repo.apply_version(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_delete_report(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_delete_report<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: DeleteRecord,
 ) -> WorklogResult<OperationReceipt> {
-    let result = state.with_repository(|repo| repo.delete_report(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let result = state.with_repository(|repo| repo.delete_report(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_list_schedules(state: tauri::State<WorklogState>) -> WorklogResult<Vec<Schedule>> {
-    state.with_repository(Repository::list_schedules)
+pub async fn worklog_list_schedules<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
+) -> WorklogResult<Vec<Schedule>> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        state.with_repository(Repository::list_schedules)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_save_schedule(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_save_schedule<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: SaveSchedule,
 ) -> WorklogResult<OperationReceipt> {
-    let result = state.with_repository(|repo| repo.save_schedule(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let result = state.with_repository(|repo| repo.save_schedule(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_delete_schedule(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_delete_schedule<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: DeleteRecord,
 ) -> WorklogResult<OperationReceipt> {
-    let result = state.with_repository(|repo| repo.delete_schedule(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let result = state.with_repository(|repo| repo.delete_schedule(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_generate_report(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_generate_report<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     mut request: GenerateReport,
 ) -> WorklogResult<OperationReceipt> {
-    request.model_id = configured_model(&app)?;
-    let result = state.with_repository(|repo| repo.generate_report(&request))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        request.model_id = configured_model(&app)?;
+        let result = state.with_repository(|repo| repo.generate_report(&request))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_list_runs(state: tauri::State<WorklogState>) -> WorklogResult<Vec<Run>> {
-    state.with_repository(Repository::list_runs)
+pub async fn worklog_list_runs<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
+) -> WorklogResult<Vec<Run>> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        state.with_repository(Repository::list_runs)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_retry_run(
-    app: tauri::AppHandle,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_retry_run<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: RetryRun,
 ) -> WorklogResult<OperationReceipt> {
-    let model = configured_model(&app)?;
-    let result = state.with_repository(|repo| repo.retry_run(&request, &model))?;
-    notify(&app);
-    Ok(result)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let model = configured_model(&app)?;
+        let result = state.with_repository(|repo| repo.retry_run(&request, &model))?;
+        notify(&app);
+        Ok(result)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[tauri::command]
-pub fn worklog_get_operation(
-    state: tauri::State<WorklogState>,
+pub async fn worklog_get_operation<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request_id: String,
 ) -> WorklogResult<Option<OperationReceipt>> {
-    state.with_repository(|repo| repo.operation(&request_id))
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        state.with_repository(|repo| repo.operation(&request_id))
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 #[cfg(test)]
 #[path = "tests/commands.rs"]
 mod tests;
 
 #[tauri::command]
-pub fn worklog_get_operation_states(
-    window: tauri::WebviewWindow,
-    state: tauri::State<WorklogState>,
+pub async fn worklog_get_operation_states<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
+    window: tauri::WebviewWindow<R>,
     request_ids: Vec<String>,
 ) -> WorklogResult<Vec<super::operation_states::OperationState>> {
-    if window.label() != "chat" { return Err(WorklogError::new("FORBIDDEN", "Chat window required")); }
-    state.with_repository(|repo| repo.operation_states(&request_ids))
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        if window.label() != "chat" {
+            return Err(WorklogError::new("FORBIDDEN", "Chat window required"));
+        }
+        state.with_repository(|repo| repo.operation_states(&request_ids))
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }

@@ -55,6 +55,7 @@ impl Fixture {
         list: &[HistorySession],
         messages: &[NativeMessage],
     ) -> PreparedAgentSnapshot {
+        if !self.path.exists() && !super::super::session_storage::path(&self.path).exists() { persist_path(&self.path, list).unwrap(); }
         PreparedAgentSnapshot::prepare(
             &self.path,
             list.to_vec(),
@@ -130,12 +131,13 @@ fn revision_follows_successful_replacement_and_rejects_failed_noop_and_late_proj
     let state = HistoryState::new(std::sync::Mutex::new(vec![agent("ses_agent")]));
     let baseline = state.0.lock().unwrap().clone();
     let messages = [message()];
-    // A directory at the exact destination makes the real replacement fail.
-    fs::create_dir(&fixture.path).unwrap();
-    assert!(fixture.prepare(&baseline, &messages).commit_to_state(&state).is_err());
+    let staged = fixture.prepare(&baseline, &messages);
+    let mut blocker = rusqlite::Connection::open(super::super::session_storage::path(&fixture.path)).unwrap();
+    let transaction = blocker.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate).unwrap();
+    assert!(staged.commit_to_state(&state).is_err());
     assert_eq!(state.revision(), 0);
     assert_eq!(*state.0.lock().unwrap(), baseline);
-    fs::remove_dir(&fixture.path).unwrap();
+    drop(transaction);
     let first = fixture.prepare(&baseline, &messages);
     let late = fixture.prepare(&baseline, &messages);
     first.commit_to_state(&state).unwrap();
@@ -160,7 +162,7 @@ fn prepare_does_not_publish_and_commit_keeps_title_and_first_origin() {
     assert_eq!(load_path(&fixture.path).unwrap(), before);
     assert_eq!(list, before);
     staged
-        .commit_into(&mut list, PreparedHistoryFile::commit)
+        .commit_into(&mut list, PreparedSessionFile::commit)
         .unwrap();
     assert_eq!(list[0].title, "User title");
     assert_eq!(list[0].origin_run_id.as_deref(), Some("msg_origin"));
@@ -171,8 +173,8 @@ fn prepare_does_not_publish_and_commit_keeps_title_and_first_origin() {
 }
 
 #[test]
-fn concurrent_rows_titles_ownership_and_deletion_supersede_full_file_snapshot() {
-    let edits: [fn(&mut Vec<HistorySession>); 7] = [
+fn concurrent_target_titles_ownership_and_deletion_supersede_session_snapshot() {
+    let edits: [fn(&mut Vec<HistorySession>); 5] = [
         |list| list[0].title = "New title".into(),
         |list| list[0].origin_run_id = Some("msg_new_owner".into()),
         |list| list[0].deleted = true,
@@ -181,11 +183,9 @@ fn concurrent_rows_titles_ownership_and_deletion_supersede_full_file_snapshot() 
                 history_id: "other".into(),
             })
         },
-        |list| list.push(ordinary("new_row")),
         |list| {
             list.remove(0);
         },
-        |list| list[1].messages[0].text = "Other row changed".into(),
     ];
     for edit in edits {
         let fixture = Fixture::new();
@@ -215,7 +215,7 @@ fn competing_preparations_never_overwrite_first_published_snapshot() {
     let second = fixture.prepare(&list, &[later_message]);
     assert_eq!(fixture.pending(), 2);
     first
-        .commit_into(&mut list, PreparedHistoryFile::commit)
+        .commit_into(&mut list, PreparedSessionFile::commit)
         .unwrap();
     assert_eq!(
         second.commit_into(&mut list, |_| panic!("stale replace")),
@@ -293,7 +293,7 @@ fn tombstones_with_colliding_session_but_other_directory_or_sidecar_do_not_block
         })
         .unwrap();
     staged
-        .commit_into(&mut list, PreparedHistoryFile::commit)
+        .commit_into(&mut list, PreparedSessionFile::commit)
         .unwrap();
     assert_eq!(list[0].messages.len(), 1);
     assert_eq!(fixture.pending(), 0);
@@ -333,7 +333,7 @@ fn legacy_tombstone_rejects_projection_before_or_during_native_coalescing() {
             Err("history_deleted".into())
         );
         assert!(list[0].messages.is_empty());
-        assert!(!fixture.path.exists());
+        assert!(load_path(&fixture.path).unwrap().iter().all(|s| s.messages.iter().all(|m| m.text != "durable reply")));
         assert_eq!(fixture.pending(), 0);
     }
 }
@@ -364,7 +364,7 @@ fn unrelated_legacy_owner_or_workspace_is_preserved_without_temporary_write() {
         .commit_into(&mut list, |_| panic!("other workspace replaced"))
         .unwrap();
     assert_eq!(list, vec![agent("ses_agent")]);
-    assert!(!fixture.path.exists());
+    assert!(load_path(&fixture.path).unwrap().iter().all(|s| s.messages.iter().all(|m| m.text != "durable reply")));
     assert_eq!(fixture.pending(), 0);
 }
 
@@ -399,10 +399,10 @@ fn unchanged_projection_never_touches_history_storage() {
     let mut list = vec![agent("ses_agent")];
     fixture
         .prepare(&list, &[message()])
-        .commit_into(&mut list, PreparedHistoryFile::commit)
+        .commit_into(&mut list, PreparedSessionFile::commit)
         .unwrap();
-    fs::remove_file(&fixture.path).unwrap();
-    fs::create_dir(&fixture.path).unwrap();
+    fs::remove_file(super::super::session_storage::path(&fixture.path)).unwrap();
+    fs::create_dir(super::super::session_storage::path(&fixture.path)).unwrap();
     let before = list.clone();
     let staged = fixture.prepare(&list, &[message()]);
     assert_eq!(fixture.pending(), 0);
@@ -410,7 +410,7 @@ fn unchanged_projection_never_touches_history_storage() {
         .commit_into(&mut list, |_| panic!("unchanged replace"))
         .unwrap();
     assert_eq!(list, before);
-    assert!(fixture.path.is_dir());
+    assert!(super::super::session_storage::path(&fixture.path).is_dir());
 }
 
 #[test]
@@ -419,13 +419,14 @@ fn replacement_failure_cleans_pending_and_never_publishes_ram() {
     let mut list = vec![agent("ses_agent")];
     let before = list.clone();
     let staged = fixture.prepare(&list, &[message()]);
-    fs::create_dir(&fixture.path).unwrap();
+    fs::remove_file(super::super::session_storage::path(&fixture.path)).unwrap();
+    fs::create_dir(super::super::session_storage::path(&fixture.path)).unwrap();
     assert_eq!(
-        staged.commit_into(&mut list, PreparedHistoryFile::commit),
+        staged.commit_into(&mut list, PreparedSessionFile::commit),
         Err("history_storage_unavailable".into())
     );
     assert_eq!(list, before);
-    assert!(fixture.path.is_dir());
+    assert!(super::super::session_storage::path(&fixture.path).is_dir());
     assert_eq!(fixture.pending(), 0);
 }
 
@@ -435,7 +436,7 @@ fn dropped_preparation_and_invalid_snapshot_leave_no_pending_files() {
     let list = vec![agent("ses_agent")];
     drop(fixture.prepare(&list, &[message()]));
     assert_eq!(fixture.pending(), 0);
-    assert!(!fixture.path.exists());
+    assert!(load_path(&fixture.path).unwrap().iter().all(|s| s.messages.iter().all(|m| m.text != "durable reply")));
     let mut invalid = message();
     invalid.created = None;
     let result = PreparedAgentSnapshot::prepare(
@@ -590,6 +591,6 @@ fn busy_history_writer_does_not_block_control_or_publish_prepared_snapshot() {
         Err("history_state_busy".into())
     );
     assert_eq!(*busy_writer, vec![agent("ses_agent")]);
-    assert!(!fixture.path.exists());
+    assert!(load_path(&fixture.path).unwrap().iter().all(|s| s.messages.iter().all(|m| m.text != "durable reply")));
     assert_eq!(fixture.pending(), 0);
 }

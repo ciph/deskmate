@@ -48,3 +48,23 @@ pub(super) fn confirm_from_native_with(
     state.confirm_submission(&candidate.run_id)?;
     Ok(true)
 }
+
+/// Page messages plus only the missing parent context required for personas.
+pub(crate) fn read_scoped_page(app: &tauri::AppHandle, workspace: &std::path::Path, session_id: &str, before: Option<&str>) -> Result<(Vec<super::NativeMessage>, Option<String>, Vec<super::NativeMessage>), String> {
+    let settings = super::run_commands::current_start_settings(app)?;
+    let client = super::run_commands::lifecycle_client(app, &settings, workspace);
+    let (messages, cursor) = client.message_page(session_id, before)?;
+    let ids: std::collections::HashSet<_> = messages.iter().map(|m| m.id.as_str()).collect();
+    let mut seen = std::collections::HashSet::new();
+    let mut parents = Vec::new();
+    for parent in messages.iter().filter_map(|m| m.parent_id.as_deref()).filter(|id| !ids.contains(id)) {
+        if seen.insert(parent) {
+            match client.message(session_id, parent) {
+                Ok(message) => parents.push(message),
+                Err(error) if error == "agent_http_404" => {},
+                Err(error) => return Err(error),
+            }
+        }
+    }
+    Ok((messages, cursor, parents))
+}

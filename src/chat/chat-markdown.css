@@ -117,3 +117,20 @@
 .chat-code-toolbar button[aria-disabled="true"] { opacity: 0.6; cursor: wait; }
 .chat-code-toolbar button:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
 .chat-code-block pre { margin: 0; border: 0; border-radius: 0 0 var(--code-card-radius) var(--code-card-radius); padding: var(--s-2) var(--code-card-padding) var(--code-card-padding); background: transparent; }
+.chat-markdown-pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+.chat-markdown-pages button {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.chat-markdown-pages button:disabled { opacity: .45; cursor: default; }

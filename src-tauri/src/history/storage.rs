@@ -7,6 +7,10 @@ use std::{
 use super::HistorySession;
 
 pub(super) fn load_path(path: &Path) -> Result<Vec<HistorySession>, String> {
+    if super::session_storage::ready(path)? { return super::session_storage::load(path); }
+    load_json(path)
+}
+pub(super) fn load_json(path: &Path) -> Result<Vec<HistorySession>, String> {
     match fs::read(path) {
         Ok(bytes) => serde_json::from_slice(&bytes).map_err(|_| "history_invalid".to_owned()),
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(Vec::new()),
@@ -15,7 +19,7 @@ pub(super) fn load_path(path: &Path) -> Result<Vec<HistorySession>, String> {
 }
 
 pub(super) struct PreparedHistoryFile {
-    pending: std::path::PathBuf,
+    pub(super) pending: std::path::PathBuf,
     target: std::path::PathBuf,
     committed: bool,
 }
@@ -29,6 +33,11 @@ impl PreparedHistoryFile {
         mut self,
         replace: impl FnOnce(&Path, &Path) -> Result<(), String>,
     ) -> Result<(), String> {
+        if super::session_storage::ready(&self.target)? {
+            let bytes = fs::read(&self.pending).map_err(|_| "history_storage_unavailable")?;
+            let list = serde_json::from_slice::<Vec<HistorySession>>(&bytes).map_err(|_| "history_invalid")?;
+            return super::session_storage::replace_all(&self.target, &list);
+        }
         replace(&self.pending, &self.target)?;
         self.committed = true;
         Ok(())

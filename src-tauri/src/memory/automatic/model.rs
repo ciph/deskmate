@@ -39,6 +39,8 @@ impl Client {
         path: &str,
         body: Option<Value>,
     ) -> Result<(Value, Option<String>), String> {
+        let residency=crate::sidecar_residency::Lease::acquire(true)?;
+        residency.directory(&self.directory)?;
         let mut url =
             url::Url::parse(&format!("{}{}", self.base, path)).map_err(|_| "INVALID_ENDPOINT")?;
         url.query_pairs_mut()
@@ -116,6 +118,8 @@ impl Client {
         Ok(found)
     }
     pub fn remove(&self, id: &str) -> bool {
+        let Ok(residency)=crate::sidecar_residency::Lease::acquire(true) else {return false};
+        if residency.directory(&self.directory).is_err() {return false}
         let mut url = match url::Url::parse(&format!("{}/session/{id}", self.base)) {
             Ok(u) => u,
             Err(_) => return false,

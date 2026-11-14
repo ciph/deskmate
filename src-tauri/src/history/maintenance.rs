@@ -7,6 +7,10 @@ use super::{catalog_model::*, commands, HistoryState};
 // This budget applies only to background bootstrap, never interactive history reads.
 const PROJECT_BOOTSTRAP_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(120);
 
+#[cfg(test)]
+#[path = "maintenance_http_tests.rs"]
+mod http_tests;
+
 #[derive(Default)]
 pub(crate) struct HistoryMaintenance {
     pub(super) initialized: Mutex<super::catalog_cache::ImportCache>,
@@ -28,7 +32,8 @@ pub(super) fn wait_for_native_directory(app: &tauri::AppHandle) -> Result<(), St
     // Background-only bootstrap, outside the Agent operation lock; ordinary reads keep their short deadlines.
     if !crate::agent::managed_sidecar_ready(app)? { return Err("history_native_unavailable".into()); }
     let generation = crate::sidecar_generation(app)?;
-    commands::client(app)?.wait_for_directory(&commands::workspace(app)?, PROJECT_BOOTSTRAP_TIMEOUT)
+    if crate::sidecar_residency::retired(&commands::workspace(app)?) { return Ok(()); }
+    commands::background_client(app)?.wait_for_directory(&commands::workspace(app)?, PROJECT_BOOTSTRAP_TIMEOUT)
         .map_err(|error| error.to_string())?;
     let sidecar = app.state::<crate::Sidecar>();
     let _generation = sidecar.generation_guard(generation)?.ok_or("history_native_unavailable")?;
@@ -115,16 +120,24 @@ fn eligible(row: &CatalogEntry, used: &HashMap<String, HashSet<String>>, now: u6
         && !used.values().any(|keys| keys.contains(&row.key()))
 }
 
-pub(super) fn prune_empty(app: &tauri::AppHandle) -> Result<Vec<String>, String> {
+pub(super) fn prune_empty<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<Vec<String>, String> {
+    let generation = crate::sidecar_generation(app)?;
     let store = commands::store(app)?;
-    let client = commands::client(app)?;
+    let client = commands::background_client(app)?;
     let state = app.state::<HistoryMaintenance>();
     let runs = app.state::<crate::agent::AgentRunState>();
+    // A just-created native session may not yet be bound to its preparing run.
+    if runs.read()?.active.is_some_and(|run| run.session_id.is_none()) { return Ok(Vec::new()); }
     let mut changed = false;
     let mut errors = Vec::new();
-    for candidate in store.all()?.into_iter().filter(|row| row.has_records == Some(false) && row.tombstone.is_none()) {
-        // Same lock order as launch/save. Failed checks retain the record.
-        let _operation = runs.lock_operation()?;
+    let mut after = String::new();
+    'batches: loop {
+        let batch = store.maintenance_batch(1, &after)?;
+        let Some(last) = batch.last() else { break; };
+        after = last.key();
+        for candidate in batch {
+        // Selection/show/local writes share this guard. Agent continuations require
+        // a durable run record, and all such sessions are excluded below.
         let used = state.used.lock().map_err(|_| "history_state_unavailable")?;
         let mut row = store.get(&candidate.key())?;
         if !eligible(&row, &used, commands::now()?) { continue; }
@@ -140,18 +153,26 @@ pub(super) fn prune_empty(app: &tauri::AppHandle) -> Result<Vec<String>, String>
             continue;
         }
         let CatalogIdentity::Native { directory, session_id, .. } = &row.identity else { continue; };
+        if crate::sidecar_residency::retired(directory) { continue; }
         // The workbench routes and sends directly through the native SDK. Do not
         // sweep while it is visible (including the interval before route claim).
         if app.state::<crate::workbench::WorkbenchOwnership>().host_visible()? { continue; }
         if app.state::<crate::workbench::WorkbenchOwnership>().is_owned(directory, session_id)? { continue; }
         if runs.all_records()?.iter().any(|run| run.session_id.as_deref() == Some(session_id)
             && super::catalog_import::canonical_directory(&run.workspace_path.to_string_lossy()) == *directory) { continue; }
-        let local = app.state::<HistoryState>().0.lock().map_err(|_| "history_state_unavailable")?.clone();
-        super::catalog_content::apply_local_evidence(std::slice::from_mut(&mut row), &local, &commands::workspace(app)?);
+        {
+            let local_state = app.state::<HistoryState>();
+            let local = local_state.0.lock().map_err(|_| "history_state_unavailable")?;
+            super::catalog_content::apply_local_evidence(std::slice::from_mut(&mut row), &local, &commands::workspace(app)?);
+        }
         if row.has_records != Some(false) { continue; }
         let CatalogIdentity::Native { directory, session_id, .. } = &row.identity else { continue; };
-        match client.delete_empty(directory, session_id, row.updated) {
+        match client.delete_empty_if(directory, session_id, row.updated, || {
+            crate::sidecar_generation(app).is_ok_and(|current| current == generation)
+        }) {
             Ok(true) => {
+                let sidecar = app.state::<crate::Sidecar>();
+                let Some(_generation) = sidecar.generation_guard(generation)? else { continue; };
                 mark_removed(&store, &row)?;
                 if let Some(resources) = app.try_state::<crate::chat_attachments::resources::ResourceStore>() {
                     if let Err(error) = resources.revoke_session(directory, session_id) { errors.push(error); }
@@ -159,8 +180,9 @@ pub(super) fn prune_empty(app: &tauri::AppHandle) -> Result<Vec<String>, String>
                 changed = true;
             }
             Ok(false) => {},
-            Err(error) => { errors.push(error.to_string()); break; }
+            Err(error) => { errors.push(error.to_string()); break 'batches; }
         }
+    }
     }
     if changed { let _ = app.emit("history-catalog-changed", ()); }
     Ok(errors)

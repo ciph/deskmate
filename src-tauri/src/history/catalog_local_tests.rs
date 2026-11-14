@@ -12,6 +12,20 @@ fn note(id: &str, text: &str, time: u64) -> HistoryMessage {
 }
 
 #[test]
+fn a_textless_native_page_keeps_local_notes_without_legacy_fallback_or_capability_downgrade() {
+    let entry=entry("c:/a");
+    let legacy=crate::history::history_tests::ordinary("ses_same");
+    let mut linked=crate::history::history_tests::ordinary("linked");
+    linked.local_link=Some(entry.identity.clone());
+    linked.messages=vec![note("local_note","local-only reply",2)];
+    let (loaded,messages)=combine_page_messages(entry.into(),vec![],&[legacy,linked],"c:/a",false);
+    assert_eq!(loaded.entry.source,ConversationSource::LightChat);
+    assert!(loaded.capabilities.send);
+    assert_eq!(messages.len(),1);
+    assert_eq!(messages[0].text,"local-only reply");
+}
+
+#[test]
 fn local_notes_survive_native_turns_without_crossing_colliding_directory_ids() {
     // Given two native rows with the same bare ID and separate explicitly linked local notes.
     let root = std::env::temp_dir().join(format!("yume-local-{}", uuid::Uuid::new_v4()));

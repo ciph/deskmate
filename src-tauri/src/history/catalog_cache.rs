@@ -66,6 +66,7 @@ impl ImportInputs<'_> {
         &self, cache: &mut ImportCache, now: Instant,
         open: impl FnOnce() -> Result<CatalogStore, String>,
     ) -> Result<bool, String> {
+        let completed = cache.completed;
         cache.refresh(now, || Sources {
             history: self.history.revision(), index: self.index.revision(),
             runs: self.runs.catalog_revision(), associations: self.associations.get(),
@@ -74,6 +75,8 @@ impl ImportInputs<'_> {
                 self.history.reload(self.history_path)?;
                 super::native_index::load_into(self.index_path, self.index)?;
             }
+            if completed == Some(Sources { history: self.history.revision(), index: self.index.revision(),
+                runs: self.runs.catalog_revision(), associations: self.associations.get() }) { return Ok(()); }
             let store = open()?;
             let sessions = self.history.0.lock().map_err(|_| "history_state_unavailable")?.clone();
             let index = self.index.0.lock().map_err(|_| "native_session_index_unavailable")?.clone();

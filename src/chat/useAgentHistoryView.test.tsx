@@ -106,7 +106,7 @@ test("native Agent recovery opens supplied scoped messages and refreshes only by
   expect(invoke).not.toHaveBeenCalled();
   await act(async () => { await hook.result.current.adopt("ses_agent"); });
   expect(hook.result.current.archive?.messages[0]?.text).toBe("scoped latest");
-  expect(invoke.mock.calls).toEqual([["history_catalog_load", { key: initial.entry.key }]]);
+  expect(invoke.mock.calls).toEqual([["history_catalog_load", { key: initial.entry.key, paged: true }]]);
 });
 
 test("late native Agent refresh cannot replace another directory with the same bare session ID", async () => {
@@ -119,7 +119,7 @@ test("late native Agent refresh cannot replace another directory with the same b
   };
   const hook = renderHook(() => useAgentHistoryView("ses_agent"));
   await act(async () => { hook.result.current.openScoped(first); });
-  expect(invoke.mock.calls).toEqual([["history_catalog_load", { key: first.entry.key }]]);
+  expect(invoke.mock.calls).toEqual([["history_catalog_load", { key: first.entry.key, paged: true }]]);
   act(() => { hook.result.current.openScoped(second); });
   await act(async () => { release?.(scopedRecord("C:/project-a", "late first")); });
   expect(hook.result.current.archive?.messages[0]?.text).toBe("second");
@@ -137,7 +137,7 @@ test("selected host-active Agent history completes while the local Agent project
   await act(async () => { hook.result.current.openScoped(activeInitial); });
   expect(hook.result.current.archive?.messages[0]?.text).toBe("external final answer");
   expect(hook.result.current.archive?.agentDetails?.status).toBe("completed");
-  expect(invoke.mock.calls).toEqual([["history_catalog_load", { key: initial.entry.key }]]);
+  expect(invoke.mock.calls).toEqual([["history_catalog_load", { key: initial.entry.key, paged: true }]]);
 });
 
 
@@ -151,7 +151,7 @@ test.each(["completed", "unmounted"])("serializes selected active history pollin
   const hook = renderHook(() => useAgentHistoryView(null));
   try {
     await act(async () => { hook.result.current.openScoped(initial); });
-    const pollIndex = timer.mock.calls.findIndex(([, delay]) => delay === 1000);
+    const pollIndex = timer.mock.calls.findIndex(([, delay]) => delay === 30_000);
     const tick = timer.mock.calls[pollIndex]?.[0];
     expect(typeof tick).toBe("function");
     if (typeof tick !== "function") return;
@@ -171,4 +171,34 @@ test.each(["completed", "unmounted"])("serializes selected active history pollin
     timer.mockRestore();
     clearTimer.mockRestore();
   }
+});
+
+test("hidden native view performs no reads and resumes once with coalesced events", async () => {
+  const initial = { ...scopedRecord("C:/visible", "before"), agentDetails: { workspacePath: "C:/visible", status: "active" as const, source: "scheduled" as const, availability: "ready" as const } };
+  catalogLoader = async () => initial;
+  const hook=renderHook(({visible})=>useAgentHistoryView(null,undefined,visible),{initialProps:{visible:false}});
+  await act(async()=>{hook.result.current.openScoped(initial);hook.result.current.invalidate();});
+  expect(invoke).toHaveBeenCalledTimes(0);
+  hook.rerender({visible:true});
+  await waitFor(()=>expect(invoke).toHaveBeenCalledTimes(1));
+  await act(async()=>{for(let i=0;i<20;i++)hook.result.current.invalidate();});
+  await waitFor(()=>expect(invoke).toHaveBeenCalledTimes(2));
+  hook.rerender({visible:false});
+  await act(async()=>{hook.result.current.invalidate();});
+  expect(invoke).toHaveBeenCalledTimes(2);
+  hook.unmount();
+});
+
+test("in-flight archive cannot publish after hiding or switching visibility generation", async () => {
+  const initial={...scopedRecord("C:/visible", "before"),agentDetails:{workspacePath:"C:/visible",status:"active" as const,source:"scheduled" as const,availability:"ready" as const}};
+  let release:((value:CatalogLoadResult)=>void)|undefined;
+  catalogLoader=()=>new Promise(resolve=>{release=resolve;});
+  const onLoaded=mock();
+  const hook=renderHook(({visible})=>useAgentHistoryView(null,onLoaded,visible),{initialProps:{visible:true}});
+  await act(async()=>{hook.result.current.openScoped(initial);});
+  hook.rerender({visible:false});
+  await act(async()=>{release?.(scopedRecord("C:/visible","late"));});
+  expect(onLoaded).toHaveBeenCalledTimes(0);
+  expect(hook.result.current.archive?.messages[0]?.text).toBe("before");
+  hook.unmount();
 });

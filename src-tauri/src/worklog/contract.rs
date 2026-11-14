@@ -137,6 +137,38 @@ pub struct ReportDetail {
     pub versions: Vec<ReportVersion>,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReportVersionSummary {
+    pub id: String,
+    pub report_id: String,
+    pub version: i64,
+    pub origin: VersionOrigin,
+    pub generated_at: String,
+    pub model_id: Option<String>,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReportVersionContent {
+    #[serde(flatten)]
+    pub summary: ReportVersionSummary,
+    pub body_markdown: String,
+    pub coverage_dates: Vec<String>,
+    pub source_count: usize,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReportView {
+    pub report: Report,
+    pub versions: Vec<ReportVersionSummary>,
+    pub current_version: Option<ReportVersionContent>,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReportSourcePage {
+    pub sources: Vec<SourceSnapshot>,
+    pub next_offset: Option<usize>,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SaveReport {
     pub request_id: String,

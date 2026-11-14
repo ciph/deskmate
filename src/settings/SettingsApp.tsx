@@ -37,6 +37,7 @@ import { THEME_IDS, type ThemeId } from "./theme";
 import { AppIcon } from "../ui/AppIcon";
 import { SettingsNavigation, type TabId } from "./SettingsNavigation";
 import "./settings.css";
+import { SettingsVisibilityContext, useSettingsWindowVisible } from "./settingsVisibility";
 
 const THEME_LABEL_KEYS: Record<
   ThemeId,
@@ -56,6 +57,7 @@ const SAVE_DELAY_MS = 400;
 
 // allow: SIZE_OK — existing settings composition root; widget controls are extracted and remaining tabs are outside this change.
 export default function SettingsApp() {
+  const visible = useSettingsWindowVisible();
   const [tab, setTab] = useState<TabId>("general");
   const [activeWidget, setActiveWidget] = useState<WidgetId>("tasks");
   const [worklogRequest, setWorklogRequest] = useState<{ readonly target: WorklogTarget | null; readonly id: number } | null>(null);
@@ -81,6 +83,27 @@ export default function SettingsApp() {
   }, []);
 
   useEffect(() => {
+    let closed = false, consuming = false, pending = false;
+    const consume = async () => {
+      if (closed) return;
+      if (consuming) { pending = true; return; }
+      consuming = true;
+      try {
+        do {
+          pending = false;
+          const request = await invoke<{ tab: "ai" | "widget" | "worklog"; target: WorklogTarget | null } | null>("consume_settings_request");
+          if (!closed && request) {
+            if (request.tab === "ai") setTab("ai");
+            if (request.tab === "widget") setTab("widget");
+            if (request.tab === "worklog") {
+              setTab("widget"); setActiveWidget("worklog");
+              setWorklogRequest(previous => ({ target: request.target, id: (previous?.id ?? 0) + 1 }));
+            }
+          }
+        } while (!closed && pending);
+      } catch (error) { if (!closed) console.error("settings navigation unavailable", error); }
+      finally { consuming = false; }
+    };
     const unlisten = listen<string>("deskmate://settings-tab", (event) => {
       if (event.payload === "widget") setTab("widget");
       if (event.payload === "ai") setTab("ai");
@@ -92,9 +115,16 @@ export default function SettingsApp() {
       setWorklogRequest((previous) => ({ target: event.payload, id: (previous?.id ?? 0) + 1 }));
       setTab("widget"); setActiveWidget("worklog");
     });
+    const requestListener = listen("deskmate://settings-request", () => { void consume(); });
+    // Subscribe before the ready handshake, so the first deep link cannot be lost.
+    void Promise.all([unlisten, targetListener, requestListener]).then(() => { if (isTauri()) void consume(); }, error => {
+      if (!closed) console.error("settings navigation listener unavailable", error);
+    });
     return () => {
+      closed = true;
       void unlisten.then((stopListening) => stopListening());
       void targetListener.then((stopListening) => stopListening());
+      void requestListener.then(stop => stop(), () => {});
     };
   }, []);
 
@@ -188,6 +218,7 @@ export default function SettingsApp() {
   );
 
   return (
+    <SettingsVisibilityContext.Provider value={visible}>
     <div className="set-root" data-theme={settings?.theme ?? "dark"}>
       <header className="set-titlebar" data-tauri-drag-region="">
         <div className="set-title-cluster">
@@ -262,6 +293,7 @@ export default function SettingsApp() {
 
       {settings !== null && <UpdateFooter repo={settings.updateRepo} t={t} />}
     </div>
+    </SettingsVisibilityContext.Provider>
   );
 }
 

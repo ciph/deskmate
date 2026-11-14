@@ -1,3 +1,5 @@
+import { readPickedAttachments } from "./attachments"
+import { residentFetch } from "./residency"
 // @refresh reload
 
 import {
@@ -175,7 +177,7 @@ async function main() {
           return Response.json({ error: message }, { status: 409 })
         }
       }
-      const response = await fetch(input, init)
+      const response = bridge ? await residentFetch(bridge.core.invoke, input, init) : await fetch(input, init)
       if (bridge && request.method === "POST" && url.pathname === "/session" && response.ok) {
         const session = await response.clone().json().catch(() => null)
         const createdSessionId = session && typeof session === "object" && "id" in session
@@ -215,17 +217,10 @@ async function main() {
     },
     openAttachmentPickerDialog: async (opts, onFile) => {
       if (!bridge) return
-      const picked = await bridge.core.invoke<Array<{ name: string; path: string; size: number }>>(
-        "workbench_pick_files",
-        { title: opts?.title, extensions: opts?.extensions },
-      )
-      for (const item of picked) {
-        const b64 = await bridge.core.invoke<string>("workbench_read_file", { path: item.path })
-        const bytes = Uint8Array.from(atob(b64), (char) => char.charCodeAt(0))
-        const file = new File([bytes], item.name)
-        attachmentPaths.set(file, item.path)
+      await readPickedAttachments(bridge.core.invoke, opts, async (file, path) => {
+        attachmentPaths.set(file, path)
         await onFile(file)
-      }
+      })
     },
     getPathForFile: (file) => attachmentPaths.get(file) ?? "",
     saveFilePickerDialog: async (opts) => {

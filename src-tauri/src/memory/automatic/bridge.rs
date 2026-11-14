@@ -323,10 +323,18 @@ pub(crate) async fn memory_register_turn(
 }
 
 #[tauri::command]
-pub(crate) fn memory_automation_status(app: tauri::AppHandle) -> Result<Value, String> {
-    worker::repository(&app, |repo| repo.automation_status())
+pub(crate) async fn memory_automation_status(app: tauri::AppHandle) -> Result<Value, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        worker::repository(&app, |repo| repo.automation_status())
+    })
+    .await
+    .map_err(|_| "MEMORY_OPERATION_FAILED".to_owned())?
 }
 #[tauri::command]
-pub(crate) fn memory_automation_retry(app: tauri::AppHandle) -> Result<(), String> {
-    worker::repository(&app, |repo| repo.retry_automatic())
+pub(crate) async fn memory_automation_retry(app: tauri::AppHandle) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        worker::repository(&app, |repo| repo.retry_automatic())
+    })
+    .await
+    .map_err(|_| "MEMORY_OPERATION_FAILED".to_owned())?
 }

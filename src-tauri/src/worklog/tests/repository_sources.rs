@@ -278,11 +278,11 @@ unsafe extern "C" fn deletion_trace(
     let versions = sql.starts_with("SELECT")
         && sql.contains("source_revision_manifest")
         && sql.contains("FROM report_versions")
-        && !sql.contains("WHERE");
+        && (!sql.contains("WHERE") || sql.contains("WHERE id>?1"));
     let runs = sql.starts_with("SELECT")
         && sql.contains("source_manifest")
         && sql.contains("FROM report_runs")
-        && !sql.contains("WHERE");
+        && (!sql.contains("WHERE") || sql.contains("WHERE run.id>?1"));
     if kind == rusqlite::ffi::SQLITE_TRACE_ROW as u32 {
         if versions {
             counts.version_rows.set(counts.version_rows.get() + 1);
@@ -383,7 +383,7 @@ fn deletion_run(
 }
 
 #[test]
-fn d20b_scans_once_with_ten_thousand_unrelated_and_twenty_related_versions() {
+fn bounded_erasure_passes_with_ten_thousand_unrelated_and_twenty_related_versions() {
     let mut measurements = Vec::new();
     let mut preserved_json = Vec::new();
     for related in [1, 20] {
@@ -405,11 +405,13 @@ fn d20b_scans_once_with_ten_thousand_unrelated_and_twenty_related_versions() {
             deletion_run(db,"untouched","running",&[],&[])?;
             Ok(())
         }).unwrap();
+        super::super::repository_sources::PEAK_SOURCE_BATCH.with(|peak| peak.set(0));
         let trace = DeletionTrace::new(&repo);
         let started = std::time::Instant::now();
         repo.delete_entry(&deletion_request(&entry.entity_id, false))
             .unwrap();
         let elapsed = started.elapsed().as_secs_f64() * 1000.0;
+        super::super::repository_sources::PEAK_SOURCE_BATCH.with(|peak| assert_eq!(peak.get(), 32));
         let c = &trace.counts;
         println!(
             "D20_METRICS {}",
@@ -451,11 +453,11 @@ fn d20b_scans_once_with_ten_thousand_unrelated_and_twenty_related_versions() {
     {
         assert_eq!(unrelated, 0);
         assert_eq!(
-            version_scans, 1,
-            "full version scan must not multiply by related versions"
+            version_scans, 2 * ((10_000 + related).div_ceil(32) + 1),
+            "two keyset passes, independent of dependency depth"
         );
-        assert_eq!(run_scans, 1);
-        assert_eq!(version_rows, 10_000 + related);
+        assert_eq!(run_scans, 2);
+        assert_eq!(version_rows, 2 * (10_000 + related));
         assert_eq!(run_rows, 2);
         assert_eq!(updates, related);
         assert_eq!(run_updates, 1);

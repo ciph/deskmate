@@ -1,5 +1,8 @@
 param([Parameter(Mandatory)][string]$SourceDirectory)
 $ErrorActionPreference = 'Stop'
+# Asset maintenance only; no Python/Pillow dependency in the app or normal build.
+python -c 'from PIL import Image'
+if ($LASTEXITCODE -ne 0) { throw 'Install Pillow for lossless texture packing: python -m pip install Pillow' }
 $states = @('等待', '思考', '打招呼', '跳舞', '哭', '开心', '争辩')
 $outputDirectory = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\public\personas\xiaozhu-sandaime'))
 $provenancePath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\docs\assets\xiaozhu-sandaime.provenance.json'))
@@ -126,10 +129,18 @@ try {
         while (($output.Length - 20) % 4) { $writer.Write([byte]32) }
         $writer.Write([uint32]$binary.Length); $writer.Write([uint32]0x004E4942); $writer.Write($binary.ToArray())
         [void][IO.Directory]::CreateDirectory($outputDirectory)
-        [IO.File]::WriteAllBytes((Join-Path $outputDirectory 'figure.glb'), $output.ToArray())
+        [IO.File]::WriteAllBytes((Join-Path $outputDirectory 'figure.unoptimized.glb'), $output.ToArray())
     } finally { $writer.Dispose(); $output.Dispose() }
-    $receipt = [ordered]@{description='Seven independent authored rigs, meshes, materials and clips. Runtime selects one clip root. Only byte-identical buffer views, images, textures and samplers are shared.';sourceFiles=$provenance.ToArray();images=$tables.images.Count;meshes=$tables.meshes.Count;outputBytes=(Get-Item -LiteralPath (Join-Path $outputDirectory 'figure.glb')).Length}
+    $rawPath = Join-Path $outputDirectory 'figure.unoptimized.glb'
+    $optimizationPath = Join-Path ([IO.Path]::GetDirectoryName($provenancePath)) 'xiaozhu-sandaime.lossless.json'
+    python (Join-Path $PSScriptRoot 'optimize-sandaime-textures.py') $rawPath (Join-Path $outputDirectory 'figure.glb') $optimizationPath
+    if ($LASTEXITCODE -ne 0) { throw 'Lossless texture packing failed; unoptimized input retained for inspection' }
+    Remove-Item -LiteralPath $rawPath
+    $optimization = Get-Content -LiteralPath $optimizationPath -Raw | ConvertFrom-Json
+    $receipt = [ordered]@{description='Seven independent authored rigs, meshes, materials and clips. Runtime selects one clip root. Only byte-identical buffer views, images, textures and samplers are shared.';sourceFiles=$provenance.ToArray();images=$tables.images.Count;meshes=$tables.meshes.Count;outputBytes=(Get-Item -LiteralPath (Join-Path $outputDirectory 'figure.glb')).Length;losslessOptimization=@{method=$optimization.method;beforeBytes=$optimization.beforeBytes;afterSha256=$optimization.afterSha256;pixelsAndColorMetadataUnchanged=$true;gpuTextureDimensionsUnchanged=$true;receipt='xiaozhu-sandaime.lossless.json'}}
     [void][IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($provenancePath))
     [IO.File]::WriteAllText($provenancePath, ($receipt|ConvertTo-Json -Depth 8), [Text.UTF8Encoding]::new($false))
+    bun (Join-Path $PSScriptRoot 'prepare-persona-envelopes.ts')
+    if ($LASTEXITCODE -ne 0) { throw 'Variant envelope refresh failed' }
     $receipt | ConvertTo-Json -Depth 8
 } finally { $binary.Dispose() }

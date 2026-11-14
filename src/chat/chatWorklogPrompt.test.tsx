@@ -69,6 +69,7 @@ beforeEach(() => {
   // otherwise leaves this test's session/functions installed for later files.
   const fetchMock = mock((input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(String(input)).pathname;
+    if (url.endsWith("/global/health")) return Promise.resolve(Response.json({ healthy: true }));
     if (url.endsWith("/session")) {
       return Promise.resolve(Response.json(init?.method === "POST"
         ? { id: "ses_worklog_prompt", title: "YUME chat", directory: "." } : []));

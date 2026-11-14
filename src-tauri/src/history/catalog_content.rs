@@ -39,17 +39,24 @@ pub(super) fn apply_local_evidence(rows: &mut [CatalogEntry], sessions: &[Histor
 /// Existing content evidence survives unavailable or partial responses.
 pub(super) fn refresh(store: &CatalogStore, client: &NativeHistoryClient) -> Result<Vec<String>, String> {
     let mut errors = Vec::new();
-    for snapshot in store.all()? {
+    let mut after = String::new();
+    loop {
+        let batch = store.maintenance_batch(2, &after)?;
+        let Some(last) = batch.last() else { break; };
+        after = last.key();
+        for snapshot in batch {
         if snapshot.tombstone.is_some() || snapshot.has_records.is_some()
             || snapshot.availability != Availability::Available
             || snapshot.runtime != RuntimeState::Idle || snapshot.ownership == Ownership::Agent {
             continue;
         }
         let CatalogIdentity::Native { directory, session_id, .. } = &snapshot.identity else { continue; };
+        if crate::sidecar_residency::retired(directory) { continue; }
         match client.has_messages(directory, session_id) {
             Ok(has_records) => commit_evidence(store, &snapshot, has_records)?,
             Err(error) => errors.push(error.to_string()),
         }
+    }
     }
     errors.sort();
     errors.dedup();

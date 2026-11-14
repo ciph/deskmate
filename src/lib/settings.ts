@@ -209,7 +209,7 @@ export async function listModels(): Promise<ProviderModel[]> {
   let lastError: Error | null = null;
   for (let attempt = 0; attempt < 8; attempt += 1) {
     try {
-      const res = await fetch(`${base}/config/providers`, { headers, signal: AbortSignal.timeout(500) });
+      const res = await sidecarFetch(`${base}/config/providers`, { headers, signal: AbortSignal.timeout(500) });
       if (!res.ok) throw new Error(`providers -> ${res.status}`);
       const data = (await res.json()) as {
         providers?: {
@@ -240,3 +240,4 @@ export async function listModels(): Promise<ProviderModel[]> {
   }
   throw lastError ?? new Error("providers unavailable");
 }
+import { sidecarFetch } from "./sidecarFetch";

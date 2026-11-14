@@ -22,6 +22,7 @@ pub(crate) struct AgentEndpoint {
     pub(crate) auth_header: String,
 }
 pub(crate) struct OpenCodeClient {
+    residency: std::sync::OnceLock<Result<crate::sidecar_residency::Lease,String>>,
     endpoint: AgentEndpoint,
     agent: ureq::Agent,
 }
@@ -170,6 +171,7 @@ struct WireToolState {
 impl OpenCodeClient {
     pub(crate) fn new(endpoint: AgentEndpoint) -> Self {
         Self {
+            residency:std::sync::OnceLock::new(),
             endpoint,
             agent: ureq::AgentBuilder::new()
                 .timeout(Duration::from_secs(15))
@@ -256,6 +258,22 @@ impl OpenCodeClient {
             .into_json()
             .map_err(|_| "agent_wire_invalid".into())
     }
+    /// UI history uses the pinned server's opaque keyset cursor. Never follow
+    /// its Link URL: credentials and workspace remain bound to this client.
+    pub(crate) fn message_page(&self, session: &str, before: Option<&str>) -> Result<(Vec<NativeMessage>, Option<String>), String> {
+        if !crate::worklog::bridge::safe_id(session) || before.is_some_and(|s| s.is_empty() || s.len()>4096) { return Err("agent_invalid_id".into()); }
+        let mut request = self.agent.get(&self.workspace_url(&format!("/session/{session}/message"))?)
+            .query("limit", "100").set("Authorization", &self.endpoint.auth_header);
+        if let Some(before) = before { request = request.query("before", before); }
+        let response = request.call().map_err(http_error)?;
+        let cursor = response.header("X-Next-Cursor").map(str::to_owned);
+        if cursor.as_ref().is_some_and(|s| s.is_empty() || s.len()>4096 || Some(s.as_str()) == before) { return Err("agent_cursor_invalid".into()); }
+        let messages: Vec<WireMessage> = response.into_json().map_err(|_| "agent_wire_invalid")?;
+        if messages.len()>100 || (messages.is_empty() && cursor.is_some()) { return Err("agent_page_invalid".into()); }
+        if messages.iter().any(|m| m.info.session_id.as_ref().is_some_and(|id| id.as_str()!=Some(session))) { return Err("agent_snapshot_session_mismatch".into()); }
+        Ok((messages.into_iter().map(|m| m.into_native(session)).collect(), cursor))
+    }
+
     pub(crate) fn snapshot(&self, session: &str) -> Result<Vec<NativeMessage>, String> {
         let messages: Vec<WireMessage> = self
             .agent
@@ -320,6 +338,7 @@ impl OpenCodeClient {
     }
 
     fn workspace_url(&self, path: &str) -> Result<String, String> {
+        self.residency.get_or_init(||crate::sidecar_residency::Lease::acquire(true)).as_ref().map_err(Clone::clone)?.directory(&self.endpoint.workspace.to_string_lossy())?;
         let mut url = url::Url::parse(&format!("{}{path}", self.endpoint.base_url))
             .map_err(|_| "agent_endpoint_invalid".to_owned())?;
         url.query_pairs_mut().append_pair(

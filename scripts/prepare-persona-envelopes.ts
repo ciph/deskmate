@@ -34,3 +34,5 @@ export async function prepareBuiltinVariantEnvelopes(projectRoot: string): Promi
   if (await readFile(output, "utf8").catch(() => "") !== content) await writeFile(output, content);
   console.log(`Prepared ${Object.keys(records).length} trusted variant envelopes`);
 }
+
+if (import.meta.main) await prepareBuiltinVariantEnvelopes(resolve(import.meta.dir, ".."));

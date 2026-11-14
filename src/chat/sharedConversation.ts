@@ -27,7 +27,7 @@ export function validateSharedConversation(
 }
 
 export async function loadSharedConversation(row: UnifiedHistoryRow): Promise<CatalogLoadResult> {
-  const loaded = await catalogLoad(row.key);
+  const loaded = await catalogLoad(row.key, {});
   if (loaded.entry.key !== row.key || JSON.stringify(loaded.entry.identity) !== JSON.stringify(row.identity)) {
     throw new Error("history identity changed");
   }

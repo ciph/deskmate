@@ -38,7 +38,7 @@ pub(super) fn source_name(source: ConversationSource) -> &'static str {
     match source { ConversationSource::LightChat => "light_chat", ConversationSource::Workbench => "workbench", ConversationSource::Legacy => "legacy" }
 }
 
-pub(super) fn write_projection(connection: &Connection, key: &str, row: &CatalogEntry) -> Result<(), String> {
+fn write_projection_base(connection: &Connection, key: &str, row: &CatalogEntry) -> Result<(), String> {
     let directory = match &row.identity { CatalogIdentity::Native { directory, .. } => directory.as_str(), CatalogIdentity::Legacy { .. } => "" };
     let listed = row.tombstone.is_none() && row.visible_in_history();
     let offline = listed && matches!(row.identity, CatalogIdentity::Native { .. }) && row.availability != Availability::Available;
@@ -69,7 +69,7 @@ fn migrate(transaction: &Transaction<'_>, mut after_row: impl FnMut() -> Result<
         let key: String = row.get(0).map_err(db_error)?;
         let metadata: String = row.get(1).map_err(db_error)?;
         let entry = decode_row(&key, &metadata)?;
-        write_projection(transaction, &key, &entry)?;
+        write_projection_base(transaction, &key, &entry)?;
         after_row()?;
     }
     transaction.pragma_update(None, "user_version", 3).map_err(db_error)?;
@@ -79,3 +79,29 @@ fn migrate(transaction: &Transaction<'_>, mut after_row: impl FnMut() -> Result<
 #[cfg(test)]
 #[path = "catalog_schema_tests.rs"]
 mod tests;
+
+pub(super) fn write_projection(connection: &Connection, key: &str, row: &CatalogEntry) -> Result<(), String> {
+    write_projection_base(connection, key, row)?;
+    let native = matches!(row.identity, CatalogIdentity::Native { .. });
+    let kind: u8 = if row.tombstone.as_ref().is_some_and(|t| !t.remote_deleted) && native { 3 }
+        else if row.tombstone.is_none() && row.availability == Availability::Available && row.runtime == RuntimeState::Idle {
+            if row.has_records == Some(false) && row.ownership == Ownership::Unowned { 1 }
+            else if row.has_records.is_none() && row.ownership != Ownership::Agent && native { 2 }
+            else { 0 }
+        } else { 0 };
+    connection.execute("UPDATE entry_projection SET maintenance=?2 WHERE key=?1", params![key, kind]).map_err(db_error)?;
+    Ok(())
+}
+
+pub(super) fn migrate_v4(transaction: &Transaction<'_>) -> Result<(), String> {
+    transaction.execute_batch("ALTER TABLE entry_projection ADD COLUMN maintenance INTEGER NOT NULL DEFAULT 0 CHECK(maintenance BETWEEN 0 AND 3);").map_err(db_error)?;
+    let mut statement = transaction.prepare("SELECT key,metadata FROM entries ORDER BY key").map_err(db_error)?;
+    let mut rows = statement.query([]).map_err(db_error)?;
+    while let Some(row) = rows.next().map_err(db_error)? {
+        let key: String = row.get(0).map_err(db_error)?;
+        let metadata: String = row.get(1).map_err(db_error)?;
+        write_projection(transaction, &key, &decode_row(&key, &metadata)?)?;
+    }
+    transaction.execute_batch("CREATE INDEX catalog_maintenance ON entry_projection(maintenance,key); CREATE INDEX catalog_complete_directory ON entry_projection(directory,key); PRAGMA user_version=4;").map_err(db_error)?;
+    Ok(())
+}

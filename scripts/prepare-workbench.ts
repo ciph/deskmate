@@ -27,7 +27,7 @@ if (!(await stat(resolve(appDir, "package.json")).catch(() => null))?.isFile()) 
   throw new Error(`Pinned OpenCode source missing at ${appDir}`);
 }
 
-for (const relativePath of ["vite.workbench.config.ts", "workbench/index.html", "workbench/entry.tsx"]) {
+for (const relativePath of ["vite.workbench.config.ts", "workbench/index.html", "workbench/entry.tsx", "workbench/attachments.ts", "workbench/residency.ts"]) {
   const source = resolve(projectRoot, "scripts/workbench-overlay", relativePath);
   const target = resolve(appDir, relativePath);
   const existing = await stat(target).catch(() => null);

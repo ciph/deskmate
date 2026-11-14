@@ -23,9 +23,13 @@ fn unfinished(record: &RunRecord, messages: &[NativeMessage], now: u64) -> bool 
 }
 
 pub(super) fn inspect(client: &OpenCodeClient, record: &RunRecord, messages: Vec<NativeMessage>) -> SnapshotRead {
+    inspect_shared(client, record, std::sync::Arc::new(messages))
+}
+
+pub(super) fn inspect_shared(client: &OpenCodeClient, record: &RunRecord, messages: std::sync::Arc<Vec<NativeMessage>>) -> SnapshotRead {
     let now = chrono::Utc::now().timestamp_millis().max(0) as u64;
-    if !unfinished(record, &messages, now) { return SnapshotRead::Messages(messages); }
-    let Some(session) = record.session_id.as_deref() else { return SnapshotRead::Messages(messages); };
+    if !unfinished(record, &messages, now) { return SnapshotRead::Ready(messages); }
+    let Some(session) = record.session_id.as_deref() else { return SnapshotRead::Ready(messages); };
     let probe = || -> Result<Option<SnapshotRead>, String> {
         if !client.idle_without_interactions(session)? { return Ok(None); }
         // Re-read full messages: a late completion must win over the cached unfinished snapshot.
@@ -38,11 +42,11 @@ pub(super) fn inspect(client: &OpenCodeClient, record: &RunRecord, messages: Vec
     };
     match probe() {
         Ok(Some(snapshot)) => snapshot,
-        Ok(None) => SnapshotRead::Messages(messages),
+        Ok(None) => SnapshotRead::Ready(messages),
         Err(error) => {
             // Unknown liveness must not enter the tool-failure path that can isolate the engine.
             eprintln!("agent idle recovery {} deferred: {error}", record.run_id);
-            SnapshotRead::Messages(messages)
+            SnapshotRead::Ready(messages)
         }
     }
 }

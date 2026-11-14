@@ -1,6 +1,5 @@
 use super::{contract::*, error::WorklogResult};
 use rusqlite::{params, Connection};
-use std::collections::{HashMap, HashSet};
 
 pub(crate) fn stale_date(db: &Connection, date: &str) -> WorklogResult<()> {
     db.execute(
@@ -30,6 +29,10 @@ pub(crate) fn erase_report(db: &Connection, id: &str) -> WorklogResult<()> {
     erase_batch(db, None, Some(id), false)
 }
 
+const SOURCE_BATCH: usize = 32;
+#[cfg(test)]
+thread_local! { pub(super) static PEAK_SOURCE_BATCH: std::cell::Cell<usize> = const { std::cell::Cell::new(0) }; }
+
 struct StoredSources {
     id: String,
     report_id: Option<String>,
@@ -38,146 +41,86 @@ struct StoredSources {
 }
 impl StoredSources {
     fn read(row: &rusqlite::Row<'_>) -> rusqlite::Result<Self> {
-        Ok(Self {
-            id: row.get(0)?,
-            report_id: row.get(1)?,
-            manifest: super::repository::decode(row.get(2)?, 2)?,
-            snapshots: super::repository::decode(row.get(3)?, 3)?,
-        })
+        Ok(Self { id:row.get(0)?,report_id:row.get(1)?,
+            manifest:super::repository::decode(row.get(2)?,2)?,
+            snapshots:super::repository::decode(row.get(3)?,3)? })
     }
-    fn erase(&mut self, sources: &HashMap<String, HashSet<String>>) -> bool {
-        let before = (self.manifest.len(), self.snapshots.len());
-        let removed = |s: &SourceRef| sources.get(&s.kind).is_some_and(|ids| ids.contains(&s.id));
-        self.manifest.retain(|s| !removed(s));
-        self.snapshots.retain(|s| !removed(&s.source));
-        before != (self.manifest.len(), self.snapshots.len())
+    fn erase(&mut self, db:&Connection) -> WorklogResult<bool> {
+        let before=(self.manifest.len(),self.snapshots.len());
+        let mut query=db.prepare_cached("SELECT EXISTS(SELECT 1 FROM erase_sources WHERE kind=?1 AND id=?2)")?;
+        let mut failure=None;
+        let mut keep=|source:&SourceRef| match query.query_row(params![source.kind,source.id],|r|r.get::<_,bool>(0)) {
+            Ok(found)=>!found,
+            Err(error)=>{ failure=Some(error); true }
+        };
+        self.manifest.retain(&mut keep);
+        self.snapshots.retain(|snapshot|keep(&snapshot.source));
+        if let Some(error)=failure { return Err(error.into()); }
+        Ok(before!=(self.manifest.len(),self.snapshots.len()))
     }
 }
-fn erase_batch(
-    db: &Connection,
-    source: Option<(&str, &str)>,
-    deleted_report: Option<&str>,
-    delete_linked_reports: bool,
-) -> WorklogResult<()> {
-    // Snapshots and unfinished runs can exist independently of report_sources.
-    let mut statement = db.prepare(
-        "SELECT id,report_id,source_revision_manifest,source_snapshot FROM report_versions",
-    )?;
-    let mut versions = statement
-        .query_map([], StoredSources::read)?
-        .collect::<Result<Vec<_>, _>>()?;
-    let mut statement = db.prepare("SELECT run.id,report.id,run.source_manifest,run.source_snapshot FROM report_runs run LEFT JOIN reports report ON report.kind=run.kind AND report.period_start=run.period_start AND report.period_end=run.period_end AND run.state IN ('queued','running','retry_wait')")?;
-    let mut runs = statement
-        .query_map([], StoredSources::read)?
-        .collect::<Result<Vec<_>, _>>()?;
-    let mut dependents: HashMap<(String, String), HashSet<String>> = HashMap::new();
-    let mut report_versions: HashMap<&str, Vec<&str>> = HashMap::new();
-    for version in &versions {
-        let report = version.report_id.as_deref().expect("version has report id");
-        report_versions.entry(report).or_default().push(&version.id);
-        for source in version
-            .manifest
-            .iter()
-            .chain(version.snapshots.iter().map(|s| &s.source))
-        {
-            dependents
-                .entry((source.kind.clone(), source.id.clone()))
-                .or_default()
-                .insert(report.to_owned());
+fn source_batches(db:&Connection, runs:bool, mut visit:impl FnMut(&mut StoredSources)->WorklogResult<()>) -> WorklogResult<()> {
+    let select=if runs {
+        "SELECT run.id,report.id,run.source_manifest,run.source_snapshot FROM report_runs run LEFT JOIN reports report ON report.kind=run.kind AND report.period_start=run.period_start AND report.period_end=run.period_end AND run.state IN ('queued','running','retry_wait')"
+    } else { "SELECT id,report_id,source_revision_manifest,source_snapshot FROM report_versions" };
+    let id=if runs {"run.id"} else {"id"};
+    let mut after:Option<String>=None;
+    loop {
+        let sql=format!("{select}{} ORDER BY {id} LIMIT {SOURCE_BATCH}",if after.is_some() {format!(" WHERE {id}>?1")} else {String::new()});
+        let mut statement=db.prepare(&sql)?;
+        let mut batch=if let Some(after)=&after { statement.query_map([after],StoredSources::read)?.collect::<Result<Vec<_>,_>>()? }
+            else { statement.query_map([],StoredSources::read)?.collect::<Result<Vec<_>,_>>()? };
+        let Some(last)=batch.last() else {break};
+        after=Some(last.id.clone());
+        drop(statement);
+        #[cfg(test)] PEAK_SOURCE_BATCH.with(|peak|peak.set(peak.get().max(batch.len())));
+        for row in &mut batch {visit(row)?;}
+    }
+    Ok(())
+}
+fn erase_batch(db:&Connection,source:Option<(&str,&str)>,deleted_report:Option<&str>,delete_linked_reports:bool) -> WorklogResult<()> {
+    // Transaction-local ID edges cover orphan snapshots too; no source text is kept in this projection.
+    db.execute_batch("CREATE TEMP TABLE erase_edges(kind TEXT,id TEXT,report_id TEXT,PRIMARY KEY(kind,id,report_id));
+        CREATE TEMP TABLE erase_reports(id TEXT PRIMARY KEY);
+        CREATE TEMP TABLE erase_sources(kind TEXT,id TEXT,PRIMARY KEY(kind,id));")?;
+    let mut edge=db.prepare("INSERT OR IGNORE INTO erase_edges VALUES(?1,?2,?3)")?;
+    source_batches(db,false,|version| {
+        for source in version.manifest.iter().chain(version.snapshots.iter().map(|snapshot|&snapshot.source)) {
+            edge.execute(params![source.kind,source.id,version.report_id])?;
         }
-    }
-    let mut statement = db.prepare("SELECT s.source_kind,s.source_id,v.report_id FROM report_sources s JOIN report_versions v ON v.id=s.version_id")?;
-    let mut rows = statement.query([])?;
-    while let Some(row) = rows.next()? {
-        dependents
-            .entry((row.get(0)?, row.get(1)?))
-            .or_default()
-            .insert(row.get(2)?);
-    }
-    let mut pending = Vec::new();
-    if let Some((kind, id)) = source {
-        pending.push((kind.to_owned(), id.to_owned()));
-    }
-    let mut affected_reports = HashSet::new();
-    if let Some(report) = deleted_report {
-        affected_reports.insert(report.to_owned());
-        if let Some(versions) = report_versions.get(report) {
-            pending.extend(
-                versions
-                    .iter()
-                    .map(|id| ("daily_version".to_owned(), (*id).to_owned())),
-            );
-        }
-    }
-    let mut sources: HashMap<String, HashSet<String>> = HashMap::new();
-    while let Some((kind, id)) = pending.pop() {
-        if !sources.entry(kind.clone()).or_default().insert(id.clone()) {
-            continue;
-        }
-        if let Some(reports) = dependents.get(&(kind, id)) {
-            for report in reports {
-                if affected_reports.insert(report.clone()) {
-                    if let Some(versions) = report_versions.get(report.as_str()) {
-                        pending.extend(
-                            versions
-                                .iter()
-                                .map(|id| ("daily_version".to_owned(), (*id).to_owned())),
-                        );
-                    }
-                }
-            }
-        }
-    }
-    // Release borrowed version IDs before filtering the single decoded snapshot set.
-    drop(report_versions);
-    let deletes = |id: &str| {
-        deleted_report == Some(id) || (delete_linked_reports && affected_reports.contains(id))
+        Ok(())
+    })?;
+    drop(edge);
+    db.execute("INSERT OR IGNORE INTO erase_edges SELECT s.source_kind,s.source_id,v.report_id FROM report_sources s JOIN report_versions v ON v.id=s.version_id",[])?;
+    db.execute("WITH RECURSIVE affected(id) AS (
+        SELECT report_id FROM erase_edges WHERE kind=?1 AND id=?2
+        UNION SELECT id FROM reports WHERE id=?3
+        UNION SELECT edge.report_id FROM erase_edges edge JOIN report_versions v ON edge.kind='daily_version' AND edge.id=v.id JOIN affected a ON a.id=v.report_id
+        ) INSERT INTO erase_reports SELECT id FROM affected",params![source.map(|s|s.0),source.map(|s|s.1),deleted_report])?;
+    if let Some((kind,id))=source {db.execute("INSERT INTO erase_sources VALUES(?1,?2)",params![kind,id])?;}
+    db.execute("INSERT OR IGNORE INTO erase_sources SELECT 'daily_version',v.id FROM report_versions v JOIN erase_reports r ON r.id=v.report_id",[])?;
+    let deletes=|id:&str|->WorklogResult<bool> {
+        Ok(deleted_report==Some(id) || (delete_linked_reports && db.query_row("SELECT EXISTS(SELECT 1 FROM erase_reports WHERE id=?1)",[id],|r|r.get(0))?))
     };
-    let mut update_version = db.prepare(
-        "UPDATE report_versions SET source_revision_manifest=?1,source_snapshot=?2 WHERE id=?3",
-    )?;
-    for version in &mut versions {
-        if !deletes(version.report_id.as_deref().expect("version has report id"))
-            && version.erase(&sources)
-        {
-            update_version.execute(params![
-                serde_json::to_string(&version.manifest)?,
-                serde_json::to_string(&version.snapshots)?,
-                version.id
-            ])?;
+    source_batches(db,false,|version| {
+        if !deletes(version.report_id.as_deref().expect("version has report id"))? && version.erase(db)? {
+            db.execute("UPDATE report_versions SET source_revision_manifest=?1,source_snapshot=?2 WHERE id=?3",params![serde_json::to_string(&version.manifest)?,serde_json::to_string(&version.snapshots)?,version.id])?;
         }
-    }
-    let mut update_run = db.prepare("UPDATE report_runs SET source_manifest=?1,source_snapshot=?2,state=CASE WHEN state IN ('queued','running','retry_wait') THEN 'cancelled' ELSE state END WHERE id=?3")?;
-    for run in &mut runs {
-        if run.erase(&sources) {
-            update_run.execute(params![
-                serde_json::to_string(&run.manifest)?,
-                serde_json::to_string(&run.snapshots)?,
-                run.id
-            ])?;
-        } else if run.report_id.as_deref().is_some_and(deletes) {
-            // A regeneration may use only entries, not a version of its deleted target.
-            db.execute(
-                "UPDATE report_runs SET state='cancelled' WHERE id=?1",
-                [&run.id],
-            )?;
+        Ok(())
+    })?;
+    source_batches(db,true,|run| {
+        if run.erase(db)? {
+            db.execute("UPDATE report_runs SET source_manifest=?1,source_snapshot=?2,state=CASE WHEN state IN ('queued','running','retry_wait') THEN 'cancelled' ELSE state END WHERE id=?3",params![serde_json::to_string(&run.manifest)?,serde_json::to_string(&run.snapshots)?,run.id])?;
+        } else if run.report_id.as_deref().map(&deletes).transpose()?.unwrap_or(false) {
+            db.execute("UPDATE report_runs SET state='cancelled' WHERE id=?1",[&run.id])?;
         }
-    }
-    let mut remove_source =
-        db.prepare("DELETE FROM report_sources WHERE source_kind=?1 AND source_id=?2")?;
-    for (kind, ids) in sources {
-        for id in ids {
-            remove_source.execute(params![kind, id])?;
-        }
-    }
-    for report in &affected_reports {
-        if deletes(report) {
-            db.execute("DELETE FROM reports WHERE id=?1", [report])?;
-            db.execute("UPDATE worklog_operations SET status='deleted' WHERE entity_kind='report' AND entity_id=?1", [report])?;
-        } else {
-            db.execute("UPDATE reports SET stale=1,source_deleted=1 WHERE id=?1 AND (stale=0 OR source_deleted=0)", [report])?;
-        }
-    }
+        Ok(())
+    })?;
+    db.execute("DELETE FROM report_sources WHERE EXISTS(SELECT 1 FROM erase_sources s WHERE s.kind=report_sources.source_kind AND s.id=report_sources.source_id)",[])?;
+    db.execute("UPDATE worklog_operations SET status='deleted' WHERE entity_kind='report' AND (entity_id=?1 OR (?2 AND entity_id IN (SELECT id FROM erase_reports)))",params![deleted_report,delete_linked_reports])?;
+    db.execute("DELETE FROM reports WHERE id=?1 OR (?2 AND id IN (SELECT id FROM erase_reports))",params![deleted_report,delete_linked_reports])?;
+    db.execute("UPDATE reports SET stale=1,source_deleted=1 WHERE id IN (SELECT id FROM erase_reports) AND (stale=0 OR source_deleted=0)",[])?;
+    db.execute_batch("DROP TABLE erase_edges; DROP TABLE erase_reports; DROP TABLE erase_sources;")?;
     Ok(())
 }
 

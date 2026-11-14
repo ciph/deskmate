@@ -9,6 +9,7 @@ pub(crate) struct NativeHistoryClient {
     base_url: url::Url,
     auth_header: String,
     agent: ureq::Agent,
+    residency: Option<crate::sidecar_residency::Lease>,
 }
 
 pub(crate) struct NativeTextPreview {
@@ -24,6 +25,10 @@ pub(crate) fn authorize_history_window(label: &str) -> Result<(), NativeApiError
 }
 
 impl NativeHistoryClient {
+    pub(crate) fn with_residency(mut self, background: bool) -> Result<Self, NativeApiError> {
+        self.residency=Some(crate::sidecar_residency::Lease::acquire(!background).map_err(|_|NativeApiError::Unavailable)?);
+        Ok(self)
+    }
     /// Global health precedes project bootstrap (including local plugin dependencies).
     pub(crate) fn wait_for_directory(&self, directory: &str, budget: Duration) -> Result<(), NativeApiError> {
         let _: HashMap<String, NativeStatus> = decode(
@@ -196,6 +201,7 @@ impl NativeHistoryClient {
             return Err(NativeApiError::InvalidRequest);
         }
         Ok(Self {
+            residency:None,
             base_url,
             auth_header: auth_header.to_owned(),
             agent: ureq::AgentBuilder::new()
@@ -212,6 +218,7 @@ impl NativeHistoryClient {
         route: &str,
     ) -> Result<ureq::Request, NativeApiError> {
         canonical_directory(directory).map_err(|_| NativeApiError::InvalidRequest)?;
+        if let Some(lease)=&self.residency { lease.directory(directory).map_err(|_|NativeApiError::Unavailable)?; }
         let mut url = self.base_url.clone();
         url.set_path(route);
         url.query_pairs_mut().append_pair("directory", directory);
@@ -346,9 +353,14 @@ impl NativeHistoryClient {
         Self::scoped(row, directory, Some(id))
     }
 
-    /// Only used by the host while draft selection and managed task launches are locked.
-    /// Do not tombstone a failed delete: a retry must prove emptiness again.
+    #[cfg(test)]
     pub(crate) fn delete_empty(&self, directory: &str, id: &str, expected_updated: u64) -> Result<bool, NativeApiError> {
+        self.delete_empty_if(directory, id, expected_updated, || true)
+    }
+
+    /// Caller serializes draft selection/writes and excludes all Agent-owned sessions.
+    /// Do not tombstone a failed delete: a retry must prove emptiness again.
+    pub(crate) fn delete_empty_if(&self, directory: &str, id: &str, expected_updated: u64, still_current: impl FnOnce() -> bool) -> Result<bool, NativeApiError> {
         let session = match self.get(directory, id) {
             Err(NativeApiError::Missing) => return Ok(true),
             result => result?,
@@ -358,7 +370,7 @@ impl NativeHistoryClient {
         if !children.is_empty() || self.has_messages(directory, id)? { return Ok(false); }
         if matches!(self.statuses(directory)?.get(id), Some(NativeStatus::Busy | NativeStatus::Retry { .. })) { return Ok(false); }
         let latest = self.get(directory, id)?;
-        if latest.time.updated != expected_updated { return Ok(false); }
+        if latest.time.updated != expected_updated || !still_current() { return Ok(false); }
         self.delete_verified(directory, id)?;
         Ok(true)
     }

@@ -15,10 +15,14 @@ use super::error::{MemoryError, MemoryResult};
 
 /// Current logical schema version. Bump together with a new entry in
 /// [`MIGRATIONS`].
-pub const SCHEMA_VERSION: i64 = 4;
+pub const SCHEMA_VERSION: i64 = 5;
 
 /// Database file name inside the Tauri app-data directory.
 pub const DB_FILE_NAME: &str = "deskmate-memory.db";
+
+#[cfg(test)]
+#[path = "storage_index_tests.rs"]
+mod index_tests;
 
 /// One ordered, transactional migration step.
 struct Migration {
@@ -43,6 +47,10 @@ const MIGRATIONS: &[Migration] = &[
     Migration {
         to_version: 4,
         sql: include_str!("migrations/004_precise_fts.sql"),
+    },
+    Migration {
+        to_version: 5,
+        sql: include_str!("migrations/005_foreign_key_indexes.sql"),
     },
 ];
 

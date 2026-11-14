@@ -7,13 +7,14 @@ use super::{
     catalog::CatalogStore,
     catalog_model::{CatalogEntry, CatalogIdentity, Ownership, SIDECAR_ID},
     recovery::{self, SnapshotWrite},
-    storage::{prepare_path, PreparedHistoryFile},
+    session_storage::{prepare, PreparedSessionFile},
     AgentHistorySnapshot, HistorySession, HistoryState,
 };
 
 pub(crate) struct PreparedAgentSnapshot {
-    baseline: Vec<HistorySession>,
-    change: Option<(Vec<HistorySession>, PreparedHistoryFile)>,
+    baseline: HistorySession,
+    revision: Option<u64>,
+    change: Option<(HistorySession, PreparedSessionFile)>,
     catalog: CatalogStore,
     native_key: String,
     directory: String,
@@ -27,16 +28,13 @@ pub(crate) fn prepare_agent_snapshot(
     workspace: &Path,
     snapshot: AgentHistorySnapshot<'_>,
 ) -> Result<PreparedAgentSnapshot, String> {
-    let baseline = app
-        .state::<HistoryState>()
-        .0
-        .lock()
-        .map_err(|_| "history_state_unavailable")?
-        .clone();
-    let session = baseline
-        .iter()
-        .find(|session| session.id == snapshot.session_id)
-        .ok_or("history_not_found")?;
+    let state = app.state::<HistoryState>();
+    let (baseline, revision) = {
+        let list = state.0.lock().map_err(|_| "history_state_unavailable")?;
+        let session = list.iter().find(|s| s.id == snapshot.session_id).ok_or("history_not_found")?.clone();
+        (session, state.revision())
+    };
+    let session = &baseline;
     // Read only the trusted origin; merging, serialization and fsync run unlocked.
     let origin = session
         .origin_run_id
@@ -44,14 +42,16 @@ pub(crate) fn prepare_agent_snapshot(
         .map(|id| app.state::<crate::agent::AgentRunState>().record(id))
         .transpose()?
         .flatten();
-    PreparedAgentSnapshot::prepare(
+    let mut prepared = PreparedAgentSnapshot::prepare(
         &super::history_path(app)?,
-        baseline,
+        vec![baseline],
         origin.as_ref(),
         workspace,
         snapshot,
         super::commands::store(app)?,
-    )
+    )?;
+    prepared.revision = Some(revision);
+    Ok(prepared)
 }
 
 impl PreparedAgentSnapshot {
@@ -87,21 +87,19 @@ impl PreparedAgentSnapshot {
             history_id: snapshot.session_id.into(),
         }
         .key();
+        let self_session = session.clone();
         let change = if scoped {
             merged_agent_snapshot(&baseline, snapshot)?
                 .map(|session| {
-                    let mut next = baseline.clone();
-                    next.retain(|old| old.id != session.id);
-                    next.push(session);
-                    next.sort_by(|left, right| right.updated.cmp(&left.updated));
-                    prepare_path(path, &next).map(|file| (next, file))
+                    prepare(path, &self_session, &session).map(|file| (session, file))
                 })
                 .transpose()?
         } else {
             None
         };
         Ok(Self {
-            baseline,
+            baseline: session.clone(),
+            revision: None,
             change,
             catalog,
             native_key,
@@ -128,8 +126,9 @@ impl PreparedAgentSnapshot {
             std::sync::TryLockError::WouldBlock => "history_state_busy",
             std::sync::TryLockError::Poisoned(_) => "history_state_unavailable",
         })?;
+        if self.revision.is_some_and(|revision| state.revision() != revision) { return Err("history_snapshot_superseded".into()); }
         let changed = self.scoped && self.change.is_some();
-        self.commit_into(&mut list, PreparedHistoryFile::commit)?;
+        self.commit_into(&mut list, PreparedSessionFile::commit)?;
         if changed { state.committed(); }
         Ok(())
     }
@@ -137,10 +136,10 @@ impl PreparedAgentSnapshot {
     fn commit_into(
         self,
         list: &mut Vec<HistorySession>,
-        persist: impl FnOnce(PreparedHistoryFile) -> Result<(), String>,
+        persist: impl FnOnce(PreparedSessionFile) -> Result<(), String>,
     ) -> Result<(), String> {
-        // Whole-file replacement must not overwrite any concurrent row or metadata edit.
-        if *list != self.baseline {
+        // The selected row must still match; unrelated rows are never replaced.
+        if list.iter().find(|s| s.id == self.session_id) != Some(&self.baseline) {
             return Err("history_snapshot_superseded".into());
         }
         if !self.scoped {
@@ -151,7 +150,9 @@ impl PreparedAgentSnapshot {
                 validate_catalog(native.as_ref(), legacy.as_ref())?;
                 if let Some((next, file)) = self.change {
                     persist(file)?;
-                    *list = next;
+                    let current = list.iter_mut().find(|s| s.id == self.session_id).ok_or("history_not_found")?;
+                    *current = next;
+                    list.sort_by(|left,right| right.updated.cmp(&left.updated));
                 }
                 Ok(())
             })

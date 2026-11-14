@@ -56,6 +56,8 @@ pub fn cleanup_stale(root: &Path) -> WorklogResult<()> {
     Ok(())
 }
 fn fetch(launch: &Launch, directory: &str, route: &str, limit: u64) -> WorklogResult<Value> {
+    let residency=crate::sidecar_residency::Lease::acquire(true).map_err(|_|unavailable())?;
+    residency.directory(directory).map_err(|_|unavailable())?;
     use std::io::Read;
     crate::history::native_api::NativeHistoryClient::new(&launch.endpoint, &launch.auth_header)
         .map_err(|_| unavailable())?;

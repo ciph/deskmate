@@ -3,12 +3,15 @@ use chrono::{DateTime, Local, TimeZone};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{HashMap, VecDeque},
-    fs,
-    io::Write,
     path::{Path, PathBuf},
     sync::{Mutex, OnceLock},
 };
 use tauri::{Manager, State};
+
+#[cfg(test)]
+use std::fs;
+#[path = "ledger.rs"]
+mod ledger;
 
 const LEDGER_FILE: &str = "ai-usage-local.json";
 static LEDGER_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
@@ -99,107 +102,45 @@ fn ledger_lock() -> Result<std::sync::MutexGuard<'static, ()>, String> {
         .map_err(|_| "usage_storage_unavailable".into())
 }
 
-fn read_ledger(root: &Path) -> Result<HashMap<String, StoredUsage>, String> {
-    match fs::read(root.join(LEDGER_FILE)) {
-        Ok(bytes) => serde_json::from_slice(&bytes).map_err(|_| "usage_storage_invalid".into()),
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(HashMap::new()),
-        Err(_) => Err("usage_storage_unavailable".into()),
-    }
-}
-
-fn save_ledger(root: &Path, entries: &HashMap<String, StoredUsage>) -> Result<(), String> {
-    fs::create_dir_all(root).map_err(|_| "usage_storage_unavailable")?;
-    let pending = root.join(format!(".{LEDGER_FILE}-{}.tmp", uuid::Uuid::new_v4()));
-    let bytes = serde_json::to_vec(entries).map_err(|_| "usage_storage_invalid")?;
-    let result = (|| {
-        let mut file = fs::OpenOptions::new().write(true).create_new(true).open(&pending)?;
-        file.write_all(&bytes)?;
-        file.sync_all()?;
-        drop(file);
-        fs::rename(&pending, root.join(LEDGER_FILE))
-    })();
-    if result.is_err() { let _ = fs::remove_file(&pending); }
-    result.map_err(|_| "usage_storage_unavailable".into())
-}
-
 fn save_observations(
     root: &Path,
     providers: &[crate::settings::AiProvider],
     observations: impl IntoIterator<Item = UsageObservation>,
 ) -> Result<(), String> {
     let _guard = ledger_lock()?;
-    let mut entries = read_ledger(root)?;
-    let mut changed = false;
-    for observation in observations {
-        if !observation.is_valid() {
-            continue;
+    let entries = observations.into_iter().filter_map(|observation| {
+        if !observation.is_valid() { return None; }
+        let provider = providers.iter().find(|provider| provider.sidecar_id == observation.sidecar_id)?;
+        Some((observation.message_id, StoredUsage {
+            provider_id: provider.id.clone(), model_id: observation.model_id,
+            created_at_ms: observation.created_at_ms, tokens: observation.tokens,
+        }))
+    });
+    ledger::Ledger::open(root)?.save(entries)
+}
+
+fn day_window<T: TimeZone>(now: DateTime<T>) -> Result<(i64,i64), String> {
+    let zone = now.timezone();
+    let boundary = |date: chrono::NaiveDate| {
+        let midnight = date.and_hms_opt(0,0,0).ok_or("usage_storage_invalid")?;
+        // Some zones skip or repeat midnight. Choose the first valid instant;
+        // a date-line change may skip the following calendar day entirely.
+        for minute in 0..=2880 {
+            let local = midnight.checked_add_signed(chrono::Duration::minutes(minute)).ok_or("usage_storage_invalid")?;
+            if let Some(time) = zone.from_local_datetime(&local).earliest() { return Ok(time.timestamp_millis()); }
         }
-        let Some(provider) = providers
-            .iter()
-            .find(|provider| provider.sidecar_id == observation.sidecar_id)
-        else {
-            continue;
-        };
-        let next = StoredUsage {
-            provider_id: provider.id.clone(),
-            model_id: observation.model_id,
-            created_at_ms: observation.created_at_ms,
-            tokens: observation.tokens,
-        };
-        if entries.get(&observation.message_id).is_some_and(|existing| {
-            existing.provider_id != next.provider_id
-                || existing.model_id != next.model_id
-                || existing.created_at_ms != next.created_at_ms
-        }) {
-            return Err("usage_message_identity_mismatch".into());
-        }
-        if entries
-            .get(&observation.message_id)
-            .is_none_or(|existing| existing.tokens < next.tokens)
-        {
-            entries.insert(observation.message_id, next);
-            changed = true;
-        }
-    }
-    if changed {
-        save_ledger(root, &entries)?;
-    }
-    Ok(())
+        Err("usage_storage_invalid")
+    };
+    let date = now.date_naive();
+    let start = boundary(date)?;
+    let end = boundary(date.succ_opt().ok_or("usage_storage_invalid")?)?;
+    Ok((start,end))
 }
 
 pub(crate) fn today_summary(root: &Path, provider_id: &str) -> Result<LocalSummary, String> {
     let _guard = ledger_lock()?;
-    let today = Local::now().date_naive();
-    let mut summary = LocalSummary {
-        tokens: 0,
-        requests: 0,
-        top_models: Vec::new(),
-    };
-    let mut models: HashMap<String, (u64, u64)> = HashMap::new();
-    for entry in read_ledger(root)?.values() {
-        let created: Option<DateTime<Local>> =
-            Local.timestamp_millis_opt(entry.created_at_ms).single();
-        if entry.provider_id != provider_id || created.is_none_or(|time| time.date_naive() != today)
-        {
-            continue;
-        }
-        summary.tokens = summary.tokens.saturating_add(entry.tokens);
-        summary.requests += 1;
-        let model = models.entry(entry.model_id.clone()).or_default();
-        model.0 = model.0.saturating_add(entry.tokens);
-        model.1 += 1;
-    }
-    summary.top_models = models
-        .into_iter()
-        .map(|(name, (tokens, requests))| LocalUsageModel {
-            name,
-            tokens,
-            requests,
-        })
-        .collect();
-    summary.top_models.sort_by(|a, b| b.tokens.cmp(&a.tokens));
-    summary.top_models.truncate(3);
-    Ok(summary)
+    let (start,end) = day_window(Local::now())?;
+    ledger::Ledger::open(root)?.summary(provider_id,start,end)
 }
 
 #[tauri::command]

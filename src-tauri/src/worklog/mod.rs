@@ -14,6 +14,7 @@ mod repository_entries;
 mod repository_material;
 mod repository_publish;
 mod repository_reports;
+mod repository_report_view;
 mod repository_runs;
 mod repository_runtime;
 mod repository_schedules;

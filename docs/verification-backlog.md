@@ -6,6 +6,30 @@
 
 按改动范围运行 `bun run typecheck`、`bun run test:frontend`、`bun run test:rust`、`bun run build` 或组合入口 `bun run check`。已通过且源码未变的不重复整套；原生 GUI、真实模型和硬件结果单独记录，发布工作流按目标版本执行。
 
+## 2026-11-10 数据库优化 F04/F09/F12
+
+开发工作树与分支保持 `build-v0418-9081/deskmate-public-release`、`codex/performance-priority-fixes`，基线 `abf72cd73751baef048344a72854165160b5f9f6`，版本仍为 0.5.0，保留上一轮未提交改动。新增单条工作记录查询；记忆 v4→v5 仅补两条外键索引；本地用量从完整 JSON 读写迁移到 SQLite 消息明细与可重建的当前日汇总。数据及回退契约见 `memory-and-worklog.md`、`ai-provider-support.md`。
+
+- `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib`：1019 passed / 0 failed / 28 ignored。本轮新增 12 项普通 Rust 回归：8 项用量账本、3 项索引/迁移、1 项真实生成 IPC；包含既有 FTS/迁移/跨进程与上一轮调度、并发回归。28 ignored 中 25 项是原有范围，3 项为下面单独执行的规模测试。
+- `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib database_scale_ -- --ignored --nocapture --test-threads=1`：3 passed；一万、十万行均核对结果一致性，记录 7 样本 p50/p95、查询计划、序列化体积和一次迁移耗时。用量保存包含 FULL 同步提交及每次开关连接；外键删除用真实 FK/FTS/secure-delete、事务回滚复位，不包含提交 fsync。Debug 合成基准不等同发布版 UI 或进程内存收益。
+- 隔离进程执行 13 个相关前端文件：114 passed / 0 failed，包含 4 项新详情跳转、缺失、迟到响应和重载/删除回归。旧实现先复现全日期查询和外键 SCAN；早期测试交互等待与类型断言问题已修正，失败日志保留。
+- `bun run typecheck` 三套配置及 `bun run build` 通过；构建保留既有大块体积提示。`npx react-doctor@latest --verbose --scope changed --base HEAD` 扫描 4 个改动前端文件，93/100，无新增诊断。
+
+证据和更新后的 HTML：`E:/Codex/工作伙伴/audit-artifacts/yume-performance-memory-20261109`，本轮日志、测量与源码哈希在 `database-round-20261110`。旧审计与 F01/F02 安装回执保留为历史快照。测试仅操作临时数据库；本轮未安装、未打开或迁移用户数据库、未改设置、未发布。尚未完成本轮原生 GUI、发布构建 A/B、真实时区切换/DST、断电故障与进程堆峰值验收，不把测试通过表达为所有运行场景无回归。
+
+## 2026-11-09 性能审计 F01/F02
+
+基于 0.5.0 / `abf72cd73751baef048344a72854165160b5f9f6`，在 `codex/performance-priority-fixes` 完成源码修复。F01 将 35 个记忆、工作记录及导出同步入口移入阻塞线程池；F02 将历史发现、删除重试与空会话清理的远端请求移出 Agent 操作锁，保留选择 / 输入保护，并在提交时复核运行记录和引擎代次。数据格式、前端命令契约和版本号不变。
+
+- 新增 14 项 Rust 回归：6 项生成 IPC / 数据契约测试，8 项真实本地 HTTP / 清理竞态测试。记忆及工作记录派发测试在旧实现先得到 2 failed，修复后均通过；其余覆盖并发修订、提交后事件、导出与遗忘、幂等回执、禁用错误、窗口鉴权、慢请求期间控制锁可用、新任务与旧同步交错、引擎更替及新消息防误删。
+- `cargo test --locked --manifest-path src-tauri/Cargo.toml --lib` 最终完整复跑：1007 passed / 0 failed / 25 ignored。首轮 1006 passed / 1 failed / 25 ignored，既有 `agent::opencode_tests::delayed_health_allows_one_session_create` 未在健康等待预算内成功；该单项随后通过，未修改、放宽或跳过它，完整复跑亦通过。既有 25 个 ignored 用例未启用。
+- 按仓库隔离进程 runner 执行 12 个相关前端测试文件：97 passed / 0 failed；覆盖记忆、日志、Agent 启停与历史、报告导出 / 编辑 / 调度及工作台历史入口。`bun run typecheck` 三个 TypeScript 项目通过。
+- 原始日志、修复源码快照校验与更新后的 HTML 在 `E:/Codex/工作伙伴/audit-artifacts/yume-performance-memory-20261109/`。修复前审计正文与代码摘录另存 `original-report.html`、`original-findings.json`。
+
+源码回归阶段未执行原生 GUI / macOS 验收；不把 mock IPC 和控制锁回归等同于真实 Stop p95、长期内存或 GPU 收益。草稿选择 / 显示仍会与清理串行，Stop 自身的远端结算网络耗时也仍保留。其余 16 项审计建议未在本轮实施。
+
+2026-11-09 后续按用户要求完成本机打包和原位安装：113.08 MiB 候选包通过完整性、图标、内嵌 EXE 与 21 项资源校验；安装退出码 0，安装后的文件匹配。旧版 26 个程序文件与 9,642 个用户数据文件已备份；安装后、启动前逐项哈希一致，1 个外部目录联接保持原状，凭据库未变。重开后原生无障碍接口确认百变小著加载；仅桌宠位置由应用运行时写回，其余设置一致。回执在 `E:/Codex/工作伙伴/release-artifacts/performance-priority-fixes-20261109/`，用户数据备份位于本机 `%LOCALAPPDATA%/YUME-backups/performance-priority-fixes-20261109/`。工作台复用 955 个已核验的固定输入文件，没有重建声明；未公开发布，完整交互及性能体验交由用户试用。
+
 ## 模型选择主线程阻塞修复（2026-11-08）
 
 `history_model_selection_set` 改为异步 IPC 命令，任务锁等待、目录读写和模型校验进入阻塞工作线程；拿锁后仍重读活动会话与目录状态，保持与任务启动互斥。新增 3 项真实生成 IPC handler 的隔离回归：无关任务持锁时派发线程可继续、等待期间目标任务启动后拒绝写入、非聊天窗口及未验证模型被拒绝。旧同步实现先跑出 2 failed / 1 passed，修复后 3 passed。
@@ -181,3 +205,19 @@ Windows 本地构建与安装已完成（安装器退出码 0），包内 EXE �
 <a id="2026-10-27-mac-b7-流式与-pdf"></a>
 
 [原记录：2026-10-27-mac-b7-流式与-pdf](archive/verification/history-through-20261028.md#2026-10-27-mac-b7-流式与-pdf)
+
+### 2026-11-10 F05/F06/F07/F08 source validation
+
+History pages, visible event refresh, session-level history persistence and indexed catalog maintenance are implemented. See the history-round-20261110 receipt for final Rust/frontend/type/build/React Doctor evidence, source hashes and retained failure logs. Before an optional future installation: back up the complete data directory and old program, verify catalog v3→v4 plus lazy history JSON→SQLite v1, and check long-history paging/Select All/Agent stop and restart with the native GUI. No installation or real-data migration was performed in this source round.
+
+### 2026-11-10 F03/F10/F11/F13/F14 source validation
+
+Idle engine reclamation, report body/source paging, bounded erasure batches, binary attachment chunks and paged Markdown are implemented. The `peak-residency-round-20261110` audit receipt records current source hashes, complete automated regression, pinned workbench build, synthetic large-input measurements and isolated engine recovery with full transcripts. This round does not migrate persistent schemas or install the application. Before native acceptance, verify hidden-window idle/reopen, active task/PTY/approval protection, report version editing and export, large attachment selection and long Markdown keyboard navigation. Actual LSP/watcher counts, WebView2 frame timing and whole-process RSS comparisons remain unmeasured; synthetic node/byte counts are not substitutes.
+
+### 2026-11-10 F15/F16/F17/F18 source validation
+
+The last Markdown consumer now starts a cancellable 10-second worker/cache release. Settings status and usage polling use native/document visibility and one in-flight request. Only the settings WebView is deferred until first use; its queued navigation handshake and native hide preserve drafts. Chat startup and backend jobs remain unchanged. This source round does not migrate user data or replace the installed peak-residency build; evidence and retained test failures are in `final-memory-round-20261110` of the performance audit.
+
+Sandaime PNG IDAT recompression reduces the bundled GLB from 75,641,656 to 65,365,560 bytes without changing any decoded pixel, color metadata, geometry, rig, clip or material. `sandaimeTextures.test.ts` checks original golden hashes with an independent PNG decoder; the existing asset/envelope tests verify all seven clips and 698 authored times. GPU texture dimensions and the 156.27 MiB logical RGBA budget are unchanged. Whole-process RSS, GPU residency, frame times and prolonged native use still require controlled measurement.
+
+Asset regeneration uses `scripts/prepare-xiaozhu-sandaime.ps1` with the seven original source GLBs and offline Pillow; it invokes the lossless encoder and refreshes the trusted envelope manifest. Pillow is not a runtime or normal build dependency. Source/golden identities intentionally remain fixed so unreviewed visual or geometry changes fail tests. Original GLB, prior report and source snapshots are retained in the audit round for rollback.

@@ -8,6 +8,22 @@ fn raw_rows(connection: &Connection) -> Vec<(String, String)> {
 }
 
 #[test]
+fn v3_maintenance_upgrade_is_atomic_and_preserves_authoritative_rows() {
+    let root=tempfile::tempdir().unwrap();let path=root.path().join("catalog.sqlite");
+    let mut connection=Connection::open(&path).unwrap();
+    seed_v2(&path,&fixtures(20));
+    let tx=connection.transaction().unwrap();migrate_v3(&tx).unwrap();tx.commit().unwrap();
+    let before=raw_rows(&connection);
+    connection.execute_batch("CREATE TRIGGER fail_maintenance BEFORE UPDATE ON entry_projection BEGIN SELECT RAISE(ABORT,'injected'); END;").unwrap();
+    assert!(CatalogStore::open(&path).is_err());assert_eq!(version(&connection),3);
+    assert_eq!(raw_rows(&connection),before);
+    assert!(connection.prepare("SELECT maintenance FROM entry_projection").is_err());
+    connection.execute_batch("DROP TRIGGER fail_maintenance").unwrap();
+    CatalogStore::open(&path).unwrap();assert_eq!(version(&connection),4);
+    assert_eq!(raw_rows(&connection),before);
+}
+
+#[test]
 fn migration_preserves_metadata_preferences_registry_and_readonly_old_copy() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("catalog.sqlite");
@@ -27,7 +43,7 @@ fn migration_preserves_metadata_preferences_registry_and_readonly_old_copy() {
         let store = CatalogStore::open(&path).unwrap();
         assert!(store.page(CatalogQuery::default(), vec![]).is_ok());
         let connection = Connection::open(&path).unwrap();
-        assert_eq!(version(&connection), 3);
+        assert_eq!(version(&connection), 4);
         assert_eq!(raw_rows(&connection), before);
         assert_eq!(connection.query_row("SELECT selection FROM model_selections", [], |row| row.get::<_, String>(0)).unwrap(), "\"inherit\"");
         assert_eq!(store.recent_workspaces().unwrap(), vec!["/unrelated"]);
@@ -102,7 +118,7 @@ fn future_schema_is_rejected_without_mutation_and_parallel_open_migrates_once() 
     let root = tempfile::tempdir().unwrap();
     let future = root.path().join("future.sqlite");
     seed_v2(&future, &fixtures(5));
-    Connection::open(&future).unwrap().pragma_update(None, "user_version", 4).unwrap();
+    Connection::open(&future).unwrap().pragma_update(None, "user_version", 5).unwrap();
     let bytes = std::fs::read(&future).unwrap();
     assert!(matches!(CatalogStore::open(&future), Err(error) if error == "history_catalog_version_unsupported"));
     assert_eq!(std::fs::read(&future).unwrap(), bytes);

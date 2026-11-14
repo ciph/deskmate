@@ -41,31 +41,31 @@ struct PreparedExport {
 }
 
 #[tauri::command]
-pub fn worklog_export_report(
-    app: tauri::AppHandle,
-    state: tauri::State<'_, WorklogState>,
+pub async fn worklog_export_report<R: tauri::Runtime>(
+    app: tauri::AppHandle<R>,
     request: ExportReportRequest,
 ) -> WorklogResult<ExportReportReceipt> {
-    let document = state.with_repository(|repository| prepare(repository, &request))?;
-    let downloads = app
-        .path()
-        .download_dir()
-        .map_err(|_| downloads_unavailable())?;
-    write_export(&downloads, &document, write_body)
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<WorklogState>();
+        let document = state.with_repository(|repository| prepare(repository, &request))?;
+        let downloads = app
+            .path()
+            .download_dir()
+            .map_err(|_| downloads_unavailable())?;
+        write_export(&downloads, &document, write_body)
+    })
+    .await
+    .map_err(|_| WorklogError::new("STORAGE_UNAVAILABLE", "Journal worker failed"))?
 }
 
 fn prepare(
     repository: &Repository,
     request: &ExportReportRequest,
 ) -> WorklogResult<PreparedExport> {
-    let detail = repository.get_report(&request.report_id)?;
-    let version = detail
-        .versions
-        .into_iter()
-        .find(|version| version.id == request.version_id && version.report_id == request.report_id)
-        .ok_or_else(WorklogError::missing)?;
-    super::repository::range(&detail.report.period_start, &detail.report.period_end)?;
-    let kind = match detail.report.kind {
+    let report = repository.report_metadata(&request.report_id)?;
+    let version = repository.report_version_content(&request.report_id, &request.version_id)?;
+    super::repository::range(&report.period_start, &report.period_end)?;
+    let kind = match report.kind {
         ReportKind::Daily => "日报",
         ReportKind::Weekly => "周报",
         ReportKind::Custom => "工作报告",
@@ -73,7 +73,7 @@ fn prepare(
     Ok(PreparedExport {
         stem: format!(
             "{kind}_{}_{}_v{}",
-            detail.report.period_start, detail.report.period_end, version.version
+            report.period_start, report.period_end, version.summary.version
         ),
         body: version.body_markdown,
         format: request.format,

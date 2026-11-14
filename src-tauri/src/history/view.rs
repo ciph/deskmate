@@ -36,6 +36,9 @@ fn native_sessions(
         return Vec::new();
     };
     let workspace = data_dir.join("workspace").to_string_lossy().into_owned();
+    if crate::sidecar_residency::retired(&workspace) { return Vec::new(); }
+    let Ok(lease)=crate::sidecar_residency::Lease::acquire(false) else {return Vec::new()};
+    if lease.directory(&workspace).is_err() {return Vec::new()}
     let url = format!("{}/session", crate::sidecar_url(app));
     let list: Vec<NativeSessionInfo> = match ureq::get(&url)
         .set("Authorization", &crate::sidecar_auth_header(app))

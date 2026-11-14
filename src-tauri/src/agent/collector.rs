@@ -8,9 +8,16 @@ use crate::tool_permissions::runtime::{PermissionRequest, Reply};
 use tauri::Manager;
 
 pub(super) enum SnapshotRead {
-    Messages(Vec<NativeMessage>),
-    IdleInterrupted(Vec<NativeMessage>),
+    Ready(std::sync::Arc<Vec<NativeMessage>>),
+    Idle(std::sync::Arc<Vec<NativeMessage>>),
     SidecarLost,
+}
+
+impl SnapshotRead {
+    #[allow(non_snake_case)]
+    pub(super) fn Messages(messages: Vec<NativeMessage>) -> Self { Self::Ready(std::sync::Arc::new(messages)) }
+    #[allow(non_snake_case)]
+    pub(super) fn IdleInterrupted(messages: Vec<NativeMessage>) -> Self { Self::Idle(std::sync::Arc::new(messages)) }
 }
 
 pub(super) struct CollectorActions<S, P, A, R> {
@@ -100,7 +107,7 @@ where
         return Ok(());
     }
     let prepared = match &snapshot {
-        Ok(SnapshotRead::Messages(messages) | SnapshotRead::IdleInterrupted(messages)) => {
+        Ok(SnapshotRead::Ready(messages) | SnapshotRead::Idle(messages)) => {
             if candidate.pending_outcome.is_some()
                 && messages.iter().any(|message| {
                     message.parent_id.as_deref() == Some(&candidate.run_id)
@@ -141,7 +148,7 @@ where
             return Ok(());
         }
 
-        let idle_interrupted = matches!(&snapshot, Ok(SnapshotRead::IdleInterrupted(_)))
+        let idle_interrupted = matches!(&snapshot, Ok(SnapshotRead::Idle(_)))
             && matches!(&pending, Some(Ok(requests)) if requests.is_empty());
         match snapshot {
             Err(error) => {
@@ -153,7 +160,7 @@ where
                 state.set_collection_error(&candidate.run_id, Some(summary))?;
                 reported_error = Some(summary.to_owned());
             }
-            Ok(SnapshotRead::Messages(messages) | SnapshotRead::IdleInterrupted(messages)) => {
+            Ok(SnapshotRead::Ready(messages) | SnapshotRead::Idle(messages)) => {
                 if current.pending_outcome.is_some()
                     && messages.iter().any(|message| {
                         message.parent_id.as_deref() == Some(&current.run_id)
@@ -230,7 +237,7 @@ pub(crate) fn collect_active_run_once(
     mode: CollectionMode,
 ) -> Result<(), String> {
     collect_active_run_with_snapshot(app, mode, None, |record, client| {
-        super::supervision::snapshot(client, &app.state::<AgentRunState>(), record)
+        super::supervision::snapshot(client, &app.state::<AgentRunState>(), record).map(std::sync::Arc::new)
     }).map(|_| ())
 }
 
@@ -238,7 +245,7 @@ fn collect_active_run_with_snapshot(
     app: &tauri::AppHandle,
     mode: CollectionMode,
     expected_generation: Option<u64>,
-    snapshot: impl FnOnce(&RunRecord, &super::opencode::OpenCodeClient) -> Result<Vec<NativeMessage>, String>,
+    snapshot: impl FnOnce(&RunRecord, &super::opencode::OpenCodeClient) -> Result<std::sync::Arc<Vec<NativeMessage>>, String>,
 ) -> Result<bool, String> {
     let state = app.state::<AgentRunState>();
     let permissions = app.state::<AgentPermissionState>();
@@ -312,7 +319,7 @@ fn collect_active_run_with_snapshot(
                 }
                 let settings = super::run_commands::current_start_settings(app)?;
                 let client = super::run_commands::lifecycle_client(app, &settings, &record.workspace_path);
-                snapshot(record, &client).map(|messages| super::idle_recovery::inspect(&client, record, messages))
+                snapshot(record, &client).map(|messages| super::idle_recovery::inspect_shared(&client, record, messages))
             },
             pending: |record: &RunRecord| {
                 if mode == CollectionMode::Recovery {
@@ -481,20 +488,21 @@ fn collect_live_run_once(
             || candidate.created_at != record.created_at
             || candidate.pending_outcome != record.pending_outcome
         {
-            return super::supervision::snapshot(client, &state, candidate);
+            return super::supervision::snapshot(client, &state, candidate).map(std::sync::Arc::new);
         }
-        let mut next = refresh.fetch_with(candidate, &plan,
+        let next = refresh.fetch_with(candidate, &plan,
             || client.snapshot(session), |id| client.message(session, id))?;
         let messages = super::supervision::inspect_messages(client, &state, candidate, next.messages, next.full)?;
-        next.messages = messages.clone();
-        fetched = Some(next);
+        let messages = std::sync::Arc::new(messages);
+        fetched = Some((messages.clone(), next.full));
         Ok(messages)
     });
     // Busy single-flight skips never call the snapshot closure, so they cannot
     // acknowledge dirty IDs. Events received during HTTP survive this ticket.
     if matches!(result, Ok(true)) && crate::sidecar_generation(app)? == generation {
         if let Some(fetched) = fetched {
-            refresh.confirm(fetched, std::time::Instant::now());
+            let messages = std::sync::Arc::try_unwrap(fetched.0).map_err(|_| "agent_snapshot_still_shared")?;
+            refresh.confirm(super::collector_refresh::FetchedSnapshot { messages, full: fetched.1 }, std::time::Instant::now());
             events.ack(&scope, changes.ticket)?;
         }
     }

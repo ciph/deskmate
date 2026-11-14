@@ -38,7 +38,12 @@ export interface ReportVersion {
   readonly sourceSnapshot: readonly SourceSnapshot[]; readonly coverageDates: readonly string[];
   readonly generatedAt: string; readonly modelId: string | null;
 }
-export interface ReportDetail { readonly report: Report; readonly versions: readonly ReportVersion[] }
+export type ReportVersionSummary = Pick<ReportVersion, "id" | "reportId" | "version" | "origin" | "generatedAt" | "modelId">;
+export interface ReportVersionContent extends ReportVersionSummary {
+  readonly bodyMarkdown: string; readonly coverageDates: readonly string[]; readonly sourceCount: number;
+}
+export interface ReportDetail { readonly report: Report; readonly versions: readonly ReportVersionSummary[]; readonly currentVersion: ReportVersionContent | null }
+export interface ReportSourcePage { readonly sources: readonly SourceSnapshot[]; readonly nextOffset: number | null }
 export interface SaveReport {
   readonly requestId: string; readonly kind: ReportKind; readonly periodStart: string; readonly periodEnd: string;
   readonly expectedRevision: number | null; readonly bodyMarkdown: string;
@@ -75,6 +80,9 @@ export const queryEntries = (query: DateQuery): Promise<readonly Entry[]> => inv
 export const deleteEntry = (request: DeleteRecord): Promise<OperationReceipt> => invoke("worklog_delete_entry", { request });
 export const listReports = (query: DateQuery): Promise<readonly Report[]> => invoke("worklog_list_reports", { query });
 export const getReport = (id: string): Promise<ReportDetail> => invoke("worklog_get_report", { id });
+export const getReportVersion = (reportId: string, versionId: string): Promise<ReportVersionContent> => invoke("worklog_get_report_version", { reportId, versionId });
+export const getReportSources = (reportId: string, versionId: string, offset: number): Promise<ReportSourcePage> => invoke("worklog_get_report_sources", { reportId, versionId, offset });
+export const getEntry = (id: string): Promise<Entry | null> => invoke("worklog_get_entry", { id });
 export const saveReport = (request: SaveReport): Promise<OperationReceipt> => invoke("worklog_save_report", { request });
 export const applyReportVersion = (request: ApplyVersion): Promise<OperationReceipt> => invoke("worklog_apply_version", { request });
 export const deleteReport = (request: DeleteRecord): Promise<OperationReceipt> => invoke("worklog_delete_report", { request });

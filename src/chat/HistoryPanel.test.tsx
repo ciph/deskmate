@@ -28,7 +28,7 @@ test("native history reads host-side native messages without a legacy projection
   expect(loaded.messages[0]?.text).toBe("Actual native message");
   expect(loaded.messages[0]?.messageId).toBe("msg-native");
   expect(loaded.entry.identity).toEqual(row.identity);
-  expect(calls).toEqual([{ command: "history_catalog_load", args: { key: row.key } }]);
+  expect(calls).toEqual([{ command: "history_catalog_load", args: { key: row.key, paged: true } }]);
 });
 
 test("native sidecar failure stays a failure instead of falling back to old history text", async () => {

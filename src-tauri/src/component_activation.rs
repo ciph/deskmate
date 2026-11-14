@@ -1,7 +1,7 @@
 //! Short restart boundary shared by task admission and background model work.
 use std::sync::{
     atomic::{AtomicBool, AtomicU64, Ordering},
-    RwLock, RwLockReadGuard,
+    RwLock, RwLockReadGuard, RwLockWriteGuard,
 };
 use std::time::Duration;
 use tauri::Manager;
@@ -13,17 +13,30 @@ pub(crate) struct ActivationState {
     revision: AtomicU64,
 }
 
-pub(crate) fn service_use() -> Result<RwLockReadGuard<'static, ()>, String> {
-    SERVICE_USE.try_read().map_err(|_| {
-        "AI service is applying the Windows component change; please retry shortly.".into()
-    })
+pub(crate) struct ServiceUse {
+    _service: RwLockReadGuard<'static, ()>,
+    _residency: crate::sidecar_residency::Lease,
+}
+pub(crate) fn service_use() -> Result<ServiceUse, String> {
+    let residency=crate::sidecar_residency::Lease::acquire(true)?;
+    let service=SERVICE_USE.try_read().map_err(|_| "AI service is applying the Windows component change; please retry shortly.".to_string())?;
+    Ok(ServiceUse {_service:service,_residency:residency})
 }
 // Background workers can wait for the short restart; native window commands
 // must use try_read above so the UI thread remains available to the restart.
-pub(crate) fn background_service_use() -> Result<RwLockReadGuard<'static, ()>, String> {
-    SERVICE_USE
+pub(crate) fn background_service_use() -> Result<ServiceUse, String> {
+    let residency=crate::sidecar_residency::Lease::acquire(true)?;
+    let service=SERVICE_USE
         .read()
-        .map_err(|_| "component_activation_unavailable".into())
+        .map_err(|_| "component_activation_unavailable".to_string())?;
+    Ok(ServiceUse {_service:service,_residency:residency})
+}
+pub(crate) fn idle_boundary() -> Result<Option<RwLockWriteGuard<'static, ()>>,String> {
+    match SERVICE_USE.try_write() {
+        Ok(guard)=>Ok(Some(guard)),
+        Err(std::sync::TryLockError::WouldBlock)=>Ok(None),
+        Err(_)=>Err("component_activation_unavailable".into()),
+    }
 }
 fn status(app: &tauri::AppHandle, value: &str) {
     if let Ok(mut status) = app

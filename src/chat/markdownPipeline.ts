@@ -5,8 +5,9 @@ import remarkRehype from "remark-rehype";
 import remend from "remend";
 import { urlAttributes } from "html-url-attributes";
 import type { Root, RootContent, Element } from "hast";
+import { splitMarkdownNode, markdownNodeCount } from "./markdownPages";
 
-export interface MarkdownBlock { key: string; fingerprint: string; node: RootContent }
+export interface MarkdownBlock { key: string; fingerprint: string; node: RootContent; nodes?: number }
 export interface MarkdownResult { blocks: MarkdownBlock[]; bytes: number; parseMs: number }
 const processor = unified().use(remarkParse).use(remarkGfm).use(remarkRehype, { allowDangerousHtml: true });
 
@@ -16,6 +17,7 @@ export function chatUrl(url: string): string {
 function safeTree(parent: Root | Element) {
   parent.children = parent.children.filter(node => (node as { type: string }).type !== "raw") as typeof parent.children;
   for (const node of parent.children) {
+    delete node.position;
     if (node.type !== "element") continue;
     for (const [key, tags] of Object.entries(urlAttributes)) {
       if (key in node.properties && (!tags || tags.includes(node.tagName))) {
@@ -40,10 +42,10 @@ export function parseMarkdown(text: string, streaming: boolean): MarkdownResult 
   const tree = processor.runSync(processor.parse(source)) as Root;
   safeTree(tree);
   let bytes = text.length * 2;
-  const blocks = tree.children.map((node, index) => {
+  const blocks = tree.children.flatMap(splitMarkdownNode).map((node, index) => {
     const encoded = JSON.stringify(node);
     bytes += encoded.length * 2;
-    return { key: `${node.position?.start.offset ?? index}:${node.type === "element" ? node.tagName : node.type}`, fingerprint: fingerprint(encoded), node };
+    return { key: `${index}:${node.type === "element" ? node.tagName : node.type}`, fingerprint: fingerprint(encoded), node, nodes: markdownNodeCount(node) };
   });
   return { blocks, bytes, parseMs: performance.now() - start };
 }

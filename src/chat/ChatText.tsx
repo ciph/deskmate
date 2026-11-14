@@ -5,6 +5,8 @@ import type { Components } from "react-markdown";
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
 import type { MarkdownBlock } from "./markdownPipeline";
 import { markdownScheduler, type MarkdownSnapshot } from "./markdownScheduler";
+import { PagedMarkdown } from "./PagedMarkdown";
+import { MarkdownAnchorContext } from "./markdownAnchor";
 import { Code } from "@phosphor-icons/react/dist/csr/Code";
 import { Copy } from "@phosphor-icons/react/dist/csr/Copy";
 import { Check } from "@phosphor-icons/react/dist/csr/Check";
@@ -36,13 +38,15 @@ const COMPONENTS: Components = {
   a: function MarkdownLink({ href, children, title, id }) {
     const [failed, setFailed] = useState(false);
     const labels = useContext(LabelsContext);
+    const jump = useContext(MarkdownAnchorContext);
     if (!href) return <span>{children}</span>;
     return (
       <>
       <a href={href} id={id} title={title ?? href}
         target={href.startsWith("#") ? undefined : "_blank"} rel="noopener noreferrer"
         onClick={(event) => {
-          if (href.startsWith("#") || !isTauri()) return;
+          if (href.startsWith("#")) { if (jump(href)) event.preventDefault(); return; }
+          if (!isTauri()) return;
           event.preventDefault();
           setFailed(false);
           void invoke("open_chat_link", { url: href }).catch(() => setFailed(true));
@@ -112,6 +116,7 @@ const COMPONENTS: Components = {
 const RichBlock = memo(function RichBlock({ block }: { block: MarkdownBlock }) {
   return toJsxRuntime(block.node, { Fragment, jsx, jsxs, components: COMPONENTS, ignoreInvalidStyle: true, passKeys: true, passNode: true });
 });
+const renderBlock = (block: MarkdownBlock) => <RichBlock key={block.key} block={block} />;
 function languageKey(lang: string) {
   if (lang.startsWith("zh")) return "zh-CN";
   if (lang.startsWith("ja")) return "ja";
@@ -139,7 +144,7 @@ function RichText({ text, streaming = false, lang = "zh-CN" }: ChatTextProps) {
     <LabelsContext.Provider value={labels}>
       <CopyLabelsContext.Provider value={copyLabels}>
       <div className="chat-markdown" data-format-pending={!valid || valid.text !== text || valid.streaming !== streaming ? "true" : undefined}>
-        {valid?.blocks.map(block => <RichBlock key={block.key} block={block} />)}
+        {valid && <PagedMarkdown blocks={valid.blocks} text={text} streaming={streaming} language={language} renderBlock={renderBlock} />}
         {tail && <span className="chat-plain-text">{tail}</span>}
         {snapshot?.unavailable && <span role="status">{FORMAT_UNAVAILABLE[language]}</span>}
       </div>

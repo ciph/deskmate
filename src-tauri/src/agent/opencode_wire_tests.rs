@@ -582,3 +582,44 @@ fn snapshot_preserves_native_file_names_without_resolving_urls() -> Result<(), S
     assert!(server.join().map_err(|_| "file server join")??.starts_with("GET /session/ses_native/message?"));
     Ok(())
 }
+
+#[test]
+fn message_pages_use_opaque_scoped_cursor_and_preserve_equal_time_order() {
+    let listener=TcpListener::bind("127.0.0.1:0").unwrap();let port=listener.local_addr().unwrap().port();
+    let server=std::thread::spawn(move || {
+        for (page,range) in [(0,100..200),(1,0..100)] {
+            let (mut stream,_)=listener.accept().unwrap();
+            let request=read_request(&mut stream).unwrap();
+            assert!(request.starts_with("GET /session/ses_pages/message?"));
+            assert!(request.contains("limit=100"));
+            assert!(request.contains("directory="));
+            if page==1 { assert!(request.contains("before=opaque%2B%2F%3D"),"{request}"); }
+            else { assert!(!request.contains("before=")); }
+            let messages:Vec<_>=range.map(|i|serde_json::json!({"info":{"id":format!("msg_{i:04}"),"sessionID":"ses_pages","role":"user","time":{"created":1}},"parts":[{"id":format!("part_{i}"),"type":"text","text":format!("text {i}")}]})).collect();
+            let body=serde_json::to_string(&messages).unwrap();
+            let cursor=if page==0 { "X-Next-Cursor: opaque+/=\r\nLink: <http://example.invalid/credentials>; rel=next\r\n" } else { "" };
+            write!(stream,"HTTP/1.1 200 OK\r\nContent-Length: {}\r\nContent-Type: application/json\r\n{cursor}Connection: close\r\n\r\n{body}",body.len()).unwrap();
+        }
+    });
+    let client=client_for(port,Path::new(r"E:\paged history"));
+    let (latest,cursor)=client.message_page("ses_pages",None).unwrap();assert_eq!(latest.len(),100);assert_eq!(latest[0].id,"msg_0100");
+    let (earlier,end)=client.message_page("ses_pages",cursor.as_deref()).unwrap();assert!(end.is_none());assert_eq!(earlier[99].id,"msg_0099");
+    let all:Vec<_>=earlier.into_iter().chain(latest).map(|m|m.id).collect();
+    assert_eq!(all,(0..200).map(|i|format!("msg_{i:04}")).collect::<Vec<_>>());server.join().unwrap();
+}
+
+#[test]
+fn message_page_rejects_repeated_cursor_foreign_identity_and_over_limit() {
+    let listener=TcpListener::bind("127.0.0.1:0").unwrap();let port=listener.local_addr().unwrap().port();
+    let one=serde_json::json!({"info":{"id":"msg_one","sessionID":"ses_other","role":"user","time":{"created":1}},"parts":[]});
+    let mut valid=one.clone();valid["info"]["sessionID"]="ses_pages".into();
+    let payloads=[("X-Next-Cursor: repeated\r\n".to_string(),"[]".to_string()),(String::new(),serde_json::to_string(&vec![one]).unwrap()),(String::new(),serde_json::to_string(&vec![valid;101]).unwrap())];
+    let server=std::thread::spawn(move || { for (header,body) in payloads {
+        let(mut stream,_)=listener.accept().unwrap();read_request(&mut stream).unwrap();
+        write!(stream,"HTTP/1.1 200 OK\r\nContent-Length: {}\r\n{header}Connection: close\r\n\r\n{body}",body.len()).unwrap();
+    }});
+    let client=client_for(port,Path::new(r"E:\paged history"));
+    assert_eq!(client.message_page("ses_pages",Some("repeated")).err().as_deref(),Some("agent_cursor_invalid"));
+    assert_eq!(client.message_page("ses_pages",None).err().as_deref(),Some("agent_snapshot_session_mismatch"));
+    assert_eq!(client.message_page("ses_pages",None).err().as_deref(),Some("agent_page_invalid"));server.join().unwrap();
+}
